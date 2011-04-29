@@ -59,7 +59,7 @@ public class GitBranchMojo extends AbstractMojo {
             project.getProperties().put("mavanagaiata.branch", repository.getBranch());
             project.getProperties().put("mvngit.branch", repository.getBranch());
         } catch (IOException e) {
-            this.getLog().error("Unable to read Git repository");
+            throw new MojoExecutionException("Unable to read Git repository", e);
         }
     }
 }
