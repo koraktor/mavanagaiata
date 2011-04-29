@@ -45,7 +45,12 @@ public class GitBranchMojo extends AbstractMojo {
     private MavenProject project;
 
     /**
+     * Information about the currently checked out Git branch is retrieved
+     * using a JGit Repository instance
      *
+     * @see Repository
+     * @throws MojoExecutionException if retrieving information from the Git
+     *         repository fails
      */
     public void execute() throws MojoExecutionException {
         try {
