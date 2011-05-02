@@ -8,41 +8,24 @@
 package com.github.koraktor.mavanagaiata;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.project.MavenProject;
-
-import org.junit.Test;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class AbstractGitMojoTest extends TestCase {
-
-    private AbstractGitMojo mojo;
+public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
 
     public void setUp() throws Exception {
-        File pom = new File("src/test/resources/test-project/pom.xml");
-        MavenXpp3Reader reader = new MavenXpp3Reader();
-        Model model = reader.read(new FileReader(pom));
-        final MavenProject testProject = new MavenProject(model);
-        testProject.setFile(pom.getAbsoluteFile());
-
         this.mojo = new AbstractGitMojo() {
-            {
-                this.gitDir = new File("src/test/resources/test-project/_git").getAbsoluteFile();
-                this.project = testProject;
-            }
-
             public void execute()
                     throws MojoExecutionException, MojoFailureException {}
         };
+
+        super.setUp();
     }
 
     @Test

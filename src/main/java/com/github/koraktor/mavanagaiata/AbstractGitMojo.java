@@ -84,4 +84,23 @@ public abstract class AbstractGitMojo extends AbstractMojo {
         return revWalk.parseCommit(head);
     }
 
+    /**
+     * Sets the Git directory used to initialize the repository
+     *
+     * @param gitDir The Git directory of the repository
+     * @see #initRepository()
+     */
+    protected void setGitDir(File gitDir) {
+        this.gitDir = gitDir;
+    }
+
+    /**
+     * The Maven project in which context this Mojo is executed
+     *
+     * @param project The current Maven project
+     */
+    protected void setProject(MavenProject project) {
+        this.project = project;
+    }
+
 }
