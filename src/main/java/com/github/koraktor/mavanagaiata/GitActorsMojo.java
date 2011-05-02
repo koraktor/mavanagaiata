@@ -1,5 +1,3 @@
-package com.github.koraktor.mavanagaiata;
-
 /**
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
@@ -7,17 +5,15 @@ package com.github.koraktor.mavanagaiata;
  * Copyright (c) 2011, Sebastian Staudt
  */
 
-import java.io.File;
+package com.github.koraktor.mavanagaiata;
+
 import java.io.IOException;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
+
 import org.eclipse.jgit.lib.PersonIdent;
-import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
 /**
  * This goal provides the name and email address of the author of the current
@@ -32,43 +28,26 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
  * @phase initialize
  * @requiresProject
  */
-public class GitActorsMojo extends AbstractMojo {
-
-    /**
-     * The project base directory
-     *
-     * @parameter expression="${basedir}/.git"
-     * @required
-     */
-    private File gitDir;
-
-    /**
-     * The maven project
-     *
-     * @parameter expression="${project}"
-     * @readonly
-     */
-    private MavenProject project;
+public class GitActorsMojo extends AbstractGitMojo {
 
     /**
      * Information about the author and commiter of the currently checked out
      * Git branch is retrieved using a JGit Repository instance
      *
-     * @see Repository
+     * @see PersonIdent
+     * @see RevCommit#getAuthorIdent()
+     * @see RevCommit#getCommitterIdent()
      * @throws MojoExecutionException if retrieving information from the Git
      *         repository fails
      */
+    @Override
     public void execute() throws MojoExecutionException {
-        try {
-            FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-            Repository repository = repositoryBuilder
-                .setGitDir(this.gitDir)
-                .readEnvironment()
-                .findGitDir()
-                .build();
+        super.execute();
 
-            RevWalk revWalk = new RevWalk(repository);
-            RevCommit commit = revWalk.parseCommit(repository.getRef("HEAD")
+        try {
+            RevWalk revWalk = new RevWalk(this.repository);
+            RevCommit commit = revWalk.parseCommit(this.repository
+                .getRef("HEAD")
                 .getObjectId());
             PersonIdent author = commit.getAuthorIdent();
             PersonIdent committer = commit.getCommitterIdent();
@@ -82,7 +61,7 @@ public class GitActorsMojo extends AbstractMojo {
             project.getProperties().put("mvngit.committer.name", committer.getName());
             project.getProperties().put("mvngit.committer.email", committer.getEmailAddress());
         } catch (IOException e) {
-            throw new MojoExecutionException("Unable to read Git repository", e);
+            throw new MojoExecutionException("Unable to read Git actor information", e);
         }
     }
 }
