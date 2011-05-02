@@ -31,7 +31,7 @@ public class GitCommitMojo extends AbstractGitMojo {
      * is retrieved using a JGit Repository instance
      *
      * @see RevCommit#getName()
-     * @see org.eclipse.jgit.lib.ObjectReader#abbreviate()
+     * @see org.eclipse.jgit.lib.ObjectReader#abbreviate(org.eclipse.jgit.lib.AnyObjectId, int)
      * @throws MojoExecutionException if retrieving information from the Git
      *         repository fails
      */
