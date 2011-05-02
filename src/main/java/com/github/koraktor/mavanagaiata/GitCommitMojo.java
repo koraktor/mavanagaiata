@@ -12,7 +12,6 @@ import java.io.IOException;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevWalk;
 
 /**
  * This goal provides the full ID of the current Git commit in the
@@ -41,10 +40,7 @@ public class GitCommitMojo extends AbstractGitMojo {
         super.execute();
 
         try {
-            RevWalk revWalk = new RevWalk(this.repository);
-            RevCommit commit = revWalk.parseCommit(this.repository
-                .getRef("HEAD")
-                .getObjectId());
+            RevCommit commit = this.getHead();
             String abbrevId = this.repository.getObjectDatabase().newReader()
                 .abbreviate(commit, 8).name();
             String shaId = commit.getName();

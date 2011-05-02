@@ -13,7 +13,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevWalk;
 
 /**
  * This goal provides the name and email address of the author of the current
@@ -45,10 +44,7 @@ public class GitActorsMojo extends AbstractGitMojo {
         super.execute();
 
         try {
-            RevWalk revWalk = new RevWalk(this.repository);
-            RevCommit commit = revWalk.parseCommit(this.repository
-                .getRef("HEAD")
-                .getObjectId());
+            RevCommit commit = this.getHead();
             PersonIdent author = commit.getAuthorIdent();
             PersonIdent committer = commit.getCommitterIdent();
 

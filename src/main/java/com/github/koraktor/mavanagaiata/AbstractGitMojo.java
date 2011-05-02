@@ -14,7 +14,10 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
 /**
@@ -62,6 +65,19 @@ public abstract class AbstractGitMojo extends AbstractMojo {
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to read Git repository", e);
         }
+    }
+
+    /**
+     * Returns a commit object for the repository's current HEAD
+     *
+     * @return The commit object of the repository's current HEAD
+     * @see RevCommit
+     * @throws IOException if the repository HEAD could not be retrieved
+     */
+    protected RevCommit getHead() throws IOException {
+        RevWalk revWalk = new RevWalk(this.repository);
+        ObjectId head = this.repository.getRef("HEAD").getObjectId();
+        return revWalk.parseCommit(head);
     }
 
 }
