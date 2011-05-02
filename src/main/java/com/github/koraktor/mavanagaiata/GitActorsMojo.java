@@ -45,14 +45,10 @@ public class GitActorsMojo extends AbstractGitMojo {
             PersonIdent author = commit.getAuthorIdent();
             PersonIdent committer = commit.getCommitterIdent();
 
-            project.getProperties().put("mavanagaiata.author.name", author.getName());
-            project.getProperties().put("mavanagaiata.author.email", author.getEmailAddress());
-            project.getProperties().put("mavanagaiata.committer.name", committer.getName());
-            project.getProperties().put("mavanagaiata.committer.email", committer.getEmailAddress());
-            project.getProperties().put("mvngit.author.name", author.getName());
-            project.getProperties().put("mvngit.author.email", author.getEmailAddress());
-            project.getProperties().put("mvngit.committer.name", committer.getName());
-            project.getProperties().put("mvngit.committer.email", committer.getEmailAddress());
+            this.addProperty("author.name", author.getName());
+            this.addProperty("author.email", author.getEmailAddress());
+            this.addProperty("committer.name", committer.getName());
+            this.addProperty("committer.email", committer.getEmailAddress());
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to read Git actor information", e);
         }

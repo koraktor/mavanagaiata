@@ -9,6 +9,7 @@ package com.github.koraktor.mavanagaiata;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -46,6 +47,21 @@ public abstract class AbstractGitMojo extends AbstractMojo {
     protected MavenProject project;
 
     protected Repository repository;
+
+    /**
+     * Saves a property with the given name into the project's properties
+     *
+     * The value will be stored two times – with "mavanagaiata" and "mvngit" as
+     * a prefix.
+     *
+     * @param name The property name
+     * @param value The value of the property
+     */
+    protected void addProperty(String name, Object value) {
+        Properties properties = this.project.getProperties();
+        properties.put("mavanagaiata." + name, value);
+        properties.put("mvngit." + name, value);
+    }
 
     /**
      * Initializes a JGit Repository object for further reference

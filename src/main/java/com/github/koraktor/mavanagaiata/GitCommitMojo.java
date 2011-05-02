@@ -44,14 +44,10 @@ public class GitCommitMojo extends AbstractGitMojo {
             String shaId = commit.getName();
             Date date = new Date(new Long(commit.getCommitTime()) * 1000);
 
-            project.getProperties().put("mavanagaiata.commit.abbrev", abbrevId);
-            project.getProperties().put("mavanagaiata.commit.date", date);
-            project.getProperties().put("mavanagaiata.commit.id", shaId);
-            project.getProperties().put("mavanagaiata.commit.sha", shaId);
-            project.getProperties().put("mvngit.commit.abbrev", abbrevId);
-            project.getProperties().put("mvngit.commit.date", date);
-            project.getProperties().put("mvngit.commit.id", shaId);
-            project.getProperties().put("mvngit.commit.sha", shaId);
+            this.addProperty("commit.abbrev", abbrevId);
+            this.addProperty("commit.date", date);
+            this.addProperty("commit.id", shaId);
+            this.addProperty("commit.sha", shaId);
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to read Git commit information", e);
         }
