@@ -54,7 +54,7 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * @throws MojoExecutionException if retrieving information from the Git
      *         repository fails
      */
-    public void execute() throws MojoExecutionException {
+    protected void initRepository() throws MojoExecutionException {
         try {
             FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
             this.repository = repositoryBuilder
@@ -74,7 +74,11 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * @see RevCommit
      * @throws IOException if the repository HEAD could not be retrieved
      */
-    protected RevCommit getHead() throws IOException {
+    protected RevCommit getHead() throws IOException, MojoExecutionException {
+        if(this.repository == null) {
+            this.initRepository();
+        }
+
         RevWalk revWalk = new RevWalk(this.repository);
         ObjectId head = this.repository.getRef("HEAD").getObjectId();
         return revWalk.parseCommit(head);

@@ -35,10 +35,7 @@ public class GitCommitMojo extends AbstractGitMojo {
      * @throws MojoExecutionException if retrieving information from the Git
      *         repository fails
      */
-    @Override
     public void execute() throws MojoExecutionException {
-        super.execute();
-
         try {
             RevCommit commit = this.getHead();
             String abbrevId = this.repository.getObjectDatabase().newReader()

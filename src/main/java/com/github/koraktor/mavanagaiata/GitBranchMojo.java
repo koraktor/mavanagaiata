@@ -30,9 +30,8 @@ public class GitBranchMojo extends AbstractGitMojo {
      * @throws MojoExecutionException if retrieving information from the Git
      *         repository fails
      */
-    @Override
     public void execute() throws MojoExecutionException {
-        super.execute();
+        this.initRepository();
 
         try {
             project.getProperties().put("mavanagaiata.branch", this.repository.getBranch());
