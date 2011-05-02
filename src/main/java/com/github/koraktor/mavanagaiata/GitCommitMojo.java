@@ -8,6 +8,7 @@
 package com.github.koraktor.mavanagaiata;
 
 import java.io.IOException;
+import java.util.Date;
 
 import org.apache.maven.plugin.MojoExecutionException;
 
@@ -41,11 +42,14 @@ public class GitCommitMojo extends AbstractGitMojo {
             String abbrevId = this.repository.getObjectDatabase().newReader()
                 .abbreviate(commit, 8).name();
             String shaId = commit.getName();
+            Date date = new Date(new Long(commit.getCommitTime()) * 1000);
 
             project.getProperties().put("mavanagaiata.commit.abbrev", abbrevId);
+            project.getProperties().put("mavanagaiata.commit.date", date);
             project.getProperties().put("mavanagaiata.commit.id", shaId);
             project.getProperties().put("mavanagaiata.commit.sha", shaId);
             project.getProperties().put("mvngit.commit.abbrev", abbrevId);
+            project.getProperties().put("mvngit.commit.date", date);
             project.getProperties().put("mvngit.commit.id", shaId);
             project.getProperties().put("mvngit.commit.sha", shaId);
         } catch (IOException e) {
