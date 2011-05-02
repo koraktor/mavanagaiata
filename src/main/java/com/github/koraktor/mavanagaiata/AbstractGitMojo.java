@@ -35,7 +35,7 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * @parameter expression="${basedir}/.git"
      * @required
      */
-    private File gitDir;
+    protected File gitDir;
 
     /**
      * The Maven project
