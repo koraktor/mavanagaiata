@@ -27,9 +27,7 @@ the plugin in your POM and add the configuration suitable for your needs:
 
 ```xml
 <project ...>
-
     ...
-
     <build>
         <plugins>
             <plugin>
@@ -45,17 +43,12 @@ the plugin in your POM and add the configuration suitable for your needs:
                     </execution>
                 </executions>
             </plugin>
-
             ...
-
         </plugins>
-
         ...
     </build>
-
 </project>
 ```
-
 
 ## About the name
 
