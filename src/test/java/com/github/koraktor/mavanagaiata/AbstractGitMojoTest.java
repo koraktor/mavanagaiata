@@ -35,6 +35,18 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
     }
 
     @Test
+    public void testError() {
+        this.mojo.gitDir = new File("src/test/resources/broken-project/_git");
+        try {
+            this.mojo.initRepository();
+            fail("No exception thrown");
+        } catch(Exception e) {
+            assertEquals(MojoExecutionException.class, e.getClass());
+            assertEquals("Unable to read Git repository", e.getMessage());
+        }
+    }
+
+    @Test
     public void testInitRepository() throws MojoExecutionException {
         this.mojo.initRepository();
         assertNotNull(this.mojo.repository);
