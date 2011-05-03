@@ -26,6 +26,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
  * @goal actors
  * @phase initialize
  * @requiresProject
+ * @since 0.1.0
  */
 public class GitActorsMojo extends AbstractGitMojo {
 

@@ -24,6 +24,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
  * @goal commit
  * @phase initialize
  * @requiresProject
+ * @since 0.1.0
  */
 public class GitCommitMojo extends AbstractGitMojo {
 

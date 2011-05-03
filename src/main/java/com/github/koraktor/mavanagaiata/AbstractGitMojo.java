@@ -27,6 +27,7 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
  *
  * @author Sebastian Staudt
  * @see Repository
+ * @since 0.1.0
  */
 public abstract class AbstractGitMojo extends AbstractMojo {
 

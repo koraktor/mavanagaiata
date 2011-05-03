@@ -19,6 +19,7 @@ import org.apache.maven.plugin.MojoExecutionException;
  * @goal branch
  * @phase initialize
  * @requiresProject
+ * @since 0.1.0
  */
 public class GitBranchMojo extends AbstractGitMojo {
 

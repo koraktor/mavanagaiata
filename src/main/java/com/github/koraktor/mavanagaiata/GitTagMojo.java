@@ -22,6 +22,7 @@ import org.eclipse.jgit.revwalk.RevWalk;
  * @goal tag
  * @phase initialize
  * @requiresProject
+ * @since 0.1.0
  */
 public class GitTagMojo extends AbstractGitMojo {
 
