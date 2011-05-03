@@ -25,9 +25,12 @@ public class GitTagMojoTest extends AbstractMojoTest<GitTagMojo> {
     @Test
     public void testResult() throws IOException, MojoExecutionException {
         Properties properties = this.mojo.project.getProperties();
+        String abbrev = this.headId.substring(0, 7);
 
-        assertEquals("2.0.0", properties.get("mavanagaiata.tag"));
-        assertEquals("2.0.0", properties.get("mvngit.tag"));
+        assertEquals("2.0.0-1-g" + abbrev, properties.get("mavanagaiata.tag.describe"));
+        assertEquals("2.0.0", properties.get("mavanagaiata.tag.name"));
+        assertEquals("2.0.0-1-g" + abbrev, properties.get("mvngit.tag.describe"));
+        assertEquals("2.0.0", properties.get("mvngit.tag.name"));
     }
 
 }

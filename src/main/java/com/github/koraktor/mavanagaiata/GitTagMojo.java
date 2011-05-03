@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevObject;
@@ -24,6 +25,10 @@ import org.eclipse.jgit.revwalk.RevWalk;
  */
 public class GitTagMojo extends AbstractGitMojo {
 
+    private RevWalk revWalk;
+
+    private String tag;
+
     private Map<String, RevCommit> tagCommits;
 
     /**
@@ -36,13 +41,13 @@ public class GitTagMojo extends AbstractGitMojo {
     public void execute() throws MojoExecutionException {
         try {
             RevCommit head = this.getHead();
-            RevWalk revWalk = new RevWalk(this.repository);
+            this.revWalk = new RevWalk(this.repository);
             Map<String, Ref> tags = this.repository.getTags();
             this.tagCommits = new HashMap<String, RevCommit>();
 
             for(Map.Entry<String, Ref> tag : tags.entrySet()) {
                 try {
-                    RevTag revTag = revWalk.parseTag(tag.getValue().getObjectId());
+                    RevTag revTag = this.revWalk.parseTag(tag.getValue().getObjectId());
                     RevObject object = revTag.getObject();
                     if(!(object instanceof RevCommit)) {
                         continue;
@@ -54,11 +59,24 @@ public class GitTagMojo extends AbstractGitMojo {
             }
 
             if(this.tagCommits.isEmpty()) {
-                this.addProperty("tag", "");
+                this.addProperty("tag.describe", "");
+                this.addProperty("tag.name", "");
                 return;
             }
 
-            this.walkCommits(head);
+            String abbrevId = this.repository.getObjectDatabase().newReader()
+                .abbreviate(head).name();
+
+            int distance = this.walkCommits(head, 0);
+
+            if(distance > -1) {
+                this.addProperty("tag.name", this.tag);
+                if(distance == 0) {
+                    this.addProperty("tag.describe", this.tag);
+                } else {
+                    this.addProperty("tag.describe", this.tag + "-" + distance + "-g" + abbrevId);
+                }
+            }
         } catch(IOException e) {
             throw new MojoExecutionException("Unable to read Git tag", e);
         }
@@ -77,7 +95,7 @@ public class GitTagMojo extends AbstractGitMojo {
         if(this.tagCommits.containsValue(commit)) {
             for(Map.Entry<String, RevCommit> tagCommit : this.tagCommits.entrySet()) {
                 if(tagCommit.getValue().equals(commit)) {
-                    this.addProperty("tag", tagCommit.getKey());
+                    this.tag = tagCommit.getKey();
                     return true;
                 }
             }
@@ -93,18 +111,30 @@ public class GitTagMojo extends AbstractGitMojo {
      * last commit in the hierarchy is reached.
      *
      * @param commit The commit to start with
+     * @param distance The distance walked in the commit hierarchy
+     * @return The distance at which the tag has been found, or <code>-1</code>
+     *         if no tag is reachable from the given commit
+     * @throws IOException if an error occured while reading a commit
+     * @throws MissingObjectException if a commit is missing
      * @see #isTagged(RevCommit)
      * @see RevCommit#getParentCount()
      * @see RevCommit#getParents()
      */
-    private void walkCommits(RevCommit commit) {
-        if(isTagged(commit) || commit.getParentCount() == 0) {
-            return;
+    private int walkCommits(RevCommit commit, int distance) throws MissingObjectException, IOException {
+        commit = (RevCommit) this.revWalk.peel(commit);
+
+        if(this.isTagged(commit)) {
+            return distance;
         }
 
         for(RevCommit parent : commit.getParents()) {
-            this.walkCommits(parent);
+            int tagDistance = this.walkCommits(parent, distance + 1);
+            if(tagDistance > -1) {
+                return tagDistance;
+            }
         }
+
+        return -1;
     }
 
 }
