@@ -27,7 +27,7 @@ public class GitCommitMojoTest extends AbstractMojoTest<GitCommitMojo> {
     public void testResult() throws IOException, MojoExecutionException {
         Properties properties = this.mojo.project.getProperties();
         String commitDate = new Date(1304406915000L).toString();
-        String commitAbbrev = this.headId.substring(0, 8);
+        String commitAbbrev = this.headId.substring(0, 7);
 
         assertEquals(commitAbbrev, properties.get("mavanagaiata.commit.abbrev"));
         assertEquals(commitDate, properties.get("mavanagaiata.commit.date"));

@@ -40,7 +40,7 @@ public class GitCommitMojo extends AbstractGitMojo {
         try {
             RevCommit commit = this.getHead();
             String abbrevId = this.repository.getObjectDatabase().newReader()
-                .abbreviate(commit, 8).name();
+                .abbreviate(commit).name();
             String shaId = commit.getName();
             Date date = new Date(new Long(commit.getCommitTime()) * 1000);
 
