@@ -26,16 +26,17 @@ public class GitCommitMojoTest extends AbstractMojoTest<GitCommitMojo> {
     @Test
     public void testResult() throws IOException, MojoExecutionException {
         Properties properties = this.mojo.project.getProperties();
-        Date commitDate = new Date(1304347120000L);
+        Date commitDate = new Date(1304406915000L);
+        String commitAbbrev = this.headId.substring(0, 8);
 
-        assertEquals("0e7d0435", properties.get("mavanagaiata.commit.abbrev"));
+        assertEquals(commitAbbrev, properties.get("mavanagaiata.commit.abbrev"));
         assertEquals(commitDate, properties.get("mavanagaiata.commit.date"));
-        assertEquals("0e7d0435e30d0f726d62ccadd202c9240df56019", properties.get("mavanagaiata.commit.id"));
-        assertEquals("0e7d0435e30d0f726d62ccadd202c9240df56019", properties.get("mavanagaiata.commit.sha"));
-        assertEquals("0e7d0435", properties.get("mvngit.commit.abbrev"));
+        assertEquals(this.headId, properties.get("mavanagaiata.commit.id"));
+        assertEquals(this.headId, properties.get("mavanagaiata.commit.sha"));
+        assertEquals(commitAbbrev, properties.get("mvngit.commit.abbrev"));
         assertEquals(commitDate, properties.get("mvngit.commit.date"));
-        assertEquals("0e7d0435e30d0f726d62ccadd202c9240df56019", properties.get("mvngit.commit.id"));
-        assertEquals("0e7d0435e30d0f726d62ccadd202c9240df56019", properties.get("mvngit.commit.sha"));
+        assertEquals(this.headId, properties.get("mvngit.commit.id"));
+        assertEquals(this.headId, properties.get("mvngit.commit.sha"));
     }
 
 }

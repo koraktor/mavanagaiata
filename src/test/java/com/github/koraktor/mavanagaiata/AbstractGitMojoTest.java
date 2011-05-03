@@ -57,12 +57,12 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
     @Test
     public void testGetHead() throws IOException, MojoExecutionException {
         RevCommit head = this.mojo.getHead();
-        assertEquals("0e7d0435e30d0f726d62ccadd202c9240df56019", head.getName());
+        assertEquals(this.headId, head.getName());
 
         this.mojo.initRepository();
 
         head = this.mojo.getHead();
-        assertEquals("0e7d0435e30d0f726d62ccadd202c9240df56019", head.getName());
+        assertEquals(this.headId, head.getName());
     }
 
     @Test
