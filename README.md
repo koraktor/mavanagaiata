@@ -10,7 +10,7 @@ about the Git repository of your project.
 
 ## Dependencies
 
- * JGit 0.10.1
+ * JGit 0.12.1
 
 ## Installation
 
