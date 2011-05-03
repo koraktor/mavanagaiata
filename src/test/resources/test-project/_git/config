@@ -6,3 +6,5 @@
 	symlinks = false
 	ignorecase = true
 	hideDotFiles = dotGitOnly
+[gc]
+	packrefs = false
