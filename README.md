@@ -33,7 +33,6 @@ the plugin in your POM and add the configuration suitable for your needs:
             <plugin>
                 <groupId>com.github.koraktor</groupId>
                 <artifactId>mavanagaiata</artifactId>
-                <version>0.0.0</version>
                 <executions>
                     <execution>
                         <id>load-git-branch</id>
