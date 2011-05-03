@@ -8,11 +8,17 @@ about the Git repository of your project.
 
  * Maven 2.0+
 
+## Dependencies
+
+ * JGit 0.10.1
+
 ## Installation
 
-Mavanagaiata is not yet hosted in a public Maven repository, so the only way to
-install it at the moment is to clone the Git repository and install it
-manually. You can do so using the following commands:
+Mavanagaiata is available from the Central Reposioty and will be automatically
+installed by Maven once you add it as a plugin to your project. If you want to
+have the newest features available in the development code or you want to hack
+on the code you are free to clone the Git repository and install it manually.
+You can do so using the following commands:
 
 ```bash
 $ git clone git://github.com/koraktor/mavanagaiata.git
@@ -48,6 +54,36 @@ the plugin in your POM and add the configuration suitable for your needs:
     </build>
 </project>
 ```
+
+### Goals
+
+Mavangaiata provides the following goals each reading specific information from
+the Git repository.
+
+ * `actors`: Information about the actors of the current commit
+ * `branch`: Information about the currently checked out branch
+ * `commit`: Information about the current commit
+ * `tag`:    Information about the most recent tag
+
+Each goals stores its informationinto the project's properties. The following
+property keys will be prefixed with `mavanagaiata.` and `mvngit.` respectively.
+
+ * `actors`
+   * `author.name`:     The name of the author of the current commit
+   * `author.email`:    The email address of the author of the current commit
+   * `committer.name`:  The name of the committer of the current commit
+   * `committer.email`: The email address of the committer of the current
+     commit
+ * `branch`
+   * `branch`: The name of the currently checked out branch
+ * `commit`
+   * `abbrev`:     The abbreviated SHA ID of the current commit
+   * `id` / `sha`: The full SHA ID of the current commit
+   * `date`:       A string representation of the date of the current commit
+ * `tag`
+   * `name`:     The name of the most recent tag (if any)
+   * `describe`: A combination of the tag name and the current commit ID
+     (same as `git describe`)
 
 ## About the name
 
