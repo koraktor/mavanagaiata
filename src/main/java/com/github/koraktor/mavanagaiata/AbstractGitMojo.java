@@ -57,7 +57,7 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * @param name The property name
      * @param value The value of the property
      */
-    protected void addProperty(String name, Object value) {
+    protected void addProperty(String name, String value) {
         Properties properties = this.project.getProperties();
         properties.put("mavanagaiata." + name, value);
         properties.put("mvngit." + name, value);

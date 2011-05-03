@@ -45,7 +45,7 @@ public class GitCommitMojo extends AbstractGitMojo {
             Date date = new Date(new Long(commit.getCommitTime()) * 1000);
 
             this.addProperty("commit.abbrev", abbrevId);
-            this.addProperty("commit.date", date);
+            this.addProperty("commit.date", date.toString());
             this.addProperty("commit.id", shaId);
             this.addProperty("commit.sha", shaId);
         } catch (IOException e) {
