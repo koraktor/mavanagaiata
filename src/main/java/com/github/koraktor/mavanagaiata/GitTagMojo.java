@@ -58,14 +58,14 @@ public class GitTagMojo extends AbstractGitMojo {
                 }
             }
 
+            String abbrevId = this.repository.getObjectDatabase().newReader()
+                .abbreviate(head).name();
+
             if(this.tagCommits.isEmpty()) {
-                this.addProperty("tag.describe", "");
+                this.addProperty("tag.describe", abbrevId);
                 this.addProperty("tag.name", "");
                 return;
             }
-
-            String abbrevId = this.repository.getObjectDatabase().newReader()
-                .abbreviate(head).name();
 
             int distance = this.walkCommits(head, 0);
 
