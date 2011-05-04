@@ -8,6 +8,7 @@
 package com.github.koraktor.mavanagaiata;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -81,6 +82,13 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      *         repository fails
      */
     protected void initRepository() throws MojoExecutionException {
+        if(this.gitDir == null) {
+            throw new MojoExecutionException("Git directory is not set");
+        } else if(!this.gitDir.exists()) {
+            throw new MojoExecutionException("Git directory does not exist",
+                new FileNotFoundException());
+        }
+
         try {
             FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
             this.repository = repositoryBuilder

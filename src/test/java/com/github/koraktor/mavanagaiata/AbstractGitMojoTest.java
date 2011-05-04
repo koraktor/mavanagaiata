@@ -8,6 +8,7 @@
 package com.github.koraktor.mavanagaiata;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -36,7 +37,26 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
     }
 
     @Test
-    public void testError() {
+    public void testErrors() {
+        this.mojo.gitDir = null;
+        try {
+            this.mojo.initRepository();
+            fail("No exception thrown");
+        } catch(Exception e) {
+            assertEquals(MojoExecutionException.class, e.getClass());
+            assertEquals("Git directory is not set", e.getMessage());
+        }
+
+        this.mojo.gitDir = new File("src/test/resources/non-existant-project/_git");
+        try {
+            this.mojo.initRepository();
+            fail("No exception thrown");
+        } catch(Exception e) {
+            assertEquals(MojoExecutionException.class, e.getClass());
+            assertEquals("Git directory does not exist", e.getMessage());
+            assertEquals(FileNotFoundException.class, e.getCause().getClass());
+        }
+
         this.mojo.gitDir = new File("src/test/resources/broken-project/_git");
         try {
             this.mojo.initRepository();
@@ -44,6 +64,7 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
         } catch(Exception e) {
             assertEquals(MojoExecutionException.class, e.getClass());
             assertEquals("Unable to read Git repository", e.getMessage());
+            assertEquals(IOException.class, e.getCause().getClass());
         }
     }
 
