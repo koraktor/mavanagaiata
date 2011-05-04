@@ -66,7 +66,7 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
     }
 
     @Test
-    public void addProperty() {
+    public void testAddProperty() {
         this.mojo.addProperty("name", "value");
 
         assertEquals("value", this.mojo.project.getProperties().get("mavanagaiata.name"));
