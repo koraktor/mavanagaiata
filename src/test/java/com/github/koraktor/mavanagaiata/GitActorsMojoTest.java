@@ -8,7 +8,6 @@
 package com.github.koraktor.mavanagaiata;
 
 import java.io.IOException;
-import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 
@@ -24,16 +23,10 @@ public class GitActorsMojoTest extends AbstractMojoTest<GitActorsMojo> {
 
     @Test
     public void testResult() throws IOException, MojoExecutionException {
-        Properties properties = this.mojo.project.getProperties();
-
-        assertEquals("Sebastian Staudt", properties.get("mavanagaiata.author.name"));
-        assertEquals("koraktor@gmail.com", properties.get("mavanagaiata.author.email"));
-        assertEquals("Sebastian Staudt", properties.get("mavanagaiata.committer.name"));
-        assertEquals("koraktor@gmail.com", properties.get("mavanagaiata.committer.email"));
-        assertEquals("Sebastian Staudt", properties.get("mvngit.author.name"));
-        assertEquals("koraktor@gmail.com", properties.get("mvngit.author.email"));
-        assertEquals("Sebastian Staudt", properties.get("mvngit.committer.name"));
-        assertEquals("koraktor@gmail.com", properties.get("mvngit.committer.email"));
+        this.assertProperty("Sebastian Staudt", "author.name");
+        this.assertProperty("koraktor@gmail.com", "author.email");
+        this.assertProperty("Sebastian Staudt", "committer.name");
+        this.assertProperty("koraktor@gmail.com", "committer.email");
     }
 
 }

@@ -9,6 +9,7 @@ package com.github.koraktor.mavanagaiata;
 
 import java.io.File;
 import java.io.FileReader;
+import java.util.Properties;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -22,6 +23,8 @@ public abstract class AbstractMojoTest<T extends AbstractGitMojo> extends TestCa
 
     protected T mojo;
 
+    protected Properties projectProperties;
+
     public void setUp() throws Exception {
         File pom = new File("src/test/resources/test-project/pom.xml");
         MavenXpp3Reader reader = new MavenXpp3Reader();
@@ -29,9 +32,17 @@ public abstract class AbstractMojoTest<T extends AbstractGitMojo> extends TestCa
         final MavenProject testProject = new MavenProject(model);
         testProject.setFile(pom.getAbsoluteFile());
 
+        this.projectProperties = testProject.getProperties();
         this.mojo.gitDir = new File("src/test/resources/test-project/_git").getAbsoluteFile();
         this.mojo.project = testProject;
+
         this.mojo.execute();
+    }
+
+    protected void assertProperty(String value, String key) {
+        for(String prefix : this.mojo.propertyPrefixes) {
+            assertEquals(value, this.projectProperties.get(prefix + "." + key));
+        }
     }
 
 }

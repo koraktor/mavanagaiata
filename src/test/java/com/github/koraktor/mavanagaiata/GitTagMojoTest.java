@@ -8,7 +8,6 @@
 package com.github.koraktor.mavanagaiata;
 
 import java.io.IOException;
-import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 
@@ -24,13 +23,10 @@ public class GitTagMojoTest extends AbstractMojoTest<GitTagMojo> {
 
     @Test
     public void testResult() throws IOException, MojoExecutionException {
-        Properties properties = this.mojo.project.getProperties();
         String abbrev = this.headId.substring(0, 7);
 
-        assertEquals("2.0.0-1-g" + abbrev, properties.get("mavanagaiata.tag.describe"));
-        assertEquals("2.0.0", properties.get("mavanagaiata.tag.name"));
-        assertEquals("2.0.0-1-g" + abbrev, properties.get("mvngit.tag.describe"));
-        assertEquals("2.0.0", properties.get("mvngit.tag.name"));
+        this.assertProperty("2.0.0-1-g" + abbrev, "tag.describe");
+        this.assertProperty("2.0.0", "tag.name");
     }
 
 }

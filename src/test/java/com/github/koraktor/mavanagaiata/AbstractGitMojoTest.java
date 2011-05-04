@@ -72,15 +72,14 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
 
         this.mojo.addProperty("name", "value");
 
-        assertEquals("value", properties.get("mavanagaiata.name"));
-        assertEquals("value", properties.get("mvngit.name"));
+        this.assertProperty("value", "name");
 
         this.mojo.propertyPrefixes = new String[] { "prefix" };
         this.mojo.addProperty("prefixed", "value");
 
-        assertEquals("value", properties.get("prefix.prefixed"));
-        assertEquals(null, properties.get("mavanagaiata.prefixed"));
-        assertEquals(null, properties.get("mvngit.prefixed"));
+        this.assertProperty("value", "prefixed");
+        assertNull(properties.get("mavanagaiata.prefixed"));
+        assertNull(properties.get("mvngit.prefixed"));
     }
 
 }

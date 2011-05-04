@@ -9,7 +9,6 @@ package com.github.koraktor.mavanagaiata;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 
@@ -25,18 +24,13 @@ public class GitCommitMojoTest extends AbstractMojoTest<GitCommitMojo> {
 
     @Test
     public void testResult() throws IOException, MojoExecutionException {
-        Properties properties = this.mojo.project.getProperties();
         String commitDate = new Date(1304406915000L).toString();
         String commitAbbrev = this.headId.substring(0, 7);
 
-        assertEquals(commitAbbrev, properties.get("mavanagaiata.commit.abbrev"));
-        assertEquals(commitDate, properties.get("mavanagaiata.commit.date"));
-        assertEquals(this.headId, properties.get("mavanagaiata.commit.id"));
-        assertEquals(this.headId, properties.get("mavanagaiata.commit.sha"));
-        assertEquals(commitAbbrev, properties.get("mvngit.commit.abbrev"));
-        assertEquals(commitDate, properties.get("mvngit.commit.date"));
-        assertEquals(this.headId, properties.get("mvngit.commit.id"));
-        assertEquals(this.headId, properties.get("mvngit.commit.sha"));
+        this.assertProperty(commitAbbrev, "commit.abbrev");
+        this.assertProperty(commitDate, "commit.date");
+        this.assertProperty(this.headId, "commit.id");
+        this.assertProperty(this.headId, "commit.sha");
     }
 
 }
