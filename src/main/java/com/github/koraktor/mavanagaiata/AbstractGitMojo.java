@@ -47,6 +47,13 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      */
     protected MavenProject project;
 
+    /**
+     * The prefixes to prepend to property keys
+     *
+     * @parameter
+     */
+    protected String[] propertyPrefixes = { "mavanagaiata", "mvngit" };
+
     protected Repository repository;
 
     /**
@@ -60,8 +67,10 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      */
     protected void addProperty(String name, String value) {
         Properties properties = this.project.getProperties();
-        properties.put("mavanagaiata." + name, value);
-        properties.put("mvngit." + name, value);
+
+        for(String prefix : this.propertyPrefixes) {
+            properties.put(prefix + "." + name, value);
+        }
     }
 
     /**

@@ -9,6 +9,7 @@ package com.github.koraktor.mavanagaiata;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -67,10 +68,19 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
 
     @Test
     public void testAddProperty() {
+        Properties properties = this.mojo.project.getProperties();
+
         this.mojo.addProperty("name", "value");
 
-        assertEquals("value", this.mojo.project.getProperties().get("mavanagaiata.name"));
-        assertEquals("value", this.mojo.project.getProperties().get("mvngit.name"));
+        assertEquals("value", properties.get("mavanagaiata.name"));
+        assertEquals("value", properties.get("mvngit.name"));
+
+        this.mojo.propertyPrefixes = new String[] { "prefix" };
+        this.mojo.addProperty("prefixed", "value");
+
+        assertEquals("value", properties.get("prefix.prefixed"));
+        assertEquals(null, properties.get("mavanagaiata.prefixed"));
+        assertEquals(null, properties.get("mvngit.prefixed"));
     }
 
 }
