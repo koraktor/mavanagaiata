@@ -89,7 +89,7 @@ public class GitTagMojo extends AbstractGitMojo {
      * If the commit is tagged, the tag's name is saved as property "tag"
      *
      * @param commit The commit to check
-     * @see #addProperty(String, Object)
+     * @see #addProperty(String, String)
      * @return <code>true</code> if this commit has been tagged
      */
     private boolean isTagged(RevCommit commit) {
