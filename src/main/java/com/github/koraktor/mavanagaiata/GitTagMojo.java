@@ -30,7 +30,7 @@ public class GitTagMojo extends AbstractGitMojo {
 
     private String tag;
 
-    private Map<String, RevCommit> tagCommits;
+    private Map<RevCommit, String> tagCommits;
 
     /**
      * This will first read all tags and walk the commit hierarchy down from
@@ -44,7 +44,7 @@ public class GitTagMojo extends AbstractGitMojo {
             RevCommit head = this.getHead();
             this.revWalk = new RevWalk(this.repository);
             Map<String, Ref> tags = this.repository.getTags();
-            this.tagCommits = new HashMap<String, RevCommit>();
+            this.tagCommits = new HashMap<RevCommit, String>();
 
             for(Map.Entry<String, Ref> tag : tags.entrySet()) {
                 try {
@@ -53,7 +53,7 @@ public class GitTagMojo extends AbstractGitMojo {
                     if(!(object instanceof RevCommit)) {
                         continue;
                     }
-                    this.tagCommits.put(tag.getKey(), (RevCommit) object);
+                    this.tagCommits.put((RevCommit) object, tag.getKey());
                 } catch(IncorrectObjectTypeException e) {
                     continue;
                 }
@@ -93,13 +93,9 @@ public class GitTagMojo extends AbstractGitMojo {
      * @return <code>true</code> if this commit has been tagged
      */
     private boolean isTagged(RevCommit commit) {
-        if(this.tagCommits.containsValue(commit)) {
-            for(Map.Entry<String, RevCommit> tagCommit : this.tagCommits.entrySet()) {
-                if(tagCommit.getValue().equals(commit)) {
-                    this.tag = tagCommit.getKey();
-                    return true;
-                }
-            }
+        if(this.tagCommits.containsKey(commit)) {
+            this.tag = this.tagCommits.get(commit);
+            return true;
         }
 
         return false;
