@@ -29,8 +29,8 @@ public abstract class AbstractMojoTest<T extends AbstractGitMojo> extends TestCa
         final MavenProject testProject = new MavenProject(model);
         testProject.setFile(pom.getAbsoluteFile());
 
-        this.mojo.setGitDir(new File("src/test/resources/test-project/_git").getAbsoluteFile());
-        this.mojo.setProject(testProject);
+        this.mojo.gitDir = new File("src/test/resources/test-project/_git").getAbsoluteFile();
+        this.mojo.project = testProject;
         this.mojo.execute();
     }
 
