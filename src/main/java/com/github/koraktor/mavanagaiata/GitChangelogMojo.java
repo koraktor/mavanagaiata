@@ -40,7 +40,6 @@ public class GitChangelogMojo extends AbstractGitMojo {
      * The date format to use for tag output
      *
      * @parameter expression="${mavanagaiata.changelog.dateFormat}"
-     *            property="changelog.dateFormat"
      */
     protected String dateFormat = "MM/dd/yyyy hh:mm a";
 
@@ -48,7 +47,6 @@ public class GitChangelogMojo extends AbstractGitMojo {
      * The header to print above the changelog
      *
      * @parameter expression="${mavanagaiata.changelog.header}"
-     *            property="changelog.header"
      */
     protected String header = "Changelog\n=========\n";
 
@@ -56,7 +54,6 @@ public class GitChangelogMojo extends AbstractGitMojo {
      * The string to prepend to every commit message
      *
      * @parameter expression="${mavanagaiata.changelog.commitPrefix}"
-     *            property="changelog.commitPrefix"
      */
     protected String commitPrefix = " * ";
 
@@ -64,7 +61,6 @@ public class GitChangelogMojo extends AbstractGitMojo {
      * The file to write the changelog to
      *
      * @parameter expression="${mavanagaiata.changelog.outputFile}"
-     *            property="changelog.outputFile"
      */
     protected File outputFile;
 
@@ -74,7 +70,6 @@ public class GitChangelogMojo extends AbstractGitMojo {
      * This is useful when usually tagging commits like "Version bump to X.Y.Z"
      *
      * @parameter expression="${mavanagaiata.changelog.skipTagged}"
-     *            property="changelog.skipTagged"
      */
     protected boolean skipTagged = false;
 
@@ -82,7 +77,6 @@ public class GitChangelogMojo extends AbstractGitMojo {
      * The string to prepend to the tag name
      *
      * @parameter expression="${mavanagaiata.changelog.tagPrefix}"
-     *            property="changelog.tagPrefix"
      */
     protected String tagPrefix = "\nVersion ";
 
