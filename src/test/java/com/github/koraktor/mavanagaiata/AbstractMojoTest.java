@@ -9,10 +9,12 @@ package com.github.koraktor.mavanagaiata;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
 import junit.framework.TestCase;
@@ -24,6 +26,18 @@ public abstract class AbstractMojoTest<T extends AbstractGitMojo> extends TestCa
     protected T mojo;
 
     protected Properties projectProperties;
+
+    protected void testError(String errorMessage) {
+        try {
+            this.mojo.gitDir = new File("src/test/resources/broken-project/_git").getAbsoluteFile();
+            this.mojo.execute();
+            fail("No exception thrown.");
+        } catch(Exception e) {
+            assertEquals(MojoExecutionException.class, e.getClass());
+            assertEquals(errorMessage, e.getMessage());
+            assertEquals(IOException.class, e.getCause().getClass());
+        }
+    }
 
     public void setUp() throws Exception {
         File pom = new File("src/test/resources/test-project/pom.xml");

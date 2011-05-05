@@ -22,6 +22,11 @@ public class GitActorsMojoTest extends AbstractMojoTest<GitActorsMojo> {
     }
 
     @Test
+    public void testError() {
+        super.testError("Unable to read Git actor information");
+    }
+
+    @Test
     public void testResult() throws IOException, MojoExecutionException {
         this.mojo.execute();
 

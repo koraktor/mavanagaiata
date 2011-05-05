@@ -43,7 +43,7 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
             this.mojo.initRepository();
             fail("No exception thrown");
         } catch(Exception e) {
-            assertEquals(MojoExecutionException.class, e.getClass());
+            assertEquals(FileNotFoundException.class, e.getClass());
             assertEquals("Git directory is not set", e.getMessage());
         }
 
@@ -52,9 +52,8 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
             this.mojo.initRepository();
             fail("No exception thrown");
         } catch(Exception e) {
-            assertEquals(MojoExecutionException.class, e.getClass());
+            assertEquals(FileNotFoundException.class, e.getClass());
             assertEquals("Git directory does not exist", e.getMessage());
-            assertEquals(FileNotFoundException.class, e.getCause().getClass());
         }
 
         this.mojo.gitDir = new File("src/test/resources/broken-project/_git");
@@ -62,14 +61,13 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
             this.mojo.initRepository();
             fail("No exception thrown");
         } catch(Exception e) {
-            assertEquals(MojoExecutionException.class, e.getClass());
-            assertEquals("Unable to read Git repository", e.getMessage());
-            assertEquals(IOException.class, e.getCause().getClass());
+            assertEquals(IOException.class, e.getClass());
+            assertEquals("Unknown repository format \"null\"; expected \"0\".", e.getMessage());
         }
     }
 
     @Test
-    public void testInitRepository() throws MojoExecutionException {
+    public void testInitRepository() throws IOException {
         this.mojo.initRepository();
         assertNotNull(this.mojo.repository);
         assertEquals(new File("src/test/resources/test-project/_git").getAbsolutePath(),

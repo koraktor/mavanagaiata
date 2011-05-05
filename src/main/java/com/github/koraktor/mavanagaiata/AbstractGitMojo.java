@@ -81,24 +81,19 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * @throws MojoExecutionException if retrieving information from the Git
      *         repository fails
      */
-    protected void initRepository() throws MojoExecutionException {
+    protected void initRepository() throws IOException {
         if(this.gitDir == null) {
-            throw new MojoExecutionException("Git directory is not set");
+            throw new FileNotFoundException("Git directory is not set");
         } else if(!this.gitDir.exists()) {
-            throw new MojoExecutionException("Git directory does not exist",
-                new FileNotFoundException());
+            throw new FileNotFoundException("Git directory does not exist");
         }
 
-        try {
-            FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-            this.repository = repositoryBuilder
-                .setGitDir(this.gitDir)
-                .readEnvironment()
-                .findGitDir()
-                .build();
-        } catch (IOException e) {
-            throw new MojoExecutionException("Unable to read Git repository", e);
-        }
+        FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
+        this.repository = repositoryBuilder
+            .setGitDir(this.gitDir)
+            .readEnvironment()
+            .findGitDir()
+            .build();
     }
 
     /**

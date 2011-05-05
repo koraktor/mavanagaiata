@@ -23,6 +23,11 @@ public class GitCommitMojoTest extends AbstractMojoTest<GitCommitMojo> {
     }
 
     @Test
+    public void testError() {
+        super.testError("Unable to read Git commit information");
+    }
+
+    @Test
     public void testResult() throws IOException, MojoExecutionException {
         this.mojo.execute();
 

@@ -22,6 +22,11 @@ public class GitTagMojoTest extends AbstractMojoTest<GitTagMojo> {
     }
 
     @Test
+    public void testError() {
+        super.testError("Unable to read Git tag");
+    }
+
+    @Test
     public void testResult() throws IOException, MojoExecutionException {
         this.mojo.execute();
 

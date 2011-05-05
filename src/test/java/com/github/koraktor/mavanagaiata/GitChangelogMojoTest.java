@@ -28,6 +28,11 @@ public class GitChangelogMojoTest extends AbstractMojoTest<GitChangelogMojo> {
     }
 
     @Test
+    public void testError() {
+        super.testError("Unable to generate changelog from Git");
+    }
+
+    @Test
     public void testCustomization() throws Exception {
         this.mojo.commitPrefix = "- ";
         this.mojo.dateFormat   = "dd.MM.yyyy";

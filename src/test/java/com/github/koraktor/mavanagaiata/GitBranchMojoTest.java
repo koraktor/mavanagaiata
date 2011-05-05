@@ -22,6 +22,11 @@ public class GitBranchMojoTest extends AbstractMojoTest<GitBranchMojo> {
     }
 
     @Test
+    public void testError() {
+        super.testError("Unable to read Git branch");
+    }
+
+    @Test
     public void testResult() throws IOException, MojoExecutionException {
         this.mojo.execute();
 
