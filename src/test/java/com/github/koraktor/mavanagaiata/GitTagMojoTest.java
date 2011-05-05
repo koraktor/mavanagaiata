@@ -7,6 +7,7 @@
 
 package com.github.koraktor.mavanagaiata;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -40,6 +41,14 @@ public class GitTagMojoTest extends AbstractMojoTest<GitTagMojo> {
 
         this.assertProperty("2.0.0", "tag.describe");
         this.assertProperty("2.0.0", "tag.name");
+
+        this.mojo.gitDir = new File("src/test/resources/untagged-project/_git");
+        this.mojo.head = "HEAD";
+        this.mojo.initRepository();
+        this.mojo.execute();
+
+        this.assertProperty("2be4488", "tag.describe");
+        this.assertProperty("", "tag.name");
     }
 
 }
