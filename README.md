@@ -60,13 +60,15 @@ the plugin in your POM and add the configuration suitable for your needs:
 Mavangaiata provides the following goals each reading specific information from
 the Git repository.
 
- * `actors`: Information about the actors of the current commit
- * `branch`: Information about the currently checked out branch
- * `commit`: Information about the current commit
- * `tag`:    Information about the most recent tag
+ * `actors`:    Information about the actors of the current commit
+ * `branch`:    Information about the currently checked out branch
+ * `changelog`: Generates a changelog from Git commits and tags
+ * `commit`:    Information about the current commit
+ * `tag`:       Information about the most recent tag
 
-Each goals stores its informationinto the project's properties. The following
+Each goal stores its information into the project's properties. The following
 property keys will be prefixed with `mavanagaiata.` and `mvngit.` respectively.
+You may override this with the configuration property `propertyPrefixes`.
 
  * `actors`
    * `author.name`:     The name of the author of the current commit
