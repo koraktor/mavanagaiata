@@ -42,6 +42,12 @@ public class GitTagMojoTest extends AbstractMojoTest<GitTagMojo> {
         this.assertProperty("2.0.0", "tag.describe");
         this.assertProperty("2.0.0", "tag.name");
 
+        this.mojo.head = "gh-pages";
+        this.mojo.execute();
+
+        this.assertProperty("a0e1305", "tag.describe");
+        this.assertProperty("", "tag.name");
+
         this.mojo.gitDir = new File("src/test/resources/untagged-project/_git");
         this.mojo.head = "HEAD";
         this.mojo.initRepository();
