@@ -8,8 +8,12 @@
 package com.github.koraktor.mavanagaiata;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 
 import org.junit.Test;
 
@@ -93,6 +97,38 @@ public class GitChangelogMojoTest extends AbstractMojoTest<GitChangelogMojo> {
         assertEquals("Version 1.0.0 - 05/03/2011 07:18 AM", this.reader.readLine());
         assertEquals("", this.reader.readLine());
         assertFalse(this.reader.ready());
+    }
+
+    @Test
+    public void testStdOut() throws Exception {
+        try {
+            ByteArrayOutputStream oStream = new ByteArrayOutputStream();
+            PrintStream stream = new PrintStream(oStream);
+            System.setOut(stream);
+
+            this.mojo.outputFile = null;
+            this.mojo.execute();
+
+            byte[] output = oStream.toByteArray();
+            this.reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(output)));
+
+            assertEquals("Changelog", this.reader.readLine());
+            assertEquals("=========", this.reader.readLine());
+            assertEquals("", this.reader.readLine());
+            assertEquals(" * Snapshot for version 3.0.0", this.reader.readLine());
+            assertEquals("", this.reader.readLine());
+            assertEquals("Version 2.0.0 - 05/03/2011 07:18 AM", this.reader.readLine());
+            assertEquals("", this.reader.readLine());
+            assertEquals(" * Version bump to 2.0.0", this.reader.readLine());
+            assertEquals(" * Snapshot for version 2.0.0", this.reader.readLine());
+            assertEquals("", this.reader.readLine());
+            assertEquals("Version 1.0.0 - 05/03/2011 07:18 AM", this.reader.readLine());
+            assertEquals("", this.reader.readLine());
+            assertEquals(" * Initial commit", reader.readLine());
+            assertFalse(this.reader.ready());
+        } finally {
+            System.setOut(null);
+        }
     }
 
 }
