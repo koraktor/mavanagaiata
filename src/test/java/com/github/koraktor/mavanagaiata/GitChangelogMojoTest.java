@@ -16,56 +16,77 @@ import org.junit.Test;
 
 public class GitChangelogMojoTest extends AbstractMojoTest<GitChangelogMojo> {
 
-    private File tempFile;
+    private BufferedReader reader;
 
     @Override
     public void setUp() throws Exception {
+        File tempFile = File.createTempFile("changelog", null);
         this.mojo = new GitChangelogMojo();
-        this.tempFile = File.createTempFile("changelog", null);
-
-        this.mojo.outputFile = this.tempFile;
+        this.mojo.outputFile = tempFile;
+        this.reader = new BufferedReader(new FileReader(tempFile));
 
         super.setUp();
     }
 
     @Test
-    public void testResult() throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(this.tempFile));
+    public void testCustomization() throws Exception {
+        this.mojo.commitPrefix = "- ";
+        this.mojo.dateFormat   = "dd.MM.yyyy";
+        this.mojo.header       = "History\\n-------\\n";
+        this.mojo.tagPrefix    = "\nTag ";
+        this.mojo.execute();
 
-        assertEquals("Changelog", reader.readLine());
-        assertEquals("=========", reader.readLine());
-        assertEquals("", reader.readLine());
-        assertEquals(" * Snapshot for version 3.0.0", reader.readLine());
-        assertEquals("", reader.readLine());
-        assertEquals("Version 2.0.0 - 05/03/2011 07:18 AM", reader.readLine());
-        assertEquals("", reader.readLine());
-        assertEquals(" * Version bump to 2.0.0", reader.readLine());
-        assertEquals(" * Snapshot for version 2.0.0", reader.readLine());
-        assertEquals("", reader.readLine());
-        assertEquals("Version 1.0.0 - 05/03/2011 07:18 AM", reader.readLine());
-        assertEquals("", reader.readLine());
+        assertEquals("History", this.reader.readLine());
+        assertEquals("-------", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals("- Snapshot for version 3.0.0", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals("Tag 2.0.0 - 03.05.2011", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals("- Version bump to 2.0.0", this.reader.readLine());
+        assertEquals("- Snapshot for version 2.0.0", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals("Tag 1.0.0 - 03.05.2011", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals("- Initial commit", reader.readLine());
+        assertFalse(this.reader.ready());
+    }
+
+    @Test
+    public void testResult() throws IOException {
+        assertEquals("Changelog", this.reader.readLine());
+        assertEquals("=========", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals(" * Snapshot for version 3.0.0", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals("Version 2.0.0 - 05/03/2011 07:18 AM", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals(" * Version bump to 2.0.0", this.reader.readLine());
+        assertEquals(" * Snapshot for version 2.0.0", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals("Version 1.0.0 - 05/03/2011 07:18 AM", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
         assertEquals(" * Initial commit", reader.readLine());
-        assertFalse(reader.ready());
+        assertFalse(this.reader.ready());
     }
 
     @Test
     public void testSkipTagged() throws Exception {
         this.mojo.skipTagged = true;
         this.mojo.execute();
-        BufferedReader reader = new BufferedReader(new FileReader(this.tempFile));
 
-        assertEquals("Changelog", reader.readLine());
-        assertEquals("=========", reader.readLine());
-        assertEquals("", reader.readLine());
-        assertEquals(" * Snapshot for version 3.0.0", reader.readLine());
-        assertEquals("", reader.readLine());
-        assertEquals("Version 2.0.0 - 05/03/2011 07:18 AM", reader.readLine());
-        assertEquals("", reader.readLine());
-        assertEquals(" * Snapshot for version 2.0.0", reader.readLine());
-        assertEquals("", reader.readLine());
-        assertEquals("Version 1.0.0 - 05/03/2011 07:18 AM", reader.readLine());
-        assertEquals("", reader.readLine());
-        assertFalse(reader.ready());
+        assertEquals("Changelog", this.reader.readLine());
+        assertEquals("=========", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals(" * Snapshot for version 3.0.0", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals("Version 2.0.0 - 05/03/2011 07:18 AM", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals(" * Snapshot for version 2.0.0", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals("Version 1.0.0 - 05/03/2011 07:18 AM", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertFalse(this.reader.ready());
     }
 
 }
