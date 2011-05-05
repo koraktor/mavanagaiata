@@ -23,6 +23,8 @@ public class GitTagMojoTest extends AbstractMojoTest<GitTagMojo> {
 
     @Test
     public void testResult() throws IOException, MojoExecutionException {
+        this.mojo.execute();
+
         String abbrev = this.headId.substring(0, 7);
 
         this.assertProperty("2.0.0-1-g" + abbrev, "tag.describe");

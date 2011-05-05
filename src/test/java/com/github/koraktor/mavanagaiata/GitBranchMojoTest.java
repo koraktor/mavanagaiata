@@ -23,6 +23,8 @@ public class GitBranchMojoTest extends AbstractMojoTest<GitBranchMojo> {
 
     @Test
     public void testResult() throws IOException, MojoExecutionException {
+        this.mojo.execute();
+
         this.assertProperty("master", "branch");
     }
 

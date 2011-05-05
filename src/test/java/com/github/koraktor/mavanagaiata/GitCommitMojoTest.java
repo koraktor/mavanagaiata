@@ -24,6 +24,8 @@ public class GitCommitMojoTest extends AbstractMojoTest<GitCommitMojo> {
 
     @Test
     public void testResult() throws IOException, MojoExecutionException {
+        this.mojo.execute();
+
         String commitDate = new Date(1304406915000L).toString();
         String commitAbbrev = this.headId.substring(0, 7);
 

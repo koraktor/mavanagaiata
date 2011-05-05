@@ -35,8 +35,6 @@ public abstract class AbstractMojoTest<T extends AbstractGitMojo> extends TestCa
         this.projectProperties = testProject.getProperties();
         this.mojo.gitDir = new File("src/test/resources/test-project/_git").getAbsoluteFile();
         this.mojo.project = testProject;
-
-        this.mojo.execute();
     }
 
     protected void assertProperty(String value, String key) {

@@ -10,7 +10,6 @@ package com.github.koraktor.mavanagaiata;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 
 import org.junit.Test;
 
@@ -53,7 +52,9 @@ public class GitChangelogMojoTest extends AbstractMojoTest<GitChangelogMojo> {
     }
 
     @Test
-    public void testResult() throws IOException {
+    public void testResult() throws Exception {
+        this.mojo.execute();
+
         assertEquals("Changelog", this.reader.readLine());
         assertEquals("=========", this.reader.readLine());
         assertEquals("", this.reader.readLine());

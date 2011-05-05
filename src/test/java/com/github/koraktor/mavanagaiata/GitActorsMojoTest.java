@@ -23,6 +23,8 @@ public class GitActorsMojoTest extends AbstractMojoTest<GitActorsMojo> {
 
     @Test
     public void testResult() throws IOException, MojoExecutionException {
+        this.mojo.execute();
+
         this.assertProperty("Sebastian Staudt", "author.name");
         this.assertProperty("koraktor@gmail.com", "author.email");
         this.assertProperty("Sebastian Staudt", "committer.name");
