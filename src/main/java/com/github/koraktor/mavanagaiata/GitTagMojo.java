@@ -41,6 +41,7 @@ public class GitTagMojo extends AbstractGitMojo {
      */
     public void execute() throws MojoExecutionException {
         try {
+            this.tag = null;
             RevCommit head = this.getHead();
             this.revWalk = new RevWalk(this.repository);
             Map<String, Ref> tags = this.repository.getTags();
@@ -62,15 +63,12 @@ public class GitTagMojo extends AbstractGitMojo {
             String abbrevId = this.repository.getObjectDatabase().newReader()
                 .abbreviate(head).name();
 
-            if(this.tagCommits.isEmpty()) {
+            int distance;
+            if(this.tagCommits.isEmpty() ||
+               (distance = this.walkCommits(head, 0)) < 0) {
                 this.addProperty("tag.describe", abbrevId);
                 this.addProperty("tag.name", "");
-                return;
-            }
-
-            int distance = this.walkCommits(head, 0);
-
-            if(distance > -1) {
+            } else {
                 this.addProperty("tag.name", this.tag);
                 if(distance == 0) {
                     this.addProperty("tag.describe", this.tag);
