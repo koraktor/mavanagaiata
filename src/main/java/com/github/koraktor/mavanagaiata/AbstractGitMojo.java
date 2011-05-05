@@ -41,6 +41,14 @@ public abstract class AbstractGitMojo extends AbstractMojo {
     protected File gitDir;
 
     /**
+     * The commit or ref to use as starting point for operations
+     *
+     * @parameter expression="${mavanagaiata.head}"
+     * @required
+     */
+    protected String head = "HEAD";
+
+    /**
      * The Maven project
      *
      * @parameter expression="${project}"
@@ -109,7 +117,7 @@ public abstract class AbstractGitMojo extends AbstractMojo {
         }
 
         RevWalk revWalk = new RevWalk(this.repository);
-        ObjectId head = this.repository.getRef("HEAD").getObjectId();
+        ObjectId head = this.repository.resolve(this.head);
         return revWalk.parseCommit(head);
     }
 
