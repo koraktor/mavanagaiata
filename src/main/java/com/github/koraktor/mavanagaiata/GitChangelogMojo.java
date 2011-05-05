@@ -89,6 +89,10 @@ public class GitChangelogMojo extends AbstractGitMojo {
      *         repository fails
      */
     public void execute() throws MojoExecutionException {
+        this.commitPrefix = this.commitPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
+        this.header       = this.header.replaceAll("([^\\\\])\\\\n", "$1\n");
+        this.tagPrefix    = this.tagPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
+
         try {
             this.initRepository();
 
