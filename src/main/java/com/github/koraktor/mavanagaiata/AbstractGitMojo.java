@@ -44,7 +44,6 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * The commit or ref to use as starting point for operations
      *
      * @parameter expression="${mavanagaiata.head}"
-     * @required
      */
     protected String head = "HEAD";
 
