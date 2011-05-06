@@ -33,8 +33,14 @@ public class GitCommitMojoTest extends AbstractMojoTest<GitCommitMojo> {
 
         String commitDate = new Date(1304406915000L).toString();
         String commitAbbrev = this.headId.substring(0, 7);
+        String email = "koraktor@gmail.com";
+        String name  = "Sebastian Staudt";
 
         this.assertProperty(commitAbbrev, "commit.abbrev");
+        this.assertProperty(name, "commit.author.name");
+        this.assertProperty(email, "commit.author.email");
+        this.assertProperty(name, "commit.committer.name");
+        this.assertProperty(email, "commit.committer.email");
         this.assertProperty(commitDate, "commit.date");
         this.assertProperty(this.headId, "commit.id");
         this.assertProperty(this.headId, "commit.sha");

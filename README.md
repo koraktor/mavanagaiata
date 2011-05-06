@@ -60,7 +60,6 @@ the plugin in your POM and add the configuration suitable for your needs:
 Mavangaiata provides the following goals each reading specific information from
 the Git repository.
 
- * `actors`:    Information about the actors of the current commit
  * `branch`:    Information about the currently checked out branch
  * `changelog`: Generates a changelog from Git commits and tags
  * `commit`:    Information about the current commit
@@ -70,18 +69,18 @@ Each goal stores its information into the project's properties. The following
 property keys will be prefixed with `mavanagaiata.` and `mvngit.` respectively.
 You may override this with the configuration property `propertyPrefixes`.
 
- * `actors`
+ * `branch`
+   * `branch`: The name of the currently checked out branch
+ * `commit`
+   * `abbrev`:          The abbreviated SHA ID of the current commit
    * `author.name`:     The name of the author of the current commit
    * `author.email`:    The email address of the author of the current commit
    * `committer.name`:  The name of the committer of the current commit
    * `committer.email`: The email address of the committer of the current
-     commit
- * `branch`
-   * `branch`: The name of the currently checked out branch
- * `commit`
-   * `abbrev`:     The abbreviated SHA ID of the current commit
-   * `id` / `sha`: The full SHA ID of the current commit
-   * `date`:       A string representation of the date of the current commit
+                        commit
+   * `id` / `sha`:      The full SHA ID of the current commit
+   * `date`:            A string representation of the date of the current
+                        commit
  * `tag`
    * `name`:     The name of the most recent tag (if any)
    * `describe`: A combination of the tag name and the current commit ID

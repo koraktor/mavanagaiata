@@ -12,6 +12,7 @@ import java.util.Date;
 
 import org.apache.maven.plugin.MojoExecutionException;
 
+import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 /**
@@ -19,6 +20,12 @@ import org.eclipse.jgit.revwalk.RevCommit;
  * "mavanagaiata.commit.id", "mavanagaiata.commit.sha", "mvngit.commit.id",
  * "mvngit.commit.sha" properties. The abbreviated commit ID is stored in the
  * "mavanagaiata.commit.abbrev" and "mvngit.commit.abbrev" properties.
+ * Additionally the author's and committer's name and email address are stored
+ * in the properties "mavanagaiata.commit.author.name",
+ * "mavanagaiata.commit.author.email", "mvngit.commit.auhtor.name" and
+ * "mvngit.commit.author.email", and "mavanagaiata.commit.committer.name",
+ * "mavanagaiata.commit.committer.email", "mvngit.commit.commiter.name" and
+ * "mvngit.commit.committer.email" respectively.
  *
  * @author Sebastian Staudt
  * @goal commit
@@ -42,10 +49,16 @@ public class GitCommitMojo extends AbstractGitMojo {
             RevCommit commit = this.getHead();
             String abbrevId = this.repository.getObjectDatabase().newReader()
                 .abbreviate(commit).name();
+            PersonIdent author = commit.getAuthorIdent();
+            PersonIdent committer = commit.getCommitterIdent();
             String shaId = commit.getName();
             Date date = new Date(new Long(commit.getCommitTime()) * 1000);
 
             this.addProperty("commit.abbrev", abbrevId);
+            this.addProperty("commit.author.name", author.getName());
+            this.addProperty("commit.author.email", author.getEmailAddress());
+            this.addProperty("commit.committer.name", committer.getName());
+            this.addProperty("commit.committer.email", committer.getEmailAddress());
             this.addProperty("commit.date", date.toString());
             this.addProperty("commit.id", shaId);
             this.addProperty("commit.sha", shaId);
