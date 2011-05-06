@@ -91,13 +91,13 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
 
         this.mojo.head = "HEAD^";
         head = this.mojo.getHead().getName();
-        assertEquals("721a84f7e7c455c7f0e70f2de4a5ab2108ae72f0", head);
+        assertEquals("f391f31093fd200534a4fb2e517af89efbdc5fe5", head);
 
-        this.mojo.head = "HEAD~2";
+        this.mojo.head = "HEAD~3";
         head = this.mojo.getHead().getName();
         assertEquals("d50fdcd2858ac9531d6dd87c1de3b623fa243204", head);
 
-        this.mojo.head = "HEAD~2^";
+        this.mojo.head = "HEAD^~2^";
         head = this.mojo.getHead().getName();
         assertEquals("0e7d0435e30d0f726d62ccadd202c9240df56019", head);
     }

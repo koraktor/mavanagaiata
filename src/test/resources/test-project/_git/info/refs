@@ -1,7 +1,9 @@
 a0e13059b0731c4eb96ac28f2054034745a79e89	refs/heads/gh-pages
-2be448893a536c2a6b221056ad61536c47c8354c	refs/heads/master
+c823991841bda5f99919ae59a4e59b5607f0450b	refs/heads/master
 7e2388b73ee1cf98450bf20d5c37a02c673f6494	refs/tags/1.0.0
 0e7d0435e30d0f726d62ccadd202c9240df56019	refs/tags/1.0.0^{}
 b572743e384a0d3125ea032c23e9a78fd074b707	refs/tags/2.0.0
 721a84f7e7c455c7f0e70f2de4a5ab2108ae72f0	refs/tags/2.0.0^{}
-2be448893a536c2a6b221056ad61536c47c8354c	refs/tags/snapshot
+524a14e663beafa59c47f5e3afd4b9d124c62c5e	refs/tags/initial-pom
+7e787c3cc621b8c36cc4cf19549ad12bb71796fa	refs/tags/initial-pom^{}
+c823991841bda5f99919ae59a4e59b5607f0450b	refs/tags/snapshot

@@ -48,6 +48,7 @@ public class GitChangelogMojoTest extends AbstractMojoTest<GitChangelogMojo> {
         assertEquals("-------", this.reader.readLine());
         assertEquals("", this.reader.readLine());
         assertEquals("- Snapshot for version 3.0.0", this.reader.readLine());
+        assertEquals("- Added project name", this.reader.readLine());
         assertEquals("", this.reader.readLine());
         assertEquals("Tag 2.0.0 - 03.05.2011", this.reader.readLine());
         assertEquals("", this.reader.readLine());
@@ -68,6 +69,7 @@ public class GitChangelogMojoTest extends AbstractMojoTest<GitChangelogMojo> {
         assertEquals("=========", this.reader.readLine());
         assertEquals("", this.reader.readLine());
         assertEquals(" * Snapshot for version 3.0.0", this.reader.readLine());
+        assertEquals(" * Added project name", this.reader.readLine());
         assertEquals("", this.reader.readLine());
         assertEquals("Version 2.0.0 - 05/03/2011 07:18 AM", this.reader.readLine());
         assertEquals("", this.reader.readLine());
@@ -89,6 +91,7 @@ public class GitChangelogMojoTest extends AbstractMojoTest<GitChangelogMojo> {
         assertEquals("=========", this.reader.readLine());
         assertEquals("", this.reader.readLine());
         assertEquals(" * Snapshot for version 3.0.0", this.reader.readLine());
+        assertEquals(" * Added project name", this.reader.readLine());
         assertEquals("", this.reader.readLine());
         assertEquals("Version 2.0.0 - 05/03/2011 07:18 AM", this.reader.readLine());
         assertEquals("", this.reader.readLine());
@@ -116,6 +119,7 @@ public class GitChangelogMojoTest extends AbstractMojoTest<GitChangelogMojo> {
             assertEquals("=========", this.reader.readLine());
             assertEquals("", this.reader.readLine());
             assertEquals(" * Snapshot for version 3.0.0", this.reader.readLine());
+            assertEquals(" * Added project name", this.reader.readLine());
             assertEquals("", this.reader.readLine());
             assertEquals("Version 2.0.0 - 05/03/2011 07:18 AM", this.reader.readLine());
             assertEquals("", this.reader.readLine());

@@ -33,10 +33,10 @@ public class GitTagMojoTest extends AbstractMojoTest<GitTagMojo> {
 
         String abbrev = this.headId.substring(0, 7);
 
-        this.assertProperty("2.0.0-1-g" + abbrev, "tag.describe");
+        this.assertProperty("2.0.0-2-g" + abbrev, "tag.describe");
         this.assertProperty("2.0.0", "tag.name");
 
-        this.mojo.head = "HEAD^";
+        this.mojo.head = "HEAD^^";
         this.mojo.execute();
 
         this.assertProperty("2.0.0", "tag.describe");

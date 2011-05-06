@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 
 public abstract class AbstractMojoTest<T extends AbstractGitMojo> extends TestCase {
 
-    protected String headId = "2be448893a536c2a6b221056ad61536c47c8354c";
+    protected String headId = "c823991841bda5f99919ae59a4e59b5607f0450b";
 
     protected T mojo;
 

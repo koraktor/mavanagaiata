@@ -48,6 +48,7 @@ public class GitContributorsMojoTest extends AbstractMojoTest<GitContributorsMoj
         assertEquals("-------", this.reader.readLine());
         assertEquals("", this.reader.readLine());
         assertEquals("- Sebastian Staudt (koraktor@gmail.com)", this.reader.readLine());
+        assertEquals("- John Doe (johndoe@example.com)", this.reader.readLine());
         assertFalse(this.reader.ready());
     }
 
@@ -58,6 +59,33 @@ public class GitContributorsMojoTest extends AbstractMojoTest<GitContributorsMoj
         assertEquals("Contributors", this.reader.readLine());
         assertEquals("============", this.reader.readLine());
         assertEquals("", this.reader.readLine());
+        assertEquals(" * Sebastian Staudt (4)", this.reader.readLine());
+        assertEquals(" * John Doe (1)", this.reader.readLine());
+        assertFalse(this.reader.ready());
+    }
+
+    @Test
+    public void testSorDate() throws Exception {
+        this.mojo.sort = "date";
+        this.mojo.execute();
+
+        assertEquals("Contributors", this.reader.readLine());
+        assertEquals("============", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals(" * Sebastian Staudt (4)", this.reader.readLine());
+        assertEquals(" * John Doe (1)", this.reader.readLine());
+        assertFalse(this.reader.ready());
+    }
+
+    @Test
+    public void testSortName() throws Exception {
+        this.mojo.sort = "name";
+        this.mojo.execute();
+
+        assertEquals("Contributors", this.reader.readLine());
+        assertEquals("============", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals(" * John Doe (1)", this.reader.readLine());
         assertEquals(" * Sebastian Staudt (4)", this.reader.readLine());
         assertFalse(this.reader.ready());
     }
@@ -79,6 +107,7 @@ public class GitContributorsMojoTest extends AbstractMojoTest<GitContributorsMoj
             assertEquals("============", this.reader.readLine());
             assertEquals("", this.reader.readLine());
             assertEquals(" * Sebastian Staudt (4)", this.reader.readLine());
+            assertEquals(" * John Doe (1)", this.reader.readLine());
             assertFalse(this.reader.ready());
         } finally {
             System.setOut(null);
