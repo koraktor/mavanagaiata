@@ -40,6 +40,7 @@ public class GitContributorsMojoTest extends AbstractMojoTest<GitContributorsMoj
     public void testCustomization() throws Exception {
         this.mojo.contributorPrefix = "- ";
         this.mojo.header            = "Authors\\n-------\\n";
+        this.mojo.showCounts        = false;
         this.mojo.showEmail         = true;
         this.mojo.execute();
 
@@ -57,7 +58,7 @@ public class GitContributorsMojoTest extends AbstractMojoTest<GitContributorsMoj
         assertEquals("Contributors", this.reader.readLine());
         assertEquals("============", this.reader.readLine());
         assertEquals("", this.reader.readLine());
-        assertEquals(" * Sebastian Staudt", this.reader.readLine());
+        assertEquals(" * Sebastian Staudt (4)", this.reader.readLine());
         assertFalse(this.reader.ready());
     }
 
@@ -77,7 +78,7 @@ public class GitContributorsMojoTest extends AbstractMojoTest<GitContributorsMoj
             assertEquals("Contributors", this.reader.readLine());
             assertEquals("============", this.reader.readLine());
             assertEquals("", this.reader.readLine());
-            assertEquals(" * Sebastian Staudt", this.reader.readLine());
+            assertEquals(" * Sebastian Staudt (4)", this.reader.readLine());
             assertFalse(this.reader.ready());
         } finally {
             System.setOut(null);

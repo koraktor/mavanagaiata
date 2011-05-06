@@ -59,6 +59,13 @@ public class GitContributorsMojo extends AbstractGitMojo {
     protected File outputFile;
 
     /**
+     * Whether the number of contributoions should be listed
+     *
+     * @parameter expression="${mavanagaiata.contributors.showCounts}"
+     */
+    protected boolean showCounts = true;
+
+    /**
      * Whether the email addresses of contributors should be listed
      *
      * @parameter expression="${mavanagaiata.contributors.showEmail}"
@@ -109,6 +116,19 @@ public class GitContributorsMojo extends AbstractGitMojo {
                 this.sort = this.sort.toLowerCase();
             }
 
+            final Map<String, Integer> counts = new HashMap<String, Integer>();
+            if(this.showCounts ||
+               (!this.sort.equals("date") && !this.sort.equals("name"))) {
+                for(RevCommit commit : commits) {
+                    String emailAddress = commit.getAuthorIdent().getEmailAddress();
+                    if(!counts.containsKey(emailAddress)) {
+                        counts.put(emailAddress, 1);
+                    } else {
+                        counts.put(emailAddress, counts.get(emailAddress) + 1);
+                    }
+                }
+            }
+
             if(this.sort.equals("date")) {
                 Collections.reverse(commits);
             } else if(this.sort.equals("name")) {
@@ -120,16 +140,6 @@ public class GitContributorsMojo extends AbstractGitMojo {
                     }
                 });
             } else {
-                final Map<String, Integer> counts = new HashMap<String, Integer>();
-                for(RevCommit commit : commits) {
-                    String emailAddress = commit.getAuthorIdent().getEmailAddress();
-                    if(!counts.containsKey(emailAddress)) {
-                        counts.put(emailAddress, 1);
-                    } else {
-                        counts.put(emailAddress, counts.get(emailAddress) + 1);
-                    }
-                }
-
                 Collections.sort(commits, new Comparator<RevCommit>() {
                     public int compare(RevCommit c1, RevCommit c2) {
                         Integer count1 = counts.get(c1.getAuthorIdent().getEmailAddress());
@@ -153,6 +163,9 @@ public class GitContributorsMojo extends AbstractGitMojo {
                 outputStream.print(this.contributorPrefix + contributor.getValue());
                 if(this.showEmail) {
                     outputStream.print(" (" + contributor.getKey() + ")");
+                }
+                if(this.showCounts) {
+                    outputStream.print(" (" + counts.get(contributor.getKey()) + ")");
                 }
                 outputStream.println();
             }
