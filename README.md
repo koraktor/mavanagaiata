@@ -57,7 +57,7 @@ the plugin in your POM and add the configuration suitable for your needs:
 
 ### Goals
 
-Mavangaiata provides the following goals each reading specific information from
+Mavanagaiata provides the following goals each reading specific information from
 the Git repository.
 
  * `branch`:       Information about the currently checked out branch
@@ -86,6 +86,42 @@ You may override this with the configuration property `propertyPrefixes`.
    * `name`:     The name of the most recent tag (if any)
    * `describe`: A combination of the tag name and the current commit ID
      (same as `git describe`)
+
+### Configuration
+
+Mavanagaiata provides several configuration properties for its goals. The
+following ones are global and can be used for any goal. They must be prefixed
+with `mavanagaiata.`:
+
+ * `gitDir`: Specify the GIT_DIR to use (default: `${basedir}/.git`)
+ * `head`:   Specify the commit or ref used as a starting point (default:
+             `HEAD`)
+
+Additionally, there are some properties specific to a goal:
+
+ * `changelog` (prefix: `mavanagaiata.changelog.`):
+   * `dateFormat`:   The date format to use for tag output (default
+                    `"MM/dd/yyyy hh:mm"`)
+   * `header`:       The header to print above the changelog (default:
+                     `"Changelog\n=========\n"`)
+   * `commitPrefix`: The string to prepend to every commit message (default:
+                     `" * "`)
+   * `outputFile`:   If set, the changelog will not be printed to `System.out`,
+                     but into the given file. (default: not set)
+   * `skipTagged`:   Whether to skip tagged commits' messages. This is useful
+                     when usually tagging commits like "Version bump to X.Y.Z"
+                     (default: `false`)
+   * `tagPrefix`:    The string to prepend to the tag name (default:
+                     `"\nVersion "`)
+ * `contributors` (prefix: `mavanagaiata.contributors.`):
+   * `header`:     The header to print above the contributor list (default:
+                   `"Contributors\n============\n"`)
+   * `outputFile`: If set, the list will not be printed to `System.out`, but
+                   into the given file. (default: not set)
+   * `showCounts`: Whether to show the number of contributions for each author
+                   (default: `true`)
+   * `showEmail`:  Whether to show the email addresses of contributors
+                   (default: `false`)
 
 ## About the name
 
