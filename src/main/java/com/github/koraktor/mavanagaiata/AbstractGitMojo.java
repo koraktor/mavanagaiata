@@ -35,7 +35,8 @@ public abstract class AbstractGitMojo extends AbstractMojo {
     /**
      * The project base directory
      *
-     * @parameter expression="${basedir}/.git"
+     * @parameter expression="${mavanagaiata.gitDir}"
+     *            default-value="${basedir}/.git"
      * @required
      */
     protected File gitDir;
