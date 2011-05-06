@@ -15,12 +15,6 @@ import org.junit.Test;
 
 public class GitBranchMojoTest extends AbstractMojoTest<GitBranchMojo> {
 
-    public void setUp() throws Exception {
-        this.mojo = new GitBranchMojo();
-
-        super.setUp();
-    }
-
     @Test
     public void testError() {
         super.testError("Unable to read Git branch");

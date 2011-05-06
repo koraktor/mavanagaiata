@@ -10,6 +10,8 @@ package com.github.koraktor.mavanagaiata;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.util.Properties;
 
 import org.apache.maven.model.Model;
@@ -47,6 +49,13 @@ public abstract class AbstractMojoTest<T extends AbstractGitMojo> extends TestCa
         testProject.setFile(pom.getAbsoluteFile());
 
         this.projectProperties = testProject.getProperties();
+
+        @SuppressWarnings("unchecked")
+        Class<T> mojoClass = ((Class<T>)((ParameterizedType) this.getClass()
+            .getGenericSuperclass()).getActualTypeArguments()[0]);
+        if(!Modifier.isAbstract(mojoClass.getModifiers())) {
+            this.mojo = mojoClass.newInstance();
+        }
         this.mojo.gitDir = new File("src/test/resources/test-project/_git").getAbsoluteFile();
         this.mojo.project = testProject;
     }

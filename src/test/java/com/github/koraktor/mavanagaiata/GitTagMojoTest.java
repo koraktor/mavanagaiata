@@ -16,12 +16,6 @@ import org.junit.Test;
 
 public class GitTagMojoTest extends AbstractMojoTest<GitTagMojo> {
 
-    public void setUp() throws Exception {
-        this.mojo = new GitTagMojo();
-
-        super.setUp();
-    }
-
     @Test
     public void testError() {
         super.testError("Unable to read Git tag");

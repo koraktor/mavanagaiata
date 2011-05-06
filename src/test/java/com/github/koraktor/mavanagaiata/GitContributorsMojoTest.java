@@ -23,12 +23,11 @@ public class GitContributorsMojoTest extends AbstractMojoTest<GitContributorsMoj
 
     @Override
     public void setUp() throws Exception {
+        super.setUp();
+
         File tempFile = File.createTempFile("contributors", null);
-        this.mojo = new GitContributorsMojo();
         this.mojo.outputFile = tempFile;
         this.reader = new BufferedReader(new FileReader(tempFile));
-
-        super.setUp();
     }
 
     @Test

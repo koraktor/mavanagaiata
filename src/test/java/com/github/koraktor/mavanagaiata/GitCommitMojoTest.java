@@ -16,12 +16,6 @@ import org.junit.Test;
 
 public class GitCommitMojoTest extends AbstractMojoTest<GitCommitMojo> {
 
-    public void setUp() throws Exception {
-        this.mojo = new GitCommitMojo();
-
-        super.setUp();
-    }
-
     @Test
     public void testError() {
         super.testError("Unable to read Git commit information");

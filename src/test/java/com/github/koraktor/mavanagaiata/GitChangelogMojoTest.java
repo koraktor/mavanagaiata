@@ -23,12 +23,11 @@ public class GitChangelogMojoTest extends AbstractMojoTest<GitChangelogMojo> {
 
     @Override
     public void setUp() throws Exception {
+        super.setUp();
+
         File tempFile = File.createTempFile("changelog", null);
-        this.mojo = new GitChangelogMojo();
         this.mojo.outputFile = tempFile;
         this.reader = new BufferedReader(new FileReader(tempFile));
-
-        super.setUp();
     }
 
     @Test
