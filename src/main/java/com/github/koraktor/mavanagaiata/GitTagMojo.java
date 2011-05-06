@@ -50,7 +50,7 @@ public class GitTagMojo extends AbstractGitMojo {
             for(Map.Entry<String, Ref> tag : tags.entrySet()) {
                 try {
                     RevTag revTag = this.revWalk.parseTag(tag.getValue().getObjectId());
-                    RevObject object = revTag.getObject();
+                    RevObject object = this.revWalk.peel(revTag);
                     if(!(object instanceof RevCommit)) {
                         continue;
                     }

@@ -103,7 +103,7 @@ public class GitChangelogMojo extends AbstractGitMojo {
             for(Map.Entry<String, Ref> tag : tagRefs.entrySet()) {
                 try {
                     RevTag revTag = revWalk.parseTag(tag.getValue().getObjectId());
-                    RevObject object = revTag.getObject();
+                    RevObject object = revWalk.peel(revTag);
                     if(!(object instanceof RevCommit)) {
                         continue;
                     }
