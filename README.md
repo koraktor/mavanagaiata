@@ -60,10 +60,11 @@ the plugin in your POM and add the configuration suitable for your needs:
 Mavangaiata provides the following goals each reading specific information from
 the Git repository.
 
- * `branch`:    Information about the currently checked out branch
- * `changelog`: Generates a changelog from Git commits and tags
- * `commit`:    Information about the current commit
- * `tag`:       Information about the most recent tag
+ * `branch`:       Information about the currently checked out branch
+ * `changelog`:    Generates a changelog from Git commits and tags
+ * `commit`:       Information about the current commit
+ * `contributors`: Generates a list of contributors from Git commits
+ * `tag`:          Information about the most recent tag
 
 Each goal stores its information into the project's properties. The following
 property keys will be prefixed with `mavanagaiata.` and `mvngit.` respectively.
