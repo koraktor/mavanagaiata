@@ -64,7 +64,7 @@ public class GitContributorsMojoTest extends AbstractMojoTest<GitContributorsMoj
     }
 
     @Test
-    public void testSorDate() throws Exception {
+    public void testSortDate() throws Exception {
         this.mojo.sort = "date";
         this.mojo.execute();
 
