@@ -33,6 +33,11 @@
         <developerConnection>scm:git:git@github.com:koraktor/mavanagaiata.git</developerConnection>
     </scm>
 
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/koraktor/mavanagaiata/issues</url>
+    </issueManagement>
+
     <developers>
         <developer>
             <id>koraktor</id>
