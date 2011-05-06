@@ -10,7 +10,12 @@ package com.github.koraktor.mavanagaiata;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -61,6 +66,13 @@ public class GitContributorsMojo extends AbstractGitMojo {
     protected boolean showEmail = false;
 
     /**
+     * The method used to sort contributors
+     *
+     * @parameter expression="${mavanagaiata.contributors.sort}"
+     */
+    protected String sort;
+
+    /**
      * Walks through the history of the currently checked out branch of the
      * Git repository and builds a list of contributors from the authors of the
      * commits.
@@ -85,10 +97,50 @@ public class GitContributorsMojo extends AbstractGitMojo {
                 outputStream = new PrintStream(this.outputFile);
             }
 
-            Map<String, String> contributors = new HashMap<String, String>();
+            RevCommit tempCommit;
+            List<RevCommit> commits = new ArrayList<RevCommit>();
+            while((tempCommit = revWalk.next()) != null) {
+                commits.add(tempCommit);
+            }
 
-            RevCommit commit;
-            while((commit = revWalk.next()) != null) {
+            if(this.sort == null) {
+                this.sort = "count";
+            } else {
+                this.sort = this.sort.toLowerCase();
+            }
+
+            if(this.sort.equals("date")) {
+                Collections.reverse(commits);
+            } else if(this.sort.equals("name")) {
+                Collections.sort(commits, new Comparator<RevCommit>() {
+                    public int compare(RevCommit c1, RevCommit c2) {
+                        String a1 = c1.getAuthorIdent().getName();
+                        String a2 = c2.getAuthorIdent().getName();
+                        return a1.compareTo(a2);
+                    }
+                });
+            } else {
+                final Map<String, Integer> counts = new HashMap<String, Integer>();
+                for(RevCommit commit : commits) {
+                    String emailAddress = commit.getAuthorIdent().getEmailAddress();
+                    if(!counts.containsKey(emailAddress)) {
+                        counts.put(emailAddress, 1);
+                    } else {
+                        counts.put(emailAddress, counts.get(emailAddress) + 1);
+                    }
+                }
+
+                Collections.sort(commits, new Comparator<RevCommit>() {
+                    public int compare(RevCommit c1, RevCommit c2) {
+                        Integer count1 = counts.get(c1.getAuthorIdent().getEmailAddress());
+                        Integer count2 = counts.get(c1.getAuthorIdent().getEmailAddress());
+                        return count1.compareTo(count2);
+                    }
+                });
+            }
+
+            LinkedHashMap<String, String> contributors = new LinkedHashMap<String, String>();
+            for(RevCommit commit : commits) {
                 PersonIdent author = commit.getAuthorIdent();
                 String emailAddress = author.getEmailAddress();
                 if(!contributors.containsKey(emailAddress)) {
