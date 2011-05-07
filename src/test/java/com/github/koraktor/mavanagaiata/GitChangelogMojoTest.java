@@ -70,12 +70,12 @@ public class GitChangelogMojoTest extends AbstractMojoTest<GitChangelogMojo> {
         assertEquals(" * Snapshot for version 3.0.0", this.reader.readLine());
         assertEquals(" * Added project name", this.reader.readLine());
         assertEquals("", this.reader.readLine());
-        assertEquals("Version 2.0.0 - 05/03/2011 07:18 AM", this.reader.readLine());
+        assertEquals("Version 2.0.0 - 05/03/2011 09:18 AM +0200", this.reader.readLine());
         assertEquals("", this.reader.readLine());
         assertEquals(" * Version bump to 2.0.0", this.reader.readLine());
         assertEquals(" * Snapshot for version 2.0.0", this.reader.readLine());
         assertEquals("", this.reader.readLine());
-        assertEquals("Version 1.0.0 - 05/03/2011 07:18 AM", this.reader.readLine());
+        assertEquals("Version 1.0.0 - 05/03/2011 09:18 AM +0200", this.reader.readLine());
         assertEquals("", this.reader.readLine());
         assertEquals(" * Initial commit", reader.readLine());
         assertFalse(this.reader.ready());
@@ -92,11 +92,11 @@ public class GitChangelogMojoTest extends AbstractMojoTest<GitChangelogMojo> {
         assertEquals(" * Snapshot for version 3.0.0", this.reader.readLine());
         assertEquals(" * Added project name", this.reader.readLine());
         assertEquals("", this.reader.readLine());
-        assertEquals("Version 2.0.0 - 05/03/2011 07:18 AM", this.reader.readLine());
+        assertEquals("Version 2.0.0 - 05/03/2011 09:18 AM +0200", this.reader.readLine());
         assertEquals("", this.reader.readLine());
         assertEquals(" * Snapshot for version 2.0.0", this.reader.readLine());
         assertEquals("", this.reader.readLine());
-        assertEquals("Version 1.0.0 - 05/03/2011 07:18 AM", this.reader.readLine());
+        assertEquals("Version 1.0.0 - 05/03/2011 09:18 AM +0200", this.reader.readLine());
         assertEquals("", this.reader.readLine());
         assertFalse(this.reader.ready());
     }
@@ -120,12 +120,12 @@ public class GitChangelogMojoTest extends AbstractMojoTest<GitChangelogMojo> {
             assertEquals(" * Snapshot for version 3.0.0", this.reader.readLine());
             assertEquals(" * Added project name", this.reader.readLine());
             assertEquals("", this.reader.readLine());
-            assertEquals("Version 2.0.0 - 05/03/2011 07:18 AM", this.reader.readLine());
+            assertEquals("Version 2.0.0 - 05/03/2011 09:18 AM +0200", this.reader.readLine());
             assertEquals("", this.reader.readLine());
             assertEquals(" * Version bump to 2.0.0", this.reader.readLine());
             assertEquals(" * Snapshot for version 2.0.0", this.reader.readLine());
             assertEquals("", this.reader.readLine());
-            assertEquals("Version 1.0.0 - 05/03/2011 07:18 AM", this.reader.readLine());
+            assertEquals("Version 1.0.0 - 05/03/2011 09:18 AM +0200", this.reader.readLine());
             assertEquals("", this.reader.readLine());
             assertEquals(" * Initial commit", reader.readLine());
             assertFalse(this.reader.ready());

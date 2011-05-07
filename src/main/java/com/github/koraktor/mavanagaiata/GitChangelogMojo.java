@@ -11,12 +11,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.maven.plugin.MojoExecutionException;
 
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevObject;
@@ -41,7 +43,7 @@ public class GitChangelogMojo extends AbstractGitMojo {
      *
      * @parameter expression="${mavanagaiata.changelog.dateFormat}"
      */
-    protected String dateFormat = "MM/dd/yyyy hh:mm a";
+    protected String dateFormat = "MM/dd/yyyy hh:mm a Z";
 
     /**
      * The header to print above the changelog
@@ -129,7 +131,11 @@ public class GitChangelogMojo extends AbstractGitMojo {
             while((commit = revWalk.next()) != null) {
                 if(tags.containsKey(commit.getName())) {
                     RevTag tag = tags.get(commit.getName());
-                    String dateString = dateFormat.format(tag.getTaggerIdent().getWhen());
+                    PersonIdent taggerIdent = tag.getTaggerIdent();
+                    Calendar calendar = Calendar.getInstance(taggerIdent.getTimeZone());
+                    calendar.setTimeInMillis(taggerIdent.getWhen().getTime() +
+                        taggerIdent.getTimeZone().getRawOffset());
+                    String dateString = dateFormat.format(calendar.getTime());
                     outputStream.println(this.tagPrefix + tag.getTagName() + " - " + dateString + "\n");
 
                     if(this.skipTagged) {

@@ -101,7 +101,7 @@ Additionally, there are some properties specific to a goal:
 
  * `changelog` (prefix: `mavanagaiata.changelog.`):
    * `dateFormat`:   The date format to use for tag output (default
-                    `"MM/dd/yyyy hh:mm"`)
+                    `"MM/dd/yyyy hh:mm a Z"`)
    * `header`:       The header to print above the changelog (default:
                      `"Changelog\n=========\n"`)
    * `commitPrefix`: The string to prepend to every commit message (default:
