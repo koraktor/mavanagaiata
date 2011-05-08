@@ -39,6 +39,7 @@ public class GitCommitMojo extends AbstractGitMojo {
      * The date format to use for tag output
      *
      * @parameter expression="${mavanagaiata.commit.dateFormat}"
+     * @since 0.2.1
      */
     protected String dateFormat = "MM/dd/yyyy hh:mm a Z";
 
