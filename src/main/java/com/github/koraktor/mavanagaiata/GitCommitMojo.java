@@ -36,7 +36,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 public class GitCommitMojo extends AbstractGitMojo {
 
     /**
-     * The date format to use for tag output
+     * The date format to use for committer and author dates
      *
      * @parameter expression="${mavanagaiata.commit.dateFormat}"
      * @since 0.2.1
