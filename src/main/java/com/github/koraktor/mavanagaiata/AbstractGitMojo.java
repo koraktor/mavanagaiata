@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
 import org.eclipse.jgit.lib.ObjectId;
@@ -86,8 +85,8 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * Initializes a JGit Repository object for further reference
      *
      * @see Repository
-     * @throws MojoExecutionException if retrieving information from the Git
-     *         repository fails
+     * @throws IOException if retrieving information from the Git repository
+     *         fails
      */
     protected void initRepository() throws IOException {
         if(this.gitDir == null) {
@@ -111,7 +110,7 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * @see RevCommit
      * @throws IOException if the repository HEAD could not be retrieved
      */
-    protected RevCommit getHead() throws IOException, MojoExecutionException {
+    protected RevCommit getHead() throws IOException {
         if(this.repository == null) {
             this.initRepository();
         }

@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
-import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevObject;
@@ -109,13 +108,12 @@ public class GitTagMojo extends AbstractGitMojo {
      * @param distance The distance walked in the commit hierarchy
      * @return The distance at which the tag has been found, or <code>-1</code>
      *         if no tag is reachable from the given commit
-     * @throws IOException if an error occured while reading a commit
-     * @throws MissingObjectException if a commit is missing
      * @see #isTagged(RevCommit)
      * @see RevCommit#getParentCount()
      * @see RevCommit#getParents()
+     * @throws IOException if an error occured while reading a commit
      */
-    private int walkCommits(RevCommit commit, int distance) throws MissingObjectException, IOException {
+    private int walkCommits(RevCommit commit, int distance) throws IOException {
         commit = (RevCommit) this.revWalk.peel(commit);
 
         if(this.isTagged(commit)) {
