@@ -8,7 +8,7 @@
 package com.github.koraktor.mavanagaiata;
 
 import java.io.IOException;
-import java.util.Date;
+import java.text.SimpleDateFormat;
 
 import org.apache.maven.plugin.MojoExecutionException;
 
@@ -36,6 +36,13 @@ import org.eclipse.jgit.revwalk.RevCommit;
 public class GitCommitMojo extends AbstractGitMojo {
 
     /**
+     * The date format to use for tag output
+     *
+     * @parameter expression="${mavanagaiata.commit.dateFormat}"
+     */
+    protected String dateFormat = "MM/dd/yyyy hh:mm a Z";
+
+    /**
      * The ID (full and abbreviated) of the current Git commit out Git branch
      * is retrieved using a JGit Repository instance
      *
@@ -52,14 +59,19 @@ public class GitCommitMojo extends AbstractGitMojo {
             PersonIdent author = commit.getAuthorIdent();
             PersonIdent committer = commit.getCommitterIdent();
             String shaId = commit.getName();
-            Date date = new Date(new Long(commit.getCommitTime()) * 1000);
+            SimpleDateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
+            dateFormat.setTimeZone(author.getTimeZone());
+            String authorDate = dateFormat.format(author.getWhen());
+            dateFormat.setTimeZone(author.getTimeZone());
+            String commitDate = dateFormat.format(committer.getWhen());
 
             this.addProperty("commit.abbrev", abbrevId);
+            this.addProperty("commit.author.date", authorDate);
             this.addProperty("commit.author.name", author.getName());
             this.addProperty("commit.author.email", author.getEmailAddress());
+            this.addProperty("commit.committer.date", commitDate);
             this.addProperty("commit.committer.name", committer.getName());
             this.addProperty("commit.committer.email", committer.getEmailAddress());
-            this.addProperty("commit.date", date.toString());
             this.addProperty("commit.id", shaId);
             this.addProperty("commit.sha", shaId);
         } catch (IOException e) {

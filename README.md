@@ -74,14 +74,14 @@ You may override this with the configuration property `propertyPrefixes`.
    * `branch`: The name of the currently checked out branch
  * `commit`
    * `abbrev`:          The abbreviated SHA ID of the current commit
+   * `author.date`:     The date the commit has been authored
    * `author.name`:     The name of the author of the current commit
    * `author.email`:    The email address of the author of the current commit
+   * `committer.date`:  The date the commit has been committed
    * `committer.name`:  The name of the committer of the current commit
    * `committer.email`: The email address of the committer of the current
                         commit
    * `id` / `sha`:      The full SHA ID of the current commit
-   * `date`:            A string representation of the date of the current
-                        commit
  * `tag`
    * `name`:     The name of the most recent tag (if any)
    * `describe`: A combination of the tag name and the current commit ID
@@ -113,6 +113,9 @@ Additionally, there are some properties specific to a goal:
                      (default: `false`)
    * `tagPrefix`:    The string to prepend to the tag name (default:
                      `"\nVersion "`)
+ * `commit` (prefix: `mavanagaiata.commit.`):
+   * `dateFormat`: The date format to use for commit dates (default
+                    `"MM/dd/yyyy hh:mm a Z"`)
  * `contributors` (prefix: `mavanagaiata.contributors.`):
    * `header`:     The header to print above the contributor list (default:
                    `"Contributors\n============\n"`)
