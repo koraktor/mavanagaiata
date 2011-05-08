@@ -100,7 +100,7 @@ with `mavanagaiata.`:
 Additionally, there are some properties specific to a goal:
 
  * `changelog` (prefix: `mavanagaiata.changelog.`):
-   * `dateFormat`:   The date format to use for tag output (default
+   * `dateFormat`:   The date format to use for tag output (default:
                     `"MM/dd/yyyy hh:mm a Z"`)
    * `header`:       The header to print above the changelog (default:
                      `"Changelog\n=========\n"`)
@@ -114,7 +114,7 @@ Additionally, there are some properties specific to a goal:
    * `tagPrefix`:    The string to prepend to the tag name (default:
                      `"\nVersion "`)
  * `commit` (prefix: `mavanagaiata.commit.`):
-   * `dateFormat`: The date format to use for commit dates (default
+   * `dateFormat`: The date format to use for commit dates (default:
                     `"MM/dd/yyyy hh:mm a Z"`)
  * `contributors` (prefix: `mavanagaiata.contributors.`):
    * `header`:     The header to print above the contributor list (default:
