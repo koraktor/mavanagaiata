@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -132,10 +131,8 @@ public class GitChangelogMojo extends AbstractGitMojo {
                 if(tags.containsKey(commit.getName())) {
                     RevTag tag = tags.get(commit.getName());
                     PersonIdent taggerIdent = tag.getTaggerIdent();
-                    Calendar calendar = Calendar.getInstance(taggerIdent.getTimeZone());
-                    calendar.setTimeInMillis(taggerIdent.getWhen().getTime() +
-                        taggerIdent.getTimeZone().getRawOffset());
-                    String dateString = dateFormat.format(calendar.getTime());
+                    dateFormat.setTimeZone(taggerIdent.getTimeZone());
+                    String dateString = dateFormat.format(taggerIdent.getWhen());
                     outputStream.println(this.tagPrefix + tag.getTagName() + " - " + dateString + "\n");
 
                     if(this.skipTagged) {
