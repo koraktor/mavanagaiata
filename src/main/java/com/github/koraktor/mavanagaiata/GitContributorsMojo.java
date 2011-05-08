@@ -34,6 +34,7 @@ import org.eclipse.jgit.revwalk.RevWalk;
  * @goal contributors
  * @phase compile
  * @requiresProject
+ * @since 0.2.0
  */
 public class GitContributorsMojo extends AbstractGitMojo {
 

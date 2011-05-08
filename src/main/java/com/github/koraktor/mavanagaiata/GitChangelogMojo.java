@@ -34,6 +34,7 @@ import org.eclipse.jgit.revwalk.RevWalk;
  * @goal changelog
  * @phase compile
  * @requiresProject
+ * @since 0.2.0
  */
 public class GitChangelogMojo extends AbstractGitMojo {
 
