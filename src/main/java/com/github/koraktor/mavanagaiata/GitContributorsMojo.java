@@ -7,9 +7,7 @@
 
 package com.github.koraktor.mavanagaiata;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -36,7 +34,7 @@ import org.eclipse.jgit.revwalk.RevWalk;
  * @requiresProject
  * @since 0.2.0
  */
-public class GitContributorsMojo extends AbstractGitMojo {
+public class GitContributorsMojo extends AbstractGitOutputMojo {
 
     /**
      * The header to print above the changelog
@@ -51,13 +49,6 @@ public class GitContributorsMojo extends AbstractGitMojo {
      * @parameter expression="${mavanagaiata.contributors.contributorPrefix}"
      */
     protected String contributorPrefix = " * ";
-
-    /**
-     * The file to write the contributors to
-     *
-     * @parameter expression="${mavanagaiata.contributors.outputFile}"
-     */
-    protected File outputFile;
 
     /**
      * Whether the number of contributoions should be listed
@@ -94,19 +85,10 @@ public class GitContributorsMojo extends AbstractGitMojo {
 
         try {
             this.initRepository();
+            this.initOutputStream();
 
             RevWalk revWalk = new RevWalk(this.repository);
             revWalk.markStart(this.getHead());
-
-            PrintStream outputStream;
-            if(this.outputFile == null) {
-                outputStream = System.out;
-            } else {
-                if(!this.outputFile.getParentFile().exists()) {
-                    this.outputFile.getParentFile().mkdirs();
-                }
-                outputStream = new PrintStream(this.outputFile);
-            }
 
             RevCommit tempCommit;
             List<RevCommit> commits = new ArrayList<RevCommit>();
@@ -162,24 +144,22 @@ public class GitContributorsMojo extends AbstractGitMojo {
                 }
             }
 
-            outputStream.println(this.header);
+            this.outputStream.println(this.header);
+
             for(Map.Entry<String, String> contributor : contributors.entrySet()) {
-                outputStream.print(this.contributorPrefix + contributor.getValue());
+                this.outputStream.print(this.contributorPrefix + contributor.getValue());
                 if(this.showEmail) {
-                    outputStream.print(" (" + contributor.getKey() + ")");
+                    this.outputStream.print(" (" + contributor.getKey() + ")");
                 }
                 if(this.showCounts) {
-                    outputStream.print(" (" + counts.get(contributor.getKey()) + ")");
+                    this.outputStream.print(" (" + counts.get(contributor.getKey()) + ")");
                 }
-                outputStream.println();
-            }
-
-            outputStream.flush();
-            if(this.outputFile != null) {
-                outputStream.close();
+                this.outputStream.println();
             }
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to read contributors from Git", e);
+        } finally {
+            this.closeOutputStream();
         }
     }
 }

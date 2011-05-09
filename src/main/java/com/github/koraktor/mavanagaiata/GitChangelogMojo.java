@@ -7,9 +7,7 @@
 
 package com.github.koraktor.mavanagaiata;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +34,7 @@ import org.eclipse.jgit.revwalk.RevWalk;
  * @requiresProject
  * @since 0.2.0
  */
-public class GitChangelogMojo extends AbstractGitMojo {
+public class GitChangelogMojo extends AbstractGitOutputMojo {
 
     /**
      * The date format to use for tag output
@@ -58,13 +56,6 @@ public class GitChangelogMojo extends AbstractGitMojo {
      * @parameter expression="${mavanagaiata.changelog.commitPrefix}"
      */
     protected String commitPrefix = " * ";
-
-    /**
-     * The file to write the changelog to
-     *
-     * @parameter expression="${mavanagaiata.changelog.outputFile}"
-     */
-    protected File outputFile;
 
     /**
      * Whether to skip tagged commits' messages
@@ -97,6 +88,7 @@ public class GitChangelogMojo extends AbstractGitMojo {
 
         try {
             this.initRepository();
+            this.initOutputStream();
 
             RevWalk revWalk = new RevWalk(this.repository);
             Map<String, Ref> tagRefs = this.repository.getTags();
@@ -117,17 +109,7 @@ public class GitChangelogMojo extends AbstractGitMojo {
 
             revWalk.markStart(this.getHead());
 
-            PrintStream outputStream;
-            if(this.outputFile == null) {
-                outputStream = System.out;
-            } else {
-                if(!this.outputFile.getParentFile().exists()) {
-                    this.outputFile.getParentFile().mkdirs();
-                }
-                outputStream = new PrintStream(this.outputFile);
-            }
-
-            outputStream.println(this.header);
+            this.outputStream.println(this.header);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
             RevCommit commit;
@@ -137,22 +119,19 @@ public class GitChangelogMojo extends AbstractGitMojo {
                     PersonIdent taggerIdent = tag.getTaggerIdent();
                     dateFormat.setTimeZone(taggerIdent.getTimeZone());
                     String dateString = dateFormat.format(taggerIdent.getWhen());
-                    outputStream.println(this.tagPrefix + tag.getTagName() + " - " + dateString + "\n");
+                    this.outputStream.println(this.tagPrefix + tag.getTagName() + " - " + dateString + "\n");
 
                     if(this.skipTagged) {
                         continue;
                     }
                 }
 
-                outputStream.println(this.commitPrefix + commit.getShortMessage());
-            }
-
-            outputStream.flush();
-            if(this.outputFile != null) {
-                outputStream.close();
+                this.outputStream.println(this.commitPrefix + commit.getShortMessage());
             }
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to generate changelog from Git", e);
+        } finally {
+            this.closeOutputStream();
         }
     }
 }
