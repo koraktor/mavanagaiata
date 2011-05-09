@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 
@@ -64,21 +65,7 @@ public class GitChangelogMojoTest extends AbstractMojoTest<GitChangelogMojo> {
     public void testResult() throws Exception {
         this.mojo.execute();
 
-        assertEquals("Changelog", this.reader.readLine());
-        assertEquals("=========", this.reader.readLine());
-        assertEquals("", this.reader.readLine());
-        assertEquals(" * Snapshot for version 3.0.0", this.reader.readLine());
-        assertEquals(" * Added project name", this.reader.readLine());
-        assertEquals("", this.reader.readLine());
-        assertEquals("Version 2.0.0 - 05/03/2011 07:18 AM +0200", this.reader.readLine());
-        assertEquals("", this.reader.readLine());
-        assertEquals(" * Version bump to 2.0.0", this.reader.readLine());
-        assertEquals(" * Snapshot for version 2.0.0", this.reader.readLine());
-        assertEquals("", this.reader.readLine());
-        assertEquals("Version 1.0.0 - 05/03/2011 07:18 AM +0200", this.reader.readLine());
-        assertEquals("", this.reader.readLine());
-        assertEquals(" * Initial commit", reader.readLine());
-        assertFalse(this.reader.ready());
+        this.assertOutput();
     }
 
     @Test
@@ -114,24 +101,28 @@ public class GitChangelogMojoTest extends AbstractMojoTest<GitChangelogMojo> {
             byte[] output = oStream.toByteArray();
             this.reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(output)));
 
-            assertEquals("Changelog", this.reader.readLine());
-            assertEquals("=========", this.reader.readLine());
-            assertEquals("", this.reader.readLine());
-            assertEquals(" * Snapshot for version 3.0.0", this.reader.readLine());
-            assertEquals(" * Added project name", this.reader.readLine());
-            assertEquals("", this.reader.readLine());
-            assertEquals("Version 2.0.0 - 05/03/2011 07:18 AM +0200", this.reader.readLine());
-            assertEquals("", this.reader.readLine());
-            assertEquals(" * Version bump to 2.0.0", this.reader.readLine());
-            assertEquals(" * Snapshot for version 2.0.0", this.reader.readLine());
-            assertEquals("", this.reader.readLine());
-            assertEquals("Version 1.0.0 - 05/03/2011 07:18 AM +0200", this.reader.readLine());
-            assertEquals("", this.reader.readLine());
-            assertEquals(" * Initial commit", reader.readLine());
-            assertFalse(this.reader.ready());
+            this.assertOutput();
         } finally {
             System.setOut(null);
         }
+    }
+
+    private void assertOutput() throws IOException {
+        assertEquals("Changelog", this.reader.readLine());
+        assertEquals("=========", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals(" * Snapshot for version 3.0.0", this.reader.readLine());
+        assertEquals(" * Added project name", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals("Version 2.0.0 - 05/03/2011 07:18 AM +0200", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals(" * Version bump to 2.0.0", this.reader.readLine());
+        assertEquals(" * Snapshot for version 2.0.0", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals("Version 1.0.0 - 05/03/2011 07:18 AM +0200", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals(" * Initial commit", reader.readLine());
+        assertFalse(this.reader.ready());
     }
 
 }

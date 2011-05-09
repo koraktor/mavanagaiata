@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 
@@ -55,12 +56,7 @@ public class GitContributorsMojoTest extends AbstractMojoTest<GitContributorsMoj
     public void testResult() throws Exception {
         this.mojo.execute();
 
-        assertEquals("Contributors", this.reader.readLine());
-        assertEquals("============", this.reader.readLine());
-        assertEquals("", this.reader.readLine());
-        assertEquals(" * Sebastian Staudt (4)", this.reader.readLine());
-        assertEquals(" * John Doe (1)", this.reader.readLine());
-        assertFalse(this.reader.ready());
+        this.assertOutput();
     }
 
     @Test
@@ -68,12 +64,7 @@ public class GitContributorsMojoTest extends AbstractMojoTest<GitContributorsMoj
         this.mojo.sort = "date";
         this.mojo.execute();
 
-        assertEquals("Contributors", this.reader.readLine());
-        assertEquals("============", this.reader.readLine());
-        assertEquals("", this.reader.readLine());
-        assertEquals(" * Sebastian Staudt (4)", this.reader.readLine());
-        assertEquals(" * John Doe (1)", this.reader.readLine());
-        assertFalse(this.reader.ready());
+        this.assertOutput();
     }
 
     @Test
@@ -102,15 +93,19 @@ public class GitContributorsMojoTest extends AbstractMojoTest<GitContributorsMoj
             byte[] output = oStream.toByteArray();
             this.reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(output)));
 
-            assertEquals("Contributors", this.reader.readLine());
-            assertEquals("============", this.reader.readLine());
-            assertEquals("", this.reader.readLine());
-            assertEquals(" * Sebastian Staudt (4)", this.reader.readLine());
-            assertEquals(" * John Doe (1)", this.reader.readLine());
-            assertFalse(this.reader.ready());
+            this.assertOutput();
         } finally {
             System.setOut(null);
         }
+    }
+
+    private void assertOutput() throws IOException {
+        assertEquals("Contributors", this.reader.readLine());
+        assertEquals("============", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals(" * Sebastian Staudt (4)", this.reader.readLine());
+        assertEquals(" * John Doe (1)", this.reader.readLine());
+        assertFalse(this.reader.ready());
     }
 
 }
