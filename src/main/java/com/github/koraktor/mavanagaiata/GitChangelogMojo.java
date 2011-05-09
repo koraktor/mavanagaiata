@@ -145,6 +145,9 @@ public class GitChangelogMojo extends AbstractGitMojo {
             }
 
             outputStream.flush();
+            if(this.outputFile != null) {
+                outputStream.close();
+            }
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to generate changelog from Git", e);
         }

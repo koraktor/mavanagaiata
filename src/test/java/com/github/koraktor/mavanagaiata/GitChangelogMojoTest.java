@@ -31,6 +31,14 @@ public class GitChangelogMojoTest extends AbstractMojoTest<GitChangelogMojo> {
         this.reader = new BufferedReader(new FileReader(tempFile));
     }
 
+    @Override
+    public void tearDown() throws IOException {
+        this.reader.close();
+        if(this.mojo.outputFile != null && !this.mojo.outputFile.delete()) {
+            this.mojo.outputFile.deleteOnExit();
+        }
+    }
+
     @Test
     public void testError() {
         super.testError("Unable to generate changelog from Git");
@@ -95,6 +103,10 @@ public class GitChangelogMojoTest extends AbstractMojoTest<GitChangelogMojo> {
             PrintStream stream = new PrintStream(oStream);
             System.setOut(stream);
 
+            this.reader.close();
+            if(!this.mojo.outputFile.delete()) {
+                this.mojo.outputFile.deleteOnExit();
+            }
             this.mojo.outputFile = null;
             this.mojo.execute();
 
