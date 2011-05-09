@@ -102,6 +102,9 @@ public class GitContributorsMojo extends AbstractGitMojo {
             if(this.outputFile == null) {
                 outputStream = System.out;
             } else {
+                if(!this.outputFile.getParentFile().exists()) {
+                    this.outputFile.getParentFile().mkdirs();
+                }
                 outputStream = new PrintStream(this.outputFile);
             }
 

@@ -61,6 +61,24 @@ public class GitContributorsMojoTest extends AbstractMojoTest<GitContributorsMoj
     }
 
     @Test
+    public void testNonExistantDirectory() throws Exception {
+        this.reader.close();
+        if(!this.mojo.outputFile.delete()) {
+            this.mojo.outputFile.deleteOnExit();
+        }
+        File tempDir  = File.createTempFile("temp", null);
+        tempDir.delete();
+        tempDir.deleteOnExit();
+        File tempFile = new File(tempDir + "/contributors");
+        this.mojo.outputFile = tempFile;
+        this.mojo.execute();
+
+        this.reader = new BufferedReader(new FileReader(tempFile));
+
+        this.assertOutput();
+    }
+
+    @Test
     public void testResult() throws Exception {
         this.mojo.execute();
 
