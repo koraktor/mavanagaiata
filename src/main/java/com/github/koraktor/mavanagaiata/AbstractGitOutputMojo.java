@@ -14,6 +14,7 @@ import java.io.PrintStream;
  * @author Sebastian Staudt
  * @see File
  * @see PrintStream
+ * @since 0.2.2
  */
 public abstract class AbstractGitOutputMojo extends AbstractGitMojo {
 
