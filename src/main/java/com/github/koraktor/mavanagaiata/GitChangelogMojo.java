@@ -113,9 +113,10 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
             RevCommit commit;
+            RevTag tag = null;
             while((commit = revWalk.next()) != null) {
                 if(tags.containsKey(commit.getName())) {
-                    RevTag tag = tags.get(commit.getName());
+                    tag = tags.get(commit.getName());
                     PersonIdent taggerIdent = tag.getTaggerIdent();
                     dateFormat.setTimeZone(taggerIdent.getTimeZone());
                     String dateString = dateFormat.format(taggerIdent.getWhen());
@@ -124,6 +125,10 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
                     if(this.skipTagged) {
                         continue;
                     }
+                } else if(tag == null) {
+                    String branch = this.repository.getBranch();
+                    this.outputStream.println("Commits on branch \"" + branch + "\"\n");
+                    tag = tags.values().iterator().next();
                 }
 
                 this.outputStream.println(this.commitPrefix + commit.getShortMessage());

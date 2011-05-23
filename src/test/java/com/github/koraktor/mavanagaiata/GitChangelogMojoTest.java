@@ -29,6 +29,8 @@ public class GitChangelogMojoTest extends AbstractGitOutputMojoTest<GitChangelog
         assertEquals("History", this.reader.readLine());
         assertEquals("-------", this.reader.readLine());
         assertEquals("", this.reader.readLine());
+        assertEquals("Commits on branch \"master\"", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
         assertEquals("- Snapshot for version 3.0.0", this.reader.readLine());
         assertEquals("- Added project name", this.reader.readLine());
         assertEquals("", this.reader.readLine());
@@ -51,6 +53,8 @@ public class GitChangelogMojoTest extends AbstractGitOutputMojoTest<GitChangelog
         assertEquals("Changelog", this.reader.readLine());
         assertEquals("=========", this.reader.readLine());
         assertEquals("", this.reader.readLine());
+        assertEquals("Commits on branch \"master\"", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
         assertEquals(" * Snapshot for version 3.0.0", this.reader.readLine());
         assertEquals(" * Added project name", this.reader.readLine());
         assertEquals("", this.reader.readLine());
@@ -66,6 +70,8 @@ public class GitChangelogMojoTest extends AbstractGitOutputMojoTest<GitChangelog
     protected void assertOutput() throws IOException {
         assertEquals("Changelog", this.reader.readLine());
         assertEquals("=========", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals("Commits on branch \"master\"", this.reader.readLine());
         assertEquals("", this.reader.readLine());
         assertEquals(" * Snapshot for version 3.0.0", this.reader.readLine());
         assertEquals(" * Added project name", this.reader.readLine());
