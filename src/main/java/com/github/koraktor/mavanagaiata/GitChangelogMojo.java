@@ -44,6 +44,13 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
     protected boolean createGitHubLinks = false;
 
     /**
+     * The string to prepend to every commit message
+     *
+     * @parameter expression="${mavanagaiata.changelog.commitPrefix}"
+     */
+    protected String commitPrefix = " * ";
+
+    /**
      * The date format to use for tag output
      *
      * @parameter expression="${mavanagaiata.changelog.dateFormat}"
@@ -70,13 +77,6 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      * @parameter expression="${mavanagaiata.changelog.header}"
      */
     protected String header = "Changelog\n=========\n";
-
-    /**
-     * The string to prepend to every commit message
-     *
-     * @parameter expression="${mavanagaiata.changelog.commitPrefix}"
-     */
-    protected String commitPrefix = " * ";
 
     /**
      * Whether to skip tagged commits' messages

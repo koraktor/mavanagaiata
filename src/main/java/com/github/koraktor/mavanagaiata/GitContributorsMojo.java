@@ -37,18 +37,18 @@ import org.eclipse.jgit.revwalk.RevWalk;
 public class GitContributorsMojo extends AbstractGitOutputMojo {
 
     /**
-     * The header to print above the changelog
-     *
-     * @parameter expression="${mavanagaiata.contributors.header}"
-     */
-    protected String header = "Contributors\n============\n";
-
-    /**
      * The string to prepend to every contributor name
      *
      * @parameter expression="${mavanagaiata.contributors.contributorPrefix}"
      */
     protected String contributorPrefix = " * ";
+
+    /**
+     * The header to print above the changelog
+     *
+     * @parameter expression="${mavanagaiata.contributors.header}"
+     */
+    protected String header = "Contributors\n============\n";
 
     /**
      * Whether the number of contributoions should be listed
