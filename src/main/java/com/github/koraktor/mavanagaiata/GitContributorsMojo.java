@@ -103,8 +103,7 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
             }
 
             final Map<String, Integer> counts = new HashMap<String, Integer>();
-            if(this.showCounts ||
-               (!this.sort.equals("date") && !this.sort.equals("name"))) {
+            if(this.showCounts || this.sort.equals("count")) {
                 for(RevCommit commit : commits) {
                     String emailAddress = commit.getAuthorIdent().getEmailAddress();
                     if(!counts.containsKey(emailAddress)) {
