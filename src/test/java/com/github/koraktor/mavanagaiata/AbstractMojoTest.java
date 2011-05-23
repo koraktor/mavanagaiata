@@ -19,6 +19,7 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
+import junit.framework.ComparisonFailure;
 import junit.framework.TestCase;
 
 public abstract class AbstractMojoTest<T extends AbstractGitMojo> extends TestCase {
@@ -58,6 +59,12 @@ public abstract class AbstractMojoTest<T extends AbstractGitMojo> extends TestCa
         }
         this.mojo.gitDir = new File("src/test/resources/test-project/_git").getAbsoluteFile();
         this.mojo.project = testProject;
+    }
+
+    protected static void assertMatches(String regex, String actual) {
+        if(!actual.matches(regex)) {
+            throw new ComparisonFailure(null, regex, actual);
+        }
     }
 
     protected void assertProperty(String value, String key) {
