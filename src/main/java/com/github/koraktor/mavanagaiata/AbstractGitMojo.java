@@ -32,6 +32,13 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 public abstract class AbstractGitMojo extends AbstractMojo {
 
     /**
+     * The date format to use for various dates
+     *
+     * @parameter expression="${mavanagaiata.dateFormat}"
+     */
+    protected String baseDateFormat = "MM/dd/yyyy hh:mm a Z";
+
+    /**
      * The project base directory
      *
      * @parameter expression="${mavanagaiata.gitDir}"

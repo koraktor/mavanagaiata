@@ -41,7 +41,7 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      *
      * @parameter expression="${mavanagaiata.changelog.dateFormat}"
      */
-    protected String dateFormat = "MM/dd/yyyy hh:mm a Z";
+    protected String dateFormat = baseDateFormat;
 
     /**
      * The header to print above the changelog

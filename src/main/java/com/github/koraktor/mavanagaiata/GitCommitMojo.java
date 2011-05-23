@@ -41,7 +41,7 @@ public class GitCommitMojo extends AbstractGitMojo {
      * @parameter expression="${mavanagaiata.commit.dateFormat}"
      * @since 0.2.1
      */
-    protected String dateFormat = "MM/dd/yyyy hh:mm a Z";
+    protected String dateFormat = baseDateFormat;
 
     /**
      * The ID (full and abbreviated) of the current Git commit out Git branch
