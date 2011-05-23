@@ -37,11 +37,32 @@ import org.eclipse.jgit.revwalk.RevWalk;
 public class GitChangelogMojo extends AbstractGitOutputMojo {
 
     /**
+     * Whether to create links to GitHub's compare view
+     *
+     * @parameter expression="${mavanagaiata.changelog.gitHubLinks}"
+     */
+    protected boolean createGitHubLinks = false;
+
+    /**
      * The date format to use for tag output
      *
      * @parameter expression="${mavanagaiata.changelog.dateFormat}"
      */
     protected String dateFormat = baseDateFormat;
+
+    /**
+     * The project name for GitHub links
+     *
+     * @parameter expression="${mavanagaiata.changelog.gitHubProject}"
+     */
+    protected String gitHubProject;
+
+    /**
+     * The user name for GitHub links
+     *
+     * @parameter expression="${mavanagaiata.changelog.gitHubUser}"
+     */
+    protected String gitHubUser;
 
     /**
      * The header to print above the changelog
@@ -86,6 +107,11 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
         this.header       = this.header.replaceAll("([^\\\\])\\\\n", "$1\n");
         this.tagPrefix    = this.tagPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
 
+        if(this.gitHubProject == null || this.gitHubProject.length() == 0 ||
+           this.gitHubUser == null || this.gitHubUser.length() == 0) {
+            this.createGitHubLinks = false;
+        }
+
         try {
             this.initRepository();
             this.initOutputStream();
@@ -111,27 +137,42 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
 
             this.outputStream.println(this.header);
 
+            String branch = this.repository.getBranch();
             SimpleDateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
             RevCommit commit;
-            RevTag tag = null;
+            RevTag currentTag = null;
+            RevTag lastTag = null;
+            boolean firstCommit = true;
             while((commit = revWalk.next()) != null) {
                 if(tags.containsKey(commit.getName())) {
-                    tag = tags.get(commit.getName());
-                    PersonIdent taggerIdent = tag.getTaggerIdent();
+                    lastTag = currentTag;
+                    currentTag = tags.get(commit.getName());
+                    if(lastTag == null) {
+                        this.insertGitHubLink(currentTag, branch);
+                    } else {
+                        this.insertGitHubLink(currentTag, lastTag);
+                    }
+
+                    PersonIdent taggerIdent = currentTag.getTaggerIdent();
                     dateFormat.setTimeZone(taggerIdent.getTimeZone());
                     String dateString = dateFormat.format(taggerIdent.getWhen());
-                    this.outputStream.println(this.tagPrefix + tag.getTagName() + " - " + dateString + "\n");
+                    this.outputStream.println(this.tagPrefix + currentTag.getTagName() + " - " + dateString + "\n");
 
                     if(this.skipTagged) {
                         continue;
                     }
-                } else if(tag == null) {
-                    String branch = this.repository.getBranch();
+                } else if(firstCommit && currentTag == null) {
                     this.outputStream.println("Commits on branch \"" + branch + "\"\n");
-                    tag = tags.values().iterator().next();
                 }
 
                 this.outputStream.println(this.commitPrefix + commit.getShortMessage());
+                firstCommit = false;
+            }
+
+            if(currentTag == null) {
+                this.insertGitHubLink(branch, null);
+            } else {
+                this.insertGitHubLink(currentTag, null);
             }
 
             this.insertFooter();
@@ -139,6 +180,59 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
             throw new MojoExecutionException("Unable to generate changelog from Git", e);
         } finally {
             this.closeOutputStream();
+        }
+    }
+
+    /**
+     * Generates a link to the GitHub compare / commits view and inserts it
+     * into the changelog
+     * <p>
+     * If no current ref is provided, the generated text will link to the
+     * commits view, listing all commits of the latest tag or the whole branch.
+     * Otherwise the text will link to the compare view, listing all commits
+     * that are in the current ref, but not in the last one.
+     *
+     * @param lastRef The last tag or branch in the changelog
+     * @param currentRef The current tag or branch in the changelog
+     */
+    private void insertGitHubLink(Object lastRef, Object currentRef) {
+        if(this.createGitHubLinks) {
+            boolean isBranch = currentRef instanceof String;
+            if(!isBranch && currentRef != null) {
+                currentRef = ((RevTag) currentRef).getTagName();
+            }
+
+            if(lastRef instanceof RevTag) {
+                lastRef = ((RevTag) lastRef).getTagName();
+            }
+
+            String url = String.format("https://github.com/%s/%s/",
+                this.gitHubUser,
+                this.gitHubProject);
+            if(currentRef == null) {
+                url += String.format("commits/%s", lastRef);
+            } else {
+                url += String.format("compare/%s...%s", lastRef, currentRef);
+            }
+
+            String text = "See Git history for ";
+            if(currentRef != null) {
+                if(isBranch) {
+                    text += "changes in the \"" + currentRef +
+                            "\" branch since version " + lastRef;
+                } else {
+                    text += "version " + currentRef;
+                }
+            } else {
+                if(isBranch) {
+                    text += "changes in the \"" + lastRef + "\" branch";
+                } else {
+                    text += "version " + lastRef;
+                }
+            }
+            text += " at: ";
+
+            this.outputStream.println("\n" + text + url);
         }
     }
 }

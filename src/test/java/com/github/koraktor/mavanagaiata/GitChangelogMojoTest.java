@@ -20,12 +20,15 @@ public class GitChangelogMojoTest extends AbstractGitOutputMojoTest<GitChangelog
 
     @Test
     public void testCustomization() throws Exception {
-        this.mojo.baseDateFormat = "MM/dd/yy";
-        this.mojo.commitPrefix   = "- ";
-        this.mojo.dateFormat     = "dd.MM.yyyy";
-        this.mojo.footer         = "\nCreated by Mavanagaiata on %s";
-        this.mojo.header         = "History\\n-------\\n";
-        this.mojo.tagPrefix      = "\nTag ";
+        this.mojo.baseDateFormat    = "MM/dd/yy";
+        this.mojo.commitPrefix      = "- ";
+        this.mojo.createGitHubLinks = true;
+        this.mojo.dateFormat        = "dd.MM.yyyy";
+        this.mojo.footer            = "\nCreated by Mavanagaiata on %s";
+        this.mojo.gitHubProject     = "mavanagaiata";
+        this.mojo.gitHubUser        = "koraktor";
+        this.mojo.header            = "History\\n-------\\n";
+        this.mojo.tagPrefix         = "\nTag ";
         this.mojo.execute();
 
         assertEquals("History", this.reader.readLine());
@@ -36,14 +39,20 @@ public class GitChangelogMojoTest extends AbstractGitOutputMojoTest<GitChangelog
         assertEquals("- Snapshot for version 3.0.0", this.reader.readLine());
         assertEquals("- Added project name", this.reader.readLine());
         assertEquals("", this.reader.readLine());
+        assertEquals("See Git history for changes in the \"master\" branch since version 2.0.0 at: https://github.com/koraktor/mavanagaiata/compare/2.0.0...master", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
         assertEquals("Tag 2.0.0 - 03.05.2011", this.reader.readLine());
         assertEquals("", this.reader.readLine());
         assertEquals("- Version bump to 2.0.0", this.reader.readLine());
         assertEquals("- Snapshot for version 2.0.0", this.reader.readLine());
         assertEquals("", this.reader.readLine());
+        assertEquals("See Git history for version 2.0.0 at: https://github.com/koraktor/mavanagaiata/compare/1.0.0...2.0.0", this.reader.readLine());
+        assertEquals("", this.reader.readLine());
         assertEquals("Tag 1.0.0 - 03.05.2011", this.reader.readLine());
         assertEquals("", this.reader.readLine());
         assertEquals("- Initial commit", reader.readLine());
+        assertEquals("", this.reader.readLine());
+        assertEquals("See Git history for version 1.0.0 at: https://github.com/koraktor/mavanagaiata/commits/1.0.0", this.reader.readLine());
         assertEquals("", reader.readLine());
         assertMatches("Created by Mavanagaiata on \\d{2}/\\d{2}/\\d{2}", reader.readLine());
         assertFalse(this.reader.ready());
