@@ -29,21 +29,29 @@ public class GitTagMojoTest extends AbstractMojoTest<GitTagMojo> {
 
         this.assertProperty("2.0.0-2-g" + abbrev, "tag.describe");
         this.assertProperty("2.0.0", "tag.name");
+    }
 
+    @Test
+    public void testDifferentHead() throws IOException, MojoExecutionException {
         this.mojo.head = "HEAD^^";
         this.mojo.execute();
 
         this.assertProperty("2.0.0", "tag.describe");
         this.assertProperty("2.0.0", "tag.name");
+    }
 
+    @Test
+    public void testUntaggedBranch() throws IOException, MojoExecutionException {
         this.mojo.head = "gh-pages";
         this.mojo.execute();
 
         this.assertProperty("a0e1305", "tag.describe");
         this.assertProperty("", "tag.name");
+    }
 
+    @Test
+    public void testUntaggedProject() throws IOException, MojoExecutionException {
         this.mojo.gitDir = new File("src/test/resources/untagged-project/_git");
-        this.mojo.head = "HEAD";
         this.mojo.initRepository();
         this.mojo.execute();
 
