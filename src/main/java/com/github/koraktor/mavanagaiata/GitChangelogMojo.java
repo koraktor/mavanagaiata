@@ -161,7 +161,7 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
                     if(this.skipTagged) {
                         continue;
                     }
-                } else if(firstCommit && currentTag == null) {
+                } else if(firstCommit) {
                     this.outputStream.println("Commits on branch \"" + branch + "\"\n");
                 }
 
@@ -197,9 +197,14 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      */
     private void insertGitHubLink(Object lastRef, Object currentRef) {
         if(this.createGitHubLinks) {
-            boolean isBranch = currentRef instanceof String;
-            if(!isBranch && currentRef != null) {
-                currentRef = ((RevTag) currentRef).getTagName();
+            boolean isBranch;
+            if(currentRef == null) {
+                isBranch = lastRef instanceof String;
+            } else {
+                isBranch = currentRef instanceof String;
+                if(!isBranch) {
+                    currentRef = ((RevTag) currentRef).getTagName();
+                }
             }
 
             if(lastRef instanceof RevTag) {
