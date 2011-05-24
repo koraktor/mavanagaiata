@@ -103,18 +103,8 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      *         repository fails
      */
     public void execute() throws MojoExecutionException {
-        this.commitPrefix = this.commitPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
-        this.header       = this.header.replaceAll("([^\\\\])\\\\n", "$1\n");
-        this.tagPrefix    = this.tagPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
-
-        if(this.gitHubProject == null || this.gitHubProject.length() == 0 ||
-           this.gitHubUser == null || this.gitHubUser.length() == 0) {
-            this.createGitHubLinks = false;
-        }
-
         try {
-            this.initRepository();
-            this.initOutputStream();
+            this.init();
 
             RevWalk revWalk = new RevWalk(this.repository);
             Map<String, Ref> tagRefs = this.repository.getTags();
@@ -181,6 +171,26 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
         } finally {
             this.closeOutputStream();
         }
+    }
+
+    /**
+     * Initializes this mojo
+     *
+     * @throws IOException if an error occurs while accessing the Git
+     *         repository or the changelog file
+     */
+    protected void init() throws IOException {
+        this.commitPrefix = this.commitPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
+        this.header       = this.header.replaceAll("([^\\\\])\\\\n", "$1\n");
+        this.tagPrefix    = this.tagPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
+
+        if(this.gitHubProject == null || this.gitHubProject.length() == 0 ||
+           this.gitHubUser == null || this.gitHubUser.length() == 0) {
+            this.createGitHubLinks = false;
+        }
+
+        this.initRepository();
+        this.initOutputStream();
     }
 
     /**
