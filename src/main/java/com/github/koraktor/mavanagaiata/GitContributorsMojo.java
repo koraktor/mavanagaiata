@@ -7,6 +7,7 @@
 
 package com.github.koraktor.mavanagaiata;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -162,5 +163,15 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
         } finally {
             this.closeOutputStream();
         }
+    }
+
+    /**
+     * Sets the output file for the generated changelog
+     *
+     * @param outputFile The output file for the generated changelog
+     * @parameter expression="${mavanagaiata.contributors.outputFile}"
+     */
+    public void setOutputFile(File outputFile) {
+        this.outputFile = outputFile;
     }
 }

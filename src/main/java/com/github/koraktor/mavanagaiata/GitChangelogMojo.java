@@ -7,6 +7,7 @@
 
 package com.github.koraktor.mavanagaiata;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -250,5 +251,15 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
 
             this.outputStream.println("\n" + text + url);
         }
+    }
+
+    /**
+     * Sets the output file for the generated changelog
+     *
+     * @param outputFile The output file for the generated changelog
+     * @parameter expression="${mavanagaiata.changelog.outputFile}"
+     */
+    public void setOutputFile(File outputFile) {
+        this.outputFile = outputFile;
     }
 }
