@@ -3,6 +3,7 @@ package com.github.koraktor.mavanagaiata;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -21,7 +22,12 @@ import java.util.Date;
 public abstract class AbstractGitOutputMojo extends AbstractGitMojo {
 
     /**
-     * The footer to print below the changelog
+     * The encoding to use for generated output
+     *
+     * @parameter expression="${mavanagaiata.encoding}"
+     */
+    protected String encoding  = "UTF-8";
+
     /**
      * The footer to print below the output
      *
@@ -61,14 +67,15 @@ public abstract class AbstractGitOutputMojo extends AbstractGitMojo {
      * @throws FileNotFoundException if the file specified by
      *         <code>outputFile</code> cannot be found
      */
-    protected void initOutputStream() throws FileNotFoundException {
+    protected void initOutputStream()
+            throws FileNotFoundException, UnsupportedEncodingException {
         if(this.outputFile == null) {
             this.outputStream = System.out;
         } else {
             if(!this.outputFile.getParentFile().exists()) {
                 this.outputFile.getParentFile().mkdirs();
             }
-            this.outputStream = new PrintStream(this.outputFile);
+            this.outputStream = new PrintStream(this.outputFile, this.encoding);
         }
     }
 
