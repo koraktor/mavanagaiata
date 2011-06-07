@@ -149,6 +149,7 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
                     this.outputStream.println(this.tagPrefix + currentTag.getTagName() + " - " + dateString + "\n");
 
                     if(this.skipTagged) {
+                        firstCommit = false;
                         continue;
                     }
                 } else if(firstCommit) {
