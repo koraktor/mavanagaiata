@@ -61,6 +61,13 @@ public abstract class AbstractGitOutputMojoTest<T extends AbstractGitOutputMojo>
     }
 
     @Test
+    public void testSetOutputFile() {
+        File file = new File("./test");
+        this.mojo.setOutputFile(file);
+        assertEquals(file, this.mojo.outputFile);
+    }
+
+    @Test
     public void testStdOut() throws Exception {
         try {
             ByteArrayOutputStream oStream = new ByteArrayOutputStream();
