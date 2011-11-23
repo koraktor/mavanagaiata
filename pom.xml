@@ -86,7 +86,7 @@
         <dependency>
             <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit</artifactId>
-            <version>1.0.0.201106090707-r</version>
+            <version>1.1.0.201109151100-r</version>
         </dependency>
     </dependencies>
 
