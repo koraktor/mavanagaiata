@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011, Sebastian Staudt
+ * Copyright (c) 2011-2012, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata;
@@ -47,13 +47,22 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
             assertEquals("Git directory is not set", e.getMessage());
         }
 
+        this.mojo.gitDir = new File(System.getenv().get("HOME")).getAbsoluteFile();
+        try {
+            this.mojo.initRepository();
+            fail("No exception thrown");
+        } catch(Exception e) {
+            assertEquals(FileNotFoundException.class, e.getClass());
+            assertEquals(this.mojo.gitDir + " is not inside a Git repository", e.getMessage());
+        }
+
         this.mojo.gitDir = new File("src/test/resources/non-existant-project/_git");
         try {
             this.mojo.initRepository();
             fail("No exception thrown");
         } catch(Exception e) {
             assertEquals(FileNotFoundException.class, e.getClass());
-            assertEquals("Git directory does not exist", e.getMessage());
+            assertEquals(this.mojo.gitDir + " does not exist", e.getMessage());
         }
 
         this.mojo.gitDir = new File("src/test/resources/broken-project/_git");

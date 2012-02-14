@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011, Sebastian Staudt
+ * Copyright (c) 2011-2012, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata;
@@ -42,7 +42,7 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * The project base directory
      *
      * @parameter expression="${mavanagaiata.gitDir}"
-     *            default-value="${basedir}/.git"
+     *            default-value="${basedir}"
      * @required
      */
     protected File gitDir;
@@ -96,18 +96,28 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      *         fails
      */
     protected void initRepository() throws IOException {
+        FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
+        repositoryBuilder.readEnvironment();
+
         if(this.gitDir == null) {
             throw new FileNotFoundException("Git directory is not set");
         } else if(!this.gitDir.exists()) {
-            throw new FileNotFoundException("Git directory does not exist");
+            throw new FileNotFoundException(this.gitDir + " does not exist");
         }
 
-        FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-        this.repository = repositoryBuilder
-            .setGitDir(this.gitDir)
-            .readEnvironment()
-            .findGitDir()
-            .build();
+        repositoryBuilder.setGitDir(this.gitDir);
+        this.repository = repositoryBuilder.build();
+
+        if(!this.repository.getObjectDatabase().exists()) {
+            repositoryBuilder.setGitDir(null);
+            repositoryBuilder.findGitDir(this.gitDir);
+
+            if(repositoryBuilder.getGitDir() == null) {
+                throw new FileNotFoundException(this.gitDir + " is not inside a Git repository");
+            }
+
+            this.repository = repositoryBuilder.build();
+        }
     }
 
     /**
