@@ -73,7 +73,7 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
             fail("No exception thrown");
         } catch(Exception e) {
             assertEquals(IOException.class, e.getClass());
-            assertEquals("Unknown repository format \"null\"; expected \"0\".", e.getMessage());
+            assertEquals("Unknown repository format \"42\"; expected \"0\".", e.getMessage());
         }
     }
 
