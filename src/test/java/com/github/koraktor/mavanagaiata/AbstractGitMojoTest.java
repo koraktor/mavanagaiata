@@ -49,7 +49,11 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
             assertEquals("Git directory is not set", e.getMessage());
         }
 
-        this.mojo.gitDir = new File(System.getenv().get("HOME")).getAbsoluteFile();
+        String home = System.getenv().get("HOME");
+        if (home == null) {
+            home = System.getenv().get("HOMEDRIVE") + System.getenv("HOMEPATH");
+        }
+        this.mojo.gitDir = new File(home).getAbsoluteFile();
         try {
             this.mojo.initRepository();
             fail("No exception thrown");
