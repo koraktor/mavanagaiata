@@ -17,10 +17,12 @@ import org.apache.maven.plugin.MojoFailureException;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
 
+    @Before
     public void setUp() throws Exception {
         this.mojo = new AbstractGitMojo() {
             public void execute()

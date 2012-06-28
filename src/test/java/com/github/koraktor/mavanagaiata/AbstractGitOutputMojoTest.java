@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public abstract class AbstractGitOutputMojoTest<T extends AbstractGitOutputMojo>
@@ -18,6 +20,7 @@ public abstract class AbstractGitOutputMojoTest<T extends AbstractGitOutputMojo>
 
     protected abstract void assertOutput() throws IOException;
 
+    @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -27,6 +30,7 @@ public abstract class AbstractGitOutputMojoTest<T extends AbstractGitOutputMojo>
         this.reader = new BufferedReader(new FileReader(tempFile));
     }
 
+    @After
     @Override
     public void tearDown() throws IOException {
         this.reader.close();
