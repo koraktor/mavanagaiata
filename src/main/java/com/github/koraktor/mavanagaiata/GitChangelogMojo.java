@@ -132,7 +132,7 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
             SimpleDateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
             RevCommit commit;
             RevTag currentTag = null;
-            RevTag lastTag = null;
+            RevTag lastTag;
             boolean firstCommit = true;
             while((commit = revWalk.next()) != null) {
                 if(tags.containsKey(commit.getName())) {

@@ -1,3 +1,10 @@
+/**
+ * This code is free software; you can redistribute it and/or modify it under
+ * the terms of the new BSD License.
+ *
+ * Copyright (c) 2011-2012, Sebastian Staudt
+ */
+
 package com.github.koraktor.mavanagaiata;
 
 import java.io.IOException;
@@ -111,7 +118,7 @@ public class GitTagMojo extends AbstractGitMojo {
      * @see #isTagged(RevCommit)
      * @see RevCommit#getParentCount()
      * @see RevCommit#getParents()
-     * @throws IOException if an error occured while reading a commit
+     * @throws IOException if an error occurred while reading a commit
      */
     private int walkCommits(RevCommit commit, int distance) throws IOException {
         commit = (RevCommit) this.revWalk.peel(commit);
