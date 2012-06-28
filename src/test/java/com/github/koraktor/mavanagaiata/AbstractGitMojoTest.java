@@ -9,11 +9,15 @@ package com.github.koraktor.mavanagaiata;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.project.MavenProject;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
@@ -115,6 +119,24 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
         this.mojo.head = "HEAD^~2^";
         head = this.mojo.getHead().getName();
         assertEquals("0e7d0435e30d0f726d62ccadd202c9240df56019", head);
+    }
+
+    @Test
+    public void testProjectInSubdir() throws Exception {
+        File pom = new File("src/test/resources/test-project/subdir/pom.xml");
+        MavenXpp3Reader reader = new MavenXpp3Reader();
+        Model model = reader.read(new FileReader(pom));
+        final MavenProject testProject = new MavenProject(model);
+        testProject.setFile(pom.getAbsoluteFile());
+
+        this.projectProperties = testProject.getProperties();
+
+        this.mojo.project = testProject;
+        this.mojo.initRepository();
+
+        assertNotNull(this.mojo.repository);
+        assertEquals(new File("src/test/resources/test-project/_git").getAbsolutePath(),
+            this.mojo.repository.getDirectory().getAbsolutePath());
     }
 
     @Test
