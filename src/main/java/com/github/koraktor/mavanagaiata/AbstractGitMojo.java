@@ -116,6 +116,9 @@ public abstract class AbstractGitMojo extends AbstractMojo {
                 throw new FileNotFoundException(this.gitDir + " is not inside a Git repository");
             }
 
+            repositoryBuilder.setObjectDirectory(null);
+            repositoryBuilder.setup();
+
             this.repository = repositoryBuilder.build();
         }
     }
