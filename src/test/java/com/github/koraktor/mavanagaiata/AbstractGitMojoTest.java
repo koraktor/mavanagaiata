@@ -122,24 +122,6 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
     }
 
     @Test
-    public void testProjectInSubdir() throws Exception {
-        File pom = new File("src/test/resources/test-project/subdir/pom.xml");
-        MavenXpp3Reader reader = new MavenXpp3Reader();
-        Model model = reader.read(new FileReader(pom));
-        final MavenProject testProject = new MavenProject(model);
-        testProject.setFile(pom.getAbsoluteFile());
-
-        this.projectProperties = testProject.getProperties();
-
-        this.mojo.project = testProject;
-        this.mojo.initRepository();
-
-        assertNotNull(this.mojo.repository);
-        assertEquals(new File("src/test/resources/test-project/_git").getAbsolutePath(),
-            this.mojo.repository.getDirectory().getAbsolutePath());
-    }
-
-    @Test
     public void testAddProperty() {
         Properties properties = this.mojo.project.getProperties();
 
