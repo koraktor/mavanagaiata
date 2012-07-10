@@ -14,7 +14,7 @@ about the Git repository of your project.
 
 ## Installation
 
-Mavanagaiata is available from the Central Reposioty and will be automatically
+Mavanagaiata is available from the Central Repository and will be automatically
 installed by Maven once you add it as a plugin to your project. If you want to
 have the newest features available in the development code or you want to hack
 on the code you are free to clone the Git repository and install it manually.
