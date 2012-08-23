@@ -127,14 +127,17 @@ public class GitTagMojo extends AbstractGitMojo {
             return distance;
         }
 
+        int currentDistance = -1;
         for(RevCommit parent : commit.getParents()) {
             int tagDistance = this.walkCommits(parent, distance + 1);
-            if(tagDistance > -1) {
-                return tagDistance;
+            if (currentDistance == -1) {
+                currentDistance = tagDistance;
+            } else if(-1 < tagDistance && tagDistance < currentDistance) {
+                currentDistance = tagDistance;
             }
         }
 
-        return -1;
+        return currentDistance;
     }
 
 }
