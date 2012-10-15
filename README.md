@@ -173,6 +173,7 @@ included LICENSE file.
 ## Credits
 
 * Sebastian Staudt -- koraktor(at)gmail.com
+* Pablo Graña -- pablo.grana(at)globant.com
 
  [1]: https://github.com/koraktor/mavanagaiata
  [2]: https://github.com/koraktor/mavanagaiata/issues
