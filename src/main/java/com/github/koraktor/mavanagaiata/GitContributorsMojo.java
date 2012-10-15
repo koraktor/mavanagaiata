@@ -101,6 +101,9 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
                 this.sort = "count";
             } else {
                 this.sort = this.sort.toLowerCase();
+                if (!this.sort.equals("date") && !this.sort.equals("name")) {
+                    this.sort = "count";
+                }
             }
 
             final Map<String, Integer> counts = new HashMap<String, Integer>();
@@ -135,7 +138,7 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
                 });
             }
 
-            LinkedHashMap<String, String> contributors = new LinkedHashMap<String, String>();
+            final LinkedHashMap<String, String> contributors = new LinkedHashMap<String, String>();
             for(RevCommit commit : commits) {
                 PersonIdent author = commit.getAuthorIdent();
                 String emailAddress = author.getEmailAddress();
@@ -144,15 +147,37 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
                 }
             }
 
+            List<String> emailAddresses = new ArrayList<String>(contributors.keySet());
+
+            if (!this.sort.equals("date")) {
+                if(this.sort.equals("name")) {
+                    Collections.sort(emailAddresses, new Comparator<String>() {
+                        public int compare(String e1, String e2) {
+                            String n1 = contributors.get(e1);
+                            String n2 = contributors.get(e2);
+                            return n1.compareTo(n2);
+                        }
+                    });
+                } else {
+                    Collections.sort(emailAddresses, new Comparator<String>() {
+                        public int compare(String e1, String e2) {
+                            Integer count1 = counts.get(e1);
+                            Integer count2 = counts.get(e2);
+                            return count2.compareTo(count1);
+                        }
+                    });
+                }
+            }
+
             this.outputStream.println(this.header);
 
-            for(Map.Entry<String, String> contributor : contributors.entrySet()) {
-                this.outputStream.print(this.contributorPrefix + contributor.getValue());
+            for(String emailAddress : emailAddresses) {
+                this.outputStream.print(this.contributorPrefix + contributors.get(emailAddress));
                 if(this.showEmail) {
-                    this.outputStream.print(" (" + contributor.getKey() + ")");
+                    this.outputStream.print(" (" + emailAddress + ")");
                 }
                 if(this.showCounts) {
-                    this.outputStream.print(" (" + counts.get(contributor.getKey()) + ")");
+                    this.outputStream.print(" (" + counts.get(emailAddress) + ")");
                 }
                 this.outputStream.println();
             }
