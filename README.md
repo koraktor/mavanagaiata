@@ -135,6 +135,8 @@ Additionally, there are some properties specific to a goal:
                    (default: `true`)
    * `showEmail`:  Whether to show the email addresses of contributors
                    (default: `false`)
+   * `sort`:       The sorting applied to the list of contributors, may be one
+                   of "count", "date" and "name". (default: `"count"`)
 
 ## About the name
 
