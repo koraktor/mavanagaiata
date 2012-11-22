@@ -181,7 +181,7 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      * @throws IOException if an error occurs while accessing the Git
      *         repository or the changelog file
      */
-    protected void init() throws IOException {
+    protected void init() throws IOException, MojoExecutionException {
         this.commitPrefix = this.commitPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
         this.header       = this.header.replaceAll("([^\\\\])\\\\n", "$1\n");
         this.tagPrefix    = this.tagPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");

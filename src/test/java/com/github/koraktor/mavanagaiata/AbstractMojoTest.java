@@ -34,7 +34,7 @@ public abstract class AbstractMojoTest<T extends AbstractGitMojo> extends TestCa
 
     protected void testError(String errorMessage) {
         try {
-            this.mojo.gitDir = new File("src/test/resources/broken-project/_git").getAbsoluteFile();
+            this.mojo.baseDir = new File("src/test/resources/broken-project").getAbsoluteFile();
             this.mojo.execute();
             fail("No exception thrown.");
         } catch(Exception e) {
@@ -61,7 +61,7 @@ public abstract class AbstractMojoTest<T extends AbstractGitMojo> extends TestCa
         if(!Modifier.isAbstract(mojoClass.getModifiers())) {
             this.mojo = mojoClass.newInstance();
         }
-        this.mojo.gitDir = new File("src/test/resources/test-project/_git").getAbsoluteFile();
+        this.mojo.baseDir = new File("src/test/resources/test-project").getAbsoluteFile();
         this.mojo.project = testProject;
     }
 

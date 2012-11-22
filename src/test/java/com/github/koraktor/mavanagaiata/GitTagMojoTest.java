@@ -51,7 +51,7 @@ public class GitTagMojoTest extends AbstractMojoTest<GitTagMojo> {
 
     @Test
     public void testUntaggedProject() throws IOException, MojoExecutionException {
-        this.mojo.gitDir = new File("src/test/resources/untagged-project/_git");
+        this.mojo.baseDir = new File("src/test/resources/untagged-project");
         this.mojo.initRepository();
         this.mojo.execute();
 

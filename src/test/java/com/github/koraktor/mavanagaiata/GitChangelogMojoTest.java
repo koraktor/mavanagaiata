@@ -134,10 +134,10 @@ public class GitChangelogMojoTest extends AbstractGitOutputMojoTest<GitChangelog
 
     @Test
     public void testUntaggedProject() throws Exception {
+        this.mojo.baseDir           = new File("src/test/resources/untagged-project");
         this.mojo.createGitHubLinks = true;
         this.mojo.gitHubProject     = "mavanagaiata";
         this.mojo.gitHubUser        = "koraktor";
-        this.mojo.gitDir            = new File("src/test/resources/untagged-project/_git");
         this.mojo.footer            = "";
         this.mojo.skipTagged        = true;
         this.mojo.execute();

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
 import org.eclipse.jgit.lib.ObjectId;
@@ -39,11 +40,17 @@ public abstract class AbstractGitMojo extends AbstractMojo {
     protected String baseDateFormat = "MM/dd/yyyy hh:mm a Z";
 
     /**
-     * The project base directory
+     * The project's base directory
+     *
+     * @parameter expression="${mavanagaiata.baseDir}"
+     *            default-value="${basedir}"
+     */
+    protected File baseDir;
+
+    /**
+     * The GIT_DIR path of the Git repository
      *
      * @parameter expression="${mavanagaiata.gitDir}"
-     *            default-value="${basedir}"
-     * @required
      */
     protected File gitDir;
 
@@ -95,31 +102,28 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * @throws IOException if retrieving information from the Git repository
      *         fails
      */
-    protected void initRepository() throws IOException {
+    protected void initRepository() throws IOException, MojoExecutionException {
         FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
         repositoryBuilder.readEnvironment();
 
-        if(this.gitDir == null) {
-            throw new FileNotFoundException("Git directory is not set");
-        } else if(!this.gitDir.exists()) {
-            throw new FileNotFoundException(this.gitDir + " does not exist");
+        if (this.gitDir == null && this.baseDir == null) {
+            throw new MojoExecutionException("Neither baseDir nor gitDir is set.");
+        } else {
+            if (this.baseDir != null && !this.baseDir.exists()) {
+                throw new FileNotFoundException("The baseDir " + this.baseDir + " does not exist");
+            }
+            if (this.gitDir != null && !this.gitDir.exists()) {
+                throw new FileNotFoundException("The gitDir " + this.gitDir + " does not exist");
+            }
         }
 
         repositoryBuilder.setGitDir(this.gitDir);
+        repositoryBuilder.setWorkTree(this.baseDir);
         this.repository = repositoryBuilder.build();
 
-        if(!this.repository.getObjectDatabase().exists()) {
-            repositoryBuilder.setGitDir(null);
-            repositoryBuilder.findGitDir(this.gitDir);
-
-            if(repositoryBuilder.getGitDir() == null) {
-                throw new FileNotFoundException(this.gitDir + " is not inside a Git repository");
-            }
-
-            repositoryBuilder.setObjectDirectory(null);
-            repositoryBuilder.setup();
-
-            this.repository = repositoryBuilder.build();
+        if (!this.repository.getObjectDatabase().exists()) {
+            File path = (this.baseDir == null) ? this.gitDir : this.baseDir;
+            throw new FileNotFoundException(path + " is not a Git repository");
         }
     }
 
@@ -130,7 +134,7 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * @see RevCommit
      * @throws IOException if the repository HEAD could not be retrieved
      */
-    protected RevCommit getHead() throws IOException {
+    protected RevCommit getHead() throws IOException, MojoExecutionException {
         if(this.repository == null) {
             this.initRepository();
         }

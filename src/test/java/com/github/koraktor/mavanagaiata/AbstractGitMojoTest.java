@@ -9,15 +9,11 @@ package com.github.koraktor.mavanagaiata;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.project.MavenProject;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
@@ -44,38 +40,49 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
 
     @Test
     public void testErrors() {
-        this.mojo.gitDir = null;
+        this.mojo.baseDir = null;
         try {
             this.mojo.initRepository();
             fail("No exception thrown");
         } catch(Exception e) {
-            assertEquals(FileNotFoundException.class, e.getClass());
-            assertEquals("Git directory is not set", e.getMessage());
+            assertEquals(MojoExecutionException.class, e.getClass());
+            assertEquals("Neither baseDir nor gitDir is set.", e.getMessage());
         }
 
         String home = System.getenv().get("HOME");
         if (home == null) {
             home = System.getenv().get("HOMEDRIVE") + System.getenv("HOMEPATH");
         }
-        this.mojo.gitDir = new File(home).getAbsoluteFile();
+        this.mojo.baseDir = new File(home).getAbsoluteFile();
         try {
             this.mojo.initRepository();
             fail("No exception thrown");
         } catch(Exception e) {
             assertEquals(FileNotFoundException.class, e.getClass());
-            assertEquals(this.mojo.gitDir + " is not inside a Git repository", e.getMessage());
+            assertEquals(this.mojo.baseDir + " is not a Git repository", e.getMessage());
         }
 
-        this.mojo.gitDir = new File("src/test/resources/non-existant-project/_git");
+        this.mojo.baseDir = new File("src/test/resources/non-existant-project");
         try {
             this.mojo.initRepository();
             fail("No exception thrown");
         } catch(Exception e) {
             assertEquals(FileNotFoundException.class, e.getClass());
-            assertEquals(this.mojo.gitDir + " does not exist", e.getMessage());
+            assertEquals("The baseDir " + this.mojo.baseDir + " does not exist", e.getMessage());
         }
 
-        this.mojo.gitDir = new File("src/test/resources/broken-project/_git");
+        this.mojo.baseDir = null;
+        this.mojo.gitDir  = new File("src/test/resources/non-existant-project/.git");
+        try {
+            this.mojo.initRepository();
+            fail("No exception thrown");
+        } catch(Exception e) {
+            assertEquals(FileNotFoundException.class, e.getClass());
+            assertEquals("The gitDir " + this.mojo.gitDir + " does not exist", e.getMessage());
+        }
+
+        this.mojo.baseDir = null;
+        this.mojo.gitDir  = new File("src/test/resources/broken-project/.git");
         try {
             this.mojo.initRepository();
             fail("No exception thrown");
@@ -86,10 +93,10 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
     }
 
     @Test
-    public void testInitRepository() throws IOException {
+    public void testInitRepository() throws IOException, MojoExecutionException {
         this.mojo.initRepository();
         assertNotNull(this.mojo.repository);
-        assertEquals(new File("src/test/resources/test-project/_git").getAbsolutePath(),
+        assertEquals(new File("src/test/resources/test-project/.git").getAbsolutePath(),
             this.mojo.repository.getDirectory().getAbsolutePath());
     }
 
