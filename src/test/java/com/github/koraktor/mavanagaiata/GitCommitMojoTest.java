@@ -7,6 +7,8 @@
 
 package com.github.koraktor.mavanagaiata;
 
+import java.io.File;
+
 import org.apache.maven.plugin.MojoExecutionException;
 
 import org.junit.Test;
@@ -25,6 +27,27 @@ public class GitCommitMojoTest extends AbstractMojoTest<GitCommitMojo> {
 
         this.assertProperty("03.05.2011", "commit.author.date");
         this.assertProperty("06.05.2011", "commit.committer.date");
+    }
+
+    @Test
+    public void testDirtyWorktree() throws MojoExecutionException {
+        this.mojo.baseDir = new File("src/test/resources/dirty-project");
+        this.mojo.execute();
+
+        String commitAbbrev = this.headId.substring(0, 7) + "-dirty";
+        String headId = this.headId + "-dirty";
+        String email = "koraktor@gmail.com";
+        String name  = "Sebastian Staudt";
+
+        this.assertProperty(commitAbbrev, "commit.abbrev");
+        this.assertProperty("05/03/2011 09:15 AM +0200", "commit.author.date");
+        this.assertProperty(name, "commit.author.name");
+        this.assertProperty(email, "commit.author.email");
+        this.assertProperty("05/06/2011 12:23 PM +0200", "commit.committer.date");
+        this.assertProperty(name, "commit.committer.name");
+        this.assertProperty(email, "commit.committer.email");
+        this.assertProperty(headId, "commit.id");
+        this.assertProperty(headId, "commit.sha");
     }
 
     @Test

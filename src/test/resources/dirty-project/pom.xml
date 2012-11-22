@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ * This code is free software; you can redistribute it and/or modify it under
+ * the terms of the new BSD License.
+ *
+ * Copyright (c) 2011, Sebastian Staudt
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <name>Test Project</name>
+    <groupId>com.github.koraktor</groupId>
+    <artifactId>mavanagaiata-test</artifactId>
+    <version>4.0.0</version>
+</project>

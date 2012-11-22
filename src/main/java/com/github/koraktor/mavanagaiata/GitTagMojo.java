@@ -76,11 +76,14 @@ public class GitTagMojo extends AbstractGitMojo {
                 this.addProperty("tag.name", "");
             } else {
                 this.addProperty("tag.name", this.tag);
-                if(distance == 0) {
-                    this.addProperty("tag.describe", this.tag);
-                } else {
-                    this.addProperty("tag.describe", this.tag + "-" + distance + "-g" + abbrevId);
+                String tagDescribe = this.tag;
+                if (distance > 0) {
+                    tagDescribe += "-" + distance + "-g" + abbrevId;
                 }
+                if (this.isDirty()) {
+                    tagDescribe += "-dirty";
+                }
+                this.addProperty("tag.describe", tagDescribe);
             }
         } catch(IOException e) {
             throw new MojoExecutionException("Unable to read Git tag", e);

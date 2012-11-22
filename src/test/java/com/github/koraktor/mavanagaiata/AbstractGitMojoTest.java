@@ -39,6 +39,18 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
     }
 
     @Test
+    public void testDirty() throws IOException, MojoExecutionException {
+        this.mojo.initRepository();
+        
+        assertFalse(this.mojo.isDirty());
+
+        this.mojo.baseDir = new File("src/test/resources/dirty-project").getAbsoluteFile();
+        this.mojo.initRepository();
+
+        assertTrue(this.mojo.isDirty());
+    }
+
+    @Test
     public void testErrors() {
         this.mojo.baseDir = null;
         try {

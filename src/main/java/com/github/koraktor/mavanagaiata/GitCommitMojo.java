@@ -66,6 +66,11 @@ public class GitCommitMojo extends AbstractGitMojo {
             dateFormat.setTimeZone(author.getTimeZone());
             String commitDate = dateFormat.format(committer.getWhen());
 
+            if (this.isDirty()) {
+                abbrevId += "-dirty";
+                shaId    += "-dirty";
+            }
+
             this.addProperty("commit.abbrev", abbrevId);
             this.addProperty("commit.author.date", authorDate);
             this.addProperty("commit.author.name", author.getName());

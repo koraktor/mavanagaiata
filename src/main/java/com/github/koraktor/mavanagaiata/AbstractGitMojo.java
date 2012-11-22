@@ -16,11 +16,14 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
+import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.treewalk.FileTreeIterator;
 
 /**
  * This abstract Mojo implements initializing a JGit Repository and provides
@@ -125,6 +128,20 @@ public abstract class AbstractGitMojo extends AbstractMojo {
             File path = (this.baseDir == null) ? this.gitDir : this.baseDir;
             throw new FileNotFoundException(path + " is not a Git repository");
         }
+    }
+
+    /**
+     * Returns whether either the working tree or the index of the repository
+     * is dirty
+     *
+     * @return {@code true} if the repository contains changes
+     * @throws IOException if the diff could not be built
+     */
+    protected boolean isDirty() throws IOException {
+        FileTreeIterator workTreeIterator = new FileTreeIterator(this.repository);
+        IndexDiff indexDiff = new IndexDiff(this.repository, this.repository.resolve(this.head), workTreeIterator);
+        indexDiff.diff();
+        return !new Status(indexDiff).isClean();
     }
 
     /**
