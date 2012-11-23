@@ -7,7 +7,6 @@
 
 package com.github.koraktor.mavanagaiata;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -51,7 +50,7 @@ public class GitTagMojoTest extends AbstractMojoTest<GitTagMojo> {
 
     @Test
     public void testUntaggedProject() throws IOException, MojoExecutionException {
-        this.mojo.baseDir = new File("src/test/resources/untagged-project");
+        this.mojo.baseDir = this.getRepository("untagged-project");
         this.mojo.initRepository();
         this.mojo.execute();
 

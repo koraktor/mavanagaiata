@@ -7,7 +7,6 @@
 
 package com.github.koraktor.mavanagaiata;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -134,7 +133,7 @@ public class GitChangelogMojoTest extends AbstractGitOutputMojoTest<GitChangelog
 
     @Test
     public void testUntaggedProject() throws Exception {
-        this.mojo.baseDir           = new File("src/test/resources/untagged-project");
+        this.mojo.baseDir           = this.getRepository("untagged-project");
         this.mojo.createGitHubLinks = true;
         this.mojo.gitHubProject     = "mavanagaiata";
         this.mojo.gitHubUser        = "koraktor";

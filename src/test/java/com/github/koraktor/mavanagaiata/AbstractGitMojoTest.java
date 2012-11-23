@@ -45,7 +45,7 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
     @Test
     public void testDirs() {
         assertNotNull(this.mojo.project);
-        assertEquals(new File("src/test/resources/test-project").getAbsoluteFile(), this.mojo.project.getBasedir());
+        assertEquals(this.getRepository("test-project"), this.mojo.project.getBasedir());
     }
 
     @Test
@@ -53,7 +53,7 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
         assertFalse(this.mojo.isDirty());
 
         this.mojo.cleanup();
-        this.mojo.baseDir = new File("src/test/resources/dirty-project").getAbsoluteFile();
+        this.mojo.baseDir = this.getRepository("dirty-project");
 
         assertTrue(this.mojo.isDirty());
     }
@@ -82,7 +82,7 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
             assertEquals(this.mojo.baseDir + " is not a Git repository", e.getMessage());
         }
 
-        this.mojo.baseDir = new File("src/test/resources/non-existant-project");
+        this.mojo.baseDir = this.getRepository("non-existant-project");
         try {
             this.mojo.initRepository();
             fail("No exception thrown");
@@ -92,7 +92,7 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
         }
 
         this.mojo.baseDir = null;
-        this.mojo.gitDir  = new File("src/test/resources/non-existant-project/.git");
+        this.mojo.gitDir  = new File(this.getRepository("non-existant-project"), ".git");
         try {
             this.mojo.initRepository();
             fail("No exception thrown");
@@ -102,7 +102,7 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
         }
 
         this.mojo.baseDir = null;
-        this.mojo.gitDir  = new File("src/test/resources/broken-project/.git");
+        this.mojo.gitDir  = new File(this.getRepository("broken-project"), ".git");
         try {
             this.mojo.initRepository();
             fail("No exception thrown");
@@ -116,18 +116,13 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
     public void testInitRepository() throws IOException, MojoExecutionException {
         this.mojo.initRepository();
         assertNotNull(this.mojo.repository);
-        assertEquals(new File("src/test/resources/test-project/.git").getAbsolutePath(),
-            this.mojo.repository.getDirectory().getAbsolutePath());
+        assertEquals(new File(this.getRepository("test-project"), ".git"),
+            this.mojo.repository.getDirectory());
     }
 
     @Test
     public void testGetHead() throws IOException, MojoExecutionException {
         RevCommit head = this.mojo.getHead();
-        assertEquals(this.headId, head.getName());
-
-        this.mojo.initRepository();
-
-        head = this.mojo.getHead();
         assertEquals(this.headId, head.getName());
     }
 

@@ -7,8 +7,6 @@
 
 package com.github.koraktor.mavanagaiata;
 
-import java.io.File;
-
 import org.apache.maven.plugin.MojoExecutionException;
 
 import org.junit.Test;
@@ -31,7 +29,7 @@ public class GitCommitMojoTest extends AbstractMojoTest<GitCommitMojo> {
 
     @Test
     public void testDirtyWorktree() throws MojoExecutionException {
-        this.mojo.baseDir = new File("src/test/resources/dirty-project");
+        this.mojo.baseDir = this.getRepository("dirty-project");
         this.mojo.execute();
 
         String commitAbbrev = this.headId.substring(0, 7) + "-dirty";
