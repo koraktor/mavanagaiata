@@ -10,6 +10,7 @@ about the Git repository of your project.
 
 ## Dependencies
 
+ * Apache Commons IO 2.4
  * JGit 2.1.0
 
 ## Installation
