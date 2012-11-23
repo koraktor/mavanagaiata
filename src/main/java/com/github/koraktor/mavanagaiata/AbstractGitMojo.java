@@ -149,7 +149,11 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * @return {@code true} if the repository contains changes
      * @throws IOException if the diff could not be built
      */
-    protected boolean isDirty() throws IOException {
+    protected boolean isDirty() throws IOException, MojoExecutionException {
+        if(this.repository == null) {
+            this.initRepository();
+        }
+
         FileTreeIterator workTreeIterator = new FileTreeIterator(this.repository);
         IndexDiff indexDiff = new IndexDiff(this.repository, this.repository.resolve(this.head), workTreeIterator);
         indexDiff.diff();
