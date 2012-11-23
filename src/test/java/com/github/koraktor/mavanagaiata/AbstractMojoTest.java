@@ -49,7 +49,9 @@ public abstract class AbstractMojoTest<T extends AbstractGitMojo> extends TestCa
     public void setUp() throws Exception {
         File pom = new File("src/test/resources/test-project/pom.xml");
         MavenXpp3Reader reader = new MavenXpp3Reader();
-        Model model = reader.read(new FileReader(pom));
+        FileReader fileReader = new FileReader(pom);
+        Model model = reader.read(fileReader);
+        fileReader.close();
         final MavenProject testProject = new MavenProject(model);
         testProject.setFile(pom.getAbsoluteFile());
 
