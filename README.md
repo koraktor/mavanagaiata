@@ -1,4 +1,4 @@
-Mavanagaiata
+Mavanagaiata [![Build Status](https://secure.travis-ci.org/koraktor/mavanagaiata.png)](https://travis-ci.org/koraktor/mavanagaiata)
 ============
 
 Mavanagaiata – \[maˈvanaˈɡaːjaˈta\] – is a Maven plugin providing information
