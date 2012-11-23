@@ -51,6 +51,15 @@ public abstract class AbstractGitMojo extends AbstractMojo {
     protected File baseDir;
 
     /**
+     * The flag to append to refs if there are changes in the index or working
+     * tree
+     *
+     * @parameter expression="${mavanagaiata.dirtyFlag}"
+     * @since 0.4.0
+     */
+    protected String dirtyFlag = "-dirty";
+
+    /**
      * The GIT_DIR path of the Git repository
      *
      * @parameter expression="${mavanagaiata.gitDir}"

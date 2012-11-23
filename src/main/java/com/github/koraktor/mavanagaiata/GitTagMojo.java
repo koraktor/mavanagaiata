@@ -81,7 +81,7 @@ public class GitTagMojo extends AbstractGitMojo {
                     tagDescribe += "-" + distance + "-g" + abbrevId;
                 }
                 if (this.isDirty()) {
-                    tagDescribe += "-dirty";
+                    tagDescribe += this.dirtyFlag;
                 }
                 this.addProperty("tag.describe", tagDescribe);
             }

@@ -31,6 +31,16 @@ public class GitTagMojoTest extends AbstractMojoTest<GitTagMojo> {
     }
 
     @Test
+    public void testCustomDirtyFlag() throws IOException, MojoExecutionException {
+        this.mojo.dirtyFlag = "*";
+        this.mojo.head = "HEAD^^";
+        this.mojo.execute();
+
+        this.assertProperty("2.0.0*", "tag.describe");
+        this.assertProperty("2.0.0", "tag.name");
+    }
+
+    @Test
     public void testDifferentHead() throws IOException, MojoExecutionException {
         this.mojo.head = "HEAD^^";
         this.mojo.execute();
