@@ -186,7 +186,7 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to read contributors from Git", e);
         } finally {
-            this.closeOutputStream();
+            this.cleanup();
         }
     }
 

@@ -37,6 +37,8 @@ public class GitBranchMojo extends AbstractGitMojo {
             this.addProperty("branch", this.repository.getBranch());
         } catch(IOException e) {
             throw new MojoExecutionException("Unable to read Git branch", e);
+        } finally {
+            this.cleanup();
         }
     }
 }

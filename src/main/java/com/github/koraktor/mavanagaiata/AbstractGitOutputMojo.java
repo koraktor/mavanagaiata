@@ -47,14 +47,19 @@ public abstract class AbstractGitOutputMojo extends AbstractGitMojo {
     /**
      * Flushes the <code>PrintStream</code> and closes it if it is not
      * <code>System.out</code>
+     *
+     * @see PrintStream#close
      */
-    protected void closeOutputStream() {
+    @Override
+    protected void cleanup() {
         if(this.outputStream != null) {
             this.outputStream.flush();
             if(this.outputFile != null) {
                 this.outputStream.close();
             }
         }
+
+        super.cleanup();
     }
 
     /**

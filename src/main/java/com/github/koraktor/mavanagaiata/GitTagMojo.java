@@ -87,6 +87,8 @@ public class GitTagMojo extends AbstractGitMojo {
             }
         } catch(IOException e) {
             throw new MojoExecutionException("Unable to read Git tag", e);
+        } finally {
+           this.cleanup();
         }
     }
 

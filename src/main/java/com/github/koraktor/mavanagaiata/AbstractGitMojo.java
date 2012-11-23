@@ -99,6 +99,18 @@ public abstract class AbstractGitMojo extends AbstractMojo {
     }
 
     /**
+     * Closes the JGit repository object
+     *
+     * @see Repository#close
+     */
+    protected void cleanup() {
+        if (this.repository != null) {
+            this.repository.close();
+            this.repository = null;
+        }
+    }
+
+    /**
      * Initializes a JGit Repository object for further reference
      *
      * @see Repository

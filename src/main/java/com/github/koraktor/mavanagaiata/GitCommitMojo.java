@@ -82,6 +82,8 @@ public class GitCommitMojo extends AbstractGitMojo {
             this.addProperty("commit.sha", shaId);
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to read Git commit information", e);
+        } finally {
+            this.cleanup();
         }
     }
 }
