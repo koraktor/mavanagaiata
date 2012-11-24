@@ -46,6 +46,13 @@
         </developer>
     </developers>
 
+    <contributors>
+        <contributor>
+            <name>Pablo Graña</name>
+            <email>pablo.grana@globant.com</email>
+        </contributor>
+    </contributors>
+
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
