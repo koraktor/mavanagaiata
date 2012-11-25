@@ -31,7 +31,7 @@ import org.eclipse.jgit.revwalk.RevWalk;
  *
  * @author Sebastian Staudt
  * @goal contributors
- * @phase compile
+ * @phase process-resources
  * @requiresProject
  * @since 0.2.0
  */
