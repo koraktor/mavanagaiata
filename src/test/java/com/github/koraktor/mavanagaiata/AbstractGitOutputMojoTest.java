@@ -33,7 +33,7 @@ public abstract class AbstractGitOutputMojoTest<T extends AbstractGitOutputMojo>
         super.setUp();
 
         File tempFile = File.createTempFile("output", null);
-        this.mojo.outputFile = tempFile;
+        this.mojo.setOutputFile(tempFile);
         this.reader = new BufferedReader(new FileReader(tempFile));
     }
 
@@ -41,22 +41,23 @@ public abstract class AbstractGitOutputMojoTest<T extends AbstractGitOutputMojo>
     @Override
     public void tearDown() throws IOException {
         this.reader.close();
-        if(this.mojo.outputFile != null && !this.mojo.outputFile.delete()) {
-            this.mojo.outputFile.deleteOnExit();
+        if(this.mojo.getOutputFile() != null &&
+           !this.mojo.getOutputFile().delete()) {
+            this.mojo.getOutputFile().deleteOnExit();
         }
     }
 
     @Test
     public void testNonExistantDirectory() throws Exception {
         this.reader.close();
-        if(!this.mojo.outputFile.delete()) {
-            this.mojo.outputFile.deleteOnExit();
+        if(!this.mojo.getOutputFile().delete()) {
+            this.mojo.getOutputFile().deleteOnExit();
         }
         File tempDir  = File.createTempFile("temp", null);
         tempDir.delete();
         tempDir.deleteOnExit();
         File tempFile = new File(tempDir + "/output");
-        this.mojo.outputFile = tempFile;
+        this.mojo.setOutputFile(tempFile);
         this.mojo.execute();
 
         this.reader = new BufferedReader(new FileReader(tempFile));
@@ -75,7 +76,7 @@ public abstract class AbstractGitOutputMojoTest<T extends AbstractGitOutputMojo>
     public void testSetOutputFile() {
         File file = new File("./test");
         this.mojo.setOutputFile(file);
-        assertEquals(file, this.mojo.outputFile);
+        assertEquals(file, this.mojo.getOutputFile());
     }
 
     @Test
@@ -86,10 +87,10 @@ public abstract class AbstractGitOutputMojoTest<T extends AbstractGitOutputMojo>
             System.setOut(stream);
 
             this.reader.close();
-            if(!this.mojo.outputFile.delete()) {
-                this.mojo.outputFile.deleteOnExit();
+            if(!this.mojo.getOutputFile().delete()) {
+                this.mojo.getOutputFile().deleteOnExit();
             }
-            this.mojo.outputFile = null;
+            this.mojo.setOutputFile(null);
             this.mojo.execute();
 
             byte[] output = oStream.toByteArray();

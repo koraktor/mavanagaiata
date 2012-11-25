@@ -80,6 +80,13 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
     protected String header = "Changelog\n=========\n";
 
     /**
+     * The file to write the changelog to
+     *
+     * @parameter property="mavanagaiata.changelog.outputFile"
+     */
+    protected File outputFile;
+
+    /**
      * Whether to skip tagged commits' messages
      *
      * This is useful when usually tagging commits like "Version bump to X.Y.Z"
@@ -176,6 +183,15 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
     }
 
     /**
+     * Returns the output file for the generated changelog
+     *
+     * @return The output file for the generated changelog
+     */
+    public File getOutputFile() {
+        return this.outputFile;
+    }
+
+    /**
      * Initializes this mojo
      *
      * @throws IOException if an error occurs while accessing the Git
@@ -257,9 +273,9 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      * Sets the output file for the generated changelog
      *
      * @param outputFile The output file for the generated changelog
-     * @parameter expression="${mavanagaiata.changelog.outputFile}"
      */
     public void setOutputFile(File outputFile) {
         this.outputFile = outputFile;
     }
+
 }

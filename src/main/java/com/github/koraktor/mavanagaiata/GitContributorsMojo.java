@@ -52,6 +52,13 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
     protected String header = "Contributors\n============\n";
 
     /**
+     * The file to write the contributors list to
+     *
+     * @parameter property="mavanagaiata.contributors.outputFile"
+     */
+    protected File outputFile;
+
+    /**
      * Whether the number of contributions should be listed
      *
      * @parameter expression="${mavanagaiata.contributors.showCounts}"
@@ -191,12 +198,21 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
     }
 
     /**
-     * Sets the output file for the generated changelog
+     * Returns the output file for the generated contributors list
      *
-     * @param outputFile The output file for the generated changelog
-     * @parameter expression="${mavanagaiata.contributors.outputFile}"
+     * @return The output file for the generated contributors list
+     */
+    public File getOutputFile() {
+        return this.outputFile;
+    }
+
+    /**
+     * Sets the output file for the generated contributors list
+     *
+     * @param outputFile The output file for the generated contributors list
      */
     public void setOutputFile(File outputFile) {
         this.outputFile = outputFile;
     }
+
 }
