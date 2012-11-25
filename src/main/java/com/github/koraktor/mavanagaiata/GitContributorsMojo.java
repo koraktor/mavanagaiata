@@ -52,7 +52,7 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
     protected String header = "Contributors\n============\n";
 
     /**
-     * Whether the number of contributoions should be listed
+     * Whether the number of contributions should be listed
      *
      * @parameter expression="${mavanagaiata.contributors.showCounts}"
      */
