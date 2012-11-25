@@ -40,42 +40,42 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
     /**
      * Whether to create links to GitHub's compare view
      *
-     * @parameter expression="${mavanagaiata.changelog.gitHubLinks}"
+     * @parameter property="mavanagaiata.changelog.gitHubLinks"
      */
     protected boolean createGitHubLinks = false;
 
     /**
      * The string to prepend to every commit message
      *
-     * @parameter expression="${mavanagaiata.changelog.commitPrefix}"
+     * @parameter property="mavanagaiata.changelog.commitPrefix"
      */
     protected String commitPrefix = " * ";
 
     /**
      * The date format to use for tag output
      *
-     * @parameter expression="${mavanagaiata.changelog.dateFormat}"
+     * @parameter property="mavanagaiata.changelog.dateFormat"
      */
     protected String dateFormat = baseDateFormat;
 
     /**
      * The project name for GitHub links
      *
-     * @parameter expression="${mavanagaiata.changelog.gitHubProject}"
+     * @parameter property="mavanagaiata.changelog.gitHubProject"
      */
     protected String gitHubProject;
 
     /**
      * The user name for GitHub links
      *
-     * @parameter expression="${mavanagaiata.changelog.gitHubUser}"
+     * @parameter property="mavanagaiata.changelog.gitHubUser"
      */
     protected String gitHubUser;
 
     /**
      * The header to print above the changelog
      *
-     * @parameter expression="${mavanagaiata.changelog.header}"
+     * @parameter property="mavanagaiata.changelog.header"
      */
     protected String header = "Changelog\n=========\n";
 
@@ -91,14 +91,14 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      *
      * This is useful when usually tagging commits like "Version bump to X.Y.Z"
      *
-     * @parameter expression="${mavanagaiata.changelog.skipTagged}"
+     * @parameter property="mavanagaiata.changelog.skipTagged"
      */
     protected boolean skipTagged = false;
 
     /**
      * The string to prepend to the tag name
      *
-     * @parameter expression="${mavanagaiata.changelog.tagPrefix}"
+     * @parameter property="mavanagaiata.changelog.tagPrefix"
      */
     protected String tagPrefix = "\nVersion ";
 

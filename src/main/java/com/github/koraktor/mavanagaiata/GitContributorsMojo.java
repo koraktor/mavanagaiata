@@ -40,14 +40,14 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
     /**
      * The string to prepend to every contributor name
      *
-     * @parameter expression="${mavanagaiata.contributors.contributorPrefix}"
+     * @parameter property="mavanagaiata.contributors.contributorPrefix"
      */
     protected String contributorPrefix = " * ";
 
     /**
      * The header to print above the changelog
      *
-     * @parameter expression="${mavanagaiata.contributors.header}"
+     * @parameter property="mavanagaiata.contributors.header"
      */
     protected String header = "Contributors\n============\n";
 
@@ -61,21 +61,21 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
     /**
      * Whether the number of contributions should be listed
      *
-     * @parameter expression="${mavanagaiata.contributors.showCounts}"
+     * @parameter property="mavanagaiata.contributors.showCounts"
      */
     protected boolean showCounts = true;
 
     /**
      * Whether the email addresses of contributors should be listed
      *
-     * @parameter expression="${mavanagaiata.contributors.showEmail}"
+     * @parameter property="mavanagaiata.contributors.showEmail"
      */
     protected boolean showEmail = false;
 
     /**
      * The method used to sort contributors
      *
-     * @parameter expression="${mavanagaiata.contributors.sort}"
+     * @parameter property="mavanagaiata.contributors.sort"
      */
     protected String sort;
 

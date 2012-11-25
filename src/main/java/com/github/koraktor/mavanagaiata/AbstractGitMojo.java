@@ -38,15 +38,15 @@ public abstract class AbstractGitMojo extends AbstractMojo {
     /**
      * The date format to use for various dates
      *
-     * @parameter expression="${mavanagaiata.dateFormat}"
+     * @parameter property="mavanagaiata.dateFormat"
      */
     protected String baseDateFormat = "MM/dd/yyyy hh:mm a Z";
 
     /**
      * The project's base directory
      *
-     * @parameter expression="${mavanagaiata.baseDir}"
-     *            default-value="${basedir}"
+     * @parameter property="mavanagaiata.baseDir"
+     *            default-value="${project.basedir}"
      */
     protected File baseDir;
 
@@ -54,7 +54,7 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * The flag to append to refs if there are changes in the index or working
      * tree
      *
-     * @parameter expression="${mavanagaiata.dirtyFlag}"
+     * @parameter property="mavanagaiata.dirtyFlag"
      * @since 0.4.0
      */
     protected String dirtyFlag = "-dirty";
@@ -62,21 +62,21 @@ public abstract class AbstractGitMojo extends AbstractMojo {
     /**
      * The GIT_DIR path of the Git repository
      *
-     * @parameter expression="${mavanagaiata.gitDir}"
+     * @parameter property="mavanagaiata.gitDir"yö
      */
     protected File gitDir;
 
     /**
      * The commit or ref to use as starting point for operations
      *
-     * @parameter expression="${mavanagaiata.head}"
+     * @parameter property="mavanagaiata.head"
      */
     protected String head = "HEAD";
 
     /**
      * The Maven project
      *
-     * @parameter expression="${project}"
+     * @parameter property="project"
      * @readonly
      */
     protected MavenProject project;

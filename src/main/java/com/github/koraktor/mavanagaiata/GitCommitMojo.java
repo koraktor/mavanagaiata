@@ -38,7 +38,7 @@ public class GitCommitMojo extends AbstractGitMojo {
     /**
      * The date format to use for committer and author dates
      *
-     * @parameter expression="${mavanagaiata.commit.dateFormat}"
+     * @parameter property="mavanagaiata.commit.dateFormat"
      * @since 0.2.1
      */
     protected String dateFormat = baseDateFormat;
