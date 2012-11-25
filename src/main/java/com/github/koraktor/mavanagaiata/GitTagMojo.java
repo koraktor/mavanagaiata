@@ -45,7 +45,7 @@ public class GitTagMojo extends AbstractGitMojo {
      *
      * @throws MojoExecutionException if the tags cannot be read
      */
-    public void execute() throws MojoExecutionException {
+    public void run() throws MojoExecutionException {
         try {
             this.tag = null;
             RevCommit head = this.getHead();
@@ -87,8 +87,6 @@ public class GitTagMojo extends AbstractGitMojo {
             }
         } catch(IOException e) {
             throw new MojoExecutionException("Unable to read Git tag", e);
-        } finally {
-           this.cleanup();
         }
     }
 

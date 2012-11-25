@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
@@ -27,11 +26,12 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
     @Override
     public void setUp() throws Exception {
         this.mojo = new AbstractGitMojo() {
-            public void execute()
-                    throws MojoExecutionException, MojoFailureException {}
+            public void run()
+                    throws MojoExecutionException {}
         };
 
         super.setUp();
+        this.mojo.init();
     }
 
     @After
@@ -54,6 +54,7 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
 
         this.mojo.cleanup();
         this.mojo.baseDir = this.getRepository("dirty-project");
+        this.mojo.init();
 
         assertTrue(this.mojo.isDirty());
     }

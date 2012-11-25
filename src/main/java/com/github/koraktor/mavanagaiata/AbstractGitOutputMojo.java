@@ -8,11 +8,12 @@
 package com.github.koraktor.mavanagaiata;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * This abstract Mojo implements writing output to a <code>PrintStream</code>
@@ -63,24 +64,39 @@ public abstract class AbstractGitOutputMojo extends AbstractGitMojo {
     }
 
     /**
+     * Initializes the output stream for the generated content
+     *
+     * @throws MojoExecutionException if the output file can not be opened
+     */
+    @Override
+    protected void init() throws MojoExecutionException {
+        this.initOutputStream();
+
+        super.init();
+    }
+
+    /**
      * Initializes the <code>PrintStream</code> to use
      *
      * This is <code>System.out</code> if no output file is given (default).
      * Otherwise the parent directories of <code>outputFile</code> are created
      * and a new <code>PrintStream</code> for that file is created.
      *
-     * @throws FileNotFoundException if the file specified by
+     * @throws MojoExecutionException if the file specified by
      *         <code>outputFile</code> cannot be found
      */
-    protected void initOutputStream()
-            throws FileNotFoundException, UnsupportedEncodingException {
+    protected void initOutputStream() throws MojoExecutionException {
         if(this.getOutputFile() == null) {
             this.outputStream = System.out;
         } else {
-            if(!this.getOutputFile().getParentFile().exists()) {
-                this.getOutputFile().getParentFile().mkdirs();
+            try {
+                if(!this.getOutputFile().getParentFile().exists()) {
+                    this.getOutputFile().getParentFile().mkdirs();
+                }
+                this.outputStream = new PrintStream(this.getOutputFile(), this.encoding);
+            } catch (IOException e) {
+                throw new MojoExecutionException("Could not initialize output file.", e);
             }
-            this.outputStream = new PrintStream(this.getOutputFile(), this.encoding);
         }
     }
 

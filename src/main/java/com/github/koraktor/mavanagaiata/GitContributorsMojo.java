@@ -87,14 +87,11 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
      * @throws MojoExecutionException if retrieving information from the Git
      *         repository fails
      */
-    public void execute() throws MojoExecutionException {
+    public void run() throws MojoExecutionException {
         this.contributorPrefix = this.contributorPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
         this.header            = this.header.replaceAll("([^\\\\])\\\\n", "$1\n");
 
         try {
-            this.initRepository();
-            this.initOutputStream();
-
             RevWalk revWalk = new RevWalk(this.repository);
             revWalk.markStart(this.getHead());
 
@@ -192,8 +189,6 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
             this.insertFooter();
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to read contributors from Git", e);
-        } finally {
-            this.cleanup();
         }
     }
 

@@ -52,7 +52,7 @@ public class GitCommitMojo extends AbstractGitMojo {
      * @throws MojoExecutionException if retrieving information from the Git
      *         repository fails
      */
-    public void execute() throws MojoExecutionException {
+    public void run() throws MojoExecutionException {
         try {
             RevCommit commit = this.getHead();
             String abbrevId = this.repository.getObjectDatabase().newReader()
@@ -82,8 +82,6 @@ public class GitCommitMojo extends AbstractGitMojo {
             this.addProperty("commit.sha", shaId);
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to read Git commit information", e);
-        } finally {
-            this.cleanup();
         }
     }
 }

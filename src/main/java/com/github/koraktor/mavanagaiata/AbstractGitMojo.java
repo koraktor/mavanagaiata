@@ -91,6 +91,26 @@ public abstract class AbstractGitMojo extends AbstractMojo {
     protected Repository repository;
 
     /**
+     * Generic execution sequence for a Mavanagaiata mojo
+     * <p>
+     * Will initialize any needed resources, run the actual mojo code and
+     * cleanup afterwards.
+     *
+     * @see #cleanup
+     * @see #init
+     * @see #run
+     * @throws MojoExecutionException
+     */
+    public final void execute() throws MojoExecutionException {
+        try {
+            this.init();
+            this.run();
+        } finally {
+            this.cleanup();
+        }
+    }
+
+    /**
      * Saves a property with the given name into the project's properties
      *
      * The value will be stored two times – with "mavanagaiata" and "mvngit" as
@@ -116,6 +136,22 @@ public abstract class AbstractGitMojo extends AbstractMojo {
         if (this.repository != null) {
             this.repository.close();
             this.repository = null;
+        }
+    }
+
+    /**
+     * Generic initialization for all Mavanagaiata mojos
+     * <p>
+     * This will initialize the JGit repository instance for further usage by
+     * the mojo.
+     *
+     * @throws MojoExecutionException if the repository cannot be initialized
+     */
+    protected void init() throws MojoExecutionException {
+        try {
+            this.initRepository();
+        } catch (IOException e) {
+            throw new MojoExecutionException("Unable to initialize Mojo", e);
         }
     }
 
@@ -159,10 +195,6 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * @throws IOException if the diff could not be built
      */
     protected boolean isDirty() throws IOException, MojoExecutionException {
-        if(this.repository == null) {
-            this.initRepository();
-        }
-
         FileTreeIterator workTreeIterator = new FileTreeIterator(this.repository);
         IndexDiff indexDiff = new IndexDiff(this.repository, this.repository.resolve(this.head), workTreeIterator);
         indexDiff.diff();
@@ -177,13 +209,16 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * @throws IOException if the repository HEAD could not be retrieved
      */
     protected RevCommit getHead() throws IOException, MojoExecutionException {
-        if(this.repository == null) {
-            this.initRepository();
-        }
-
         RevWalk revWalk = new RevWalk(this.repository);
         ObjectId head = this.repository.resolve(this.head);
         return revWalk.parseCommit(head);
     }
+
+    /**
+     * The actual implementation of the mojo
+     * <p>
+     * This is called internally by {@link #init}.
+     */
+    protected abstract void run() throws MojoExecutionException;
 
 }

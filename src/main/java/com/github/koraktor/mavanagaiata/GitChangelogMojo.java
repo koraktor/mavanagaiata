@@ -110,10 +110,8 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      * @throws MojoExecutionException if retrieving information from the Git
      *         repository fails
      */
-    public void execute() throws MojoExecutionException {
+    public void run() throws MojoExecutionException {
         try {
-            this.init();
-
             RevWalk revWalk = new RevWalk(this.repository);
             Map<String, Ref> tagRefs = this.repository.getTags();
             Map<String, RevTag> tags = new HashMap<String, RevTag>();
@@ -177,8 +175,6 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
             this.insertFooter();
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to generate changelog from Git", e);
-        } finally {
-            this.cleanup();
         }
     }
 
@@ -197,7 +193,7 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      * @throws IOException if an error occurs while accessing the Git
      *         repository or the changelog file
      */
-    protected void init() throws IOException, MojoExecutionException {
+    protected void init() throws MojoExecutionException {
         this.commitPrefix = this.commitPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
         this.header       = this.header.replaceAll("([^\\\\])\\\\n", "$1\n");
         this.tagPrefix    = this.tagPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
@@ -207,8 +203,7 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
             this.createGitHubLinks = false;
         }
 
-        this.initRepository();
-        this.initOutputStream();
+        super.init();
     }
 
     /**

@@ -31,14 +31,11 @@ public class GitBranchMojo extends AbstractGitMojo {
      * @throws MojoExecutionException if retrieving information from the Git
      *         repository fails
      */
-    public void execute() throws MojoExecutionException {
+    public void run() throws MojoExecutionException {
         try {
-            this.initRepository();
             this.addProperty("branch", this.repository.getBranch());
         } catch(IOException e) {
             throw new MojoExecutionException("Unable to read Git branch", e);
-        } finally {
-            this.cleanup();
         }
     }
 }

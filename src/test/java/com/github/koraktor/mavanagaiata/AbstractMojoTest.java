@@ -23,10 +23,17 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
+import org.eclipse.jgit.lib.Repository;
+
 import org.junit.Before;
 
 import junit.framework.ComparisonFailure;
 import junit.framework.TestCase;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public abstract class AbstractMojoTest<T extends AbstractGitMojo> extends TestCase {
 
@@ -62,7 +69,12 @@ public abstract class AbstractMojoTest<T extends AbstractGitMojo> extends TestCa
     protected void testError(String errorMessage) {
         try {
             this.mojo.baseDir = this.getRepository("broken-project");
-            this.mojo.execute();
+            this.mojo.repository = mock(Repository.class, new Answer() {
+                public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                    throw new IOException();
+                }
+            });
+            this.mojo.run();
             fail("No exception thrown.");
         } catch(Exception e) {
             assertEquals(MojoExecutionException.class, e.getClass());
