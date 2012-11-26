@@ -20,22 +20,28 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
 
     @Before
-    @Override
-    public void setUp() throws Exception {
+    public void setup() throws Exception {
         this.mojo = new AbstractGitMojo() {
             public void run()
                     throws MojoExecutionException {}
         };
 
-        super.setUp();
+        super.setup();
         this.mojo.init();
     }
 
     @After
-    @Override
     public void tearDown() {
         if (this.mojo != null) {
             this.mojo.cleanup();
@@ -44,19 +50,19 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
 
     @Test
     public void testDirs() {
-        assertNotNull(this.mojo.project);
-        assertEquals(this.getRepository("test-project"), this.mojo.project.getBasedir());
+        assertThat(this.mojo.project, is(notNullValue()));
+        assertThat(this.mojo.project.getBasedir(), is(equalTo(this.getRepository("test-project"))));
     }
 
     @Test
     public void testDirty() throws IOException, MojoExecutionException {
-        assertFalse(this.mojo.isDirty());
+        assertThat(this.mojo.isDirty(), is(false));
 
         this.mojo.cleanup();
         this.mojo.baseDir = this.getRepository("dirty-project");
         this.mojo.init();
 
-        assertTrue(this.mojo.isDirty());
+        assertThat(this.mojo.isDirty(), is(true));
     }
 
     @Test
@@ -66,8 +72,8 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
             this.mojo.initRepository();
             fail("No exception thrown");
         } catch(Exception e) {
-            assertEquals(MojoExecutionException.class, e.getClass());
-            assertEquals("Neither baseDir nor gitDir is set.", e.getMessage());
+            assertThat(e, is(instanceOf(MojoExecutionException.class)));
+            assertThat(e.getMessage(), is(equalTo("Neither baseDir nor gitDir is set.")));
         }
 
         String home = System.getenv().get("HOME");
@@ -79,8 +85,8 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
             this.mojo.initRepository();
             fail("No exception thrown");
         } catch(Exception e) {
-            assertEquals(FileNotFoundException.class, e.getClass());
-            assertEquals(this.mojo.baseDir + " is not a Git repository", e.getMessage());
+            assertThat(e, is(instanceOf(FileNotFoundException.class)));
+            assertThat(e.getMessage(), is(equalTo(this.mojo.baseDir + " is not a Git repository")));
         }
 
         this.mojo.baseDir = this.getRepository("non-existant-project");
@@ -88,8 +94,8 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
             this.mojo.initRepository();
             fail("No exception thrown");
         } catch(Exception e) {
-            assertEquals(FileNotFoundException.class, e.getClass());
-            assertEquals("The baseDir " + this.mojo.baseDir + " does not exist", e.getMessage());
+            assertThat(e, is(instanceOf(FileNotFoundException.class)));
+            assertThat(e.getMessage(), is(equalTo("The baseDir " + this.mojo.baseDir + " does not exist")));
         }
 
         this.mojo.baseDir = null;
@@ -98,8 +104,8 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
             this.mojo.initRepository();
             fail("No exception thrown");
         } catch(Exception e) {
-            assertEquals(FileNotFoundException.class, e.getClass());
-            assertEquals("The gitDir " + this.mojo.gitDir + " does not exist", e.getMessage());
+            assertThat(e, is(instanceOf(FileNotFoundException.class)));
+            assertThat(e.getMessage(), is(equalTo("The gitDir " + this.mojo.gitDir + " does not exist")));
         }
 
         this.mojo.baseDir = null;
@@ -108,23 +114,23 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
             this.mojo.initRepository();
             fail("No exception thrown");
         } catch(Exception e) {
-            assertEquals(IOException.class, e.getClass());
-            assertEquals("Unknown repository format \"42\"; expected \"0\".", e.getMessage());
+            assertThat(e, is(instanceOf(IOException.class)));
+            assertThat(e.getMessage(), is(equalTo("Unknown repository format \"42\"; expected \"0\".")));
         }
     }
 
     @Test
     public void testInitRepository() throws IOException, MojoExecutionException {
         this.mojo.initRepository();
-        assertNotNull(this.mojo.repository);
-        assertEquals(new File(this.getRepository("test-project"), ".git"),
-            this.mojo.repository.getDirectory());
+        assertThat(this.mojo.project, is(notNullValue()));
+        assertThat(this.mojo.repository.getDirectory(),
+           is(equalTo(new File(this.getRepository("test-project"), ".git"))));
     }
 
     @Test
     public void testGetHead() throws IOException, MojoExecutionException {
         RevCommit head = this.mojo.getHead();
-        assertEquals(this.headId, head.getName());
+        assertThat(head.getName(), is(equalTo(this.headId)));
     }
 
     @Test
@@ -133,15 +139,15 @@ public class AbstractGitMojoTest extends AbstractMojoTest<AbstractGitMojo> {
 
         this.mojo.head = "HEAD^";
         head = this.mojo.getHead().getName();
-        assertEquals("f391f31093fd200534a4fb2e517af89efbdc5fe5", head);
+        assertThat(head, is(equalTo("f391f31093fd200534a4fb2e517af89efbdc5fe5")));
 
         this.mojo.head = "HEAD~3";
         head = this.mojo.getHead().getName();
-        assertEquals("d50fdcd2858ac9531d6dd87c1de3b623fa243204", head);
+        assertThat(head, is(equalTo("d50fdcd2858ac9531d6dd87c1de3b623fa243204")));
 
         this.mojo.head = "HEAD^~2^";
         head = this.mojo.getHead().getName();
-        assertEquals("0e7d0435e30d0f726d62ccadd202c9240df56019", head);
+        assertThat(head, is(equalTo("0e7d0435e30d0f726d62ccadd202c9240df56019")));
     }
 
     @Test

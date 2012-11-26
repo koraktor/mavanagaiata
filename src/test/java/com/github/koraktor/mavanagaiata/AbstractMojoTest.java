@@ -26,18 +26,24 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.jgit.lib.Repository;
 
 import org.junit.Before;
+import org.junit.rules.ExpectedException;
 
 import junit.framework.ComparisonFailure;
-import junit.framework.TestCase;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-public abstract class AbstractMojoTest<T extends AbstractGitMojo> extends TestCase {
+public abstract class AbstractMojoTest<T extends AbstractGitMojo> {
 
     protected static File tempDir;
+
+    protected ExpectedException expectedException = ExpectedException.none();
 
     protected String headId = "c823991841bda5f99919ae59a4e59b5607f0450b";
 
@@ -77,15 +83,14 @@ public abstract class AbstractMojoTest<T extends AbstractGitMojo> extends TestCa
             this.mojo.run();
             fail("No exception thrown.");
         } catch(Exception e) {
-            assertEquals(MojoExecutionException.class, e.getClass());
-            assertEquals(errorMessage, e.getMessage());
-            assertEquals(IOException.class, e.getCause().getClass());
+            assertThat(e, is(instanceOf(MojoExecutionException.class)));
+            assertThat(e.getMessage(), is(equalTo(errorMessage)));
+            assertThat(e.getCause(), is(instanceOf(IOException.class)));
         }
     }
 
     @Before
-    @Override
-    public void setUp() throws Exception {
+    public void setup() throws Exception {
         this.setupRepositories();
 
         File pom = new File(this.getRepository("test-project"), "pom.xml");
@@ -114,9 +119,9 @@ public abstract class AbstractMojoTest<T extends AbstractGitMojo> extends TestCa
         }
     }
 
-    protected void assertProperty(String value, String key) {
+    protected void assertProperty(Object value, String key) {
         for(String prefix : this.mojo.propertyPrefixes) {
-            assertEquals(value, this.projectProperties.get(prefix + "." + key));
+            assertThat(this.projectProperties.get(prefix + "." + key), is(equalTo(value)));
         }
     }
 

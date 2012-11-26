@@ -20,6 +20,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
+
 public abstract class AbstractGitOutputMojoTest<T extends AbstractGitOutputMojo>
         extends AbstractMojoTest<T> {
 
@@ -29,8 +33,8 @@ public abstract class AbstractGitOutputMojoTest<T extends AbstractGitOutputMojo>
 
     @Before
     @Override
-    public void setUp() throws Exception {
-        super.setUp();
+    public void setup() throws Exception {
+        super.setup();
 
         File tempFile = File.createTempFile("output", null);
         this.mojo.setOutputFile(tempFile);
@@ -38,7 +42,6 @@ public abstract class AbstractGitOutputMojoTest<T extends AbstractGitOutputMojo>
     }
 
     @After
-    @Override
     public void tearDown() throws IOException {
         this.reader.close();
         if(this.mojo.getOutputFile() != null &&
@@ -76,7 +79,7 @@ public abstract class AbstractGitOutputMojoTest<T extends AbstractGitOutputMojo>
     public void testSetOutputFile() {
         File file = new File("./test");
         this.mojo.setOutputFile(file);
-        assertEquals(file, this.mojo.getOutputFile());
+        assertThat(this.mojo.getOutputFile(), is(equalTo(file)));
     }
 
     @Test
