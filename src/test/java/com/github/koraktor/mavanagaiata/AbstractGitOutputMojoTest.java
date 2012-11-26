@@ -105,4 +105,8 @@ public abstract class AbstractGitOutputMojoTest<T extends AbstractGitOutputMojo>
         }
     }
 
+    protected void assertLine(String expectedLine) throws IOException {
+        assertThat(this.reader.readLine(), is(equalTo(expectedLine)));
+    }
+
 }

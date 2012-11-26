@@ -14,7 +14,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 public class GitChangelogMojoTest extends AbstractGitOutputMojoTest<GitChangelogMojo> {
@@ -63,29 +62,29 @@ public class GitChangelogMojoTest extends AbstractGitOutputMojoTest<GitChangelog
         this.mojo.tagPrefix         = "\nTag ";
         this.mojo.execute();
 
-        assertThat(this.reader.readLine(), is(equalTo("History")));
-        assertThat(this.reader.readLine(), is(equalTo("-------")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("Commits on branch \"master\"")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("- Snapshot for version 3.0.0")));
-        assertThat(this.reader.readLine(), is(equalTo("- Added project name")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("See Git history for changes in the \"master\" branch since version 2.0.0 at: https://github.com/koraktor/mavanagaiata/compare/2.0.0...master")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("Tag 2.0.0 - 03.05.2011")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("- Version bump to 2.0.0")));
-        assertThat(this.reader.readLine(), is(equalTo("- Snapshot for version 2.0.0")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("See Git history for version 2.0.0 at: https://github.com/koraktor/mavanagaiata/compare/1.0.0...2.0.0")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("Tag 1.0.0 - 03.05.2011")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("- Initial commit")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("See Git history for version 1.0.0 at: https://github.com/koraktor/mavanagaiata/commits/1.0.0")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
+        this.assertLine("History");
+        this.assertLine("-------");
+        this.assertLine("");
+        this.assertLine("Commits on branch \"master\"");
+        this.assertLine("");
+        this.assertLine("- Snapshot for version 3.0.0");
+        this.assertLine("- Added project name");
+        this.assertLine("");
+        this.assertLine("See Git history for changes in the \"master\" branch since version 2.0.0 at: https://github.com/koraktor/mavanagaiata/compare/2.0.0...master");
+        this.assertLine("");
+        this.assertLine("Tag 2.0.0 - 03.05.2011");
+        this.assertLine("");
+        this.assertLine("- Version bump to 2.0.0");
+        this.assertLine("- Snapshot for version 2.0.0");
+        this.assertLine("");
+        this.assertLine("See Git history for version 2.0.0 at: https://github.com/koraktor/mavanagaiata/compare/1.0.0...2.0.0");
+        this.assertLine("");
+        this.assertLine("Tag 1.0.0 - 03.05.2011");
+        this.assertLine("");
+        this.assertLine("- Initial commit");
+        this.assertLine("");
+        this.assertLine("See Git history for version 1.0.0 at: https://github.com/koraktor/mavanagaiata/commits/1.0.0");
+        this.assertLine("");
         assertMatches("Created by Mavanagaiata on \\d{2}/\\d{2}/\\d{2}", reader.readLine());
         assertThat(this.reader.ready(), is(false));
     }
@@ -95,19 +94,19 @@ public class GitChangelogMojoTest extends AbstractGitOutputMojoTest<GitChangelog
         this.mojo.head = "HEAD^^";
         this.mojo.execute();
 
-        assertThat(this.reader.readLine(), is(equalTo("Changelog")));
-        assertThat(this.reader.readLine(), is(equalTo("=========")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("Version 2.0.0 - 05/03/2011 07:18 AM +0200")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo(" * Version bump to 2.0.0")));
-        assertThat(this.reader.readLine(), is(equalTo(" * Snapshot for version 2.0.0")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("Version 1.0.0 - 05/03/2011 07:18 AM +0200")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo(" * Initial commit")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
+        this.assertLine("Changelog");
+        this.assertLine("=========");
+        this.assertLine("");
+        this.assertLine("");
+        this.assertLine("Version 2.0.0 - 05/03/2011 07:18 AM +0200");
+        this.assertLine("");
+        this.assertLine(" * Version bump to 2.0.0");
+        this.assertLine(" * Snapshot for version 2.0.0");
+        this.assertLine("");
+        this.assertLine("Version 1.0.0 - 05/03/2011 07:18 AM +0200");
+        this.assertLine("");
+        this.assertLine(" * Initial commit");
+        this.assertLine("");
         assertMatches("Generated by Mavanagaiata at \\d{2}/\\d{2}/\\d{4} \\d{2}:\\d{2} [AP]M [+\\-]\\d{4}", this.reader.readLine());
         assertThat(this.reader.ready(), is(false));
     }
@@ -118,20 +117,20 @@ public class GitChangelogMojoTest extends AbstractGitOutputMojoTest<GitChangelog
         this.mojo.skipTagged = true;
         this.mojo.execute();
 
-        assertThat(this.reader.readLine(), is(equalTo("Changelog")));
-        assertThat(this.reader.readLine(), is(equalTo("=========")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("Commits on branch \"master\"")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo(" * Snapshot for version 3.0.0")));
-        assertThat(this.reader.readLine(), is(equalTo(" * Added project name")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("Version 2.0.0 - 05/03/2011 07:18 AM +0200")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo(" * Snapshot for version 2.0.0")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("Version 1.0.0 - 05/03/2011 07:18 AM +0200")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
+        this.assertLine("Changelog");
+        this.assertLine("=========");
+        this.assertLine("");
+        this.assertLine("Commits on branch \"master\"");
+        this.assertLine("");
+        this.assertLine(" * Snapshot for version 3.0.0");
+        this.assertLine(" * Added project name");
+        this.assertLine("");
+        this.assertLine("Version 2.0.0 - 05/03/2011 07:18 AM +0200");
+        this.assertLine("");
+        this.assertLine(" * Snapshot for version 2.0.0");
+        this.assertLine("");
+        this.assertLine("Version 1.0.0 - 05/03/2011 07:18 AM +0200");
+        this.assertLine("");
         assertThat(this.reader.ready(), is(false));
     }
 
@@ -145,38 +144,38 @@ public class GitChangelogMojoTest extends AbstractGitOutputMojoTest<GitChangelog
         this.mojo.skipTagged        = true;
         this.mojo.execute();
 
-        assertThat(this.reader.readLine(), is(equalTo("Changelog")));
-        assertThat(this.reader.readLine(), is(equalTo("=========")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("Commits on branch \"master\"")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo(" * Snapshot for version 3.0.0")));
-        assertThat(this.reader.readLine(), is(equalTo(" * Version bump to 2.0.0")));
-        assertThat(this.reader.readLine(), is(equalTo(" * Snapshot for version 2.0.0")));
-        assertThat(this.reader.readLine(), is(equalTo(" * Initial commit")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("See Git history for changes in the \"master\" branch at: https://github.com/koraktor/mavanagaiata/commits/master")));
+        this.assertLine("Changelog");
+        this.assertLine("=========");
+        this.assertLine("");
+        this.assertLine("Commits on branch \"master\"");
+        this.assertLine("");
+        this.assertLine(" * Snapshot for version 3.0.0");
+        this.assertLine(" * Version bump to 2.0.0");
+        this.assertLine(" * Snapshot for version 2.0.0");
+        this.assertLine(" * Initial commit");
+        this.assertLine("");
+        this.assertLine("See Git history for changes in the \"master\" branch at: https://github.com/koraktor/mavanagaiata/commits/master");
         assertThat(this.reader.ready(), is(false));
     }
 
     protected void assertOutput() throws IOException {
-        assertThat(this.reader.readLine(), is(equalTo("Changelog")));
-        assertThat(this.reader.readLine(), is(equalTo("=========")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("Commits on branch \"master\"")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo(" * Snapshot for version 3.0.0")));
-        assertThat(this.reader.readLine(), is(equalTo(" * Added project name")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("Version 2.0.0 - 05/03/2011 07:18 AM +0200")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo(" * Version bump to 2.0.0")));
-        assertThat(this.reader.readLine(), is(equalTo(" * Snapshot for version 2.0.0")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo("Version 1.0.0 - 05/03/2011 07:18 AM +0200")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
-        assertThat(this.reader.readLine(), is(equalTo(" * Initial commit")));
-        assertThat(this.reader.readLine(), is(equalTo("")));
+        this.assertLine("Changelog");
+        this.assertLine("=========");
+        this.assertLine("");
+        this.assertLine("Commits on branch \"master\"");
+        this.assertLine("");
+        this.assertLine(" * Snapshot for version 3.0.0");
+        this.assertLine(" * Added project name");
+        this.assertLine("");
+        this.assertLine("Version 2.0.0 - 05/03/2011 07:18 AM +0200");
+        this.assertLine("");
+        this.assertLine(" * Version bump to 2.0.0");
+        this.assertLine(" * Snapshot for version 2.0.0");
+        this.assertLine("");
+        this.assertLine("Version 1.0.0 - 05/03/2011 07:18 AM +0200");
+        this.assertLine("");
+        this.assertLine(" * Initial commit");
+        this.assertLine("");
         assertMatches("Generated by Mavanagaiata at \\d{2}/\\d{2}/\\d{4} \\d{2}:\\d{2} [AP]M [+\\-]\\d{4}", this.reader.readLine());
         assertThat(this.reader.ready(), is(false));
     }
