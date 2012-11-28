@@ -83,6 +83,7 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      * The file to write the changelog to
      *
      * @parameter property="mavanagaiata.changelog.outputFile"
+     * @since 0.4.1
      */
     protected File outputFile;
 

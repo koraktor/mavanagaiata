@@ -55,6 +55,7 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
      * The file to write the contributors list to
      *
      * @parameter property="mavanagaiata.contributors.outputFile"
+     * @since 0.4.1
      */
     protected File outputFile;
 
