@@ -39,6 +39,16 @@
         <url>https://github.com/koraktor/mavanagaiata/issues</url>
     </issueManagement>
 
+    <mailingLists>
+        <mailingList>
+            <name>Google Group</name>
+            <archive>https://groups.google.com/d/forum/mavanagaiata</archive>
+            <post>mavanagaiata@googlegroups.com</post>
+            <subscribe>mavanagaiata+subscribe@googlegroups.com</subscribe>
+            <unsubscribe>mavanagaiata+unsubscribe@googlegroups.com</unsubscribe>
+        </mailingList>
+    </mailingLists>
+
     <ciManagement>
         <system>Travis CI</system>
         <url>https://travis-ci.com/koraktor/mavanagaiata</url>
