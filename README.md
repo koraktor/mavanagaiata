@@ -115,7 +115,7 @@ Additionally, there are some properties specific to a goal:
                       `"Changelog\n=========\n"`)
    * `commitPrefix`:  The string to prepend to every commit message (default:
                       `" * "`)
-   * `gitHubLinks`:   Wether to generate links to GitHub's compare view
+   * `gitHubLinks`:   Whether to generate links to GitHub's compare view
                       (default: `false`)
    * `gitHubProject`: The project name for GitHub links (default: not set)
    * `gitHubUser`:    The project user for GitHub links (default: not set)
