@@ -21,6 +21,7 @@
     <name>Mavanagaiata</name>
     <description>Maven plugin providing project information from Git</description>
     <url>http://koraktor.de/mavanagaiata</url>
+    <inceptionYear>2011</inceptionYear>
     <licenses>
         <license>
             <name>BSD license</name>
