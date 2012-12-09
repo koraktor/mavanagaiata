@@ -98,7 +98,7 @@ public class JGitCommit implements GitCommit {
     }
 
     /**
-     * Returns the hash code of the unterlying commit's ID string
+     * Returns the hash code of the underlying commit's ID string
      *
      * @return The hash code for this commit
      */
