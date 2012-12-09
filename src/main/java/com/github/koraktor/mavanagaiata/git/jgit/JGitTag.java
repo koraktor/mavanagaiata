@@ -32,6 +32,15 @@ public class JGitTag implements GitTag {
         this.tag = tag;
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof JGitTag) {
+            return this.tag.equals(((JGitTag) object).tag);
+        }
+
+        return false;
+    }
+
     public Date getDate() {
         return this.tag.getTaggerIdent().getWhen();
     }
