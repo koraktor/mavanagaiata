@@ -31,10 +31,12 @@ public class JGitTagTest {
         Date tagDate = new Date(1275131880000L);
 
         JGitTag tag = new JGitTag(rawTag);
+        JGitTag tag2 = new JGitTag(rawTag);
 
         assertThat(tag.getDate(), is(equalTo(tagDate)));
         assertThat(tag.getName(), is(equalTo("1.0.0")));
         assertThat(tag.getTimeZone(), is(TimeZone.getTimeZone("GMT+0200")));
+        assertThat(tag, is(equalTo(tag2)));
     }
 
 }
