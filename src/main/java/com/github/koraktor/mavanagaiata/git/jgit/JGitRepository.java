@@ -68,6 +68,13 @@ public class JGitRepository extends AbstractGitRepository {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Closes JGit's repository instance.
+     *
+     * @see Repository#close
+     */
     public void close() {
         if (this.repository != null) {
             this.repository.close();
