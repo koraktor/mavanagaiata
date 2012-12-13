@@ -110,13 +110,13 @@ public class JGitRepository extends AbstractGitRepository {
                 if (currentCommit.has(seenFlag)) {
                     continue;
                 }
+                currentCommit.add(seenFlag);
 
                 if (tagCommits.containsKey(currentCommit)) {
                     nextTag = this.getTags().get(currentCommit.getId().getName());
                     break;
                 }
 
-                currentCommit.add(seenFlag);
                 if (currentCommit.getParents() != null) {
                     nextCommits.addAll(Arrays.asList(currentCommit.getParents()));
                 }
