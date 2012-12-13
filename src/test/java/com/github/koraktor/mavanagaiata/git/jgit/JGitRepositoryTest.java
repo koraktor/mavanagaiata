@@ -7,9 +7,6 @@
 
 package com.github.koraktor.mavanagaiata.git.jgit;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,12 +15,8 @@ import java.util.Random;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.lib.AbbreviatedObjectId;
-import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.lib.IndexDiff;
-import org.eclipse.jgit.lib.ObjectDatabase;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.ObjectLoader;
-import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -49,6 +42,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -69,7 +63,7 @@ public class JGitRepositoryTest {
 
     @Before
     public void setup() {
-        this.repo = mock(Repository.class);
+        this.repo = mock(Repository.class, RETURNS_DEEP_STUBS);
         this.repository = new JGitRepository(this.repo);
     }
 
@@ -105,27 +99,11 @@ public class JGitRepositoryTest {
 
     @Test
     public void testGetAbbreviatedCommitId() throws Exception {
-        final RevCommit rawCommit = this.createCommit();
+        RevCommit rawCommit = this.createCommit();
+        AbbreviatedObjectId abbrevId = rawCommit.abbreviate(7);
         JGitCommit commit = new JGitCommit(rawCommit);
 
-        ObjectDatabase db = mock(ObjectDatabase.class);
-        when(this.repo.getObjectDatabase()).thenReturn(db);
-        ObjectReader reader = new ObjectReader() {
-            public ObjectReader newReader() {
-                return null;
-            }
-
-            public Collection<ObjectId> resolve(AbbreviatedObjectId id) throws IOException {
-                ArrayList<ObjectId> commits = new ArrayList<ObjectId>();
-                commits.add(rawCommit);
-                return commits;
-            }
-
-            public ObjectLoader open(AnyObjectId objectId, int typeHint) throws IOException {
-                return null;
-            }
-        };
-        when(db.newReader()).thenReturn(reader);
+        when(this.repo.getObjectDatabase().newReader().abbreviate(rawCommit)).thenReturn(abbrevId);
 
         assertThat(this.repository.getAbbreviatedCommitId(commit), is(equalTo(rawCommit.getName().substring(0, 7))));
     }
