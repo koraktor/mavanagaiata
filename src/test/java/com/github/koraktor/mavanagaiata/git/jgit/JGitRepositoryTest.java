@@ -20,6 +20,7 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevFlag;
 import org.eclipse.jgit.revwalk.RevObject;
 import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -27,12 +28,12 @@ import org.eclipse.jgit.treewalk.FileTreeIterator;
 import org.eclipse.jgit.treewalk.WorkingTreeIterator;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitTag;
+import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 import org.mockito.InOrder;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -93,9 +94,102 @@ public class JGitRepositoryTest {
         this.repository.close();
     }
 
-    @Ignore
     @Test
-    public void testDescribe() throws Exception {}
+    public void testDescribeExactTagged() throws Exception {
+        RevCommit head = this.createCommit();
+        RevCommit head_1 = this.createCommit();
+        RevCommit head_2 = this.createCommit();
+        head.getParents()[0] = head_1;
+        head_1.getParents()[0] = head_2;
+        AbbreviatedObjectId abbrevId = head.abbreviate(7);
+        this.repository.headObject = mock(ObjectId.class);
+        this.repository.commitCache.put(this.repository.headObject, head);
+
+        JGitRepository repo = spy(this.repository);
+
+        Map<String, RevTag> rawTags = new HashMap<String, RevTag>();
+        RevTag rawTag = this.createTag("2.0.0", head.getName());
+        rawTags.put(head.getName(), rawTag);
+        doReturn(rawTags).when(repo).getRawTags();
+
+        Map<String, GitTag> tags = new HashMap<String, GitTag>();
+        tags.put(head.getName(), new JGitTag(rawTag));
+        doReturn(tags).when(repo).getTags();
+
+        repo.revWalk = mock(RevWalk.class);
+        RevFlag seenFlag = RevFlag.UNINTERESTING;
+        when(repo.revWalk.newFlag("SEEN")).thenReturn(seenFlag);
+
+        when(this.repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
+
+        GitTagDescription description = repo.describe();
+        assertThat(head.has(seenFlag), is(true));
+        assertThat(head_1.has(seenFlag), is(false));
+        assertThat(head_2.has(seenFlag), is(false));
+        assertThat(description.getNextTagName(), is(equalTo("2.0.0")));
+        assertThat(description.toString(), is(equalTo("2.0.0")));
+    }
+
+    @Test
+    public void testDescribeTagged() throws Exception {
+        RevCommit head = this.createCommit();
+        RevCommit head_1 = this.createCommit();
+        RevCommit head_2 = this.createCommit();
+        head.getParents()[0] = head_1;
+        head_1.getParents()[0] = head_2;
+        AbbreviatedObjectId abbrevId = head.abbreviate(7);
+        this.repository.headObject = mock(ObjectId.class);
+        this.repository.commitCache.put(this.repository.headObject, head);
+
+        JGitRepository repo = spy(this.repository);
+
+        Map<String, RevTag> rawTags = new HashMap<String, RevTag>();
+        RevTag rawTag = this.createTag("2.0.0", head_2.getName());
+        rawTags.put(head_2.getName(), rawTag);
+        doReturn(rawTags).when(repo).getRawTags();
+
+        Map<String, GitTag> tags = new HashMap<String, GitTag>();
+        tags.put(head_2.getName(), new JGitTag(rawTag));
+        doReturn(tags).when(repo).getTags();
+
+        repo.revWalk = mock(RevWalk.class);
+        RevFlag seenFlag = RevFlag.UNINTERESTING;
+        when(repo.revWalk.newFlag("SEEN")).thenReturn(seenFlag);
+
+        when(this.repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
+
+        GitTagDescription description = repo.describe();
+        assertThat(head.has(seenFlag), is(true));
+        assertThat(head_1.has(seenFlag), is(true));
+        assertThat(head_2.has(seenFlag), is(true));
+        assertThat(description.getNextTagName(), is(equalTo("2.0.0")));
+        assertThat(description.toString(), is(equalTo("2.0.0-2-g" + abbrevId.name())));
+    }
+
+    @Test
+    public void testDescribeUntagged() throws Exception {
+        RevCommit head = this.createCommit();
+        RevCommit head_1 = this.createCommit();
+        RevCommit head_2 = this.createCommit();
+        head.getParents()[0] = head_1;
+        head_1.getParents()[0] = head_2;
+        AbbreviatedObjectId abbrevId = head.abbreviate(7);
+        this.repository.headObject = mock(ObjectId.class);
+        this.repository.commitCache.put(this.repository.headObject, head);
+
+        this.repository.revWalk = mock(RevWalk.class);
+        RevFlag seenFlag = RevFlag.UNINTERESTING;
+        when(this.repository.revWalk.newFlag("SEEN")).thenReturn(seenFlag);
+
+        when(this.repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
+
+        GitTagDescription description = this.repository.describe();
+        assertThat(head.has(seenFlag), is(true));
+        assertThat(head_1.has(seenFlag), is(true));
+        assertThat(head_2.has(seenFlag), is(true));
+        assertThat(description.getNextTagName(), is(equalTo("")));
+        assertThat(description.toString(), is(equalTo(abbrevId.name())));
+    }
 
     @Test
     public void testGetAbbreviatedCommitId() throws Exception {
@@ -279,9 +373,11 @@ public class JGitRepositoryTest {
 
     private RevCommit createCommit() {
         String commitData = String.format("tree %040x%n" +
+            "parent %040x%n" +
             "author Sebastian Staudt <koraktor@gmail.com> %d +0100%n" +
             "committer Sebastian Staudt <koraktor@gmail.com> %d +0100%n%n" +
             "%s",
+            new Random().nextLong(),
             new Random().nextLong(),
             new Date().getTime(),
             new Date().getTime(),
@@ -290,13 +386,18 @@ public class JGitRepositoryTest {
     }
 
     private RevTag createTag() throws CorruptObjectException {
-        String tagData = String.format("object %040x%n" +
+        return this.createTag("name" + new Random().nextInt(),
+                String.format("%040x", new Random().nextLong()));
+    }
+
+    private RevTag createTag(String name, String objectId) throws CorruptObjectException {
+        String tagData = String.format("object %s%n" +
             "type commit%n" +
             "tag %s%n" +
             "tagger Sebastian Staudt <koraktor@gmail.com> %d +0100%n" +
             "%s",
-            new Random().nextLong(),
-            "name" + new Random().nextInt(),
+            objectId,
+            name,
             new Date().getTime(),
             "Tag subject");
         return RevTag.parse(tagData.getBytes());
