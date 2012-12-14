@@ -50,6 +50,8 @@ public class JGitRepository extends AbstractGitRepository {
 
     protected ObjectId headObject;
 
+    protected RevWalk revWalk;
+
     /**
      * Creates a new instance from a JGit repository object
      *
@@ -89,7 +91,7 @@ public class JGitRepository extends AbstractGitRepository {
         }
 
         RevCommit start = this.getCommit(this.getHeadObject());
-        RevWalk revWalk = new RevWalk(this.repository);
+        RevWalk revWalk = this.getRevWalk();
         RevFlag seenFlag = revWalk.newFlag("SEEN");
 
         int distance = -1;
@@ -178,7 +180,7 @@ public class JGitRepository extends AbstractGitRepository {
     public void walkCommits(CommitWalkAction action)
             throws GitRepositoryException {
         try {
-            RevWalk revWalk = new RevWalk(this.repository);
+            RevWalk revWalk = this.getRevWalk();
             revWalk.markStart(this.getCommit(this.getHeadObject()));
 
             RevCommit commit;
@@ -203,7 +205,7 @@ public class JGitRepository extends AbstractGitRepository {
         }
 
         try {
-            RevWalk revWalk = new RevWalk(this.repository);
+            RevWalk revWalk = this.getRevWalk();
             RevCommit commit = revWalk.parseCommit(id);
 
             this.commitCache.put(id, commit);
@@ -263,7 +265,7 @@ public class JGitRepository extends AbstractGitRepository {
      */
     protected Map<String, RevTag> getRawTags()
             throws GitRepositoryException {
-        RevWalk revWalk = new RevWalk(this.repository);
+        RevWalk revWalk = this.getRevWalk();
         Map<String, Ref> tagRefs = this.repository.getTags();
         Map<String, RevTag> tags = new HashMap<String, RevTag>();
 
@@ -287,6 +289,22 @@ public class JGitRepository extends AbstractGitRepository {
         }
 
         return tags;
+    }
+
+    /**
+     * Gets a JGit {@code RevWalk} instance for this repository
+     * <p>
+     * Creates a new instance or resets an existing one.
+     *
+     * @return A {@code RevWalk} instance for this repository
+     */
+    protected RevWalk getRevWalk() {
+        if (this.revWalk == null) {
+            this.revWalk = new RevWalk(this.repository);
+        }
+        this.revWalk.reset();
+
+        return this.revWalk;
     }
 
 }
