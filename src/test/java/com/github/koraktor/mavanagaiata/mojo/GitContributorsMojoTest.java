@@ -32,6 +32,8 @@ public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContri
         super.setup();
 
         doAnswer(new Answer() {
+            long dateCounter = new Date().getTime();
+
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 GitContributorsMojo.ContributorsWalkAction walkAction = ((GitContributorsMojo.ContributorsWalkAction) invocation.getArguments()[0]);
                 walkAction.execute(this.mockCommit("Sebastian Staudt", "koraktor@gmail.com"));
@@ -47,7 +49,7 @@ public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContri
                 GitCommit commit = mock(GitCommit.class);
                 when(commit.getAuthorEmailAddress()).thenReturn(authorEmail);
                 when(commit.getAuthorName()).thenReturn(authorName);
-                when(commit.getAuthorDate()).thenReturn(new Date());
+                when(commit.getAuthorDate()).thenReturn(new Date(dateCounter ++));
                 return commit;
             }
         }).when(this.repository).walkCommits(any(GitContributorsMojo.ContributorsWalkAction.class));
