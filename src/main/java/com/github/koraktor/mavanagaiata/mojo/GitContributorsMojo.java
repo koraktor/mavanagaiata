@@ -11,10 +11,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.maven.plugin.MojoExecutionException;
 
@@ -36,10 +34,21 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
  */
 public class GitContributorsMojo extends AbstractGitOutputMojo {
 
-    protected final static Comparator<GitCommit> NAME_COMPARATOR = new Comparator<GitCommit>() {
-        @Override
-        public int compare(GitCommit commit1, GitCommit commit2) {
-            return commit1.getAuthorName().compareTo(commit2.getAuthorName());
+    protected final static Comparator<Contributor> COUNT_COMPARATOR = new Comparator<Contributor>() {
+        public int compare(Contributor contributor1, Contributor contributor2) {
+            return -contributor1.count.compareTo(contributor2.count);
+        }
+    };
+
+    protected final static Comparator<Contributor> DATE_COMPARATOR = new Comparator<Contributor>() {
+        public int compare(Contributor contributor1, Contributor contributor2) {
+            return contributor1.firstCommitDate.compareTo(contributor2.firstCommitDate);
+        }
+    };
+
+    protected final static Comparator<Contributor> NAME_COMPARATOR = new Comparator<Contributor>() {
+        public int compare(Contributor contributor1, Contributor contributor2) {
+            return contributor1.name.compareTo(contributor2.name);
         }
     };
 
@@ -127,77 +136,24 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
             ContributorsWalkAction walkAction = new ContributorsWalkAction();
             this.repository.walkCommits(walkAction);
 
-            final Map<String, Integer> counts = new HashMap<String, Integer>();
-            if(this.showCounts || this.sort.equals("count")) {
-                for(GitCommit commit : walkAction.commits) {
-                    String emailAddress = commit.getAuthorEmailAddress();
-                    if(!counts.containsKey(emailAddress)) {
-                        counts.put(emailAddress, 1);
-                    } else {
-                        counts.put(emailAddress, counts.get(emailAddress) + 1);
-                    }
-                }
-            }
-
-            if(this.sort.equals("date")) {
-                Collections.reverse(walkAction.commits);
-            } else if(this.sort.equals("name")) {
-                Collections.sort(walkAction.commits, new Comparator<GitCommit>() {
-                    public int compare(GitCommit c1, GitCommit c2) {
-                        String a1 = c1.getAuthorName();
-                        String a2 = c2.getAuthorName();
-                        return a1.compareTo(a2);
-                    }
-                });
+            ArrayList<Contributor> contributors = new ArrayList<Contributor>(walkAction.contributors.values());
+            if (sort.equals("date")) {
+                Collections.sort(contributors, DATE_COMPARATOR);
+            } else if (sort.equals("name")) {
+                Collections.sort(contributors, NAME_COMPARATOR);
             } else {
-                Collections.sort(walkAction.commits, new Comparator<GitCommit>() {
-                    public int compare(GitCommit c1, GitCommit c2) {
-                        Integer count1 = counts.get(c1.getAuthorEmailAddress());
-                        Integer count2 = counts.get(c1.getAuthorEmailAddress());
-                        return count1.compareTo(count2);
-                    }
-                });
-            }
-
-            final LinkedHashMap<String, String> contributors = new LinkedHashMap<String, String>();
-            for(GitCommit commit : walkAction.commits) {
-                String emailAddress = commit.getAuthorEmailAddress();
-                if(!contributors.containsKey(emailAddress)) {
-                    contributors.put(emailAddress, commit.getAuthorName());
-                }
-            }
-
-            List<String> emailAddresses = new ArrayList<String>(contributors.keySet());
-
-            if (!this.sort.equals("date")) {
-                if(this.sort.equals("name")) {
-                    Collections.sort(emailAddresses, new Comparator<String>() {
-                        public int compare(String e1, String e2) {
-                            String n1 = contributors.get(e1);
-                            String n2 = contributors.get(e2);
-                            return n1.compareTo(n2);
-                        }
-                    });
-                } else {
-                    Collections.sort(emailAddresses, new Comparator<String>() {
-                        public int compare(String e1, String e2) {
-                            Integer count1 = counts.get(e1);
-                            Integer count2 = counts.get(e2);
-                            return count2.compareTo(count1);
-                        }
-                    });
-                }
+                Collections.sort(contributors, COUNT_COMPARATOR);
             }
 
             this.outputStream.println(this.header);
 
-            for(String emailAddress : emailAddresses) {
-                this.outputStream.print(this.contributorPrefix + contributors.get(emailAddress));
-                if(this.showEmail) {
-                    this.outputStream.print(" (" + emailAddress + ")");
+            for (Contributor contributor : contributors) {
+                this.outputStream.print(this.contributorPrefix + contributor.name);
+                if (this.showEmail) {
+                    this.outputStream.print(" (" + contributor.emailAddress + ")");
                 }
-                if(this.showCounts) {
-                    this.outputStream.print(" (" + counts.get(emailAddress) + ")");
+                if (this.showCounts) {
+                    this.outputStream.print(" (" + contributor.count + ")");
                 }
                 this.outputStream.println();
             }
@@ -228,15 +184,47 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
 
     class ContributorsWalkAction extends CommitWalkAction {
 
-        protected List<GitCommit> commits;
+        protected HashMap<String, Contributor> contributors;
 
         public ContributorsWalkAction() {
-            this.commits = new ArrayList<GitCommit>();
+            this.contributors = new HashMap<String, Contributor>();
         }
 
         protected void run() throws GitRepositoryException {
-            this.commits.add(this.currentCommit);
+            String emailAddress = this.currentCommit.getAuthorEmailAddress();
+            Contributor contributor = this.contributors.get(emailAddress);
+            if (contributor == null) {
+                this.contributors.put(emailAddress, new Contributor(this.currentCommit));
+            } else {
+                contributor.addCommit(this.currentCommit);
+            }
         }
+    }
+
+    class Contributor {
+
+        Integer count = 1;
+
+        String emailAddress;
+
+        Date firstCommitDate;
+
+        String name;
+
+        public Contributor(GitCommit commit) {
+            this.emailAddress    = commit.getAuthorEmailAddress();
+            this.firstCommitDate = commit.getAuthorDate();
+            this.name            = commit.getAuthorName();
+        }
+
+        void addCommit(GitCommit commit) {
+            this.count ++;
+
+            if (commit.getAuthorDate().before(this.firstCommitDate)) {
+                this.firstCommitDate = commit.getAuthorDate();
+            }
+        }
+
     }
 
 }

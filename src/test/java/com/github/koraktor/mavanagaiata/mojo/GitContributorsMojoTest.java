@@ -7,6 +7,8 @@
 
 package com.github.koraktor.mavanagaiata.mojo;
 
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,10 +35,10 @@ public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContri
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 GitContributorsMojo.ContributorsWalkAction walkAction = ((GitContributorsMojo.ContributorsWalkAction) invocation.getArguments()[0]);
                 walkAction.execute(this.mockCommit("Sebastian Staudt", "koraktor@gmail.com"));
-                walkAction.execute(this.mockCommit("Sebastian Staudt", "koraktor@gmail.com"));
-                walkAction.execute(this.mockCommit("Joe Average", "joe.average@example.com"));
-                walkAction.execute(this.mockCommit("Joe Average", "joe.average@example.com"));
                 walkAction.execute(this.mockCommit("John Doe", "john.doe@example.com"));
+                walkAction.execute(this.mockCommit("Joe Average", "joe.average@example.com"));
+                walkAction.execute(this.mockCommit("Joe Average", "joe.average@example.com"));
+                walkAction.execute(this.mockCommit("Sebastian Staudt", "koraktor@gmail.com"));
                 walkAction.execute(this.mockCommit("Sebastian Staudt", "koraktor@gmail.com"));
                 return null;
             }
@@ -45,6 +47,7 @@ public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContri
                 GitCommit commit = mock(GitCommit.class);
                 when(commit.getAuthorEmailAddress()).thenReturn(authorEmail);
                 when(commit.getAuthorName()).thenReturn(authorName);
+                when(commit.getAuthorDate()).thenReturn(new Date());
                 return commit;
             }
         }).when(this.repository).walkCommits(any(GitContributorsMojo.ContributorsWalkAction.class));
