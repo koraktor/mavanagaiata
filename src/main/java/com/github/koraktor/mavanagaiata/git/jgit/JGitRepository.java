@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012, Sebastian Staudt
+ * Copyright (c) 2012-2013, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git.jgit;
@@ -27,6 +27,7 @@ import org.eclipse.jgit.revwalk.RevFlag;
 import org.eclipse.jgit.revwalk.RevObject;
 import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.FileTreeIterator;
 
 import com.github.koraktor.mavanagaiata.git.AbstractGitRepository;
@@ -55,11 +56,43 @@ public class JGitRepository extends AbstractGitRepository {
     /**
      * Creates a new instance from a JGit repository object
      *
-     * @param repository The repository object to wrap
+     * @param workTree The worktree of the repository or {@code null}
+     * @param gitDir The GIT_DIR of the repository or {@code null}
      */
-    public JGitRepository(Repository repository) {
-        this.commitCache   = new HashMap<ObjectId, RevCommit>();
-        this.repository    = repository;
+    public JGitRepository(File workTree, File gitDir)
+            throws GitRepositoryException {
+        FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
+        repositoryBuilder.readEnvironment();
+
+        if (gitDir == null && workTree == null) {
+            throw new GitRepositoryException("Neither worktree nor GIT_DIR is set.");
+        } else {
+            if (workTree != null && !workTree.exists()) {
+                throw new GitRepositoryException("The worktree " + workTree + " does not exist");
+            }
+            if (gitDir != null && !gitDir.exists()) {
+                throw new GitRepositoryException("The GIT_DIR " + gitDir + " does not exist");
+            }
+        }
+
+        if (gitDir != null) {
+            repositoryBuilder.setGitDir(gitDir);
+            repositoryBuilder.setWorkTree(workTree);
+        } else {
+            repositoryBuilder.findGitDir(workTree);
+
+            if (repositoryBuilder.getGitDir() == null) {
+                throw new GitRepositoryException(workTree + " is not inside a Git repository. Please specify the GIT_DIR separately.");
+            }
+        }
+
+        try {
+            this.repository = repositoryBuilder.build();
+        } catch (IOException e) {
+            throw new GitRepositoryException("Could not initialize repository", e);
+        }
+
+        this.commitCache = new HashMap<ObjectId, RevCommit>();
     }
 
     public void check() throws GitRepositoryException {

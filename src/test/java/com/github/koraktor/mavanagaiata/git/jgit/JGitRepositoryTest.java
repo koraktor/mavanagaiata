@@ -2,11 +2,12 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012, Sebastian Staudt
+ * Copyright (c) 2012-2013, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git.jgit;
 
+import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,8 @@ import org.eclipse.jgit.revwalk.RevFlag;
 import org.eclipse.jgit.revwalk.RevObject;
 import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.storage.file.FileRepository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.FileTreeIterator;
 import org.eclipse.jgit.treewalk.WorkingTreeIterator;
 
@@ -46,10 +49,10 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.mockito.PowerMockito.spy;
 import static org.powermock.api.mockito.PowerMockito.verifyNew;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
@@ -63,9 +66,18 @@ public class JGitRepositoryTest {
     protected JGitRepository repository;
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
+        FileRepository tmpRepo = mock(FileRepository.class, RETURNS_DEEP_STUBS);
+        FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class);
+        whenNew(FileRepositoryBuilder.class).withNoArguments().thenReturn(repoBuilder);
+        when(repoBuilder.build()).thenReturn(tmpRepo);
+
+        File someDir = mock(File.class);
+        when(someDir.exists()).thenReturn(true);
+
         this.repo = mock(Repository.class, RETURNS_DEEP_STUBS);
-        this.repository = new JGitRepository(this.repo);
+        this.repository = new JGitRepository(someDir, someDir);
+        this.repository.repository = this.repo;
     }
 
     @Test
