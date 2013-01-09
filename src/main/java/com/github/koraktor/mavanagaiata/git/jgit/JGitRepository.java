@@ -335,7 +335,6 @@ public class JGitRepository extends AbstractGitRepository {
         if (this.revWalk == null) {
             this.revWalk = new RevWalk(this.repository);
         }
-        this.revWalk.reset();
 
         return this.revWalk;
     }
