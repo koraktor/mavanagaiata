@@ -26,7 +26,7 @@ public class AbstractGitRepositoryTest {
 
     class GenericGitRepository extends AbstractGitRepository {
 
-        public void check() throws GitRepositoryException {}
+        public boolean check() { return true; }
 
         public void close() {}
 

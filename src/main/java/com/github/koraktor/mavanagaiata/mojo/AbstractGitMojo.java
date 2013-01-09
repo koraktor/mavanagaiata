@@ -72,6 +72,20 @@ public abstract class AbstractGitMojo extends AbstractMojo {
     protected String head = "HEAD";
 
     /**
+     * Skip the plugin execution.
+     *
+     * @parameter default-value="false"
+     */
+    protected boolean skip = false;
+
+    /**
+     * Skip the plugin execution if outside a git repository.
+     *
+     * @parameter default-value="false"
+     */
+    protected boolean skipNoGit = false;
+
+    /**
      * The Maven project
      *
      * @parameter property="project"
@@ -100,11 +114,19 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * @throws MojoExecutionException
      */
     public final void execute() throws MojoExecutionException {
-        try {
-            this.init();
-            this.run();
-        } finally {
-            this.cleanup();
+        if (!skip) {
+            boolean init = false;
+            try {
+                init = this.init();
+
+                if (init) {
+                    this.run();
+                }
+            } finally {
+                if (init) {
+                    this.cleanup();
+                }
+            }
         }
     }
 
@@ -145,9 +167,9 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      *
      * @throws MojoExecutionException if the repository cannot be initialized
      */
-    protected void init() throws MojoExecutionException {
+    protected boolean init() throws MojoExecutionException {
         try {
-            this.initRepository();
+            return this.initRepository();
         } catch (GitRepositoryException e) {
             throw new MojoExecutionException("Unable to initialize Mojo", e);
         } catch (IOException e) {
@@ -162,7 +184,7 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * @throws IOException if retrieving information from the Git repository
      *         fails
      */
-    protected void initRepository()
+    protected boolean initRepository()
             throws GitRepositoryException, IOException,
                    MojoExecutionException {
         FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
@@ -172,9 +194,15 @@ public abstract class AbstractGitMojo extends AbstractMojo {
             throw new MojoExecutionException("Neither baseDir nor gitDir is set.");
         } else {
             if (this.baseDir != null && !this.baseDir.exists()) {
+                if (skipNoGit) {
+                    return false;
+                }
                 throw new FileNotFoundException("The baseDir " + this.baseDir + " does not exist");
             }
             if (this.gitDir != null && !this.gitDir.exists()) {
+                if (skipNoGit) {
+                    return false;
+                }
                 throw new FileNotFoundException("The gitDir " + this.gitDir + " does not exist");
             }
         }
@@ -182,8 +210,16 @@ public abstract class AbstractGitMojo extends AbstractMojo {
         repositoryBuilder.setGitDir(this.gitDir);
         repositoryBuilder.setWorkTree(this.baseDir);
         this.repository = new JGitRepository(repositoryBuilder.build());
-        this.repository.check();
+        if (!repository.check()) {
+            if (skipNoGit) {
+                return false;
+            }
+            throw new GitRepositoryException(baseDir + " is not a Git repository");
+        }
+
         this.repository.setHeadRef(this.head);
+
+        return true;
     }
 
     /**

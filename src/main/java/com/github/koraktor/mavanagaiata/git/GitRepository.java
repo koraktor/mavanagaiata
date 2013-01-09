@@ -18,11 +18,11 @@ import java.util.Map;
 public interface GitRepository {
 
     /**
-     * Checks whether the Git repository is accessible
+     * Checks whether the Git repository is accessible.
      *
-     * @throws GitRepositoryException if the repository is not accessible
+     * @return false if the repository is not accessible.
      */
-    public void check() throws GitRepositoryException;
+    public boolean check();
 
     /**
      * Closes any resources that are needed to access this repository

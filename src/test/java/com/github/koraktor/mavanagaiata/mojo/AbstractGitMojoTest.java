@@ -50,7 +50,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     }
 
     @Test
-    public void testErrors() {
+    public void testErrors() throws Exception {
         this.mojo.baseDir = null;
         try {
             this.mojo.initRepository();
@@ -93,6 +93,12 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
             assertThat(e, is(instanceOf(FileNotFoundException.class)));
             assertThat(e.getMessage(), is(equalTo("The gitDir " + this.mojo.gitDir + " does not exist")));
         }
+
+        this.mojo.skipNoGit = true;
+        this.mojo.gitDir  = mock(File.class);
+        when(this.mojo.gitDir.exists()).thenReturn(false);
+
+        assertThat(this.mojo.initRepository(), is(false));
     }
 
     @Test
