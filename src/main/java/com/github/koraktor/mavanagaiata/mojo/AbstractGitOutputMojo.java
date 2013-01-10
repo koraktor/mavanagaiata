@@ -69,10 +69,10 @@ public abstract class AbstractGitOutputMojo extends AbstractGitMojo {
      * @throws MojoExecutionException if the output file can not be opened
      */
     @Override
-    protected void init() throws MojoExecutionException {
+    protected boolean init() throws MojoExecutionException {
         this.initOutputStream();
 
-        super.init();
+        return super.init();
     }
 
     /**
