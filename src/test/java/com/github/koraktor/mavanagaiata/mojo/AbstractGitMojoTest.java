@@ -2,13 +2,12 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2012, Sebastian Staudt
+ * Copyright (c) 2011-2013, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -56,8 +55,8 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
             this.mojo.initRepository();
             fail("No exception thrown");
         } catch(Exception e) {
-            assertThat(e, is(instanceOf(MojoExecutionException.class)));
-            assertThat(e.getMessage(), is(equalTo("Neither baseDir nor gitDir is set.")));
+            assertThat(e, is(instanceOf(GitRepositoryException.class)));
+            assertThat(e.getMessage(), is(equalTo("Neither worktree nor GIT_DIR is set.")));
         }
 
         String home = System.getenv().get("HOME");
@@ -70,7 +69,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
             fail("No exception thrown");
         } catch(Exception e) {
             assertThat(e, is(instanceOf(GitRepositoryException.class)));
-            assertThat(e.getMessage(), is(equalTo(this.mojo.baseDir + " is not a Git repository")));
+            assertThat(e.getMessage(), is(equalTo(this.mojo.baseDir + " is not inside a Git repository. Please specify the GIT_DIR separately.")));
         }
 
         this.mojo.baseDir = mock(File.class);
@@ -79,8 +78,8 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
             this.mojo.initRepository();
             fail("No exception thrown");
         } catch(Exception e) {
-            assertThat(e, is(instanceOf(FileNotFoundException.class)));
-            assertThat(e.getMessage(), is(equalTo("The baseDir " + this.mojo.baseDir + " does not exist")));
+            assertThat(e, is(instanceOf(GitRepositoryException.class)));
+            assertThat(e.getMessage(), is(equalTo("The worktree " + this.mojo.baseDir + " does not exist")));
         }
 
         this.mojo.baseDir = null;
@@ -90,8 +89,8 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
             this.mojo.initRepository();
             fail("No exception thrown");
         } catch(Exception e) {
-            assertThat(e, is(instanceOf(FileNotFoundException.class)));
-            assertThat(e.getMessage(), is(equalTo("The gitDir " + this.mojo.gitDir + " does not exist")));
+            assertThat(e, is(instanceOf(GitRepositoryException.class)));
+            assertThat(e.getMessage(), is(equalTo("The GIT_DIR " + this.mojo.gitDir + " does not exist")));
         }
 
         this.mojo.skipNoGit = true;
