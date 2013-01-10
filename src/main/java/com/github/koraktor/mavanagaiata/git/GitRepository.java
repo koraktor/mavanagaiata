@@ -20,9 +20,9 @@ public interface GitRepository {
     /**
      * Checks whether the Git repository is accessible.
      *
-     * @return false if the repository is not accessible.
+     * @throws GitRepositoryException if the repository is not accessible.
      */
-    public boolean check();
+    public void check() throws GitRepositoryException;
 
     /**
      * Closes any resources that are needed to access this repository

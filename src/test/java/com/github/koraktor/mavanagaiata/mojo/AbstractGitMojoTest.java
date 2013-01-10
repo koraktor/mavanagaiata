@@ -97,7 +97,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         this.mojo.gitDir  = mock(File.class);
         when(this.mojo.gitDir.exists()).thenReturn(false);
 
-        assertThat(this.mojo.initRepository(), is(false));
+        assertThat(this.mojo.init(), is(false));
     }
 
     @Test

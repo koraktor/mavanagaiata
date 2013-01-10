@@ -164,8 +164,12 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      */
     protected boolean init() throws MojoExecutionException {
         try {
-            return this.initRepository();
+            this.initRepository();
+            return true;
         } catch (GitRepositoryException e) {
+            if (skipNoGit) {
+                return false;
+            }
             throw new MojoExecutionException("Unable to initialize Mojo", e);
         }
     }
@@ -180,13 +184,8 @@ public abstract class AbstractGitMojo extends AbstractMojo {
     protected void initRepository()
             throws GitRepositoryException {
         this.repository = new JGitRepository(this.baseDir, this.gitDir);
-        if (!this.repository.check()) {
-            return false;
-        }
-
+        this.repository.check();
         this.repository.setHeadRef(this.head);
-
-        return true;
     }
 
     /**

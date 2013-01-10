@@ -95,8 +95,12 @@ public class JGitRepository extends AbstractGitRepository {
         this.commitCache = new HashMap<ObjectId, RevCommit>();
     }
 
-    public boolean check() {
-        return this.repository.getObjectDatabase().exists();
+    public void check() throws GitRepositoryException {
+        if (!this.repository.getObjectDatabase().exists()) {
+            File path = (this.repository.getDirectory() == null) ?
+                this.repository.getDirectory() : this.repository.getWorkTree();
+            throw new GitRepositoryException(path + " is not a Git repository");
+        }
     }
 
     /**
