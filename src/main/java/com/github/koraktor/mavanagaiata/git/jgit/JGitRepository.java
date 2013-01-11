@@ -205,7 +205,7 @@ public class JGitRepository extends AbstractGitRepository {
     public boolean isDirty() throws GitRepositoryException {
         try {
             //snippet by MrOnion
-            Git git = Git.wrap(repo);
+            Git git = Git.wrap(repository);
             Status status = git.status().call();
 
             // Git describe doesn't mind about untracked files when checking if
@@ -213,11 +213,11 @@ public class JGitRepository extends AbstractGitRepository {
             // to get the same behaviour. Instead check dirty state without
             // status.getUntracked().isEmpty()
             boolean isDirty = !(status.getAdded().isEmpty() //
-			        && status.getChanged().isEmpty() //
-				    && status.getRemoved().isEmpty() //
-					&& status.getMissing().isEmpty() //
-					&& status.getModified().isEmpty() //
-				    && status.getConflicting().isEmpty());
+			&& status.getChanged().isEmpty() //
+			&& status.getRemoved().isEmpty() //
+			&& status.getMissing().isEmpty() //
+			&& status.getModified().isEmpty() //
+			&& status.getConflicting().isEmpty());
 
             return isDirty;
         } catch (GitAPIException e) {
