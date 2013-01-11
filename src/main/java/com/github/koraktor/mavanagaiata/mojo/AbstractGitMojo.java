@@ -67,14 +67,14 @@ public abstract class AbstractGitMojo extends AbstractMojo {
     protected String head = "HEAD";
 
     /**
-     * Skip the plugin execution.
+     * Skip the plugin execution
      *
      * @parameter default-value="false"
      */
     protected boolean skip = false;
 
     /**
-     * Skip the plugin execution if outside a git repository.
+     * Skip the plugin execution if not inside a Git repository
      *
      * @parameter default-value="false"
      */
