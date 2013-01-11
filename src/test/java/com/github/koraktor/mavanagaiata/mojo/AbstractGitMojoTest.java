@@ -25,7 +25,11 @@ import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
@@ -92,12 +96,6 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
             assertThat(e, is(instanceOf(GitRepositoryException.class)));
             assertThat(e.getMessage(), is(equalTo("The GIT_DIR " + this.mojo.gitDir + " does not exist")));
         }
-
-        this.mojo.skipNoGit = true;
-        this.mojo.gitDir  = mock(File.class);
-        when(this.mojo.gitDir.exists()).thenReturn(false);
-
-        assertThat(this.mojo.init(), is(false));
     }
 
     @Test
@@ -106,6 +104,26 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         assertThat(this.mojo.project, is(notNullValue()));
         assertThat(this.mojo.repository.getDirectory(),
         is(equalTo(new File(this.getRepository("test-project"), ".git"))));*/
+    }
+
+    @Test
+    public void testSkip() throws Exception {
+        AbstractGitMojo mojo = spy(this.mojo);
+        doReturn(true).when(mojo).init();
+        mojo.skip = true;
+
+        mojo.execute();
+
+        verify(mojo, never()).init();
+    }
+
+    @Test
+    public void testSkipNoGit() throws Exception{
+        this.mojo.skipNoGit = true;
+        this.mojo.gitDir  = mock(File.class);
+        when(this.mojo.gitDir.exists()).thenReturn(false);
+
+        assertThat(this.mojo.init(), is(false));
     }
 
     @Test
