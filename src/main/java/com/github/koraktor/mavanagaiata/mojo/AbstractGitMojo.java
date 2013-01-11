@@ -109,7 +109,7 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * @throws MojoExecutionException
      */
     public final void execute() throws MojoExecutionException {
-        if (!skip) {
+        if (!this.skip) {
             boolean init = false;
             try {
                 init = this.init();
@@ -167,7 +167,7 @@ public abstract class AbstractGitMojo extends AbstractMojo {
             this.initRepository();
             return true;
         } catch (GitRepositoryException e) {
-            if (skipNoGit) {
+            if (this.skipNoGit) {
                 return false;
             }
             throw new MojoExecutionException("Unable to initialize Mojo", e);
