@@ -92,7 +92,7 @@ You may override this with the configuration property `propertyPrefixes`.
 
 Mavanagaiata provides several configuration properties for its goals. The
 following ones are global and can be used for any goal. They must be prefixed
-with `mavanagaiata.`:
+with `mavanagaiata.` when used on the command-line:
 
  * `dateFormat`: The date format to use for various dates (default:
                  `"MM/dd/yyyy hh:mm a Z"`)
@@ -105,6 +105,10 @@ with `mavanagaiata.`:
  * `gitDir`:     Specify the GIT_DIR to use (default: `${basedir}`)
  * `head`:       Specify the commit or ref used as a starting point (default:
                  `HEAD`)
+ * `skip`:       Don't execute the goal(s) at all (default: `false`)
+ * `skipNoGit`:  Don't execute the goal(s) when not inside a Git repository
+                 (default `false`). This prevents failures when building from
+                 intermediate copies of the project files.
 
 Additionally, there are some properties specific to a goal:
 
