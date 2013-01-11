@@ -67,6 +67,20 @@ public abstract class AbstractGitMojo extends AbstractMojo {
     protected String head = "HEAD";
 
     /**
+     * Skip the plugin execution.
+     *
+     * @parameter default-value="false"
+     */
+    protected boolean skip = false;
+
+    /**
+     * Skip the plugin execution if outside a git repository.
+     *
+     * @parameter default-value="false"
+     */
+    protected boolean skipNoGit = false;
+
+    /**
      * The Maven project
      *
      * @parameter property="project"
@@ -95,11 +109,19 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * @throws MojoExecutionException
      */
     public final void execute() throws MojoExecutionException {
-        try {
-            this.init();
-            this.run();
-        } finally {
-            this.cleanup();
+        if (!skip) {
+            boolean init = false;
+            try {
+                init = this.init();
+
+                if (init) {
+                    this.run();
+                }
+            } finally {
+                if (init) {
+                    this.cleanup();
+                }
+            }
         }
     }
 
@@ -140,10 +162,14 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      *
      * @throws MojoExecutionException if the repository cannot be initialized
      */
-    protected void init() throws MojoExecutionException {
+    protected boolean init() throws MojoExecutionException {
         try {
             this.initRepository();
+            return true;
         } catch (GitRepositoryException e) {
+            if (skipNoGit) {
+                return false;
+            }
             throw new MojoExecutionException("Unable to initialize Mojo", e);
         }
     }

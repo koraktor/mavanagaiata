@@ -140,10 +140,10 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      * @throws MojoExecutionException if an error occurs while accessing the
      *         Git repository or the changelog file
      */
-    protected void init() throws MojoExecutionException {
+    protected boolean init() throws MojoExecutionException {
         this.initConfiguration();
 
-        super.init();
+        return super.init();
     }
 
     protected void initConfiguration() {

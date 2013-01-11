@@ -100,10 +100,10 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
      * @see #initSort
      */
     @Override
-    public void init() throws MojoExecutionException {
+    public boolean init() throws MojoExecutionException {
         this.initSort();
 
-        super.init();
+        return super.init();
     }
 
     /**
