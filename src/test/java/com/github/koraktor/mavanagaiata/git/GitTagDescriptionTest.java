@@ -10,9 +10,9 @@ package com.github.koraktor.mavanagaiata.git;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -38,21 +38,24 @@ public class GitTagDescriptionTest {
     public void test() throws Exception {
         GitTagDescription description = new GitTagDescription(this.repository, this.commit, this.tag, 3);
 
+        assertThat(description.getNextTagName(), is(equalTo("1.0.0")));
         assertThat(description.toString(), is(equalTo("1.0.0-3-gdeadbeef")));
     }
 
     @Test
     public void testNoTag() throws Exception {
-        GitTagDescription description = new GitTagDescription(this.repository, this.commit, this.tag, 0);
+        GitTagDescription description = new GitTagDescription(this.repository, this.commit, null, -1);
 
-        assertThat(description.toString(), is(equalTo("1.0.0")));
+        assertThat(description.getNextTagName(), is(equalTo("")));
+        assertThat(description.toString(), is(equalTo("deadbeef")));
     }
 
     @Test
     public void testTagged() throws Exception {
-        GitTagDescription description = new GitTagDescription(this.repository, this.commit, null, -1);
+        GitTagDescription description = new GitTagDescription(this.repository, this.commit, this.tag, 0);
 
-        assertThat(description.toString(), is(equalTo("deadbeef")));
+        assertThat(description.getNextTagName(), is(equalTo("1.0.0")));
+        assertThat(description.toString(), is(equalTo("1.0.0")));
     }
 
 }
