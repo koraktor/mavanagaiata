@@ -28,6 +28,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -66,7 +67,7 @@ public abstract class MojoAbstractTest<T extends AbstractGitMojo> {
         this.projectProperties = new Properties();
         when(project.getProperties()).thenReturn(this.projectProperties);
 
-        this.repository = mock(GitRepository.class);
+        this.repository = mock(GitRepository.class, RETURNS_DEEP_STUBS);
 
         @SuppressWarnings("unchecked")
         Class<T> mojoClass = ((Class<T>)((ParameterizedType) this.getClass()
