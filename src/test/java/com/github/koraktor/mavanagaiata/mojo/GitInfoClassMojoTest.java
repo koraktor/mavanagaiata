@@ -8,6 +8,7 @@
 package com.github.koraktor.mavanagaiata.mojo;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.maven.shared.filtering.MavenFileFilter;
@@ -40,6 +41,8 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @RunWith(PowerMockRunner.class)
 public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
 
+    private Date timestamp;
+
     @Before
     public void setup() throws Exception{
         super.setup();
@@ -58,8 +61,8 @@ public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
         GitTagDescription description = mock(GitTagDescription.class);
         when(description.getNextTagName()).thenReturn("v1.2.3");
         when(description.toString()).thenReturn("v1.2.3-4-gdeadbeef");
-        Date date = new Date(1275131880000L);
-        whenNew(Date.class).withNoArguments().thenReturn(date);
+        this.timestamp = new Date(1275131880000L);
+        whenNew(Date.class).withNoArguments().thenReturn(this.timestamp);
         when(this.repository.describe()).thenReturn(description);
         when(this.repository.getHeadCommit().getId()).thenReturn("deadbeefdeadbeefdeadbeefdeadbeef");
     }
@@ -68,13 +71,15 @@ public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
     public void testGetValueSource() throws Exception {
         MapBasedValueSource valueSource = this.mojo.getValueSource();
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat(this.mojo.dateFormat);
+
         assertThat(valueSource.getValue("CLASS_NAME").toString(), is(equalTo(this.mojo.className)));
         assertThat(valueSource.getValue("COMMIT_ABBREV").toString(), is(equalTo("deadbeef")));
         assertThat(valueSource.getValue("COMMIT_SHA").toString(), is(equalTo("deadbeefdeadbeefdeadbeefdeadbeef")));
         assertThat(valueSource.getValue("DESCRIBE").toString(), is(equalTo("v1.2.3-4-gdeadbeef")));
         assertThat(valueSource.getValue("PACKAGE_NAME").toString(), is(equalTo("com.github.koraktor.mavanagaita")));
         assertThat(valueSource.getValue("TAG_NAME").toString(), is(equalTo("v1.2.3")));
-        assertThat(valueSource.getValue("TIMESTAMP").toString(), is(equalTo("05/29/2010 01:18 PM +0200")));
+        assertThat(valueSource.getValue("TIMESTAMP").toString(), is(equalTo(dateFormat.format(this.timestamp))));
         assertThat(valueSource.getValue("VERSION").toString(), is(equalTo("1.2.3")));
     }
 
