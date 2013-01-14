@@ -7,19 +7,24 @@
 
 package com.github.koraktor.mavanagaiata.mojo;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.Date;
 import java.util.TimeZone;
 
 import org.apache.maven.plugin.MojoExecutionException;
-
+import org.eclipse.jgit.api.Git;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.github.koraktor.mavanagaiata.git.GitCommit;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ Git.class })
 public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
 
     @Before
@@ -57,7 +62,7 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
 
     @Test
     public void testCustomDirtyFlag() throws Exception {
-        when(this.repository.isDirty()).thenReturn(true);
+        when(this.repository.isDirty(this.mojo.dirtyCheckLoose)).thenReturn(true);
 
         this.mojo.dirtyFlag = "*";
         this.mojo.run();
@@ -68,10 +73,10 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
         this.assertProperty(headId, "commit.id");
         this.assertProperty(headId, "commit.sha");
     }
-
+    
     @Test
     public void testDirtyWorktree() throws Exception {
-        when(this.repository.isDirty()).thenReturn(true);
+        when(this.repository.isDirty(this.mojo.dirtyCheckLoose)).thenReturn(true);
 
         this.mojo.run();
 
@@ -82,6 +87,34 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
         this.assertProperty(headId, "commit.sha");
     }
 
+    @Test
+    public void testDirtyWorktreeWithLooseOption() throws Exception {
+    	boolean dirtyCheckLoose = true;
+    	this.mojo.dirtyCheckLoose = dirtyCheckLoose;
+    	when(this.repository.isDirty(dirtyCheckLoose)).thenReturn(true);
+        this.mojo.run();
+
+        String headId = "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef-dirty";
+
+        this.assertProperty("deadbeef-dirty", "commit.abbrev");
+        this.assertProperty(headId, "commit.id");
+        this.assertProperty(headId, "commit.sha");
+    }
+    
+    @Test
+    public void testCleanWorktreeWithLooseOption() throws Exception {
+    	boolean dirtyCheckLoose = false;
+    	this.mojo.dirtyCheckLoose = dirtyCheckLoose;
+    	when(this.repository.isDirty(dirtyCheckLoose)).thenReturn(false);
+        this.mojo.run();
+
+        String headId = "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef";
+
+        this.assertProperty("deadbeef", "commit.abbrev");
+        this.assertProperty(headId, "commit.id");
+        this.assertProperty(headId, "commit.sha");
+    }
+    
     @Test
     public void testResult() throws MojoExecutionException {
         this.mojo.run();
