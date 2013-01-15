@@ -96,7 +96,7 @@ public class JGitRepositoryTest {
 
         verify(indexDiff).diff();
     }
-    
+
     @Test
     public void testCleanWithCleanLooseCheck() throws Exception {
 		mockStatic(Git.class);
@@ -360,7 +360,7 @@ public class JGitRepositoryTest {
 
         assertThat(this.repository.isDirty(true), is(true));
     }
-    
+
     @Test
     public void testWalkCommits() throws Exception {
         CommitWalkAction action = mock(CommitWalkAction.class);

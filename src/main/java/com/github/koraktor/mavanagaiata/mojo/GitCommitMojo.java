@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2012, Sebastian Staudt
+ * Copyright (c) 2011-2013, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -65,7 +65,7 @@ public class GitCommitMojo extends AbstractGitMojo {
             dateFormat.setTimeZone(commit.getCommitterTimeZone());
             String commitDate = dateFormat.format(commit.getCommitterDate());
 
-            if (this.repository.isDirty(dirtyCheckLoose)) {
+            if (this.repository.isDirty(this.dirtyIgnoreUntracked)) {
                 abbrevId += this.dirtyFlag;
                 shaId    += this.dirtyFlag;
             }

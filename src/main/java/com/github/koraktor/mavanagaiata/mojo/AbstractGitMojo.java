@@ -60,8 +60,8 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * 
      * @parameter default-value="false"
      */
-    protected boolean dirtyCheckLoose = false;
-    
+    protected boolean dirtyIgnoreUntracked = false;
+
     /**
      * The GIT_DIR path of the Git repository
      *

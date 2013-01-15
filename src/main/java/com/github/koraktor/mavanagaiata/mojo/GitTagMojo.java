@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2012, Sebastian Staudt
+ * Copyright (c) 2011-2013, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -35,7 +35,7 @@ public class GitTagMojo extends AbstractGitMojo {
         try {
             GitTagDescription description = this.repository.describe();
             String describe = description.toString();
-            if (this.repository.isDirty(dirtyCheckLoose)) {
+            if (this.repository.isDirty(this.dirtyIgnoreUntracked)) {
                 describe += this.dirtyFlag;
             }
 

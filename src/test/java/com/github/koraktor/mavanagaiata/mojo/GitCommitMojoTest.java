@@ -60,7 +60,7 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
 
     @Test
     public void testCustomDirtyFlag() throws Exception {
-        when(this.repository.isDirty(this.mojo.dirtyCheckLoose)).thenReturn(true);
+        when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
         this.mojo.dirtyFlag = "*";
         this.mojo.run();
@@ -74,7 +74,7 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
 
     @Test
     public void testDirtyWorktree() throws Exception {
-        when(this.repository.isDirty(this.mojo.dirtyCheckLoose)).thenReturn(true);
+        when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
         this.mojo.run();
 

@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2012, Sebastian Staudt
+ * Copyright (c) 2011-2013, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -43,7 +43,7 @@ public class GitTagMojoTest extends MojoAbstractTest<GitTagMojo> {
 
     @Test
     public void testCustomDirtyFlag() throws Exception {
-        when(this.repository.isDirty(this.mojo.dirtyCheckLoose)).thenReturn(true);
+        when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
         this.mojo.dirtyFlag = "*";
         this.mojo.run();
@@ -54,7 +54,7 @@ public class GitTagMojoTest extends MojoAbstractTest<GitTagMojo> {
 
     @Test
     public void testDirty() throws Exception {
-        when(this.repository.isDirty(this.mojo.dirtyCheckLoose)).thenReturn(true);
+        when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
         this.mojo.run();
 
