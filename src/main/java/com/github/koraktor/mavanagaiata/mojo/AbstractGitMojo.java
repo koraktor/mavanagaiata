@@ -68,7 +68,7 @@ public abstract class AbstractGitMojo extends AbstractMojo {
     /**
      * The GIT_DIR path of the Git repository
      *
-     * @parameter property="mavanagaiata.gitDir"yö
+     * @parameter property="mavanagaiata.gitDir"
      */
     protected File gitDir;
 
