@@ -7,23 +7,6 @@
 
 package com.github.koraktor.mavanagaiata.git.jgit;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.spy;
-import static org.powermock.api.mockito.PowerMockito.verifyNew;
-import static org.powermock.api.mockito.PowerMockito.when;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
-
 import java.io.File;
 import java.util.Collections;
 import java.util.Date;
@@ -32,9 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
-import org.eclipse.jgit.api.StatusCommand;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.lib.AbbreviatedObjectId;
 import org.eclipse.jgit.lib.IndexDiff;
@@ -50,19 +31,36 @@ import org.eclipse.jgit.storage.file.FileRepository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.FileTreeIterator;
 import org.eclipse.jgit.treewalk.WorkingTreeIterator;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InOrder;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
+import org.mockito.InOrder;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.spy;
+import static org.powermock.api.mockito.PowerMockito.verifyNew;
+import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ JGitRepository.class, Git.class })
+@PrepareForTest({ JGitRepository.class })
 public class JGitRepositoryTest {
 
     protected Repository repo;
@@ -98,22 +96,16 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testCleanWithCleanLooseCheck() throws Exception {
-		mockStatic(Git.class);
-		Git git = mock(Git.class);
-    	when(Git.wrap((Repository) any())).thenReturn(git);
-    	StatusCommand statusCommand = mock(StatusCommand.class);
-    	when(git.status()).thenReturn(statusCommand);
-    	Status status = mock(Status.class);
-    	when(statusCommand.call()).thenReturn(status);
-    	//git.status().call()
-    	
-    	//actual test data when isDirty(true)
-    	when(status.getChanged()).thenReturn(Collections.<String> emptySet());
-    	when(status.getRemoved()).thenReturn(Collections.<String> emptySet());
-    	when(status.getMissing()).thenReturn(Collections.<String> emptySet());
-    	when(status.getModified()).thenReturn(Collections.<String> emptySet());
-    	when(status.getConflicting()).thenReturn(Collections.<String> emptySet());
+    public void testCleanIgnoreUntracked() throws Exception {
+        IndexDiff indexDiff = this.mockIndexDiff();
+
+        Status status = mock(Status.class);
+        whenNew(Status.class).withArguments(indexDiff).thenReturn(status);
+        when(status.getChanged()).thenReturn(Collections.<String> emptySet());
+        when(status.getRemoved()).thenReturn(Collections.<String> emptySet());
+        when(status.getMissing()).thenReturn(Collections.<String> emptySet());
+        when(status.getModified()).thenReturn(Collections.<String> emptySet());
+        when(status.getConflicting()).thenReturn(Collections.<String> emptySet());
 
         assertThat(this.repository.isDirty(true), is(false));
     }
@@ -336,27 +328,18 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testIsDirtyWithDirtyLooseCheck() throws Exception {
-		mockStatic(Git.class);
-		Git git = mock(Git.class);
-    	when(Git.wrap((Repository) any())).thenReturn(git);
-    	StatusCommand statusCommand = mock(StatusCommand.class);
-    	when(git.status()).thenReturn(statusCommand);
-    	Status status = mock(Status.class);
-    	when(statusCommand.call()).thenReturn(status);
-    	//git.status().call()
-    	
-    	//actual test data when isDirty(true)
-    	when(status.getChanged()).thenReturn(Collections.<String> emptySet());
-    	when(status.getRemoved()).thenReturn(Collections.<String> emptySet());
-    	when(status.getMissing()).thenReturn(new HashSet<String>() {
-    		private static final long serialVersionUID = 1L;
-    		{
-    			add("missing");
-    		}
-    	});
-    	when(status.getModified()).thenReturn(Collections.<String> emptySet());
-    	when(status.getConflicting()).thenReturn(Collections.<String> emptySet());
+    public void testIsDirtyIgnoreUntracked() throws Exception {
+        IndexDiff indexDiff = this.mockIndexDiff();
+
+        Status status = mock(Status.class);
+        whenNew(Status.class).withArguments(indexDiff).thenReturn(status);
+        when(status.getChanged()).thenReturn(Collections.<String> emptySet());
+        when(status.getRemoved()).thenReturn(Collections.<String> emptySet());
+        when(status.getMissing()).thenReturn(new HashSet<String>() {{
+            add("missing");
+        }});
+        when(status.getModified()).thenReturn(Collections.<String> emptySet());
+        when(status.getConflicting()).thenReturn(Collections.<String> emptySet());
 
         assertThat(this.repository.isDirty(true), is(true));
     }
