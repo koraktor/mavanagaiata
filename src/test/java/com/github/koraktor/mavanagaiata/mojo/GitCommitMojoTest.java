@@ -2,29 +2,27 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2012, Sebastian Staudt
+ * Copyright (c) 2011-2013, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.Date;
 import java.util.TimeZone;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.eclipse.jgit.api.Git;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.github.koraktor.mavanagaiata.git.GitCommit;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Git.class })
 public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
 
     @Before
@@ -73,7 +71,7 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
         this.assertProperty(headId, "commit.id");
         this.assertProperty(headId, "commit.sha");
     }
-    
+
     @Test
     public void testDirtyWorktree() throws Exception {
         when(this.repository.isDirty(this.mojo.dirtyCheckLoose)).thenReturn(true);
@@ -87,34 +85,6 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
         this.assertProperty(headId, "commit.sha");
     }
 
-    @Test
-    public void testDirtyWorktreeWithLooseOption() throws Exception {
-    	boolean dirtyCheckLoose = true;
-    	this.mojo.dirtyCheckLoose = dirtyCheckLoose;
-    	when(this.repository.isDirty(dirtyCheckLoose)).thenReturn(true);
-        this.mojo.run();
-
-        String headId = "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef-dirty";
-
-        this.assertProperty("deadbeef-dirty", "commit.abbrev");
-        this.assertProperty(headId, "commit.id");
-        this.assertProperty(headId, "commit.sha");
-    }
-    
-    @Test
-    public void testCleanWorktreeWithLooseOption() throws Exception {
-    	boolean dirtyCheckLoose = false;
-    	this.mojo.dirtyCheckLoose = dirtyCheckLoose;
-    	when(this.repository.isDirty(dirtyCheckLoose)).thenReturn(false);
-        this.mojo.run();
-
-        String headId = "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef";
-
-        this.assertProperty("deadbeef", "commit.abbrev");
-        this.assertProperty(headId, "commit.id");
-        this.assertProperty(headId, "commit.sha");
-    }
-    
     @Test
     public void testResult() throws MojoExecutionException {
         this.mojo.run();
