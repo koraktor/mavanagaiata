@@ -199,15 +199,34 @@ public class JGitRepository extends AbstractGitRepository {
         return tags;
     }
 
-    public boolean isDirty() throws GitRepositoryException {
-        try {
-            FileTreeIterator workTreeIterator = new FileTreeIterator(this.repository);
-            IndexDiff indexDiff = new IndexDiff(this.repository, this.getHeadObject(), workTreeIterator);
-            indexDiff.diff();
-            return !new Status(indexDiff).isClean();
-        } catch (IOException e) {
-            throw new GitRepositoryException("Could not create repository diff.", e);
-        }
+    public boolean isDirty(boolean dirtyIncludeUntracked) throws GitRepositoryException {
+    	try {
+    		FileTreeIterator workTreeIterator = new FileTreeIterator(this.repository);
+    		IndexDiff indexDiff = new IndexDiff(this.repository, this.getHeadObject(), workTreeIterator);
+    		indexDiff.diff();
+    		Status status = new Status(indexDiff);
+
+    		if(!dirtyIncludeUntracked) {
+    			// Git describe doesn't mind about untracked files when checking if
+    			// repo is dirty. JGit does this, so we cannot use the isClean method
+    			// to get the same behaviour. Instead check dirty state without
+    			// status.getUntracked().isEmpty()
+    			boolean isDirty = !(status.getAdded().isEmpty() //
+    					&& status.getChanged().isEmpty() //
+    					&& status.getRemoved().isEmpty() //
+    					&& status.getMissing().isEmpty() //
+    					&& status.getModified().isEmpty() //
+    					&& status.getConflicting().isEmpty());
+
+    			return isDirty;
+    		}
+    		else {
+    			return !status.isClean();
+    		}
+    	}
+    	catch (IOException e) {
+    		throw new GitRepositoryException("Could not create repository diff.", e);
+    	}
     }
 
     public void walkCommits(CommitWalkAction action)

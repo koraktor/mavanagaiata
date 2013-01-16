@@ -51,7 +51,7 @@ public class AbstractGitRepositoryTest {
             return null;
         }
 
-        public boolean isDirty() throws GitRepositoryException {
+        public boolean isDirty(boolean dirtyCheckLoose) throws GitRepositoryException {
             return false;
         }
 

@@ -43,7 +43,7 @@ public class GitTagMojoTest extends MojoAbstractTest<GitTagMojo> {
 
     @Test
     public void testCustomDirtyFlag() throws Exception {
-        when(this.repository.isDirty()).thenReturn(true);
+        when(this.repository.isDirty(this.mojo.dirtyIncludeUntracked)).thenReturn(true);
 
         this.mojo.dirtyFlag = "*";
         this.mojo.run();
@@ -54,7 +54,7 @@ public class GitTagMojoTest extends MojoAbstractTest<GitTagMojo> {
 
     @Test
     public void testDirty() throws Exception {
-        when(this.repository.isDirty()).thenReturn(true);
+        when(this.repository.isDirty(this.mojo.dirtyIncludeUntracked)).thenReturn(true);
 
         this.mojo.run();
 
