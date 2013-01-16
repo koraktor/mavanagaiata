@@ -188,7 +188,8 @@ included LICENSE file.
 
 * Sebastian Staudt -- koraktor(at)gmail.com
 * Pablo Graña -- pablo.grana(at)globant.com
-* Henning Schmiedehausen -- hgschmie@fb.com
+* Henning Schmiedehausen -- hgschmie(at)fb.com
+* Santeri Vesalainen -- santeri.vesalainen(at)gmail.com
 
  [1]: https://github.com/koraktor/mavanagaiata
  [2]: https://github.com/koraktor/mavanagaiata/issues
