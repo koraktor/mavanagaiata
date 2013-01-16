@@ -35,7 +35,7 @@ public class GitTagMojo extends AbstractGitMojo {
         try {
             GitTagDescription description = this.repository.describe();
             String describe = description.toString();
-            if (this.repository.isDirty()) {
+            if (this.repository.isDirty(dirtyIncludeUntracked)) {
                 describe += this.dirtyFlag;
             }
 

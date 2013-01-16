@@ -7,18 +7,17 @@
 
 package com.github.koraktor.mavanagaiata.mojo;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.Date;
 import java.util.TimeZone;
 
 import org.apache.maven.plugin.MojoExecutionException;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitCommit;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
 
@@ -57,7 +56,7 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
 
     @Test
     public void testCustomDirtyFlag() throws Exception {
-        when(this.repository.isDirty()).thenReturn(true);
+        when(this.repository.isDirty(this.mojo.dirtyIncludeUntracked)).thenReturn(true);
 
         this.mojo.dirtyFlag = "*";
         this.mojo.run();
@@ -68,10 +67,10 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
         this.assertProperty(headId, "commit.id");
         this.assertProperty(headId, "commit.sha");
     }
-
+    
     @Test
     public void testDirtyWorktree() throws Exception {
-        when(this.repository.isDirty()).thenReturn(true);
+        when(this.repository.isDirty(this.mojo.dirtyIncludeUntracked)).thenReturn(true);
 
         this.mojo.run();
 
@@ -82,6 +81,34 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
         this.assertProperty(headId, "commit.sha");
     }
 
+    @Test
+    public void testWorktreeWithNonLooseOption() throws Exception {
+    	boolean dirtyIncludeUntracked = false;
+    	this.mojo.dirtyIncludeUntracked = dirtyIncludeUntracked;
+    	when(this.repository.isDirty(dirtyIncludeUntracked)).thenReturn(true);
+        this.mojo.run();
+
+        String headId = "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef-dirty";
+
+        this.assertProperty("deadbeef-dirty", "commit.abbrev");
+        this.assertProperty(headId, "commit.id");
+        this.assertProperty(headId, "commit.sha");
+    }
+    
+    @Test
+    public void testWorktreeWithLooseOption() throws Exception {
+    	boolean dirtyIncludeUntracked = true;
+    	this.mojo.dirtyIncludeUntracked = dirtyIncludeUntracked;
+    	when(this.repository.isDirty(dirtyIncludeUntracked)).thenReturn(false);
+        this.mojo.run();
+
+        String headId = "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef";
+
+        this.assertProperty("deadbeef", "commit.abbrev");
+        this.assertProperty(headId, "commit.id");
+        this.assertProperty(headId, "commit.sha");
+    }
+    
     @Test
     public void testResult() throws MojoExecutionException {
         this.mojo.run();

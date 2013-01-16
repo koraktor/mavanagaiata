@@ -53,6 +53,15 @@ public abstract class AbstractGitMojo extends AbstractMojo {
     protected String dirtyFlag = "-dirty";
 
     /**
+     * Affects how easily property="mavanagaiata.dirtyFlag" is applied to commit id
+     * 
+     * If false, behaves 'more' in correspondence to output of "git status", clean check. 
+     * 
+     * @parameter default-value="true"
+     */
+    protected boolean dirtyIncludeUntracked = true;
+    
+    /**
      * The GIT_DIR path of the Git repository
      *
      * @parameter property="mavanagaiata.gitDir"yö

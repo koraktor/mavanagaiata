@@ -65,7 +65,7 @@ public class GitCommitMojo extends AbstractGitMojo {
             dateFormat.setTimeZone(commit.getCommitterTimeZone());
             String commitDate = dateFormat.format(commit.getCommitterDate());
 
-            if (this.repository.isDirty()) {
+            if (this.repository.isDirty(dirtyIncludeUntracked)) {
                 abbrevId += this.dirtyFlag;
                 shaId    += this.dirtyFlag;
             }
