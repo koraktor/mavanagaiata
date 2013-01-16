@@ -418,10 +418,10 @@ public class JGitRepositoryTest {
     }
 
     private RevCommit createCommit() {
-        String commitData = String.format("tree %040x%n" +
-            "parent %040x%n" +
-            "author Sebastian Staudt <koraktor@gmail.com> %d +0100%n" +
-            "committer Sebastian Staudt <koraktor@gmail.com> %d +0100%n%n" +
+        String commitData = String.format("tree %040x\n" +
+            "parent %040x\n" +
+            "author Sebastian Staudt <koraktor@gmail.com> %d +0100\n" +
+            "committer Sebastian Staudt <koraktor@gmail.com> %d +0100\n\n" +
             "%s",
             new Random().nextLong(),
             new Random().nextLong(),
@@ -437,10 +437,10 @@ public class JGitRepositoryTest {
     }
 
     private RevTag createTag(String name, String objectId) throws CorruptObjectException {
-        String tagData = String.format("object %s%n" +
-            "type commit%n" +
-            "tag %s%n" +
-            "tagger Sebastian Staudt <koraktor@gmail.com> %d +0100%n" +
+        String tagData = String.format("object %s\n" +
+            "type commit\n" +
+            "tag %s\n" +
+            "tagger Sebastian Staudt <koraktor@gmail.com> %d +0100\n" +
             "%s",
             objectId,
             name,
