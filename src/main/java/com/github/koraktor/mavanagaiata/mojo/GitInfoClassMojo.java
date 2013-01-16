@@ -81,6 +81,9 @@ public class GitInfoClassMojo extends AbstractGitMojo {
 
     /**
      * The directory to write the source code to
+     * <br>
+     * This directory is automatically added to the source roots used to
+     * compile the project.
      *
      * @parameter property="mavanagaiata.info-class.outputDirectory"
      *            default-value="${project.build.directory}/generated-sources/mavanagaiata"
