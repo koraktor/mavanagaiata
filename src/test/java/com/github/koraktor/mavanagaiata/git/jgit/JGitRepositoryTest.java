@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 
-import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.lib.AbbreviatedObjectId;
 import org.eclipse.jgit.lib.IndexDiff;
@@ -85,10 +84,13 @@ public class JGitRepositoryTest {
     @Test
     public void testClean() throws Exception {
         IndexDiff indexDiff = this.mockIndexDiff();
-
-        Status status = mock(Status.class);
-        whenNew(Status.class).withArguments(indexDiff).thenReturn(status);
-        when(status.isClean()).thenReturn(true);
+        when(indexDiff.getAdded()).thenReturn(Collections.<String> emptySet());
+        when(indexDiff.getChanged()).thenReturn(Collections.<String>emptySet());
+        when(indexDiff.getRemoved()).thenReturn(Collections.<String>emptySet());
+        when(indexDiff.getMissing()).thenReturn(Collections.<String> emptySet());
+        when(indexDiff.getModified()).thenReturn(Collections.<String>emptySet());
+        when(indexDiff.getConflicting()).thenReturn(Collections.<String>emptySet());
+        when(indexDiff.getUntracked()).thenReturn(Collections.<String>emptySet());
 
         assertThat(this.repository.isDirty(false), is(false));
 
@@ -98,16 +100,16 @@ public class JGitRepositoryTest {
     @Test
     public void testCleanIgnoreUntracked() throws Exception {
         IndexDiff indexDiff = this.mockIndexDiff();
-
-        Status status = mock(Status.class);
-        whenNew(Status.class).withArguments(indexDiff).thenReturn(status);
-        when(status.getChanged()).thenReturn(Collections.<String> emptySet());
-        when(status.getRemoved()).thenReturn(Collections.<String> emptySet());
-        when(status.getMissing()).thenReturn(Collections.<String> emptySet());
-        when(status.getModified()).thenReturn(Collections.<String> emptySet());
-        when(status.getConflicting()).thenReturn(Collections.<String> emptySet());
+        when(indexDiff.getAdded()).thenReturn(Collections.<String> emptySet());
+        when(indexDiff.getChanged()).thenReturn(Collections.<String> emptySet());
+        when(indexDiff.getRemoved()).thenReturn(Collections.<String> emptySet());
+        when(indexDiff.getMissing()).thenReturn(Collections.<String> emptySet());
+        when(indexDiff.getModified()).thenReturn(Collections.<String> emptySet());
+        when(indexDiff.getConflicting()).thenReturn(Collections.<String> emptySet());
 
         assertThat(this.repository.isDirty(true), is(false));
+
+        verify(indexDiff).diff();
     }
 
     @Test
@@ -317,10 +319,9 @@ public class JGitRepositoryTest {
     @Test
     public void testIsDirty() throws Exception {
         IndexDiff indexDiff = this.mockIndexDiff();
-
-        Status status = mock(Status.class);
-        whenNew(Status.class).withArguments(indexDiff).thenReturn(status);
-        when(status.isClean()).thenReturn(false);
+        HashSet<String> untracked = new HashSet<String>();
+        untracked.add("somefile");
+        when(indexDiff.getUntracked()).thenReturn(untracked);
 
         assertThat(this.repository.isDirty(false), is(true));
 
@@ -330,18 +331,13 @@ public class JGitRepositoryTest {
     @Test
     public void testIsDirtyIgnoreUntracked() throws Exception {
         IndexDiff indexDiff = this.mockIndexDiff();
-
-        Status status = mock(Status.class);
-        whenNew(Status.class).withArguments(indexDiff).thenReturn(status);
-        when(status.getChanged()).thenReturn(Collections.<String> emptySet());
-        when(status.getRemoved()).thenReturn(Collections.<String> emptySet());
-        when(status.getMissing()).thenReturn(new HashSet<String>() {{
-            add("missing");
-        }});
-        when(status.getModified()).thenReturn(Collections.<String> emptySet());
-        when(status.getConflicting()).thenReturn(Collections.<String> emptySet());
+        HashSet<String> added = new HashSet<String>();
+        added.add("somefile");
+        when(indexDiff.getAdded()).thenReturn(added);
 
         assertThat(this.repository.isDirty(true), is(true));
+
+        verify(indexDiff).diff();
     }
 
     @Test

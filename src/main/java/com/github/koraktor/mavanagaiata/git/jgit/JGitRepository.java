@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.errors.AmbiguousObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
@@ -204,18 +203,18 @@ public class JGitRepository extends AbstractGitRepository {
             FileTreeIterator workTreeIterator = new FileTreeIterator(this.repository);
             IndexDiff indexDiff = new IndexDiff(this.repository, this.getHeadObject(), workTreeIterator);
             indexDiff.diff();
-            Status status = new Status(indexDiff);
 
-            if (ignoreUntracked) {
-                return !(status.getAdded().isEmpty() &&
-                    status.getChanged().isEmpty() &&
-                    status.getRemoved().isEmpty() &&
-                    status.getMissing().isEmpty() &&
-                    status.getModified().isEmpty() &&
-                    status.getConflicting().isEmpty());
-            } else {
-                return !status.isClean();
+            if (!ignoreUntracked && !indexDiff.getUntracked().isEmpty()) {
+                return true;
             }
+
+            return !(indexDiff.getAdded().isEmpty() &&
+                indexDiff.getChanged().isEmpty() &&
+                indexDiff.getRemoved().isEmpty() &&
+                indexDiff.getMissing().isEmpty() &&
+                indexDiff.getModified().isEmpty() &&
+                indexDiff.getConflicting().isEmpty());
+
         } catch (IOException e) {
             throw new GitRepositoryException("Could not create repository diff.", e);
         }
