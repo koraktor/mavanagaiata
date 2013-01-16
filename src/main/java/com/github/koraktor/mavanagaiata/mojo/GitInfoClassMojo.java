@@ -121,7 +121,7 @@ public class GitInfoClassMojo extends AbstractGitMojo {
 
         FileOutputStream tempSourceFileStream = null;
         try {
-            File tempSourceDir = File.createTempFile("mavanagaita:info-class", null);
+            File tempSourceDir = File.createTempFile("mavanagaita-info-class", null);
             tempSourceDir.delete();
             tempSourceDir.mkdir();
             FileUtils.forceDeleteOnExit(tempSourceDir);
