@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2012, Sebastian Staudt
+ * Copyright (c) 2011-2013, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -41,13 +41,15 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      * The string to prepend to every commit message
      *
      * @parameter property="mavanagaiata.changelog.commitPrefix"
+     *            default-value=" * "
      */
-    protected String commitPrefix = " * ";
+    protected String commitPrefix;
 
     /**
      * The date format to use for tag output
      *
      * @parameter property="mavanagaiata.changelog.dateFormat"
+     *            default-value="${mavanagaiata.baseDateFormat}"
      */
     protected String dateFormat = baseDateFormat;
 
@@ -69,8 +71,9 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      * The header to print above the changelog
      *
      * @parameter property="mavanagaiata.changelog.header"
+     *            default-value="Changelog\n=========\n"
      */
-    protected String header = "Changelog\n=========\n";
+    protected String header;
 
     /**
      * The file to write the changelog to
@@ -86,15 +89,17 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      * This is useful when usually tagging commits like "Version bump to X.Y.Z"
      *
      * @parameter property="mavanagaiata.changelog.skipTagged"
+     *            default-value="false"
      */
-    protected boolean skipTagged = false;
+    protected boolean skipTagged;
 
     /**
      * The string to prepend to the tag name
      *
      * @parameter property="mavanagaiata.changelog.tagPrefix"
+     *            default-value="\nVersion "
      */
-    protected String tagPrefix = "\nVersion ";
+    protected String tagPrefix;
 
     /**
      * Walks through the history of the currently checked out branch of the

@@ -47,6 +47,8 @@ public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
     public void setup() throws Exception{
         super.setup();
 
+        this.mojo.className       = "GitInfo";
+        this.mojo.dateFormat      = this.mojo.baseDateFormat;
         this.mojo.encoding        = "UTF-8";
         this.mojo.fileFilter      = mock(MavenFileFilter.class);
         this.mojo.packageName     = "com.github.koraktor.mavanagaita";

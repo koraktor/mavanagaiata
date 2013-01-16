@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2012, Sebastian Staudt
+ * Copyright (c) 2011-2013, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -75,9 +75,13 @@ public abstract class MojoAbstractTest<T extends AbstractGitMojo> {
         if (!Modifier.isAbstract(mojoClass.getModifiers())) {
             this.mojo = mojoClass.newInstance();
         }
-        this.mojo.baseDir    = this.baseDir;
-        this.mojo.project    = project;
-        this.mojo.repository = this.repository;
+        this.mojo.baseDateFormat        = "MM/dd/yyyy hh:mm a Z";
+        this.mojo.baseDir               = this.baseDir;
+        this.mojo.dirtyFlag             = "-dirty";
+        this.mojo.dirtyIgnoreUntracked  = false;
+        this.mojo.head                  = "HEAD";
+        this.mojo.project               = project;
+        this.mojo.repository            = this.repository;
     }
 
     protected void assertProperty(Object value, String key) {

@@ -32,8 +32,9 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * The date format to use for various dates
      *
      * @parameter property="mavanagaiata.dateFormat"
+     *            default-value="MM/dd/yyyy hh:mm a Z"
      */
-    protected String baseDateFormat = "MM/dd/yyyy hh:mm a Z";
+    protected String baseDateFormat;
 
     /**
      * The project's base directory
@@ -48,22 +49,23 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * tree
      *
      * @parameter property="mavanagaiata.dirtyFlag"
+     *            default-value = "-dirty"
      * @since 0.4.0
      */
-    protected String dirtyFlag = "-dirty";
+    protected String dirtyFlag;
 
     /**
      * Specifies if the dirty flag should also be appended if there are
      * untracked files
-     * <p>
+     * <br>
      * If <code>false</code> only modified that are already known to Git will
      * cause the dirty flag to be appended.
-     * </p>
      *
      * @parameter property="mavanagaiata.dirtyIgnoreUntracked"
+     *            default-value="false"
      * @since 0.5.0
      */
-    protected boolean dirtyIgnoreUntracked = false;
+    protected boolean dirtyIgnoreUntracked;
 
     /**
      * The GIT_DIR path of the Git repository
@@ -76,20 +78,25 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * The commit or ref to use as starting point for operations
      *
      * @parameter property="mavanagaiata.head"
+     *            default-value="HEAD"
      */
-    protected String head = "HEAD";
+    protected String head;
 
     /**
      * Skip the plugin execution
      *
-     * @parameter default-value="false"
+     * @parameter property="mavanagaiata.skip"
+     *            default-value="false"
+     * @since 0.5.0
      */
     protected boolean skip = false;
 
     /**
      * Skip the plugin execution if not inside a Git repository
      *
-     * @parameter default-value="false"
+     * @parameter property="mavanagaiata.skipNoGit"
+     *            default-value="false"
+     * @since 0.5.0
      */
     protected boolean skipNoGit = false;
 

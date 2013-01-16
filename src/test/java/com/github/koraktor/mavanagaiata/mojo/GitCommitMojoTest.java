@@ -29,6 +29,8 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
     public void setup() throws Exception{
         super.setup();
 
+        this.mojo.dateFormat = this.mojo.baseDateFormat;
+
         GitCommit commit = mock(GitCommit.class);
         when(commit.getAuthorDate()).thenReturn(new Date(1162580880000L));
         when(commit.getAuthorEmailAddress()).thenReturn("john.doe@example.com");

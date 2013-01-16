@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2012, Sebastian Staudt
+ * Copyright (c) 2011-2013, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -30,6 +30,12 @@ public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContri
     @Override
     public void setup() throws Exception {
         super.setup();
+
+        this.mojo.contributorPrefix = " * ";
+        this.mojo.header            = "Contributors\n============\n";
+        this.mojo.showCounts        = true;
+        this.mojo.showEmail         = false;
+        this.mojo.sort              = "count";
 
         doAnswer(new Answer() {
             long dateCounter = new Date().getTime();

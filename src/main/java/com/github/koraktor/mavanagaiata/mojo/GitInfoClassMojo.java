@@ -47,20 +47,22 @@ public class GitInfoClassMojo extends AbstractGitMojo {
     /**
      * The name of the class to generate
      *
-     * @parameter expression="${mavanagaiata.info-class.className}"
+     * @parameter property="mavanagaiata.info-class.className"
+     *            default-value="GitInfo"
      */
-    protected String className = "GitInfo";
+    protected String className;
 
     /**
      * The date format to use for the timestamp of the generated class
      *
      * @parameter property="mavanagaiata.info-class.dateFormat"
+     *            default-value="${mavanagaiata.dateFormat}"
      */
-    protected String dateFormat = baseDateFormat;
+    protected String dateFormat;
 
     /**
-     * @parameter default-value="${project.build.sourceEncoding}"
-     *            expression="${mavanagaiata.info-class.encoding}"
+     * @parameter property="mavanagaiata.info-class.encoding"
+     *            default-value="${project.build.sourceEncoding}"
      */
     protected String encoding;
 
@@ -72,23 +74,23 @@ public class GitInfoClassMojo extends AbstractGitMojo {
     /**
      * The name of the package in which the class will be generated
      *
-     * @parameter default-value="${project.groupId}.${project.artifactId}"
-     *            expression="${mavanagaiata.info-class.packageName}"
+     * @parameter property="mavanagaiata.info-class.packageName"
+     *            default-value="${project.groupId}.${project.artifactId}"
      */
     protected String packageName;
 
     /**
      * The directory to write the source code to
      *
-     * @parameter default-value="${project.build.directory}/generated-sources/mavanagaiata"
-     *            expression="${mavanagaiata.info-class.outputDirectory}"
+     * @parameter property="mavanagaiata.info-class.outputDirectory"
+     *            default-value="${project.build.directory}/generated-sources/mavanagaiata"
      */
     protected File outputDirectory;
 
     /**
      * The path to an alternative template for the info class
      *
-     * @parameter expression="${mavanagaiata.info-class.templatePath}"
+     * @parameter property="mavanagaiata.info-class.templatePath"
      */
     protected File templateFile;
 

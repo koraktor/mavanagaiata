@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2012, Sebastian Staudt
+ * Copyright (c) 2011-2013, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -56,15 +56,17 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
      * The string to prepend to every contributor name
      *
      * @parameter property="mavanagaiata.contributors.contributorPrefix"
+     *            default-value=" * "
      */
-    protected String contributorPrefix = " * ";
+    protected String contributorPrefix;
 
     /**
      * The header to print above the changelog
      *
      * @parameter property="mavanagaiata.contributors.header"
+     *            default-value="Contributors\n============\n"
      */
-    protected String header = "Contributors\n============\n";
+    protected String header;
 
     /**
      * The file to write the contributors list to
@@ -78,20 +80,25 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
      * Whether the number of contributions should be listed
      *
      * @parameter property="mavanagaiata.contributors.showCounts"
+     *            default-value="true"
      */
-    protected boolean showCounts = true;
+    protected boolean showCounts;
 
     /**
      * Whether the email addresses of contributors should be listed
      *
      * @parameter property="mavanagaiata.contributors.showEmail"
+     *            default-value="false"
      */
-    protected boolean showEmail = false;
+    protected boolean showEmail;
 
     /**
      * The method used to sort contributors
+     * <br>
+     * Available values are {@code count}, {@code date} and {@code name}.
      *
      * @parameter property="mavanagaiata.contributors.sort"
+     *            default-value="count"
      */
     protected String sort;
 

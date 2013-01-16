@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012, Sebastian Staudt
+ * Copyright (c) 2012-2013, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -40,6 +40,7 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
     @Override
     public void setup() {
         this.mojo = new GenericAbstractGitOutputMojo();
+        this.mojo.baseDateFormat = "MM/dd/yyyy hh:mm a Z";
     }
 
     @Test

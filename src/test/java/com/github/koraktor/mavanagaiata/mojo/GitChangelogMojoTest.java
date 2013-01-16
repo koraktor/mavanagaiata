@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2012, Sebastian Staudt
+ * Copyright (c) 2011-2013, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -43,6 +43,12 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
     @Override
     public void setup() throws Exception {
         super.setup();
+
+        this.mojo.commitPrefix = " * ";
+        this.mojo.dateFormat   = this.mojo.baseDateFormat;
+        this.mojo.header       = "Changelog\n=========\n";
+        this.mojo.skipTagged   = false;
+        this.mojo.tagPrefix    = "\nVersion ";
 
         this.mockCommits = new ArrayList<GitCommit>();
         this.mockCommits.add(mockCommit("598a75596868dec45f8e6a808a07d533bc0184f0", "8th commit"));
