@@ -9,6 +9,9 @@ package com.github.koraktor.mavanagaiata.mojo;
 
 import java.text.SimpleDateFormat;
 
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import com.github.koraktor.mavanagaiata.git.GitCommit;
@@ -27,11 +30,10 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
  * "mvngit.commit.committer.email" respectively.
  *
  * @author Sebastian Staudt
- * @goal commit
- * @phase initialize
- * @requiresProject
  * @since 0.1.0
  */
+@Mojo(name ="commit",
+      defaultPhase = LifecyclePhase.INITIALIZE)
 public class GitCommitMojo extends AbstractGitMojo {
 
     /**

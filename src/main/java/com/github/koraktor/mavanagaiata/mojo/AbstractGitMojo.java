@@ -13,6 +13,8 @@ import java.util.Properties;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 import com.github.koraktor.mavanagaiata.git.GitRepository;
@@ -31,10 +33,9 @@ abstract class AbstractGitMojo extends AbstractMojo {
 
     /**
      * The date format to use for various dates
-     *
-     * @parameter property="mavanagaiata.dateFormat"
-     *            default-value="MM/dd/yyyy hh:mm a Z"
      */
+    @Parameter(property = "mavanagaiata.dateFormat",
+               defaultValue = "MM/dd/yyyy hh:mm a Z")
     protected String dateFormat;
 
     /**
@@ -47,10 +48,9 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * automatically even if this is not the real working tree but one of its
      * subdirectories. But Mavanagaiata cannot determine the state of the
      * working tree (e.g. for the dirty flag) if this is not set correctly.
-     *
-     * @parameter property="mavanagaiata.baseDir"
-     *            default-value="${project.basedir}"
      */
+    @Parameter(property = "mavanagaiata.baseDir",
+               defaultValue = "${project.basedir}")
     protected File baseDir;
 
     /**
@@ -60,10 +60,10 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * Setting this to either <code>"false"</code> or <code>"null"</code> will
      * disable flagging refs as dirty.
      *
-     * @parameter property="mavanagaiata.dirtyFlag"
-     *            default-value = "-dirty"
      * @since 0.4.0
      */
+    @Parameter(property = "mavanagaiata.dirtyFlag",
+               defaultValue = "-dirty")
     protected String dirtyFlag;
 
     /**
@@ -73,10 +73,10 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * If <code>false</code> only modified that are already known to Git will
      * cause the dirty flag to be appended.
      *
-     * @parameter property="mavanagaiata.dirtyIgnoreUntracked"
-     *            default-value="false"
      * @since 0.5.0
      */
+    @Parameter(property = "mavanagaiata.dirtyIgnoreUntracked",
+               defaultValue = "false")
     protected boolean dirtyIgnoreUntracked;
 
     /**
@@ -85,10 +85,10 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * If <code>true</code> a failure during mojo execution will not stop the
      * build process.
      *
-     * @parameter property="mavanagaiata.failGracefully"
-     *            default-value="false"
      * @since 0.6.0
      */
+    @Parameter(property = "mavanagaiata.failGracefully",
+               defaultValue = "false")
     protected boolean failGracefully = false;
 
     /**
@@ -97,50 +97,45 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * <strong>Warning:</strong> Do not set this when you don't have a good
      * reason to do so. The <code>GIT_DIR</code> can be found automatically if
      * your project resides somewhere in a usual Git repository.
-     *
-     * @parameter property="mavanagaiata.gitDir"
      */
+    @Parameter(property = "mavanagaiata.gitDir")
     protected File gitDir;
 
     /**
      * The commit or ref to use as starting point for operations
-     *
-     * @parameter property="mavanagaiata.head"
-     *            default-value="HEAD"
      */
+    @Parameter(property = "mavanagaiata.head",
+               defaultValue = "HEAD")
     protected String head;
 
     /**
      * Skip the plugin execution
      *
-     * @parameter property="mavanagaiata.skip"
-     *            default-value="false"
      * @since 0.5.0
      */
+    @Parameter(property = "mavanagaiata.skip",
+               defaultValue = "false")
     protected boolean skip = false;
 
     /**
      * Skip the plugin execution if not inside a Git repository
      *
-     * @parameter property="mavanagaiata.skipNoGit"
-     *            default-value="false"
      * @since 0.5.0
      */
+    @Parameter(property = "mavanagaiata.skipNoGit",
+               defaultValue = "false")
     protected boolean skipNoGit = false;
 
     /**
      * The Maven project
-     *
-     * @parameter property="project"
-     * @readonly
      */
+    @Component
     protected MavenProject project;
 
     /**
      * The prefixes to prepend to property keys
-     *
-     * @parameter
      */
+    @Parameter(property = "mavanagaiata.propertyPrefixes")
     protected String[] propertyPrefixes = { "mavanagaiata", "mvngit" };
 
     protected GitRepository repository;

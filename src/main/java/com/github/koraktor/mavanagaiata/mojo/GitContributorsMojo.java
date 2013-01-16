@@ -14,6 +14,10 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+
 import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitCommit;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
@@ -26,11 +30,10 @@ import com.github.koraktor.mavanagaiata.git.MailMap;
  * save it to a file.
  *
  * @author Sebastian Staudt
- * @goal contributors
- * @phase process-resources
- * @requiresProject
  * @since 0.2.0
  */
+@Mojo(name ="contributors",
+      defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
 public class GitContributorsMojo extends AbstractGitOutputMojo {
 
     protected final static Comparator<Contributor> COUNT_COMPARATOR = new Comparator<Contributor>() {
@@ -53,54 +56,47 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
 
     /**
      * The string to prepend to every contributor name
-     *
-     * @parameter property="mavanagaiata.contributors.contributorPrefix"
-     *            default-value=" * "
      */
+    @Parameter(property = "mavanagaiata.contributors.contributorPrefix",
+               defaultValue = " * ")
     protected String contributorPrefix;
 
     /**
      * The header to print above the changelog
-     *
-     * @parameter property="mavanagaiata.contributors.header"
-     *            default-value="Contributors\n============\n"
      */
+    @Parameter(property = "mavanagaiata.contributors.header",
+               defaultValue = "Contributors\n============\n")
     protected String header;
 
     protected MailMap mailMap;
 
     /**
      * The file to write the contributors list to
-     *
-     * @parameter property="mavanagaiata.contributors.outputFile"
-     * @since 0.4.1
      */
+    @Parameter(property = "mavanagaiata.contributors.outputFile")
     protected File outputFile;
 
     /**
      * Whether the number of contributions should be listed
-     *
-     * @parameter property="mavanagaiata.contributors.showCounts"
-     *            default-value="true"
      */
+    @Parameter(property = "mavanagaiata.contributors.showCounts",
+               defaultValue = "true")
     protected boolean showCounts;
 
     /**
      * Whether the email addresses of contributors should be listed
-     *
-     * @parameter property="mavanagaiata.contributors.showEmail"
-     *            default-value="false"
      */
+    @Parameter(property = "mavanagaiata.contributors.showEmail",
+               defaultValue = "false")
     protected boolean showEmail;
 
     /**
      * The method used to sort contributors
      * <br>
      * Available values are {@code count}, {@code date} and {@code name}.
-     *
-     * @parameter property="mavanagaiata.contributors.sort"
-     *            default-value="count"
      */
+    @Parameter(property = "mavanagaiata.contributors.sort",
+               defaultValue = "count")
     protected String sort;
 
     /**

@@ -7,6 +7,9 @@
 
 package com.github.koraktor.mavanagaiata.mojo;
 
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 
@@ -15,11 +18,10 @@ import com.github.koraktor.mavanagaiata.git.GitTagDescription;
  * "mvngit.tag" properties.
  *
  * @author Sebastian Staudt
- * @goal tag
- * @phase initialize
- * @requiresProject
  * @since 0.1.0
  */
+@Mojo(name ="tag",
+      defaultPhase = LifecyclePhase.INITIALIZE)
 public class GitTagMojo extends AbstractGitMojo {
 
     /**

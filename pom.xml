@@ -139,9 +139,20 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-annotations</artifactId>
+            <version>3.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.maven.shared</groupId>
             <artifactId>maven-filtering</artifactId>
             <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>3.0.10</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jgit</groupId>
@@ -237,11 +248,15 @@
                 <artifactId>maven-plugin-plugin</artifactId>
                 <version>3.2</version>
                 <configuration>
+                    <!--<extractors>
+                        <extractor>java-annotations</extractor>
+                    </extractors>-->
                     <goalPrefix>mavanagaiata</goalPrefix>
+                    <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>generated-helpmojo</id>
+                        <id>generate-helpmojo</id>
                         <goals>
                             <goal>helpmojo</goal>
                         </goals>

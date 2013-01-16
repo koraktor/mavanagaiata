@@ -7,6 +7,9 @@
 
 package com.github.koraktor.mavanagaiata.mojo;
 
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 
 /**
@@ -14,11 +17,10 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
  * "mavanagaiata.branch" and "mvngit.branch" properties.
  *
  * @author Sebastian Staudt
- * @goal branch
- * @phase initialize
- * @requiresProject
  * @since 0.1.0
  */
+@Mojo(name ="branch",
+      defaultPhase = LifecyclePhase.INITIALIZE)
 public class GitBranchMojo extends AbstractGitMojo {
 
     /**

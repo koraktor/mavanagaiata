@@ -21,6 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.shared.filtering.MavenFileFilter;
 import org.apache.maven.shared.filtering.MavenFilteringException;
 
@@ -36,40 +40,34 @@ import org.codehaus.plexus.util.FileUtils;
  * like commit ID and tag name.
  *
  * @author Sebastian Staudt
- * @goal info-class
- * @phase generate-sources
- * @requiresProject
  * @since 0.5.0
  */
+@Mojo(name ="info-class",
+      defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class GitInfoClassMojo extends AbstractGitMojo {
 
     /**
      * The name of the class to generate
-     *
-     * @parameter property="mavanagaiata.info-class.className"
-     *            default-value="GitInfo"
      */
+    @Parameter(property = "mavanagaiata.info-class.className",
+               defaultValue = "GitInfo")
     protected String className;
 
     /**
      * The encoding of the generated source file
-     *
-     * @parameter property="mavanagaiata.info-class.encoding"
-     *            default-value="${project.build.sourceEncoding}"
      */
+    @Parameter(property = "mavanagaiata.info-class.encoding",
+               defaultValue = "${project.build.sourceEncoding}")
     protected String encoding;
 
-    /**
-     * @component
-     */
+    @Component
     protected MavenFileFilter fileFilter;
 
     /**
      * The name of the package in which the class will be generated
-     *
-     * @parameter property="mavanagaiata.info-class.packageName"
-     *            default-value="${project.groupId}.${project.artifactId}"
      */
+    @Parameter(property = "mavanagaiata.info-class.packageName",
+               defaultValue = "${project.groupId}.${project.artifactId}")
     protected String packageName;
 
     /**
@@ -77,17 +75,15 @@ public class GitInfoClassMojo extends AbstractGitMojo {
      * <br>
      * This directory is automatically added to the source roots used to
      * compile the project.
-     *
-     * @parameter property="mavanagaiata.info-class.outputDirectory"
-     *            default-value="${project.build.directory}/generated-sources/mavanagaiata"
      */
+    @Parameter(property = "mavanagaiata.info-class.outputDirectory",
+               defaultValue = "${project.build.directory}/generated-sources/mavanagaiata")
     protected File outputDirectory;
 
     /**
      * The path to an alternative template for the info class
-     *
-     * @parameter property="mavanagaiata.info-class.templatePath"
      */
+    @Parameter(property = "mavanagaiata.info-class.templatePath")
     protected File templateFile;
 
     /**

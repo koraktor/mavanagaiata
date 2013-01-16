@@ -10,6 +10,10 @@ package com.github.koraktor.mavanagaiata.mojo;
 import java.io.File;
 import java.text.SimpleDateFormat;
 
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+
 import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
@@ -21,112 +25,126 @@ import com.github.koraktor.mavanagaiata.git.GitTag;
  * configured to display the changelog or save it to a file.
  *
  * @author Sebastian Staudt
- * @goal changelog
- * @phase process-resources
- * @requiresProject
  * @since 0.2.0
  */
+@Mojo(name ="changelog",
+      defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
 public class GitChangelogMojo extends AbstractGitOutputMojo {
 
     /**
      * The format for the branch line
+<<<<<<< HEAD
      *
      * @parameter property="mavanagaiata.changelog.branchFormat"
      *            default-value="Commits on branch \"%s\"\n"
      * @since 0.7.0
+=======
+>>>>>>> 7261fbb... Use annotations for mojo definitions
      */
+    @Parameter(property = "mavanagaiata.changelog.gitHubLinks",
+               defaultValue = "Commits on branch \"%s\"\n")
     protected String branchFormat;
 
     /**
      * Whether to create links to GitHub's compare view
-     *
-     * @parameter property="mavanagaiata.changelog.gitHubLinks"
      */
+    @Parameter(property = "mavanagaiata.changelog.gitHubLinks",
+               defaultValue = "false")
     protected boolean createGitHubLinks = false;
 
     /**
      * The string to prepend to every commit message
-     *
-     * @parameter property="mavanagaiata.changelog.commitPrefix"
-     *            default-value=" * "
      */
+    @Parameter(property = "mavanagaiata.changelog.commitPrefix",
+               defaultValue = " * ")
     protected String commitPrefix;
 
     /**
      * The project name for GitHub links
-     *
-     * @parameter property="mavanagaiata.changelog.gitHubProject"
      */
+    @Parameter(property = "mavanagaiata.changelog.gitHubProject")
     protected String gitHubProject;
 
     /**
      * The format for the link to the history from the last tag to the current
      * branch on GitHub
+<<<<<<< HEAD
      *
      * @parameter property="mavanagaiata.changelog.gitHubBranchLinkFormat"
      *            default-value="\nSee Git history for changes in the \"%s\" branch since version %s at: %s"
      * @since 0.7.0
+=======
+>>>>>>> 7261fbb... Use annotations for mojo definitions
      */
+    @Parameter(property = "mavanagaiata.changelog.header",
+               defaultValue = "\nSee Git history for changes in the \"%s\" branch since version %s at: %s")
     protected String gitHubBranchLinkFormat;
 
     /**
      * The format for the link to the branch history on GitHub
+<<<<<<< HEAD
      *
      * @parameter property="mavanagaiata.changelog.gitHubBranchLinkFormat"
      *            default-value="\nSee Git history for changes in the \"%s\" branch at: %s"
      * @since 0.7.0
+=======
+>>>>>>> 7261fbb... Use annotations for mojo definitions
      */
+    @Parameter(property = "mavanagaiata.changelog.header",
+               defaultValue = "\nSee Git history for changes in the \"%s\" branch at: %s")
     protected String gitHubBranchOnlyLinkFormat;
 
     /**
      * The format for the link to the tag history on GitHub
+<<<<<<< HEAD
      *
      * @parameter property="mavanagaiata.changelog.gitHubTagLinkFormat"
      *            default-value="\nSee Git history for version %s at: %s"
      * @since 0.7.0
+=======
+>>>>>>> 7261fbb... Use annotations for mojo definitions
      */
+    @Parameter(property = "mavanagaiata.changelog.header",
+               defaultValue = "\nSee Git history for version %s at: %s")
     protected String gitHubTagLinkFormat;
 
     /**
      * The user name for GitHub links
-     *
-     * @parameter property="mavanagaiata.changelog.gitHubUser"
      */
+    @Parameter(property = "mavanagaiata.changelog.gitHubUser")
     protected String gitHubUser;
 
     /**
      * The header to print above the changelog
-     *
-     * @parameter property="mavanagaiata.changelog.header"
-     *            default-value="Changelog\n=========\n"
      */
+    @Parameter(property = "mavanagaiata.changelog.header",
+               defaultValue = "Changelog\\n=========\\n")
     protected String header;
 
     /**
      * The file to write the changelog to
      *
-     * @parameter property="mavanagaiata.changelog.outputFile"
      * @since 0.4.1
      */
+    @Parameter(property = "mavanagaiata.changelog.outputFile")
     protected File outputFile;
 
     /**
      * Whether to skip tagged commits' messages
-     *
+     * <br>
      * This is useful when usually tagging commits like "Version bump to X.Y.Z"
-     *
-     * @parameter property="mavanagaiata.changelog.skipTagged"
-     *            default-value="false"
      */
+    @Parameter(property = "mavanagaiata.changelog.skipTagged",
+               defaultValue = "false")
     protected boolean skipTagged;
 
     /**
      * The format for a tag line
      *
-     * @parameter property="mavanagaiata.changelog.tagFormat"
-     *            default-value="\nVersion %s – %s\n"
      * @since 0.7.0
      */
+    @Parameter(property = "mavanagaiata.changelog.tagFormat",
+               defaultValue = "\nVersion %s – %s\n")
     protected String tagFormat;
 
     /**
