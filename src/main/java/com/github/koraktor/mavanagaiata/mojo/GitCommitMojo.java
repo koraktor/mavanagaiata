@@ -37,15 +37,6 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 public class GitCommitMojo extends AbstractGitMojo {
 
     /**
-     * The date format to use for committer and author dates
-     *
-     * @parameter property="mavanagaiata.commit.dateFormat"
-     *            default-value="${mavanagaiata.baseDateFormat}"
-     * @since 0.2.1
-     */
-    protected String dateFormat = baseDateFormat;
-
-    /**
      * The ID (full and abbreviated) of the current Git commit out Git branch
      * is retrieved using a JGit Repository instance
      *

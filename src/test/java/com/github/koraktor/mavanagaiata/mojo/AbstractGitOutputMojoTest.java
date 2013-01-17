@@ -40,7 +40,7 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
     @Override
     public void setup() {
         this.mojo = new GenericAbstractGitOutputMojo();
-        this.mojo.baseDateFormat = "MM/dd/yyyy hh:mm a Z";
+        this.mojo.dateFormat = "MM/dd/yyyy hh:mm a Z";
     }
 
     @Test

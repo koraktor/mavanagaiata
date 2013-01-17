@@ -75,7 +75,7 @@ public abstract class MojoAbstractTest<T extends AbstractGitMojo> {
         if (!Modifier.isAbstract(mojoClass.getModifiers())) {
             this.mojo = mojoClass.newInstance();
         }
-        this.mojo.baseDateFormat        = "MM/dd/yyyy hh:mm a Z";
+        this.mojo.dateFormat            = "MM/dd/yyyy hh:mm a Z";
         this.mojo.baseDir               = this.baseDir;
         this.mojo.dirtyFlag             = "-dirty";
         this.mojo.dirtyIgnoreUntracked  = false;

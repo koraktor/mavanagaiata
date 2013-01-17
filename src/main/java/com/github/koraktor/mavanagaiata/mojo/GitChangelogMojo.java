@@ -46,14 +46,6 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
     protected String commitPrefix;
 
     /**
-     * The date format to use for tag output
-     *
-     * @parameter property="mavanagaiata.changelog.dateFormat"
-     *            default-value="${mavanagaiata.baseDateFormat}"
-     */
-    protected String dateFormat = baseDateFormat;
-
-    /**
      * The project name for GitHub links
      *
      * @parameter property="mavanagaiata.changelog.gitHubProject"

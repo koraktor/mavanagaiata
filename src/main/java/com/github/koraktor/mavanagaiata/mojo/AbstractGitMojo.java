@@ -34,7 +34,7 @@ public abstract class AbstractGitMojo extends AbstractMojo {
      * @parameter property="mavanagaiata.dateFormat"
      *            default-value="MM/dd/yyyy hh:mm a Z"
      */
-    protected String baseDateFormat;
+    protected String dateFormat;
 
     /**
      * The project's base directory

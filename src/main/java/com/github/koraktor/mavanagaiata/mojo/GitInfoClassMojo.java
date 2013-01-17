@@ -53,14 +53,6 @@ public class GitInfoClassMojo extends AbstractGitMojo {
     protected String className;
 
     /**
-     * The date format to use for the timestamp of the generated class
-     *
-     * @parameter property="mavanagaiata.info-class.dateFormat"
-     *            default-value="${mavanagaiata.dateFormat}"
-     */
-    protected String dateFormat;
-
-    /**
      * @parameter property="mavanagaiata.info-class.encoding"
      *            default-value="${project.build.sourceEncoding}"
      */

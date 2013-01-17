@@ -107,7 +107,7 @@ public abstract class AbstractGitOutputMojo extends AbstractGitMojo {
      */
     protected void insertFooter() {
         if(this.footer.length() > 0) {
-            SimpleDateFormat baseDateFormat = new SimpleDateFormat(this.baseDateFormat);
+            SimpleDateFormat baseDateFormat = new SimpleDateFormat(this.dateFormat);
             this.outputStream.println(String.format(this.footer, baseDateFormat.format(new Date())));
         }
     }

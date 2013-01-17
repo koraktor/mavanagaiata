@@ -45,7 +45,6 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
         super.setup();
 
         this.mojo.commitPrefix = " * ";
-        this.mojo.dateFormat   = this.mojo.baseDateFormat;
         this.mojo.header       = "Changelog\n=========\n";
         this.mojo.skipTagged   = false;
         this.mojo.tagPrefix    = "\nVersion ";
@@ -118,7 +117,6 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
 
     @Test
     public void testCustomization() throws Exception {
-        this.mojo.baseDateFormat    = "MM/dd/yy";
         this.mojo.commitPrefix      = "- ";
         this.mojo.createGitHubLinks = true;
         this.mojo.dateFormat        = "dd.MM.yyyy";
