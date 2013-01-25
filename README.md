@@ -191,5 +191,12 @@ included LICENSE file.
 * Henning Schmiedehausen -- hgschmie(at)fb.com
 * Santeri Vesalainen -- santeri.vesalainen(at)gmail.com
 
+## See Also
+
+* [Mavanagaiata home](https://koraktor.de/mavanagaiata)
+* [GitHub project page](https://github.com/koraktor/mavanagaiata)
+* [Google group](http://groups.google.com/group/mavanagaiata)
+* [Ohloh profile](http://www.ohloh.net/projects/mavanagaiata)
+
  [1]: https://github.com/koraktor/mavanagaiata
  [2]: https://github.com/koraktor/mavanagaiata/issues
