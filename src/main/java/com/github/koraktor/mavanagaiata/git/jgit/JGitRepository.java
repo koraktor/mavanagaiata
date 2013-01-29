@@ -74,9 +74,9 @@ public class JGitRepository extends AbstractGitRepository {
             }
         }
 
+        repositoryBuilder.setWorkTree(workTree);
         if (gitDir != null) {
             repositoryBuilder.setGitDir(gitDir);
-            repositoryBuilder.setWorkTree(workTree);
         } else {
             repositoryBuilder.findGitDir(workTree);
 
