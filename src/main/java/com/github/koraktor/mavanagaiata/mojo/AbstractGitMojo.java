@@ -37,7 +37,15 @@ public abstract class AbstractGitMojo extends AbstractMojo {
     protected String dateFormat;
 
     /**
-     * The project's base directory
+     * The working tree of the Git repository.
+     * <br>
+     * If there is only one project inside the Git repository this is probably
+     * <code>${project.basedir}</code> (default).
+     * <br>
+     * <strong>Note:</strong> The <code>GIT_DIR</code> can be found
+     * automatically even if this is not the real working tree but one of its
+     * subdirectories. But Mavanagaiata cannot determine the state of the
+     * working tree (e.g. for the dirty flag) if this is not set correctly.
      *
      * @parameter property="mavanagaiata.baseDir"
      *            default-value="${project.basedir}"
@@ -68,7 +76,11 @@ public abstract class AbstractGitMojo extends AbstractMojo {
     protected boolean dirtyIgnoreUntracked;
 
     /**
-     * The GIT_DIR path of the Git repository
+     * The <code>GIT_DIR</code> path of the Git repository
+     * <br>
+     * <strong>Warning:</strong> Do not set this when you don't have a good
+     * reason to do so. The <code>GIT_DIR</code> can be found automatically if
+     * your project resides somewhere in a usual Git repository.
      *
      * @parameter property="mavanagaiata.gitDir"
      */
