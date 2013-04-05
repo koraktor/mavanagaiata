@@ -128,7 +128,7 @@
         <dependency>
             <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit</artifactId>
-            <version>2.2.0.201212191850-r</version>
+            <version>2.3.1.201302201838-r</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
