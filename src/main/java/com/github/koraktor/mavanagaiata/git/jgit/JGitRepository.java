@@ -290,6 +290,15 @@ public class JGitRepository extends AbstractGitRepository {
             }
         }
 
+        if (this.headObject == null) {
+            if (this.headRef.equals("HEAD")) {
+                throw new GitRepositoryException(
+                    "HEAD could not be resolved. You're probably on an unborn branch.");
+            }
+            throw new GitRepositoryException(
+                String.format("Ref \"%s\" is invalid.", this.headRef));
+        }
+
         return this.headObject;
     }
 

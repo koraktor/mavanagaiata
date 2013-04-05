@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
+import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 import org.mockito.InOrder;
@@ -45,6 +46,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
@@ -283,6 +285,32 @@ public class JGitRepositoryTest {
 
         assertThat(this.repository.getHeadObject(), is(head));
         assertThat(this.repository.headObject, is(head));
+    }
+
+    @Test
+    public void testGetHeadObjectInvalidHead() throws Exception {
+        this.repository.setHeadRef("HEAD");
+        when(this.repo.resolve("HEAD")).thenReturn(null);
+
+        try {
+            this.repository.getHeadCommit();
+            fail("No exception thrown");
+        } catch (GitRepositoryException e) {
+            assertThat(e.getMessage(), is(equalTo("HEAD could not be resolved. You're probably on an unborn branch.")));
+        }
+    }
+
+    @Test
+    public void testGetHeadObjectInvalidRef() throws Exception {
+        this.repository.setHeadRef("master");
+        when(this.repo.resolve("master")).thenReturn(null);
+
+        try {
+            this.repository.getHeadCommit();
+            fail("No exception thrown");
+        } catch (GitRepositoryException e) {
+            assertThat(e.getMessage(), is(equalTo("Ref \"master\" is invalid.")));
+        }
     }
 
     @Test
