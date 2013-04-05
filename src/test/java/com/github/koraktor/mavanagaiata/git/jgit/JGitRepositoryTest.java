@@ -293,7 +293,7 @@ public class JGitRepositoryTest {
         when(this.repo.resolve("HEAD")).thenReturn(null);
 
         try {
-            this.repository.getHeadCommit();
+            this.repository.getHeadObject();
             fail("No exception thrown");
         } catch (GitRepositoryException e) {
             assertThat(e.getMessage(), is(equalTo("HEAD could not be resolved. You're probably on an unborn branch.")));
@@ -306,7 +306,7 @@ public class JGitRepositoryTest {
         when(this.repo.resolve("master")).thenReturn(null);
 
         try {
-            this.repository.getHeadCommit();
+            this.repository.getHeadObject();
             fail("No exception thrown");
         } catch (GitRepositoryException e) {
             assertThat(e.getMessage(), is(equalTo("Ref \"master\" is invalid.")));
