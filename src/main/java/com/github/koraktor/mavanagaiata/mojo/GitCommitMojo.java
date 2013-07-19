@@ -50,6 +50,7 @@ public class GitCommitMojo extends AbstractGitMojo {
             GitCommit commit = this.repository.getHeadCommit();
             String abbrevId  = this.repository.getAbbreviatedCommitId();
             String shaId     = commit.getId();
+            boolean isDirty  = false;
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
             dateFormat.setTimeZone(commit.getAuthorTimeZone());
@@ -60,6 +61,7 @@ public class GitCommitMojo extends AbstractGitMojo {
             if (this.repository.isDirty(this.dirtyIgnoreUntracked)) {
                 abbrevId += this.dirtyFlag;
                 shaId    += this.dirtyFlag;
+                isDirty  = true;
             }
 
             this.addProperty("commit.abbrev", abbrevId);
@@ -71,6 +73,7 @@ public class GitCommitMojo extends AbstractGitMojo {
             this.addProperty("commit.committer.email", commit.getCommitterEmailAddress());
             this.addProperty("commit.id", shaId);
             this.addProperty("commit.sha", shaId);
+            this.addProperty("commit.dirty", String.valueOf(isDirty));
         } catch (GitRepositoryException e) {
             throw new MojoExecutionException("Unable to read Git commit information", e);
         }
