@@ -84,6 +84,10 @@
             <name>Santeri Vesalainen</name>
             <email>santeri.vesalainen@gmail.com</email>
         </contributor>
+        <contributor>
+            <name>Patrick Kaeding</name>
+            <email>pkaeding@atlassian.com</email>
+        </contributor>
     </contributors>
 
     <parent>

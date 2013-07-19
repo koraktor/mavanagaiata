@@ -191,6 +191,7 @@ included LICENSE file.
 * Pablo Graña -- pablo.grana(at)globant.com
 * Henning Schmiedehausen -- hgschmie(at)fb.com
 * Santeri Vesalainen -- santeri.vesalainen(at)gmail.com
+* Patrick Kaeding -- pkaeding(at)atlassian.com
 
 ## See Also
 
