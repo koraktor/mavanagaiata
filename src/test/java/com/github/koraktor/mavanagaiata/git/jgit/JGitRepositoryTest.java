@@ -26,7 +26,6 @@ import org.eclipse.jgit.revwalk.RevFlag;
 import org.eclipse.jgit.revwalk.RevObject;
 import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.storage.file.FileRepository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.FileTreeIterator;
 import org.eclipse.jgit.treewalk.WorkingTreeIterator;
@@ -70,7 +69,7 @@ public class JGitRepositoryTest {
 
     @Before
     public void setup() throws Exception {
-        FileRepository tmpRepo = mock(FileRepository.class, RETURNS_DEEP_STUBS);
+        Repository tmpRepo = mock(Repository.class, RETURNS_DEEP_STUBS);
         FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class);
         whenNew(FileRepositoryBuilder.class).withNoArguments().thenReturn(repoBuilder);
         when(repoBuilder.build()).thenReturn(tmpRepo);
