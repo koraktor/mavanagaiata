@@ -83,6 +83,7 @@ You may override this with the configuration property `propertyPrefixes`.
    * `committer.email`: The email address of the committer of the current
                         commit
    * `id` / `sha`:      The full SHA ID of the current commit
+   * `dirty`:           A boolean string indicating if the commit is dirty
  * `tag`
    * `name`:     The name of the most recent tag (if any)
    * `describe`: A combination of the tag name and the current commit ID

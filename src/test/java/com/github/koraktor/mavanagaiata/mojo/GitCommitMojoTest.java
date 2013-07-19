@@ -83,6 +83,7 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
         this.assertProperty("deadbeef-dirty", "commit.abbrev");
         this.assertProperty(headId, "commit.id");
         this.assertProperty(headId, "commit.sha");
+        this.assertProperty("true", "commit.dirty");
     }
 
     @Test
@@ -98,6 +99,7 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
         this.assertProperty("koraktor@gmail.com", "commit.committer.email");
         this.assertProperty("deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", "commit.id");
         this.assertProperty("deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", "commit.sha");
+        this.assertProperty("false", "commit.dirty");
     }
 
 }
