@@ -31,8 +31,8 @@
 
     <scm>
         <url>https://github.com/koraktor/mavanagaiata</url>
-        <connection>scm:git://github.com/koraktor/mavanagaiata.git</connection>
-        <developerConnection>scm:git://git@github.com:koraktor/mavanagaiata.git</developerConnection>
+        <connection>scm:git:git://github.com/koraktor/mavanagaiata.git</connection>
+        <developerConnection>scm:git:git://git@github.com:koraktor/mavanagaiata.git</developerConnection>
     </scm>
 
     <issueManagement>
