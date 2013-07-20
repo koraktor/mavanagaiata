@@ -12,6 +12,7 @@ import java.util.Properties;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 
 import com.github.koraktor.mavanagaiata.git.GitRepository;
@@ -76,6 +77,18 @@ abstract class AbstractGitMojo extends AbstractMojo {
     protected boolean dirtyIgnoreUntracked;
 
     /**
+     * Specifies if a failed execution of the mojo will stop the build process
+     * <br>
+     * If <code>true</code> a failure during mojo execution will not stop the
+     * build process.
+     *
+     * @parameter property="mavanagaiata.failGracefully"
+     *            default-value="false"
+     * @since 0.6.0
+     */
+    protected boolean failGracefully = false;
+
+    /**
      * The <code>GIT_DIR</code> path of the Git repository
      * <br>
      * <strong>Warning:</strong> Do not set this when you don't have a good
@@ -138,9 +151,13 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * @see #cleanup
      * @see #init
      * @see #run
-     * @throws MojoExecutionException
+     * @throws MojoExecutionException if the mojo execution fails and
+     *         <code>failGracefully</code> is <code>false</code>
+     * @throws MojoFailureException if the mojo execution fails and
+     *         <code>failGracefully</code> is <code>true</code>
      */
-    public final void execute() throws MojoExecutionException {
+    public final void execute()
+            throws MojoExecutionException, MojoFailureException {
         if (!this.skip) {
             boolean init = false;
             try {
@@ -149,6 +166,12 @@ abstract class AbstractGitMojo extends AbstractMojo {
                 if (init) {
                     this.run();
                 }
+            } catch (MavanagaiataMojoException e) {
+                if (this.failGracefully) {
+                    throw new MojoFailureException(e.getMessage(), e);
+                }
+
+                throw new MojoExecutionException(e.getMessage(), e);
             } finally {
                 if (init) {
                     this.cleanup();
@@ -192,9 +215,9 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * This will initialize the JGit repository instance for further usage by
      * the mojo.
      *
-     * @throws MojoExecutionException if the repository cannot be initialized
+     * @throws MavanagaiataMojoException if the repository cannot be initialized
      */
-    protected boolean init() throws MojoExecutionException {
+    protected boolean init() throws MavanagaiataMojoException {
         try {
             this.initRepository();
             return true;
@@ -202,7 +225,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
             if (this.skipNoGit) {
                 return false;
             }
-            throw new MojoExecutionException("Unable to initialize Mojo", e);
+            throw MavanagaiataMojoException.create("Unable to initialize Git repository", e);
         }
     }
 
@@ -213,8 +236,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * @throws GitRepositoryException if retrieving information from the Git
      *         repository fails
      */
-    protected void initRepository()
-            throws GitRepositoryException {
+    protected void initRepository() throws GitRepositoryException {
         this.repository = new JGitRepository(this.baseDir, this.gitDir);
         this.repository.check();
         this.repository.setHeadRef(this.head);
@@ -225,6 +247,6 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * <p>
      * This is called internally by {@link #init}.
      */
-    protected abstract void run() throws MojoExecutionException;
+    protected abstract void run() throws MavanagaiataMojoException;
 
 }

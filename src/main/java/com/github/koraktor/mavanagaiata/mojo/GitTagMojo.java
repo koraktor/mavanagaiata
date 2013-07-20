@@ -7,8 +7,6 @@
 
 package com.github.koraktor.mavanagaiata.mojo;
 
-import org.apache.maven.plugin.MojoExecutionException;
-
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 
@@ -29,9 +27,9 @@ public class GitTagMojo extends AbstractGitMojo {
      * HEAD until it finds one of the tags. The name of that tag is written
      * into "mavanagaiata.tag" and "mvngit.tag" respectively.
      *
-     * @throws MojoExecutionException if the tags cannot be read
+     * @throws MavanagaiataMojoException if the tags cannot be read
      */
-    public void run() throws MojoExecutionException {
+    public void run() throws MavanagaiataMojoException {
         try {
             GitTagDescription description = this.repository.describe();
             String describe = description.toString();
@@ -42,7 +40,7 @@ public class GitTagMojo extends AbstractGitMojo {
             this.addProperty("tag.describe", describe);
             this.addProperty("tag.name", description.getNextTagName());
         } catch(GitRepositoryException e) {
-            throw new MojoExecutionException("Unable to read Git tag", e);
+            throw MavanagaiataMojoException.create("Unable to read Git tag", e);
         }
     }
 

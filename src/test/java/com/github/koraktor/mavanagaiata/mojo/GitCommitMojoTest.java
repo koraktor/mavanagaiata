@@ -10,8 +10,6 @@ package com.github.koraktor.mavanagaiata.mojo;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.apache.maven.plugin.MojoExecutionException;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +48,7 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
     }
 
     @Test
-    public void testCustomDateFormat() throws MojoExecutionException {
+    public void testCustomDateFormat() throws MavanagaiataMojoException {
         this.mojo.dateFormat = "dd.MM.yyyy";
         this.mojo.run();
 
@@ -87,7 +85,7 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
     }
 
     @Test
-    public void testResult() throws MojoExecutionException {
+    public void testResult() throws MavanagaiataMojoException {
         this.mojo.run();
 
         this.assertProperty("deadbeef", "commit.abbrev");

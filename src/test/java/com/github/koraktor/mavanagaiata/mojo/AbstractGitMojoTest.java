@@ -38,8 +38,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     @Override
     public void setup() throws Exception {
         this.mojo = new AbstractGitMojo() {
-            public void run()
-                    throws MojoExecutionException {}
+            public void run() throws MavanagaiataMojoException {}
         };
 
         super.setup();

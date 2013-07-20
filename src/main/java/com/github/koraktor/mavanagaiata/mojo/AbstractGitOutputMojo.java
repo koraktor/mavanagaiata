@@ -13,8 +13,6 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.maven.plugin.MojoExecutionException;
-
 /**
  * This abstract Mojo implements writing output to a <code>PrintStream</code>
  *
@@ -68,10 +66,10 @@ abstract class AbstractGitOutputMojo extends AbstractGitMojo {
     /**
      * Initializes the output stream for the generated content
      *
-     * @throws MojoExecutionException if the output file can not be opened
+     * @throws MavanagaiataMojoException if the output file can not be opened
      */
     @Override
-    protected boolean init() throws MojoExecutionException {
+    protected boolean init() throws MavanagaiataMojoException {
         this.initOutputStream();
 
         return super.init();
@@ -84,10 +82,10 @@ abstract class AbstractGitOutputMojo extends AbstractGitMojo {
      * Otherwise the parent directories of <code>outputFile</code> are created
      * and a new <code>PrintStream</code> for that file is created.
      *
-     * @throws MojoExecutionException if the file specified by
-     *         <code>outputFile</code> cannot be found
+     * @throws MavanagaiataMojoException if the file specified by
+     *         <code>outputFile</code> cannot be opened for writing
      */
-    protected void initOutputStream() throws MojoExecutionException {
+    protected void initOutputStream() throws MavanagaiataMojoException {
         if(this.getOutputFile() == null) {
             this.outputStream = System.out;
         } else {
@@ -97,7 +95,10 @@ abstract class AbstractGitOutputMojo extends AbstractGitMojo {
                 }
                 this.outputStream = new PrintStream(this.getOutputFile(), this.encoding);
             } catch (IOException e) {
-                throw new MojoExecutionException("Could not initialize output file.", e);
+                throw MavanagaiataMojoException.create(
+                        "Could not open output file \"%s\" for writing.",
+                        e,
+                        this.getOutputFile().getAbsolutePath());
             }
         }
     }

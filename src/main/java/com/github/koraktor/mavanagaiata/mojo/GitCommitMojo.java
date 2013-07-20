@@ -9,8 +9,6 @@ package com.github.koraktor.mavanagaiata.mojo;
 
 import java.text.SimpleDateFormat;
 
-import org.apache.maven.plugin.MojoExecutionException;
-
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import com.github.koraktor.mavanagaiata.git.GitCommit;
@@ -42,10 +40,10 @@ public class GitCommitMojo extends AbstractGitMojo {
      *
      * @see RevCommit#getName()
      * @see org.eclipse.jgit.lib.ObjectReader#abbreviate(org.eclipse.jgit.lib.AnyObjectId, int)
-     * @throws MojoExecutionException if retrieving information from the Git
+     * @throws MavanagaiataMojoException if retrieving information from the Git
      *         repository fails
      */
-    public void run() throws MojoExecutionException {
+    public void run() throws MavanagaiataMojoException {
         try {
             GitCommit commit = this.repository.getHeadCommit();
             String abbrevId  = this.repository.getAbbreviatedCommitId();
@@ -75,7 +73,7 @@ public class GitCommitMojo extends AbstractGitMojo {
             this.addProperty("commit.sha", shaId);
             this.addProperty("commit.dirty", String.valueOf(isDirty));
         } catch (GitRepositoryException e) {
-            throw new MojoExecutionException("Unable to read Git commit information", e);
+            throw MavanagaiataMojoException.create("Unable to read Git commit information", e);
         }
     }
 }

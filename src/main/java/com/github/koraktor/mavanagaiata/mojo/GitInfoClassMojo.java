@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.shared.filtering.MavenFileFilter;
 import org.apache.maven.shared.filtering.MavenFilteringException;
 
@@ -93,9 +92,9 @@ public class GitInfoClassMojo extends AbstractGitMojo {
      * Generates a info class filled providing information of the Git
      * repository
      *
-     * @throws MojoExecutionException if the info class cannot be generated
+     * @throws MavanagaiataMojoException if the info class cannot be generated
      */
-    public void run() throws MojoExecutionException {
+    public void run() throws MavanagaiataMojoException {
         this.addProperty("info-class.className", this.className);
         this.addProperty("info-class.packageName", this.packageName);
 
@@ -107,7 +106,10 @@ public class GitInfoClassMojo extends AbstractGitMojo {
             try {
                 templateStream = new FileInputStream(this.templateFile);
             } catch (FileNotFoundException e) {
-                throw new MojoExecutionException("Info class template does not exist", e);
+                throw MavanagaiataMojoException.create(
+                        "Info class template \"%s\" does not exist",
+                        e,
+                        this.templateFile.getAbsolutePath());
             }
         }
 
@@ -144,9 +146,9 @@ public class GitInfoClassMojo extends AbstractGitMojo {
 
             this.fileFilter.copyFile(tempSourceFile, outputFile, true, filterWrappers, this.encoding, true);
         } catch (GitRepositoryException e) {
-            throw new MojoExecutionException("Could not get all information from repository", e);
+            throw MavanagaiataMojoException.create("Could not get all information from repository", e);
         } catch (IOException e) {
-            throw new MojoExecutionException("Could not create temporary info class source", e);
+            throw MavanagaiataMojoException.create("Could not create temporary info class source", e);
         } catch (MavenFilteringException e) {
             e.printStackTrace();
         } finally {
@@ -158,7 +160,7 @@ public class GitInfoClassMojo extends AbstractGitMojo {
                     tempSourceFileStream.close();
                 }
             } catch (IOException e) {
-                throw new MojoExecutionException("Could not close temporary info class source");
+                throw MavanagaiataMojoException.create("Could not close temporary info class source", e);
             }
         }
 

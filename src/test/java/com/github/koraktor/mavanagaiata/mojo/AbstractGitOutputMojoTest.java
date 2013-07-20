@@ -11,8 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import org.apache.maven.plugin.MojoExecutionException;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -114,6 +112,7 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
     public void testInitOutputFileException() throws Exception {
         IOException ioException = mock(IOException.class);
         File outputFile = mock(File.class);
+        when(outputFile.getAbsolutePath()).thenReturn("/some/file");
         File parentFile = mock(File.class);
         when(outputFile.getParentFile()).thenReturn(parentFile);
         when(parentFile.exists()).thenReturn(true);
@@ -127,8 +126,8 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
             this.mojo.initOutputStream();
             fail("No exception thrown.");
         } catch (Exception e) {
-            assertThat(e, is(instanceOf(MojoExecutionException.class)));
-            assertThat(e.getMessage(), is(equalTo("Could not initialize output file.")));
+            assertThat(e, is(instanceOf(MavanagaiataMojoException.class)));
+            assertThat(e.getMessage(), is(equalTo("Could not open output file \"/some/file\" for writing.")));
             assertThat(e.getCause(), is((Throwable) ioException));
         }
     }
@@ -165,7 +164,7 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
             this.outputFile = outputFile;
         }
 
-        protected void run() throws MojoExecutionException {}
+        protected void run() throws MavanagaiataMojoException {}
 
     }
 

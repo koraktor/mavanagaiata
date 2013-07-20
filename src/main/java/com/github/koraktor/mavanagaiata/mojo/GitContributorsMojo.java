@@ -14,8 +14,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.apache.maven.plugin.MojoExecutionException;
-
 import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitCommit;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
@@ -107,7 +105,7 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
      * @see #initSort
      */
     @Override
-    public boolean init() throws MojoExecutionException {
+    public boolean init() throws MavanagaiataMojoException {
         this.initSort();
 
         return super.init();
@@ -132,10 +130,10 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
      * Git repository and builds a list of contributors from the authors of the
      * commits.
      *
-     * @throws MojoExecutionException if retrieving information from the Git
+     * @throws MavanagaiataMojoException if retrieving information from the Git
      *         repository fails
      */
-    public void run() throws MojoExecutionException {
+    public void run() throws MavanagaiataMojoException {
         this.contributorPrefix = this.contributorPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
         this.header            = this.header.replaceAll("([^\\\\])\\\\n", "$1\n");
 
@@ -167,7 +165,7 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
 
             this.insertFooter();
         } catch (GitRepositoryException e) {
-            throw new MojoExecutionException("Unable to read contributors from Git", e);
+            throw MavanagaiataMojoException.create("Unable to read contributors from Git", e);
         }
     }
 

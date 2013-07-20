@@ -52,7 +52,7 @@ public abstract class MojoAbstractTest<T extends AbstractGitMojo> {
             this.mojo.run();
             fail("No exception thrown.");
         } catch(Exception e) {
-            assertThat(e, is(instanceOf(MojoExecutionException.class)));
+            assertThat(e, is(instanceOf(MavanagaiataMojoException.class)));
             assertThat(e.getMessage(), is(equalTo(errorMessage)));
             assertThat(e.getCause(), is(instanceOf(GitRepositoryException.class)));
         }

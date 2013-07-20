@@ -10,8 +10,6 @@ package com.github.koraktor.mavanagaiata.mojo;
 import java.io.File;
 import java.text.SimpleDateFormat;
 
-import org.apache.maven.plugin.MojoExecutionException;
-
 import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
@@ -98,10 +96,10 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      * Git repository and builds a changelog from the commits contained in that
      * branch.
      *
-     * @throws MojoExecutionException if retrieving information from the Git
+     * @throws MavanagaiataMojoException if retrieving information from the Git
      *         repository fails
      */
-    public void run() throws MojoExecutionException {
+    public void run() throws MavanagaiataMojoException {
         try {
             this.outputStream.println(this.header);
 
@@ -118,7 +116,7 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
 
             this.insertFooter();
         } catch (GitRepositoryException e) {
-            throw new MojoExecutionException("Unable to generate changelog from Git", e);
+            throw MavanagaiataMojoException.create("Unable to generate changelog from Git", e);
         }
     }
 
@@ -134,10 +132,10 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
     /**
      * Initializes this mojo
      *
-     * @throws MojoExecutionException if an error occurs while accessing the
+     * @throws MavanagaiataMojoException if an error occurs while accessing the
      *         Git repository or the changelog file
      */
-    protected boolean init() throws MojoExecutionException {
+    protected boolean init() throws MavanagaiataMojoException {
         this.initConfiguration();
 
         return super.init();
