@@ -194,6 +194,7 @@
                         <link>http://java.sun.com/javase/6/docs/api/</link>
                         <link>http://download.eclipse.org/jgit/docs/jgit-2.1.0.201209190230-r/apidocs/</link>
                     </links>
+                    <show>private</show>
                 </configuration>
                 <executions>
                     <execution>
@@ -293,6 +294,7 @@
                         <link>http://java.sun.com/javase/6/docs/api/</link>
                         <link>http://download.eclipse.org/jgit/docs/jgit-2.1.0.201209190230-r/apidocs/</link>
                     </links>
+                    <show>private</show>
                 </configuration>
                 <reportSets>
                     <reportSet>
