@@ -27,7 +27,7 @@ import org.apache.maven.plugin.MojoExecutionException;
  * @see PrintStream
  * @since 0.2.2
  */
-public abstract class AbstractGitOutputMojo extends AbstractGitMojo {
+abstract class AbstractGitOutputMojo extends AbstractGitMojo {
 
     /**
      * The encoding to use for generated output

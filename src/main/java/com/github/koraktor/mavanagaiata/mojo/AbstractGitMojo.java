@@ -26,7 +26,7 @@ import com.github.koraktor.mavanagaiata.git.jgit.JGitRepository;
  * @see GitRepository
  * @since 0.1.0
  */
-public abstract class AbstractGitMojo extends AbstractMojo {
+abstract class AbstractGitMojo extends AbstractMojo {
 
     /**
      * The date format to use for various dates
