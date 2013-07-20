@@ -8,16 +8,17 @@
 package com.github.koraktor.mavanagaiata.mojo;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Properties;
-
-import org.apache.maven.plugin.MojoExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
+import com.github.koraktor.mavanagaiata.git.jgit.JGitRepository;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -26,12 +27,15 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.spy;
+import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
+@PrepareForTest(AbstractGitMojo.class)
+@RunWith(PowerMockRunner.class)
 public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
 
     @Before
@@ -98,11 +102,20 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     }
 
     @Test
-    public void testInitRepository() throws IOException, MojoExecutionException {
-        /*this.mojo.initRepository();
-        assertThat(this.mojo.project, is(notNullValue()));
-        assertThat(this.mojo.repository.getDirectory(),
-        is(equalTo(new File(this.getRepository("test-project"), ".git"))));*/
+    public void testInitRepository() throws Exception {
+        File baseDir = mock(File.class);
+        File gitDir = mock(File.class);
+        this.mojo.baseDir = baseDir;
+        this.mojo.gitDir = gitDir;
+        this.mojo.head = "HEAD";
+
+        JGitRepository repo = mock(JGitRepository.class);
+        whenNew(JGitRepository.class).withArguments(baseDir, gitDir).thenReturn(repo);
+
+        this.mojo.initRepository();
+
+        verify(repo).check();
+        verify(repo).setHeadRef("HEAD");
     }
 
     @Test
