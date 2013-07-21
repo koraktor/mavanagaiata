@@ -192,7 +192,7 @@
                 <version>2.9.1</version>
                 <configuration>
                     <links>
-                        <link>http://java.sun.com/javase/6/docs/api/</link>
+                        <link>http://java.sun.com/javase/7/docs/api/</link>
                         <link>http://download.eclipse.org/jgit/docs/jgit-${jgit.version}/apidocs/</link>
                     </links>
                     <show>private</show>
@@ -292,7 +292,7 @@
                 <version>2.9.1</version>
                 <configuration>
                     <links>
-                        <link>http://java.sun.com/javase/6/docs/api/</link>
+                        <link>http://java.sun.com/javase/7/docs/api/</link>
                         <link>http://download.eclipse.org/jgit/docs/jgit-${jgit.version}/apidocs/</link>
                     </links>
                     <show>private</show>
