@@ -97,6 +97,7 @@
     </parent>
 
     <properties>
+        <jgit.version>3.0.0.201306101825-r</jgit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -132,7 +133,7 @@
         <dependency>
             <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit</artifactId>
-            <version>3.0.0.201306101825-r</version>
+            <version>${jgit.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -192,7 +193,7 @@
                 <configuration>
                     <links>
                         <link>http://java.sun.com/javase/6/docs/api/</link>
-                        <link>http://download.eclipse.org/jgit/docs/jgit-2.1.0.201209190230-r/apidocs/</link>
+                        <link>http://download.eclipse.org/jgit/docs/jgit-${jgit.version}/apidocs/</link>
                     </links>
                     <show>private</show>
                 </configuration>
@@ -292,7 +293,7 @@
                 <configuration>
                     <links>
                         <link>http://java.sun.com/javase/6/docs/api/</link>
-                        <link>http://download.eclipse.org/jgit/docs/jgit-2.1.0.201209190230-r/apidocs/</link>
+                        <link>http://download.eclipse.org/jgit/docs/jgit-${jgit.version}/apidocs/</link>
                     </links>
                     <show>private</show>
                 </configuration>
