@@ -96,9 +96,9 @@ public class JGitRepository extends AbstractGitRepository {
 
     public void check() throws GitRepositoryException {
         if (!this.repository.getObjectDatabase().exists()) {
-            File path = (this.repository.getDirectory() == null) ?
+            File path = (this.repository.isBare()) ?
                 this.repository.getDirectory() : this.repository.getWorkTree();
-            throw new GitRepositoryException(path + " is not a Git repository");
+            throw new GitRepositoryException(path.getAbsolutePath() + " is not a Git repository.");
         }
     }
 

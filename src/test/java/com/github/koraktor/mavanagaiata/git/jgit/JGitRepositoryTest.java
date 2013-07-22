@@ -31,7 +31,9 @@ import org.eclipse.jgit.treewalk.FileTreeIterator;
 import org.eclipse.jgit.treewalk.WorkingTreeIterator;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
@@ -63,23 +65,62 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @PrepareForTest({ JGitRepository.class })
 public class JGitRepositoryTest {
 
+    @Rule
+    protected ExpectedException exception = ExpectedException.none();
+
     protected Repository repo;
 
     protected JGitRepository repository;
 
     @Before
     public void setup() throws Exception {
-        Repository tmpRepo = mock(Repository.class, RETURNS_DEEP_STUBS);
+        this.repo = mock(Repository.class, RETURNS_DEEP_STUBS);
+
         FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class);
         whenNew(FileRepositoryBuilder.class).withNoArguments().thenReturn(repoBuilder);
-        when(repoBuilder.build()).thenReturn(tmpRepo);
+        when(repoBuilder.build()).thenReturn(this.repo);
 
         File someDir = mock(File.class);
         when(someDir.exists()).thenReturn(true);
 
-        this.repo = mock(Repository.class, RETURNS_DEEP_STUBS);
         this.repository = new JGitRepository(someDir, someDir);
-        this.repository.repository = this.repo;
+    }
+
+    @Test
+    public void testCheckFails() throws GitRepositoryException {
+        File gitDir = mock(File.class);
+        when(gitDir.getAbsolutePath()).thenReturn("/some/repo/.git");
+
+        when(this.repo.getObjectDatabase().exists()).thenReturn(false);
+        when(this.repo.getDirectory()).thenReturn(gitDir);
+        when(this.repo.isBare()).thenReturn(true);
+
+        this.exception.expect(GitRepositoryException.class);
+        this.exception.expectMessage("/some/repo/.git is not a Git repository.");
+
+        this.repository.check();
+    }
+
+    @Test
+    public void testCheckFailsWithWorktree() throws GitRepositoryException {
+        File workTree = mock(File.class);
+        when(workTree.getAbsolutePath()).thenReturn("/some/repo");
+
+        when(this.repo.getObjectDatabase().exists()).thenReturn(false);
+        when(this.repo.getWorkTree()).thenReturn(workTree);
+        when(this.repo.isBare()).thenReturn(false);
+
+        this.exception.expect(GitRepositoryException.class);
+        this.exception.expectMessage("/some/repo is not a Git repository.");
+
+        this.repository.check();
+    }
+
+    @Test
+    public void testCheckSucceeds() throws GitRepositoryException {
+        when(this.repo.getObjectDatabase().exists()).thenReturn(true);
+
+        this.repository.check();
     }
 
     @Test
