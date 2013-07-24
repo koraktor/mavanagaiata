@@ -171,13 +171,23 @@ public class GitInfoClassMojo extends AbstractGitMojo {
 
     protected MapBasedValueSource getValueSource()
             throws GitRepositoryException {
+        String abbrevId  = this.repository.getAbbreviatedCommitId();
+        String shaId     = this.repository.getHeadCommit().getId();
+        boolean isDirty  = this.repository.isDirty(this.dirtyIgnoreUntracked);
+
+        if (isDirty) {
+            abbrevId += this.dirtyFlag;
+            shaId    += this.dirtyFlag;
+        }
+
         GitTagDescription description = this.repository.describe();
         SimpleDateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
         HashMap<String, String> values = new HashMap<String, String>();
         values.put("CLASS_NAME", this.className);
-        values.put("COMMIT_ABBREV", this.repository.getAbbreviatedCommitId());
-        values.put("COMMIT_SHA", this.repository.getHeadCommit().getId());
+        values.put("COMMIT_ABBREV", abbrevId);
+        values.put("COMMIT_SHA", shaId);
         values.put("DESCRIBE", description.toString());
+        values.put("DIRTY", Boolean.toString(isDirty));
         values.put("PACKAGE_NAME", this.packageName);
         values.put("TAG_NAME", description.getNextTagName());
         values.put("TIMESTAMP", dateFormat.format(new Date()));

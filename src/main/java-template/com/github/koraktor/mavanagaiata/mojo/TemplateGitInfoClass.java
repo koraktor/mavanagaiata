@@ -12,6 +12,8 @@ public final class ${CLASS_NAME} {
 
     public static final String DESCRIBE = "${DESCRIBE}";
 
+    public static final boolean DIRTY = ${DIRTY};
+
     public static final String TAG = "${TAG_NAME}";
 
     public static final String VERSION = "${VERSION}";
