@@ -92,14 +92,15 @@ public interface GitRepository {
 
     /**
      * Returns whether the worktree of the repository is in a clean state
-     * 
-     * @param dirtyCheckLoose
+     *
+     * @param ignoreUntracked If {@code true}, untracked files in the
+     *        repository will be ignored
      * @return {@code true} if there are modified files in the repository's
      *         worktree
      * @throws GitRepositoryException if an error occurs while checking the
      *         worktree state
      */
-    public boolean isDirty(boolean dirtyCheckLoose) throws GitRepositoryException;
+    public boolean isDirty(boolean ignoreUntracked) throws GitRepositoryException;
 
     /**
      * Sets the Git ref to use as the {@code HEAD} commit of the repository
