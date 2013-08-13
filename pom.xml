@@ -18,6 +18,10 @@
     <version>0.6.0</version>
     <packaging>maven-plugin</packaging>
 
+    <prerequisites>
+        <maven>2.2.1</maven>
+    </prerequisites>
+
     <name>Mavanagaiata</name>
     <description>Maven plugin providing project information from Git</description>
     <url>http://koraktor.de/mavanagaiata</url>
