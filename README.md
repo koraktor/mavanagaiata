@@ -6,7 +6,7 @@ about the Git repository of your project.
 
 ## Requirements
 
- * Maven 2.0+
+ * Maven 2.2.1 or newer
 
 ## Dependencies
 
