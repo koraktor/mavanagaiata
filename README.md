@@ -11,7 +11,7 @@ about the Git repository of your project.
 ## Dependencies
 
  * Apache Commons IO 2.4
- * JGit 3.0.0
+ * JGit 3.1.0
 
 ## Installation
 
