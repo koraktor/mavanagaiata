@@ -2,4 +2,6 @@ language: java
 jdk:
   - openjdk7
   - oraclejdk7
+matrix:
+  fast_finish: true
 script: mvn test -Dsurefire.useFile=false
