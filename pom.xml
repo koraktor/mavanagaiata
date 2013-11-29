@@ -278,6 +278,7 @@
                         <branchRate>85</branchRate>
                         <lineRate>85</lineRate>
                     </check>
+                    <format>xml</format>
                     <instrumentation>
                         <excludes>
                             <exclude>com/github/koraktor/mavanagaiata/HelpMojo.class</exclude>
