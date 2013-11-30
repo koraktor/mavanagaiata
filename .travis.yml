@@ -10,4 +10,4 @@ matrix:
   fast_finish: true
 script: mvn test -Dsurefire.useFile=false
 after_success:
-  - mvn clean cobertura:cobertura coveralls:cobertura
+  - mvn clean cobertura:cobertura coveralls:cobertura -Dmaven.plugin.skip=true -B
