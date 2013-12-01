@@ -1,5 +1,8 @@
-Mavanagaiata [![Build Status](https://secure.travis-ci.org/koraktor/mavanagaiata.png)](https://travis-ci.org/koraktor/mavanagaiata)
+Mavanagaiata
 ============
+
+[![Build Status](https://secure.travis-ci.org/koraktor/mavanagaiata.png)](https://travis-ci.org/koraktor/mavanagaiata)
+[![Coverage Status](https://coveralls.io/repos/koraktor/mavanagaiata/badge.png?branch=master)](https://coveralls.io/r/koraktor/mavanagaiata?branch=master)
 
 Mavanagaiata – \[maˈvanaˈɡaːjaˈta\] – is a Maven plugin providing information
 about the Git repository of your project.
