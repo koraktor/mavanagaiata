@@ -8,6 +8,10 @@ matrix:
   allow_failures:
     - jdk: oraclejdk8
   fast_finish: true
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/endpoint/c6cc872b193cbad86273/529f9078ed5ab0b3bf04ef9a/
 script: mvn test -Dsurefire.useFile=false
 after_success:
   - mvn clean cobertura:cobertura coveralls:cobertura -Dmaven.plugin.skip=true -B
