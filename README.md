@@ -200,6 +200,7 @@ included LICENSE file.
 
 * [Mavanagaiata home](https://koraktor.de/mavanagaiata)
 * [GitHub project page](https://github.com/koraktor/mavanagaiata)
+* [Gitter chat](https://gitter.im/koraktor/mavanagaiata)
 * [Google group](http://groups.google.com/group/mavanagaiata)
 * [Ohloh profile](http://www.ohloh.net/projects/mavanagaiata)
 
