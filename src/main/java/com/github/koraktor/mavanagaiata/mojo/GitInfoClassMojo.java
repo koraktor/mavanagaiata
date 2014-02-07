@@ -175,7 +175,7 @@ public class GitInfoClassMojo extends AbstractGitMojo {
         String shaId     = this.repository.getHeadCommit().getId();
         boolean isDirty  = this.repository.isDirty(this.dirtyIgnoreUntracked);
 
-        if (isDirty) {
+        if (isDirty && this.dirtyFlag != null) {
             abbrevId += this.dirtyFlag;
             shaId    += this.dirtyFlag;
         }

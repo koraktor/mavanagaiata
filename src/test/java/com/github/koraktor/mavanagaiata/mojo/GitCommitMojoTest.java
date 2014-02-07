@@ -85,6 +85,22 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
     }
 
     @Test
+    public void testDisabledDirtyFlag() throws Exception {
+        when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
+
+        this.mojo.dirtyFlag = "null";
+        this.mojo.prepareParameters();
+        this.mojo.run();
+
+        String headId = "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef";
+
+        this.assertProperty("deadbeef", "commit.abbrev");
+        this.assertProperty(headId, "commit.id");
+        this.assertProperty(headId, "commit.sha");
+        this.assertProperty("true", "commit.dirty");
+    }
+
+    @Test
     public void testResult() throws MavanagaiataMojoException {
         this.mojo.run();
 

@@ -118,6 +118,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         InOrder inOrder = inOrder(this.mojo);
         inOrder.verify(this.mojo).execute();
         inOrder.verify(this.mojo).init();
+        inOrder.verify(this.mojo).prepareParameters();
         inOrder.verify(this.mojo).run();
         inOrder.verify(this.mojo).cleanup();
     }

@@ -62,4 +62,16 @@ public class GitTagMojoTest extends MojoAbstractTest<GitTagMojo> {
         this.assertProperty("2.0.0", "tag.name");
     }
 
+    @Test
+    public void testDisabledDirtyFlag() throws Exception {
+        when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
+
+        this.mojo.dirtyFlag = "null";
+        this.mojo.prepareParameters();
+        this.mojo.run();
+
+        this.assertProperty("2.0.0-2-gdeadbeef", "tag.describe");
+        this.assertProperty("2.0.0", "tag.name");
+    }
+
 }

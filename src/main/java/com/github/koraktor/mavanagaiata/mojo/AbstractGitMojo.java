@@ -56,6 +56,9 @@ abstract class AbstractGitMojo extends AbstractMojo {
     /**
      * The flag to append to refs if there are changes in the index or working
      * tree
+     * <br>
+     * Setting this to either <code>"false"</code> or <code>"null"</code> will
+     * disable flagging refs as dirty.
      *
      * @parameter property="mavanagaiata.dirtyFlag"
      *            default-value = "-dirty"
@@ -219,7 +222,9 @@ abstract class AbstractGitMojo extends AbstractMojo {
      */
     protected boolean init() throws MavanagaiataMojoException {
         try {
+            this.prepareParameters();
             this.initRepository();
+
             return true;
         } catch (GitRepositoryException e) {
             if (this.skipNoGit) {
@@ -240,6 +245,16 @@ abstract class AbstractGitMojo extends AbstractMojo {
         this.repository = new JGitRepository(this.baseDir, this.gitDir);
         this.repository.check();
         this.repository.setHeadRef(this.head);
+    }
+
+    /**
+     * Prepares and validates user-supplied parameters
+     */
+    protected void prepareParameters() {
+        if (this.dirtyFlag.equals("false") ||
+                this.dirtyFlag.equals("null")) {
+            this.dirtyFlag = null;
+        }
     }
 
     /**

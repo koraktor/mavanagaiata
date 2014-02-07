@@ -78,6 +78,28 @@ public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
         assertThat(valueSource.getValue("COMMIT_ABBREV").toString(), is(equalTo("deadbeef")));
         assertThat(valueSource.getValue("COMMIT_SHA").toString(), is(equalTo("deadbeefdeadbeefdeadbeefdeadbeef")));
         assertThat(valueSource.getValue("DESCRIBE").toString(), is(equalTo("v1.2.3-4-gdeadbeef")));
+        assertThat(valueSource.getValue("DIRTY").toString(), is(equalTo("false")));
+        assertThat(valueSource.getValue("PACKAGE_NAME").toString(), is(equalTo("com.github.koraktor.mavanagaita")));
+        assertThat(valueSource.getValue("TAG_NAME").toString(), is(equalTo("v1.2.3")));
+        assertThat(valueSource.getValue("TIMESTAMP").toString(), is(equalTo(dateFormat.format(this.timestamp))));
+        assertThat(valueSource.getValue("VERSION").toString(), is(equalTo("1.2.3")));
+    }
+
+    @Test
+    public void testGetValueSourceDisabledDirtyFlag() throws Exception {
+        when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
+
+        this.mojo.dirtyFlag = "null";
+        this.mojo.prepareParameters();
+        MapBasedValueSource valueSource = this.mojo.getValueSource();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat(this.mojo.dateFormat);
+
+        assertThat(valueSource.getValue("CLASS_NAME").toString(), is(equalTo(this.mojo.className)));
+        assertThat(valueSource.getValue("COMMIT_ABBREV").toString(), is(equalTo("deadbeef")));
+        assertThat(valueSource.getValue("COMMIT_SHA").toString(), is(equalTo("deadbeefdeadbeefdeadbeefdeadbeef")));
+        assertThat(valueSource.getValue("DESCRIBE").toString(), is(equalTo("v1.2.3-4-gdeadbeef")));
+        assertThat(valueSource.getValue("DIRTY").toString(), is(equalTo("true")));
         assertThat(valueSource.getValue("PACKAGE_NAME").toString(), is(equalTo("com.github.koraktor.mavanagaita")));
         assertThat(valueSource.getValue("TAG_NAME").toString(), is(equalTo("v1.2.3")));
         assertThat(valueSource.getValue("TIMESTAMP").toString(), is(equalTo(dateFormat.format(this.timestamp))));

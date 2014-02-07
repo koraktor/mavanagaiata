@@ -57,9 +57,12 @@ public class GitCommitMojo extends AbstractGitMojo {
             String commitDate = dateFormat.format(commit.getCommitterDate());
 
             if (this.repository.isDirty(this.dirtyIgnoreUntracked)) {
-                abbrevId += this.dirtyFlag;
-                shaId    += this.dirtyFlag;
-                isDirty  = true;
+                isDirty = true;
+
+                if (this.dirtyFlag != null) {
+                    abbrevId += this.dirtyFlag;
+                    shaId    += this.dirtyFlag;
+                }
             }
 
             this.addProperty("commit.abbrev", abbrevId);
