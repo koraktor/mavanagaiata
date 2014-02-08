@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2013, Sebastian Staudt
+ * Copyright (c) 2011-2014, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -27,6 +27,14 @@ import com.github.koraktor.mavanagaiata.git.GitTag;
  * @since 0.2.0
  */
 public class GitChangelogMojo extends AbstractGitOutputMojo {
+
+    /**
+     * The format for the branch line
+     *
+     * @parameter property="mavanagaiata.changelog.branchFormat"
+     *            default-value="Commits on branch \"%s\"\n"
+     */
+    protected String branchFormat;
 
     /**
      * Whether to create links to GitHub's compare view
@@ -84,12 +92,12 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
     protected boolean skipTagged;
 
     /**
-     * The string to prepend to the tag name
+     * The format for a tag line
      *
-     * @parameter property="mavanagaiata.changelog.tagPrefix"
-     *            default-value="\nVersion "
+     * @parameter property="mavanagaiata.changelog.tagFormat"
+     *            default-value="\nVersion %s – %s\n"
      */
-    protected String tagPrefix;
+    protected String tagFormat;
 
     /**
      * Walks through the history of the currently checked out branch of the
@@ -142,9 +150,10 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
     }
 
     protected void initConfiguration() {
-        this.commitPrefix = this.commitPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
-        this.header       = this.header.replaceAll("([^\\\\])\\\\n", "$1\n");
-        this.tagPrefix    = this.tagPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
+        this.branchFormat = this.branchFormat.replaceAll("(^|[^\\\\])\\\\n", "$1\n");
+        this.commitPrefix = this.commitPrefix.replaceAll("(^|[^\\\\])\\\\n", "$1\n");
+        this.header       = this.header.replaceAll("(^|[^\\\\])\\\\n", "$1\n");
+        this.tagFormat    = this.tagFormat.replaceAll("(^|[^\\\\])\\\\n", "$1\n");
 
         if (this.gitHubProject == null || this.gitHubProject.length() == 0 ||
             this.gitHubUser == null || this.gitHubUser.length() == 0) {
@@ -245,19 +254,18 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
                 this.dateFormatter.setTimeZone(this.currentTag.getTimeZone());
                 String dateString = this.dateFormatter.format(this.currentTag.getDate());
 
-                if (this.firstCommit && tagPrefix.startsWith("\n")) {
-                    outputStream.print(tagPrefix.substring(1));
-                } else {
-                    outputStream.print(tagPrefix);
+                String tagLine = String.format(tagFormat, this.currentTag.getName(), dateString);
+                if (this.firstCommit && tagLine.startsWith("\n")) {
+                    tagLine = tagLine.replaceFirst("\n", "");
                 }
-                outputStream.println(currentTag.getName() + " - " + dateString + "\n");
+                outputStream.println(tagLine);
 
                 if (skipTagged) {
                     this.firstCommit = false;
                     return;
                 }
             } else if (this.firstCommit) {
-                outputStream.println("Commits on branch \"" + repository.getBranch() + "\"\n");
+                outputStream.println(String.format(branchFormat, repository.getBranch()));
             }
 
             outputStream.println(commitPrefix + this.currentCommit.getMessageSubject());

@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2013, Sebastian Staudt
+ * Copyright (c) 2011-2014, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -44,10 +44,11 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
     public void setup() throws Exception {
         super.setup();
 
+        this.mojo.branchFormat = "Commits on branch \"master\"\n";
         this.mojo.commitPrefix = " * ";
         this.mojo.header       = "Changelog\n=========\n";
         this.mojo.skipTagged   = false;
-        this.mojo.tagPrefix    = "\nVersion ";
+        this.mojo.tagFormat    = "\nVersion %s – %s\n";
 
         this.mockCommits = new ArrayList<GitCommit>();
         this.mockCommits.add(mockCommit("598a75596868dec45f8e6a808a07d533bc0184f0", "8th commit"));
@@ -117,6 +118,7 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
 
     @Test
     public void testCustomization() throws Exception {
+        this.mojo.branchFormat      = "Branch \"%s\"\n";
         this.mojo.commitPrefix      = "- ";
         this.mojo.createGitHubLinks = true;
         this.mojo.dateFormat        = "dd.MM.yyyy";
@@ -124,21 +126,21 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
         this.mojo.gitHubProject     = "mavanagaiata";
         this.mojo.gitHubUser        = "koraktor";
         this.mojo.header            = "History\\n-------\\n";
-        this.mojo.tagPrefix         = "\nTag ";
+        this.mojo.tagFormat         = "\nTag %s on %s\n";
         this.mojo.initConfiguration();
         this.mojo.run();
 
         this.assertOutputLine("History");
         this.assertOutputLine("-------");
         this.assertOutputLine("");
-        this.assertOutputLine("Commits on branch \"master\"");
+        this.assertOutputLine("Branch \"master\"");
         this.assertOutputLine("");
         this.assertOutputLine("- 8th commit");
         this.assertOutputLine("- 7th commit");
         this.assertOutputLine("");
         this.assertOutputLine("See Git history for changes in the \"master\" branch since version 2.0.0 at: https://github.com/koraktor/mavanagaiata/compare/2.0.0...master");
         this.assertOutputLine("");
-        this.assertOutputLine("Tag 2.0.0 - 29.05.2010");
+        this.assertOutputLine("Tag 2.0.0 on 29.05.2010");
         this.assertOutputLine("");
         this.assertOutputLine("- 6th commit");
         this.assertOutputLine("- 5th commit");
@@ -146,7 +148,7 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
         this.assertOutputLine("");
         this.assertOutputLine("See Git history for version 2.0.0 at: https://github.com/koraktor/mavanagaiata/compare/1.0.0...2.0.0");
         this.assertOutputLine("");
-        this.assertOutputLine("Tag 1.0.0 - 03.11.2006");
+        this.assertOutputLine("Tag 1.0.0 on 03.11.2006");
         this.assertOutputLine("");
         this.assertOutputLine("- 3rd commit");
         this.assertOutputLine("- 2nd commit");
@@ -170,13 +172,13 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
         this.assertOutputLine(" * 8th commit");
         this.assertOutputLine(" * 7th commit");
         this.assertOutputLine("");
-        this.assertOutputLine("Version 2.0.0 - 05/29/2010 01:18 PM +0200");
+        this.assertOutputLine("Version 2.0.0 – 05/29/2010 01:18 PM +0200");
         this.assertOutputLine("");
         this.assertOutputLine(" * 6th commit");
         this.assertOutputLine(" * 5th commit");
         this.assertOutputLine(" * 4th commit");
         this.assertOutputLine("");
-        this.assertOutputLine("Version 1.0.0 - 11/03/2006 07:08 PM +0000");
+        this.assertOutputLine("Version 1.0.0 – 11/03/2006 07:08 PM +0000");
         this.assertOutputLine("");
         this.assertOutputLine(" * 3rd commit");
         this.assertOutputLine(" * 2nd commit");
@@ -195,13 +197,13 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
         this.assertOutputLine("Changelog");
         this.assertOutputLine("=========");
         this.assertOutputLine("");
-        this.assertOutputLine("Version 2.0.0 - 05/29/2010 01:18 PM +0200");
+        this.assertOutputLine("Version 2.0.0 – 05/29/2010 01:18 PM +0200");
         this.assertOutputLine("");
         this.assertOutputLine(" * 6th commit");
         this.assertOutputLine(" * 5th commit");
         this.assertOutputLine(" * 4th commit");
         this.assertOutputLine("");
-        this.assertOutputLine("Version 1.0.0 - 11/03/2006 07:08 PM +0000");
+        this.assertOutputLine("Version 1.0.0 – 11/03/2006 07:08 PM +0000");
         this.assertOutputLine("");
         this.assertOutputLine(" * 3rd commit");
         this.assertOutputLine(" * 2nd commit");
@@ -223,12 +225,12 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
         this.assertOutputLine(" * 8th commit");
         this.assertOutputLine(" * 7th commit");
         this.assertOutputLine("");
-        this.assertOutputLine("Version 2.0.0 - 05/29/2010 01:18 PM +0200");
+        this.assertOutputLine("Version 2.0.0 – 05/29/2010 01:18 PM +0200");
         this.assertOutputLine("");
         this.assertOutputLine(" * 5th commit");
         this.assertOutputLine(" * 4th commit");
         this.assertOutputLine("");
-        this.assertOutputLine("Version 1.0.0 - 11/03/2006 07:08 PM +0000");
+        this.assertOutputLine("Version 1.0.0 – 11/03/2006 07:08 PM +0000");
         this.assertOutputLine("");
         this.assertOutputLine(" * 2nd commit");
         this.assertOutputLine(" * 1st commit");
