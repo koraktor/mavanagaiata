@@ -105,6 +105,34 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>bootstrap</id>
+            <build>
+                <defaultGoal>install</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>${project.artifactId}</artifactId>
+                        <version>${project.version}</version>
+                        <executions>
+                            <execution>
+                                <id>git-info</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>info-class</goal>
+                                </goals>
+                                <configuration>
+                                    <packageName>${project.groupId}.${project.artifactId}.mojo</packageName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
