@@ -18,4 +18,12 @@ public final class ${CLASS_NAME} {
 
     public static final String VERSION = "${VERSION}";
 
+    public static String getVersion() {
+        if (TAG.equals(VERSION) && TAG.equals(DESCRIBE)) {
+            return TAG;
+        }
+
+        return String.format("%s (%s)", VERSION, DESCRIBE);
+    }
+
 }
