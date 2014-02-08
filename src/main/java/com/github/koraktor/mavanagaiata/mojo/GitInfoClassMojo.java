@@ -196,6 +196,11 @@ public class GitInfoClassMojo extends AbstractGitMojo {
         values.put("TIMESTAMP", dateFormat.format(new Date()));
         values.put("VERSION", this.project.getVersion());
 
+        String version = VersionHelper.getVersion();
+        if (version != null) {
+            values.put("MAVANAGAIATA_VERSION", version);
+        }
+
         return new MapBasedValueSource(values);
     }
 
