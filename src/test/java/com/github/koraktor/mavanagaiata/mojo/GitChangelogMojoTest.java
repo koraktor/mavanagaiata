@@ -22,6 +22,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
@@ -46,6 +47,9 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
 
         this.mojo.branchFormat = "Commits on branch \"master\"\n";
         this.mojo.commitPrefix = " * ";
+        this.mojo.gitHubBranchLinkFormat = "\nSee Git history for changes in the \"%s\" branch since version %s at: %s";
+        this.mojo.gitHubBranchOnlyLinkFormat = "\nSee Git history for changes in the \"%s\" branch at: %s";
+        this.mojo.gitHubTagLinkFormat = "\nSee Git history for version %s at: %s";
         this.mojo.header       = "Changelog\n=========\n";
         this.mojo.skipTagged   = false;
         this.mojo.tagFormat    = "\nVersion %s – %s\n";
@@ -123,6 +127,8 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
         this.mojo.createGitHubLinks = true;
         this.mojo.dateFormat        = "dd.MM.yyyy";
         this.mojo.footer            = "\nFooter";
+        this.mojo.gitHubBranchLinkFormat = "\nGit history for \"%s\" since %s: %s";
+        this.mojo.gitHubTagLinkFormat = "\nGit history for %s: %s";
         this.mojo.gitHubProject     = "mavanagaiata";
         this.mojo.gitHubUser        = "koraktor";
         this.mojo.header            = "History\\n-------\\n";
@@ -138,7 +144,7 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
         this.assertOutputLine("- 8th commit");
         this.assertOutputLine("- 7th commit");
         this.assertOutputLine("");
-        this.assertOutputLine("See Git history for changes in the \"master\" branch since version 2.0.0 at: https://github.com/koraktor/mavanagaiata/compare/2.0.0...master");
+        this.assertOutputLine("Git history for \"master\" since 2.0.0: https://github.com/koraktor/mavanagaiata/compare/2.0.0...master");
         this.assertOutputLine("");
         this.assertOutputLine("Tag 2.0.0 on 29.05.2010");
         this.assertOutputLine("");
@@ -146,7 +152,7 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
         this.assertOutputLine("- 5th commit");
         this.assertOutputLine("- 4th commit");
         this.assertOutputLine("");
-        this.assertOutputLine("See Git history for version 2.0.0 at: https://github.com/koraktor/mavanagaiata/compare/1.0.0...2.0.0");
+        this.assertOutputLine("Git history for 2.0.0: https://github.com/koraktor/mavanagaiata/compare/1.0.0...2.0.0");
         this.assertOutputLine("");
         this.assertOutputLine("Tag 1.0.0 on 03.11.2006");
         this.assertOutputLine("");
@@ -154,10 +160,22 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
         this.assertOutputLine("- 2nd commit");
         this.assertOutputLine("- 1st commit");
         this.assertOutputLine("");
-        this.assertOutputLine("See Git history for version 1.0.0 at: https://github.com/koraktor/mavanagaiata/commits/1.0.0");
+        this.assertOutputLine("Git history for 1.0.0: https://github.com/koraktor/mavanagaiata/commits/1.0.0");
         this.assertOutputLine("");
         this.assertOutputLine("Footer");
         this.assertOutputLine(null);
+    }
+
+    @Test
+    public void testInitConfiguration() {
+        this.mojo.initConfiguration();
+
+        assertThat(this.mojo.branchFormat, is(equalTo("Commits on branch \"master\"\n")));
+        assertThat(this.mojo.gitHubBranchLinkFormat, is(equalTo("\nSee Git history for changes in the \"%s\" branch since version %s at: %s")));
+        assertThat(this.mojo.gitHubBranchOnlyLinkFormat, is(equalTo("\nSee Git history for changes in the \"%s\" branch at: %s")));
+        assertThat(this.mojo.gitHubTagLinkFormat, is(equalTo("\nSee Git history for version %s at: %s")));
+        assertThat(this.mojo.header, is(equalTo("Changelog\n=========\n")));
+        assertThat(this.mojo.tagFormat, is(equalTo("\nVersion %s – %s\n")));
     }
 
     @Test

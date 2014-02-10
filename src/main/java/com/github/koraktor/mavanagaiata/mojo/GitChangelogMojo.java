@@ -59,6 +59,31 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
     protected String gitHubProject;
 
     /**
+     * The format for the link to the history from the last tag to the current
+     * branch on GitHub
+     *
+     * @parameter property="mavanagaiata.changelog.gitHubBranchLinkFormat"
+     *            default-value="\nSee Git history for changes in the \"%s\" branch since version %s at: %s"
+     */
+    protected String gitHubBranchLinkFormat;
+
+    /**
+     * The format for the link to the branch history on GitHub
+     *
+     * @parameter property="mavanagaiata.changelog.gitHubBranchLinkFormat"
+     *            default-value="\nSee Git history for changes in the \"%s\" branch at: %s"
+     */
+    protected String gitHubBranchOnlyLinkFormat;
+
+    /**
+     * The format for the link to the tag history on GitHub
+     *
+     * @parameter property="mavanagaiata.changelog.gitHubTagLinkFormat"
+     *            default-value="\nSee Git history for version %s at: %s"
+     */
+    protected String gitHubTagLinkFormat;
+
+    /**
      * The user name for GitHub links
      *
      * @parameter property="mavanagaiata.changelog.gitHubUser"
@@ -150,10 +175,12 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
     }
 
     protected void initConfiguration() {
-        this.branchFormat = this.branchFormat.replaceAll("(^|[^\\\\])\\\\n", "$1\n");
-        this.commitPrefix = this.commitPrefix.replaceAll("(^|[^\\\\])\\\\n", "$1\n");
-        this.header       = this.header.replaceAll("(^|[^\\\\])\\\\n", "$1\n");
-        this.tagFormat    = this.tagFormat.replaceAll("(^|[^\\\\])\\\\n", "$1\n");
+        this.branchFormat               = this.branchFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
+        this.commitPrefix               = this.commitPrefix.replaceAll("(|[^\\\\])\\\\n", "$1\n");
+        this.gitHubBranchLinkFormat     = this.gitHubBranchLinkFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
+        this.gitHubBranchOnlyLinkFormat = this.gitHubBranchOnlyLinkFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
+        this.gitHubTagLinkFormat        = this.gitHubTagLinkFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
+        this.tagFormat                  = this.tagFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
 
         if (this.gitHubProject == null || this.gitHubProject.length() == 0 ||
             this.gitHubUser == null || this.gitHubUser.length() == 0) {
@@ -192,24 +219,19 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
             url += String.format("compare/%s...%s", lastRef, currentRef);
         }
 
-        String text = "See Git history for ";
-        if(currentRef != null) {
-            if(isBranch) {
-                text += "changes in the \"" + currentRef +
-                        "\" branch since version " + lastRef;
+        String linkText;
+        if (isBranch) {
+            if (currentRef == null) {
+                linkText = String.format(this.gitHubBranchOnlyLinkFormat, lastRef, url);
             } else {
-                text += "version " + currentRef;
+                linkText = String.format(this.gitHubBranchLinkFormat, currentRef, lastRef, url);
             }
         } else {
-            if(isBranch) {
-                text += "changes in the \"" + lastRef + "\" branch";
-            } else {
-                text += "version " + lastRef;
-            }
+            String tagName = (currentRef == null) ? lastRef : currentRef;
+            linkText = String.format(this.gitHubTagLinkFormat, tagName, url);
         }
-        text += " at: ";
 
-        this.outputStream.println("\n" + text + url);
+        this.outputStream.println(linkText);
     }
 
     /**
