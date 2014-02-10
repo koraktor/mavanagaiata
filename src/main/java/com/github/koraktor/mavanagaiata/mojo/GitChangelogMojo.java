@@ -175,11 +175,14 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
     }
 
     protected void initConfiguration() {
+        super.initConfiguration();
+
         this.branchFormat               = this.branchFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
         this.commitPrefix               = this.commitPrefix.replaceAll("(|[^\\\\])\\\\n", "$1\n");
         this.gitHubBranchLinkFormat     = this.gitHubBranchLinkFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
         this.gitHubBranchOnlyLinkFormat = this.gitHubBranchOnlyLinkFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
         this.gitHubTagLinkFormat        = this.gitHubTagLinkFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
+        this.header                     = this.header.replaceAll("(|[^\\\\])\\\\n", "$1\n");
         this.tagFormat                  = this.tagFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
 
         if (this.gitHubProject == null || this.gitHubProject.length() == 0 ||

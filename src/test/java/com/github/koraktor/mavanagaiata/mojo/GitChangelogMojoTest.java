@@ -45,14 +45,14 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
     public void setup() throws Exception {
         super.setup();
 
-        this.mojo.branchFormat = "Commits on branch \"master\"\n";
+        this.mojo.branchFormat = "Commits on branch \"master\"\\n";
         this.mojo.commitPrefix = " * ";
-        this.mojo.gitHubBranchLinkFormat = "\nSee Git history for changes in the \"%s\" branch since version %s at: %s";
-        this.mojo.gitHubBranchOnlyLinkFormat = "\nSee Git history for changes in the \"%s\" branch at: %s";
-        this.mojo.gitHubTagLinkFormat = "\nSee Git history for version %s at: %s";
-        this.mojo.header       = "Changelog\n=========\n";
+        this.mojo.gitHubBranchLinkFormat = "\\nSee Git history for changes in the \"%s\" branch since version %s at: %s";
+        this.mojo.gitHubBranchOnlyLinkFormat = "\\nSee Git history for changes in the \"%s\" branch at: %s";
+        this.mojo.gitHubTagLinkFormat = "\\nSee Git history for version %s at: %s";
+        this.mojo.header       = "Changelog\\n=========\\n";
         this.mojo.skipTagged   = false;
-        this.mojo.tagFormat    = "\nVersion %s – %s\n";
+        this.mojo.tagFormat    = "\\nVersion %s – %s\\n";
 
         this.mockCommits = new ArrayList<GitCommit>();
         this.mockCommits.add(mockCommit("598a75596868dec45f8e6a808a07d533bc0184f0", "8th commit"));
@@ -122,17 +122,17 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
 
     @Test
     public void testCustomization() throws Exception {
-        this.mojo.branchFormat      = "Branch \"%s\"\n";
+        this.mojo.branchFormat      = "Branch \"%s\"\\n";
         this.mojo.commitPrefix      = "- ";
         this.mojo.createGitHubLinks = true;
         this.mojo.dateFormat        = "dd.MM.yyyy";
-        this.mojo.footer            = "\nFooter";
-        this.mojo.gitHubBranchLinkFormat = "\nGit history for \"%s\" since %s: %s";
-        this.mojo.gitHubTagLinkFormat = "\nGit history for %s: %s";
+        this.mojo.footer            = "\\nFooter";
+        this.mojo.gitHubBranchLinkFormat = "\\nGit history for \"%s\" since %s: %s";
+        this.mojo.gitHubTagLinkFormat = "\\nGit history for %s: %s";
         this.mojo.gitHubProject     = "mavanagaiata";
         this.mojo.gitHubUser        = "koraktor";
         this.mojo.header            = "History\\n-------\\n";
-        this.mojo.tagFormat         = "\nTag %s on %s\n";
+        this.mojo.tagFormat         = "\\nTag %s on %s\\n";
         this.mojo.initConfiguration();
         this.mojo.run();
 
@@ -180,6 +180,7 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
 
     @Test
     public void testResult() throws Exception {
+        this.mojo.initConfiguration();
         this.mojo.run();
 
         this.assertOutputLine("Changelog");
@@ -233,6 +234,7 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
     @Test
     public void testSkipTagged() throws Exception {
         this.mojo.skipTagged = true;
+        this.mojo.initConfiguration();
         this.mojo.run();
 
         this.assertOutputLine("Changelog");
@@ -261,6 +263,7 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
         when(this.repository.getTags())
             .thenReturn(new HashMap<String, GitTag>());
 
+        this.mojo.initConfiguration();
         this.mojo.run();
 
         this.assertOutputLine("Changelog");

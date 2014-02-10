@@ -63,6 +63,10 @@ abstract class AbstractGitOutputMojo extends AbstractGitMojo {
         super.cleanup();
     }
 
+    protected void initConfiguration() {
+        this.footer = this.footer.replaceAll("(^|[^\\\\])\\\\n", "$1\n");
+    }
+
     /**
      * Initializes the output stream for the generated content
      *
@@ -70,9 +74,8 @@ abstract class AbstractGitOutputMojo extends AbstractGitMojo {
      */
     @Override
     protected boolean init() throws MavanagaiataMojoException {
+        this.initConfiguration();
         this.initOutputStream();
-
-        this.footer = this.footer.replaceAll("(^|[^\\\\])\\\\n", "$1\n");
 
         return super.init();
     }
