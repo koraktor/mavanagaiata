@@ -23,6 +23,7 @@
             <item name="Usage" href="usage.html" />
             <item name="Goals" href="plugin-info.html" />
             <item name="Changelog" href="CHANGELOG.html" />
+            <item name="Contributors" href="CONTRIBUTORS.html" />
         </menu>
         <menu ref="reports" />
     </body>
