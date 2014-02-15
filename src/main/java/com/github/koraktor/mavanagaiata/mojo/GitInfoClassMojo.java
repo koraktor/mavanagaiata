@@ -52,6 +52,8 @@ public class GitInfoClassMojo extends AbstractGitMojo {
     protected String className;
 
     /**
+     * The encoding of the generated source file
+     *
      * @parameter property="mavanagaiata.info-class.encoding"
      *            default-value="${project.build.sourceEncoding}"
      */
