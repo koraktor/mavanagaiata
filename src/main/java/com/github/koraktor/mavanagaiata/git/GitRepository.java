@@ -2,11 +2,12 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012, Sebastian Staudt
+ * Copyright (c) 2012-2014, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
 
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -76,6 +77,16 @@ public interface GitRepository {
     public GitCommit getHeadCommit() throws GitRepositoryException;
 
     /**
+     * Returns a {@code MailMap} object that holds information from Git's
+     * {@code .mailmap} file
+     *
+     * @return A {@code .mailmap} representation or {@code null} if none exits
+     * @throws GitRepositoryException if the {@code .mailmap} file cannot be
+     *         read or parsed
+     */
+    public MailMap getMailMap() throws GitRepositoryException;
+
+    /**
      * Returns a map of tags available in this repository
      * <p>
      * The keys of the map are the SHA IDs of the objects referenced by the
@@ -89,6 +100,13 @@ public interface GitRepository {
      *         tags in this repository
      */
     public Map<String, GitTag> getTags() throws GitRepositoryException;
+
+    /**
+     * Returns the worktree of the repository
+     *
+     * @return The worktree of the repository
+     */
+    public File getWorkTree();
 
     /**
      * Returns whether the worktree of the repository is in a clean state

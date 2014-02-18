@@ -1,0 +1,7 @@
+# This is a .mailmap file used for testing
+
+<newmail@example.com>                <oldmail@example.com>
+Real Name                            <realmail@example.com>
+Real Name <newmail@example.com>      <oldmail@example.com>
+Real Name <newmail@example.com>      Fake Name <oldmail@example.com>
+Invalid line

@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2013, Sebastian Staudt
+ * Copyright (c) 2011-2014, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -17,6 +17,7 @@ import java.util.HashMap;
 import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitCommit;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
+import com.github.koraktor.mavanagaiata.git.MailMap;
 
 /**
  * This goal allows to generate a list of contributors for the currently
@@ -65,6 +66,8 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
      *            default-value="Contributors\n============\n"
      */
     protected String header;
+
+    protected MailMap mailMap;
 
     /**
      * The file to write the contributors list to
@@ -138,6 +141,8 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
         this.header            = this.header.replaceAll("([^\\\\])\\\\n", "$1\n");
 
         try {
+            this.mailMap = this.repository.getMailMap();
+
             ContributorsWalkAction walkAction = new ContributorsWalkAction();
             this.repository.walkCommits(walkAction);
 
@@ -220,6 +225,11 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
             this.emailAddress    = commit.getAuthorEmailAddress();
             this.firstCommitDate = commit.getAuthorDate();
             this.name            = commit.getAuthorName();
+
+            if (GitContributorsMojo.this.mailMap.exists()) {
+                this.emailAddress = GitContributorsMojo.this.mailMap.getCanonicalAuthorEmailAddress(commit);
+                this.name = GitContributorsMojo.this.mailMap.getCanonicalAuthorName(commit);
+            }
         }
 
         void addCommit(GitCommit commit) {

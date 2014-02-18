@@ -198,6 +198,10 @@ public class JGitRepository extends AbstractGitRepository {
         return tags;
     }
 
+    public File getWorkTree() {
+        return this.repository.getWorkTree();
+    }
+
     public boolean isDirty(boolean ignoreUntracked) throws GitRepositoryException {
         try {
             FileTreeIterator workTreeIterator = new FileTreeIterator(this.repository);

@@ -17,6 +17,8 @@ public abstract class AbstractGitRepository implements GitRepository {
 
     protected String headRef;
 
+    protected MailMap mailMap;
+
     /**
      * Call the {@code #close()} method of this repository once it isn't used
      * anymore
@@ -32,6 +34,15 @@ public abstract class AbstractGitRepository implements GitRepository {
 
     public String getAbbreviatedCommitId() throws GitRepositoryException {
         return this.getAbbreviatedCommitId(this.getHeadCommit());
+    }
+
+    public MailMap getMailMap() throws GitRepositoryException {
+        if (this.mailMap == null) {
+            this.mailMap = new MailMap();
+            this.mailMap.parseMailMap(this);
+        }
+
+        return this.mailMap;
     }
 
     public void setHeadRef(String headRef) {
