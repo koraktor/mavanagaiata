@@ -111,6 +111,9 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
     public boolean init() throws MavanagaiataMojoException {
         this.initSort();
 
+        this.contributorPrefix = this.contributorPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
+        this.header            = this.header.replaceAll("([^\\\\])\\\\n", "$1\n");
+
         return super.init();
     }
 
@@ -137,9 +140,6 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
      *         repository fails
      */
     public void run() throws MavanagaiataMojoException {
-        this.contributorPrefix = this.contributorPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
-        this.header            = this.header.replaceAll("([^\\\\])\\\\n", "$1\n");
-
         try {
             this.mailMap = this.repository.getMailMap();
 
