@@ -109,10 +109,7 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
      */
     @Override
     public boolean init() throws MavanagaiataMojoException {
-        this.initSort();
-
-        this.contributorPrefix = this.contributorPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
-        this.header            = this.header.replaceAll("([^\\\\])\\\\n", "$1\n");
+        this.initConfiguration();
 
         return super.init();
     }
@@ -120,7 +117,10 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
     /**
      * Selects the attribute to use for sorting contributors
      */
-    protected void initSort() {
+    protected void initConfiguration() {
+        this.contributorPrefix = this.contributorPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
+        this.header            = this.header.replaceAll("([^\\\\])\\\\n", "$1\n");
+
         if (this.sort == null) {
             this.sort = "count";
         } else {
@@ -129,6 +129,8 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
                 this.sort = "count";
             }
         }
+
+        super.initConfiguration();
     }
 
     /**

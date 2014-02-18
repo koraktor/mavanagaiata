@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2013, Sebastian Staudt
+ * Copyright (c) 2011-2014, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -67,25 +67,25 @@ public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContri
     }
 
     @Test
-    public void testInitSort() throws Exception {
+    public void testInitConfiguration() throws Exception {
         this.mojo.sort = null;
-        this.mojo.initSort();
+        this.mojo.initConfiguration();
         assertThat(this.mojo.sort, is(equalTo("count")));
 
         this.mojo.sort = "count";
-        this.mojo.initSort();
+        this.mojo.initConfiguration();
         assertThat(this.mojo.sort, is(equalTo("count")));
 
         this.mojo.sort = "date";
-        this.mojo.initSort();
+        this.mojo.initConfiguration();
         assertThat(this.mojo.sort, is(equalTo("date")));
 
         this.mojo.sort = "name";
-        this.mojo.initSort();
+        this.mojo.initConfiguration();
         assertThat(this.mojo.sort, is(equalTo("name")));
 
         this.mojo.sort = "unknown";
-        this.mojo.initSort();
+        this.mojo.initConfiguration();
         assertThat(this.mojo.sort, is(equalTo("count")));
     }
 
@@ -96,6 +96,7 @@ public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContri
         this.mojo.showCounts        = false;
         this.mojo.showEmail         = true;
         this.mojo.sort              = "count";
+        this.mojo.initConfiguration();
         this.mojo.run();
 
         this.assertOutputLine("Authors");
@@ -111,6 +112,7 @@ public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContri
     @Test
     public void testSortCount() throws Exception {
         this.mojo.sort = "count";
+        this.mojo.initConfiguration();
         this.mojo.run();
 
         this.assertOutputLine("Contributors");
@@ -126,6 +128,7 @@ public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContri
     @Test
     public void testSortDate() throws Exception {
         this.mojo.sort = "date";
+        this.mojo.initConfiguration();
         this.mojo.run();
 
         this.assertOutputLine("Contributors");
@@ -141,6 +144,7 @@ public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContri
     @Test
     public void testSortName() throws Exception {
         this.mojo.sort = "name";
+        this.mojo.initConfiguration();
         this.mojo.run();
 
         this.assertOutputLine("Contributors");
