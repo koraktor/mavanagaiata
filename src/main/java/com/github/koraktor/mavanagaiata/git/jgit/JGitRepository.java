@@ -208,16 +208,12 @@ public class JGitRepository extends AbstractGitRepository {
             IndexDiff indexDiff = new IndexDiff(this.repository, this.getHeadObject(), workTreeIterator);
             indexDiff.diff();
 
-            if (!ignoreUntracked && !indexDiff.getUntracked().isEmpty()) {
-                return true;
-            }
-
-            return !(indexDiff.getAdded().isEmpty() &&
-                indexDiff.getChanged().isEmpty() &&
-                indexDiff.getRemoved().isEmpty() &&
-                indexDiff.getMissing().isEmpty() &&
-                indexDiff.getModified().isEmpty() &&
-                indexDiff.getConflicting().isEmpty());
+            return !ignoreUntracked && !indexDiff.getUntracked().isEmpty() ||
+                    !(indexDiff.getAdded().isEmpty() && indexDiff.getChanged().isEmpty() &&
+                    indexDiff.getRemoved().isEmpty() &&
+                    indexDiff.getMissing().isEmpty() &&
+                    indexDiff.getModified().isEmpty() &&
+                    indexDiff.getConflicting().isEmpty());
 
         } catch (IOException e) {
             throw new GitRepositoryException("Could not create repository diff.", e);
