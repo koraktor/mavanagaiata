@@ -17,6 +17,7 @@ import java.util.Random;
 
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.lib.AbbreviatedObjectId;
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
@@ -84,6 +85,72 @@ public class JGitRepositoryTest {
         when(someDir.exists()).thenReturn(true);
 
         this.repository = new JGitRepository(someDir, someDir);
+    }
+
+    @Test
+    public void createWithWorkTree() throws Exception {
+        File workTree = mock(File.class);
+        when(workTree.exists()).thenReturn(true);
+
+        File gitDir = mock(File.class);
+        whenNew(File.class).withArguments(workTree, Constants.DOT_GIT).
+                thenReturn(gitDir);
+        when(gitDir.getParentFile()).thenReturn(workTree);
+
+        FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class);
+        whenNew(FileRepositoryBuilder.class).withNoArguments().thenReturn(repoBuilder);
+        when(repoBuilder.getGitDir()).thenReturn(gitDir);
+        when(repoBuilder.build()).thenReturn(this.repo);
+
+        new JGitRepository(workTree, null);
+
+        InOrder inOrder = inOrder(repoBuilder);
+        inOrder.verify(repoBuilder).findGitDir(workTree);
+        inOrder.verify(repoBuilder).setWorkTree(workTree);
+    }
+
+    @Test
+    public void createWithWorkTreeAndGitDir() throws Exception {
+        File workTree = mock(File.class);
+        when(workTree.exists()).thenReturn(true);
+
+        File gitDir = mock(File.class);
+        when(gitDir.exists()).thenReturn(true);
+
+        FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class);
+        whenNew(FileRepositoryBuilder.class).withNoArguments().thenReturn(repoBuilder);
+        when(repoBuilder.getGitDir()).thenReturn(gitDir);
+        when(repoBuilder.build()).thenReturn(this.repo);
+
+        new JGitRepository(workTree, gitDir);
+
+        InOrder inOrder = inOrder(repoBuilder);
+        inOrder.verify(repoBuilder).setGitDir(gitDir);
+        inOrder.verify(repoBuilder).setWorkTree(workTree);
+    }
+
+    @Test
+    public void createWithWorkTreeChild() throws Exception {
+        File workTree = mock(File.class);
+
+        File workTreeChild = mock(File.class);
+        when(workTreeChild.exists()).thenReturn(true);
+
+        File gitDir = mock(File.class);
+        whenNew(File.class).withArguments(workTree, Constants.DOT_GIT).
+                thenReturn(gitDir);
+        when(gitDir.getParentFile()).thenReturn(workTree);
+
+        FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class);
+        whenNew(FileRepositoryBuilder.class).withNoArguments().thenReturn(repoBuilder);
+        when(repoBuilder.getGitDir()).thenReturn(gitDir);
+        when(repoBuilder.build()).thenReturn(this.repo);
+
+        new JGitRepository(workTreeChild, null);
+
+        InOrder inOrder = inOrder(repoBuilder);
+        inOrder.verify(repoBuilder).findGitDir(workTreeChild);
+        inOrder.verify(repoBuilder).setWorkTree(workTree);
     }
 
     @Test
@@ -359,7 +426,7 @@ public class JGitRepositoryTest {
         ObjectId head = mock(ObjectId.class);
         this.repository.headObject = head;
 
-        assertThat(this.repository.getHeadObject(), is(this.repository.headObject));
+        assertThat(this.repository.getHeadObject(), is(head));
 
         verify(this.repo, never()).resolve(any(String.class));
     }
