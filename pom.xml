@@ -101,7 +101,7 @@
     </parent>
 
     <properties>
-        <jgit.version>3.2.0.201312181205-r</jgit.version>
+        <jgit.version>3.5.3.201412180710-r</jgit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
