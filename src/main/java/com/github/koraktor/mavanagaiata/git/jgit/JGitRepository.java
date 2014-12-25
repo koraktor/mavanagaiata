@@ -332,9 +332,7 @@ public class JGitRepository extends AbstractGitRepository {
                         continue;
                     }
                     tags.put(object.getName(), revTag);
-                } catch(IncorrectObjectTypeException e) {
-                    continue;
-                }
+                } catch (IncorrectObjectTypeException ignored) {}
             }
         } catch (MissingObjectException e) {
             throw new GitRepositoryException("The tags could not be resolved.", e);
