@@ -57,6 +57,8 @@ public class JGitRepository extends AbstractGitRepository {
      *
      * @param workTree The worktree of the repository or {@code null}
      * @param gitDir The GIT_DIR of the repository or {@code null}
+     * @throws GitRepositoryException if the parameters do not match a Git
+     *         repository
      */
     public JGitRepository(File workTree, File gitDir)
             throws GitRepositoryException {
@@ -238,6 +240,7 @@ public class JGitRepository extends AbstractGitRepository {
     /**
      * Returns a commit object for the given object ID
      *
+     * @param id The object ID of the commit
      * @return The commit object for the given object ID
      * @see RevCommit
      * @throws GitRepositoryException if the commit object cannot be retrieved

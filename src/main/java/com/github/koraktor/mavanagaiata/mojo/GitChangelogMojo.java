@@ -33,13 +33,8 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
 
     /**
      * The format for the branch line
-<<<<<<< HEAD
      *
-     * @parameter property="mavanagaiata.changelog.branchFormat"
-     *            default-value="Commits on branch \"%s\"\n"
      * @since 0.7.0
-=======
->>>>>>> 7261fbb... Use annotations for mojo definitions
      */
     @Parameter(property = "mavanagaiata.changelog.gitHubLinks",
                defaultValue = "Commits on branch \"%s\"\n")
@@ -68,13 +63,8 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
     /**
      * The format for the link to the history from the last tag to the current
      * branch on GitHub
-<<<<<<< HEAD
      *
-     * @parameter property="mavanagaiata.changelog.gitHubBranchLinkFormat"
-     *            default-value="\nSee Git history for changes in the \"%s\" branch since version %s at: %s"
      * @since 0.7.0
-=======
->>>>>>> 7261fbb... Use annotations for mojo definitions
      */
     @Parameter(property = "mavanagaiata.changelog.header",
                defaultValue = "\nSee Git history for changes in the \"%s\" branch since version %s at: %s")
@@ -82,13 +72,8 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
 
     /**
      * The format for the link to the branch history on GitHub
-<<<<<<< HEAD
      *
-     * @parameter property="mavanagaiata.changelog.gitHubBranchLinkFormat"
-     *            default-value="\nSee Git history for changes in the \"%s\" branch at: %s"
      * @since 0.7.0
-=======
->>>>>>> 7261fbb... Use annotations for mojo definitions
      */
     @Parameter(property = "mavanagaiata.changelog.header",
                defaultValue = "\nSee Git history for changes in the \"%s\" branch at: %s")
@@ -96,13 +81,8 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
 
     /**
      * The format for the link to the tag history on GitHub
-<<<<<<< HEAD
      *
-     * @parameter property="mavanagaiata.changelog.gitHubTagLinkFormat"
-     *            default-value="\nSee Git history for version %s at: %s"
      * @since 0.7.0
-=======
->>>>>>> 7261fbb... Use annotations for mojo definitions
      */
     @Parameter(property = "mavanagaiata.changelog.header",
                defaultValue = "\nSee Git history for version %s at: %s")
@@ -234,6 +214,7 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      *
      * @param lastRef The last tag or branch in the changelog
      * @param currentRef The current tag or branch in the changelog
+     * @param isBranch Whether the link is points to a branch
      */
     protected void insertGitHubLink(String lastRef, String currentRef, boolean isBranch) {
         String url = String.format("https://github.com/%s/%s/",

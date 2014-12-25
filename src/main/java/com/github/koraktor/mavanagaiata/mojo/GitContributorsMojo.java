@@ -99,10 +99,6 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
                defaultValue = "count")
     protected String sort;
 
-    /**
-     * {@inheritDoc}
-     * @see #initSort
-     */
     @Override
     public boolean init() throws MavanagaiataMojoException {
         this.initConfiguration();

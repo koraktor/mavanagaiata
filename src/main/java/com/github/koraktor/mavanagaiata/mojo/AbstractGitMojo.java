@@ -213,6 +213,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * This will initialize the JGit repository instance for further usage by
      * the mojo.
      *
+     * @return <code>false</code> if the execution should be skipped
      * @throws MavanagaiataMojoException if the repository cannot be initialized
      */
     protected boolean init() throws MavanagaiataMojoException {
@@ -256,6 +257,8 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * The actual implementation of the mojo
      * <p>
      * This is called internally by {@link #init}.
+     *
+     * @throws MavanagaiataMojoException if there is an error during execution
      */
     protected abstract void run() throws MavanagaiataMojoException;
 
