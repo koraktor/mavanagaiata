@@ -15,7 +15,7 @@
 
     <groupId>com.github.koraktor</groupId>
     <artifactId>mavanagaiata</artifactId>
-    <version>0.7.0</version>
+    <version>0.7.1-sn-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <prerequisites>
@@ -241,14 +241,14 @@
                 <version>3.1</version>
                 <configuration>
                     <encoding>${project.build.sourceEncoding}</encoding>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.2</version>
+                <version>3.3</version>
                 <configuration>
                     <!--<extractors>
                         <extractor>java-annotations</extractor>
@@ -263,6 +263,12 @@
                             <goal>helpmojo</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>mojo-descriptor</id>
+                        <goals>
+                            <goal>descriptor</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -275,6 +281,7 @@
                         <link>http://download.eclipse.org/jgit/docs/jgit-${jgit.version}/apidocs/</link>
                     </links>
                     <show>private</show>
+                    <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
                 <executions>
                     <execution>
@@ -381,6 +388,7 @@
                         <link>http://download.eclipse.org/jgit/docs/jgit-${jgit.version}/apidocs/</link>
                     </links>
                     <show>private</show>
+                    <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
                 <reportSets>
                     <reportSet>
@@ -393,7 +401,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.2</version>
+                <version>3.3</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
