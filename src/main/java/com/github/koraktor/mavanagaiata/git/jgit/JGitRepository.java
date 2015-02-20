@@ -76,15 +76,17 @@ public class JGitRepository extends AbstractGitRepository {
             }
         }
 
-        repositoryBuilder.setWorkTree(workTree);
         if (gitDir != null) {
             repositoryBuilder.setGitDir(gitDir);
+            repositoryBuilder.setWorkTree(workTree);
         } else {
             repositoryBuilder.findGitDir(workTree);
 
             if (repositoryBuilder.getGitDir() == null) {
                 throw new GitRepositoryException(workTree + " is not inside a Git repository. Please specify the GIT_DIR separately.");
             }
+
+            repositoryBuilder.setWorkTree(repositoryBuilder.getGitDir().getParentFile());
         }
 
         try {
@@ -333,9 +335,7 @@ public class JGitRepository extends AbstractGitRepository {
                         continue;
                     }
                     tags.put(object.getName(), revTag);
-                } catch(IncorrectObjectTypeException e) {
-                    continue;
-                }
+                } catch (IncorrectObjectTypeException ignored) {}
             }
         } catch (MissingObjectException e) {
             throw new GitRepositoryException("The tags could not be resolved.", e);
