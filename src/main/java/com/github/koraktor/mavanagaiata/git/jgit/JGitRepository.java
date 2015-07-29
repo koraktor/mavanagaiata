@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -136,7 +138,6 @@ public class JGitRepository extends AbstractGitRepository {
         try {
             //Check, if the start commit is a tag already
             if (tagCommits.containsKey(start)) {
-                start.add(RevFlag.SEEN);
                 GitTag tag = this.getTags().get(start.getId().getName());
 
                 return new GitTagDescription(this, this.getHeadCommit(), tag, 0);
@@ -152,18 +153,16 @@ public class JGitRepository extends AbstractGitRepository {
             //Now we have to correct the distance of the tag candidates
             correctDistance(revWalk, candidates, allFlags);
 
-            int bestDistance = Integer.MAX_VALUE;
-            TagCandidate bestCandidate = null;
-            for (TagCandidate candidate : candidates) {
-                if (candidate.distance < bestDistance) {
-                    bestDistance = candidate.distance;
-                    bestCandidate = candidate;
+            TagCandidate bestCandidate = Collections.min(candidates, new Comparator<TagCandidate>() {
+                @Override
+                public int compare(TagCandidate tag1, TagCandidate tag2) {
+                    return Integer.compare(tag1.distance, tag2.distance);
                 }
-            }
+            });
 
             GitTag tag = new JGitTag(bestCandidate.commit);
 
-            return new GitTagDescription(this, this.getHeadCommit(), tag, bestDistance);
+            return new GitTagDescription(this, this.getHeadCommit(), tag, bestCandidate.distance);
         } catch (Exception e) {
             throw new GitRepositoryException("Could not describe current commit.", e);
         } finally {

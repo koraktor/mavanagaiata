@@ -259,7 +259,7 @@ public class JGitRepositoryTest {
         when(this.repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
 
         GitTagDescription description = repo.describe();
-        assertThat(head.has(RevFlag.SEEN), is(true));
+        assertThat(head.has(RevFlag.SEEN), is(false));
         assertThat(head_1.has(RevFlag.SEEN), is(false));
         assertThat(head_2.has(RevFlag.SEEN), is(false));
         assertThat(description.getNextTagName(), is(equalTo("2.0.0")));
