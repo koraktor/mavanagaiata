@@ -1,8 +1,8 @@
 Mavanagaiata
 ============
 
-[![Build Status](https://secure.travis-ci.org/koraktor/mavanagaiata.png)](https://travis-ci.org/koraktor/mavanagaiata)
-[![Coverage Status](https://coveralls.io/repos/koraktor/mavanagaiata/badge.png?branch=master)](https://coveralls.io/r/koraktor/mavanagaiata?branch=master)
+[![Build Status](https://travis-ci.org/koraktor/mavanagaiata.svg?branch=0.7)](https://travis-ci.org/koraktor/mavanagaiata)
+[![Coverage Status](https://coveralls.io/repos/koraktor/mavanagaiata/badge.svg?branch=0.7&service=github)](https://coveralls.io/github/koraktor/mavanagaiata)
 
 Mavanagaiata – \[maˈvanaˈɡaːjaˈta\] – is a Maven plugin providing information
 about the Git repository of your project.
@@ -14,7 +14,7 @@ about the Git repository of your project.
 ## Dependencies
 
  * Apache Commons IO 2.4
- * JGit 3.2.0
+ * JGit 3.7.1
 
 ## Installation
 
@@ -195,6 +195,7 @@ included LICENSE file.
 * Henning Schmiedehausen -- hgschmie(at)fb.com
 * Santeri Vesalainen -- santeri.vesalainen(at)gmail.com
 * Patrick Kaeding -- pkaeding(at)atlassian.com
+* Kay Hannay -- klinux(at)hannay.de
 
 ## See Also
 
