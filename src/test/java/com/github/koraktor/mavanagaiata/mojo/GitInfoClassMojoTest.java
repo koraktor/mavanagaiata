@@ -65,6 +65,7 @@ public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
         this.timestamp = new Date(1275131880000L);
         whenNew(Date.class).withNoArguments().thenReturn(this.timestamp);
         when(this.repository.describe()).thenReturn(description);
+        when(this.repository.getBranch()).thenReturn("master");
         when(this.repository.getHeadCommit().getId()).thenReturn("deadbeefdeadbeefdeadbeefdeadbeef");
     }
 
@@ -74,6 +75,7 @@ public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(this.mojo.dateFormat);
 
+        assertThat(valueSource.getValue("BRANCH").toString(), is(equalTo("master")));
         assertThat(valueSource.getValue("CLASS_NAME").toString(), is(equalTo(this.mojo.className)));
         assertThat(valueSource.getValue("COMMIT_ABBREV").toString(), is(equalTo("deadbeef")));
         assertThat(valueSource.getValue("COMMIT_SHA").toString(), is(equalTo("deadbeefdeadbeefdeadbeefdeadbeef")));
@@ -94,6 +96,7 @@ public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(this.mojo.dateFormat);
 
+        assertThat(valueSource.getValue("BRANCH").toString(), is(equalTo("master")));
         assertThat(valueSource.getValue("CLASS_NAME").toString(), is(equalTo(this.mojo.className)));
         assertThat(valueSource.getValue("COMMIT_ABBREV").toString(), is(equalTo("deadbeef-dirty")));
         assertThat(valueSource.getValue("COMMIT_SHA").toString(), is(equalTo("deadbeefdeadbeefdeadbeefdeadbeef-dirty")));
@@ -115,6 +118,7 @@ public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(this.mojo.dateFormat);
 
+        assertThat(valueSource.getValue("BRANCH").toString(), is(equalTo("master")));
         assertThat(valueSource.getValue("CLASS_NAME").toString(), is(equalTo(this.mojo.className)));
         assertThat(valueSource.getValue("COMMIT_ABBREV").toString(), is(equalTo("deadbeef")));
         assertThat(valueSource.getValue("COMMIT_SHA").toString(), is(equalTo("deadbeefdeadbeefdeadbeefdeadbeef")));
