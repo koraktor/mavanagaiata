@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012, Sebastian Staudt
+ * Copyright (c) 2012-2015, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -35,8 +35,7 @@ abstract class GitOutputMojoAbstractTest<T extends AbstractGitOutputMojo> extend
         this.mojo.footer = "Footer";
 
         this.outputStream = new ByteArrayOutputStream();
-        PrintStream printStream = new PrintStream(this.outputStream);
-        this.mojo.outputStream = printStream;
+        this.mojo.outputStream = new PrintStream(this.outputStream);
     }
 
     protected void assertOutputLine(String line) throws IOException {
