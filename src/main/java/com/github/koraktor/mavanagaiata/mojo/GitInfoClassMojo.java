@@ -72,7 +72,7 @@ public class GitInfoClassMojo extends AbstractGitMojo {
 
     /**
      * The directory to write the source code to
-     * <br>
+     * <p>
      * This directory is automatically added to the source roots used to
      * compile the project.
      *

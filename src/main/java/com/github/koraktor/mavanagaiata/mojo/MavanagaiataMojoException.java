@@ -17,7 +17,7 @@ class MavanagaiataMojoException extends Exception {
 
     /**
      * Creates a new exception with the given message an cause
-     * <br>
+     * <p>
      * Additional arguments will be interpolated into the message with
      * {@link String#format(String, Object...)}.
      *

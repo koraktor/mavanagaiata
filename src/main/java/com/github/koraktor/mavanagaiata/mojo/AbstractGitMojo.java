@@ -39,10 +39,10 @@ abstract class AbstractGitMojo extends AbstractMojo {
 
     /**
      * The working tree of the Git repository.
-     * <br>
+     * <p>
      * If there is only one project inside the Git repository this is probably
      * <code>${project.basedir}</code> (default).
-     * <br>
+     * <p>
      * <strong>Note:</strong> The <code>GIT_DIR</code> can be found
      * automatically even if this is not the real working tree but one of its
      * subdirectories. But Mavanagaiata cannot determine the state of the
@@ -56,7 +56,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
     /**
      * The flag to append to refs if there are changes in the index or working
      * tree
-     * <br>
+     * <p>
      * Setting this to either <code>"false"</code> or <code>"null"</code> will
      * disable flagging refs as dirty.
      *
@@ -69,7 +69,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
     /**
      * Specifies if the dirty flag should also be appended if there are
      * untracked files
-     * <br>
+     * <p>
      * If <code>false</code> only modified that are already known to Git will
      * cause the dirty flag to be appended.
      *
@@ -81,7 +81,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
 
     /**
      * Specifies if a failed execution of the mojo will stop the build process
-     * <br>
+     * <p>
      * If <code>true</code> a failure during mojo execution will not stop the
      * build process.
      *
@@ -93,7 +93,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
 
     /**
      * The <code>GIT_DIR</code> path of the Git repository
-     * <br>
+     * <p>
      * <strong>Warning:</strong> Do not set this when you don't have a good
      * reason to do so. The <code>GIT_DIR</code> can be found automatically if
      * your project resides somewhere in a usual Git repository.
