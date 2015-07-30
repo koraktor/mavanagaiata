@@ -23,13 +23,13 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.shared.filtering.MavenFileFilter;
 import org.apache.maven.shared.filtering.MavenFilteringException;
-
-import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
-import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 import org.codehaus.plexus.interpolation.InterpolatorFilterReader;
 import org.codehaus.plexus.interpolation.MapBasedValueSource;
 import org.codehaus.plexus.interpolation.RegexBasedInterpolator;
 import org.codehaus.plexus.util.FileUtils;
+
+import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
+import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 
 /**
  * This goal generates the source code for a Java class with Git information
@@ -94,6 +94,7 @@ public class GitInfoClassMojo extends AbstractGitMojo {
      *
      * @throws MavanagaiataMojoException if the info class cannot be generated
      */
+    @Override
     public void run() throws MavanagaiataMojoException {
         this.addProperty("info-class.className", this.className);
         this.addProperty("info-class.packageName", this.packageName);
@@ -128,6 +129,7 @@ public class GitInfoClassMojo extends AbstractGitMojo {
 
             final MapBasedValueSource valueSource = this.getValueSource();
             FileUtils.FilterWrapper filterWrapper = new FileUtils.FilterWrapper() {
+                @Override
                 public Reader getReader(Reader fileReader) {
                     RegexBasedInterpolator regexInterpolator = new RegexBasedInterpolator();
                     regexInterpolator.addValueSource(valueSource);
@@ -177,6 +179,7 @@ public class GitInfoClassMojo extends AbstractGitMojo {
         String shaId     = this.repository.getHeadCommit().getId();
         String describe  = description.toString();
         boolean isDirty  = this.repository.isDirty(this.dirtyIgnoreUntracked);
+        String branch    = this.repository.getBranch();
 
         if (isDirty && this.dirtyFlag != null) {
             abbrevId += this.dirtyFlag;
@@ -186,6 +189,7 @@ public class GitInfoClassMojo extends AbstractGitMojo {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
         HashMap<String, String> values = new HashMap<String, String>();
+        values.put("BRANCH", branch);
         values.put("CLASS_NAME", this.className);
         values.put("COMMIT_ABBREV", abbrevId);
         values.put("COMMIT_SHA", shaId);
