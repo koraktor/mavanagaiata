@@ -92,6 +92,10 @@
             <name>Patrick Kaeding</name>
             <email>pkaeding@atlassian.com</email>
         </contributor>
+        <contributor>
+            <name>Kay Hannay</name>
+            <email>klinux@hannay.de</email>
+        </contributor>
     </contributors>
 
     <parent>
