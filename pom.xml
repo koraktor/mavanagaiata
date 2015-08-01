@@ -56,7 +56,7 @@
 
     <ciManagement>
         <system>Travis CI</system>
-        <url>https://travis-ci.com/koraktor/mavanagaiata</url>
+        <url>https://travis-ci.org/koraktor/mavanagaiata</url>
     </ciManagement>
 
     <distributionManagement>
