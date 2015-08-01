@@ -70,7 +70,7 @@ the Git repository.
  * `contributors`: Generates a list of contributors from Git commits
  * `tag`:          Information about the most recent tag
 
-Each goal stores its information into the project's properties. The following
+Each goal stores its information into the project’s properties. The following
 property keys will be prefixed with `mavanagaiata.` and `mvngit.` respectively.
 You may override this with the configuration property `propertyPrefixes`.
 
@@ -109,8 +109,8 @@ with `mavanagaiata.` when used on the command-line:
  * `gitDir`:     Specify the GIT_DIR to use (default: `${basedir}`)
  * `head`:       Specify the commit or ref used as a starting point (default:
                  `HEAD`)
- * `skip`:       Don't execute the goal(s) at all (default: `false`)
- * `skipNoGit`:  Don't execute the goal(s) when not inside a Git repository
+ * `skip`:       Don’t execute the goal(s) at all (default: `false`)
+ * `skipNoGit`:  Don’t execute the goal(s) when not inside a Git repository
                  (default `false`). This prevents failures when building from
                  intermediate copies of the project files.
 
@@ -123,13 +123,13 @@ Additionally, there are some properties specific to a goal:
                       `"Changelog\n=========\n"`)
    * `commitPrefix`:  The string to prepend to every commit message (default:
                       `" * "`)
-   * `gitHubLinks`:   Whether to generate links to GitHub's compare view
+   * `gitHubLinks`:   Whether to generate links to GitHub’s compare view
                       (default: `false`)
    * `gitHubProject`: The project name for GitHub links (default: not set)
    * `gitHubUser`:    The project user for GitHub links (default: not set)
    * `outputFile`:    If set, the changelog will not be printed to
                       `System.out`, but into the given file. (default: not set)
-   * `skipTagged`:    Whether to skip tagged commits' messages. This is useful
+   * `skipTagged`:    Whether to skip tagged commits’ messages. This is useful
                       when usually tagging commits like "Version bump to X.Y.Z"
                       (default: `false`)
    * `tagPrefix`:     The string to prepend to the tag name (default:
@@ -160,7 +160,7 @@ The name is a completely invented word hopefully sounding like a mighty god of
 an ancient, Southeast Asian primitive people or a similar mighty monster that
 same primitive people is afraid of.
 
-Instead, it's just a combination of the command-line tools of Maven and Git:
+Instead, it’s just a combination of the command-line tools of Maven and Git:
 `mvn` and `git`. Each character is suffixed with the character `a`.
 
 In Java code you would write this as:
@@ -173,14 +173,14 @@ In Java code you would write this as:
 ## Contribute
 
 Mavanagaiata is an open-source project. Therefore you are free to help
-improving it. There are several ways of contributing to Mavanagaiata's
+improving it. There are several ways of contributing to Mavanagaiata’s
 development:
 
 * Build projects using it and spread the word.
 * Report problems and request features using the [issue tracker][2].
 * Write patches yourself to fix bugs and implement new functionality.
 * Create a Mavanagaiata fork on [GitHub][1] and start hacking. Extra points for
-  using GitHub's pull requests and feature branches.
+  using GitHub’s pull requests and feature branches.
 
 ## License
 
