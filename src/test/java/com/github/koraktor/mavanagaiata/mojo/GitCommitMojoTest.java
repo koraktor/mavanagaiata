@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2014, Sebastian Staudt
+ * Copyright (c) 2011-2015, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -12,15 +12,12 @@ import java.util.TimeZone;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import com.github.koraktor.mavanagaiata.git.GitCommit;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(PowerMockRunner.class)
 public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
 
     @Before

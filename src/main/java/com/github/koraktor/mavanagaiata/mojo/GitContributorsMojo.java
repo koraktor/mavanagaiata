@@ -92,7 +92,7 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
 
     /**
      * The method used to sort contributors
-     * <br>
+     * <p>
      * Available values are {@code count}, {@code date} and {@code name}.
      */
     @Parameter(property = "mavanagaiata.contributors.sort",

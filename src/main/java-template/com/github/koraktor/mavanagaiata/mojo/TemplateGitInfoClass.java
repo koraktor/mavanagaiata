@@ -6,6 +6,8 @@ package ${PACKAGE_NAME};
 
 public final class ${CLASS_NAME} {
 
+    public static final String BRANCH = "${BRANCH}";
+
     public static final String COMMIT_ABBREV = "${COMMIT_ABBREV}";
 
     public static final String COMMIT_SHA = "${COMMIT_SHA}";

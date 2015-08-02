@@ -1,8 +1,8 @@
 Mavanagaiata
 ============
 
-[![Build Status](https://secure.travis-ci.org/koraktor/mavanagaiata.png)](https://travis-ci.org/koraktor/mavanagaiata)
-[![Coverage Status](https://coveralls.io/repos/koraktor/mavanagaiata/badge.png?branch=master)](https://coveralls.io/r/koraktor/mavanagaiata?branch=master)
+[![Build Status](https://travis-ci.org/koraktor/mavanagaiata.svg?branch=master)](https://travis-ci.org/koraktor/mavanagaiata)
+[![Coverage Status](https://coveralls.io/repos/koraktor/mavanagaiata/badge.svg?branch=master&service=github)](https://coveralls.io/github/koraktor/mavanagaiata)
 
 Mavanagaiata – \[maˈvanaˈɡaːjaˈta\] – is a Maven plugin providing information
 about the Git repository of your project.
@@ -14,7 +14,7 @@ about the Git repository of your project.
 ## Dependencies
 
  * Apache Commons IO 2.4
- * JGit 3.2.0
+ * JGit 3.7.1
 
 ## Installation
 
@@ -62,7 +62,7 @@ the plugin in your POM and add the configuration suitable for your needs:
 For more information on the existing goals and their configuration can be found
 in the [Plugin Documentation][3].
 
-A more complete usage example can be found in Mavanagaiata's own [`pom.xml`][4].
+A more complete usage example can be found in Mavanagaiata’s own [`pom.xml`][4].
 Yes, Mavanagaiata is used to build Mavanagaiata.
 
 ## About the name
@@ -71,7 +71,7 @@ The name is a completely invented word hopefully sounding like a mighty god of
 an ancient, Southeast Asian primitive people or a similar mighty monster that
 same primitive people is afraid of.
 
-Instead, it's just a combination of the command-line tools of Maven and Git:
+Instead, it’s just a combination of the command-line tools of Maven and Git:
 `mvn` and `git`. Each character is suffixed with the character `a`.
 
 In Java code you would write this as:
@@ -84,14 +84,14 @@ In Java code you would write this as:
 ## Contribute
 
 Mavanagaiata is an open-source project. Therefore you are free to help
-improving it. There are several ways of contributing to Mavanagaiata's
+improving it. There are several ways of contributing to Mavanagaiata’s
 development:
 
 * Build projects using it and spread the word.
 * Report problems and request features using the [issue tracker][2].
 * Write patches yourself to fix bugs and implement new functionality.
 * Create a Mavanagaiata fork on [GitHub][1] and start hacking. Extra points for
-  using GitHub's pull requests and feature branches.
+  using GitHub’s pull requests and feature branches.
 
 ## License
 
@@ -106,6 +106,7 @@ included LICENSE file.
 * Henning Schmiedehausen -- hgschmie(at)fb.com
 * Santeri Vesalainen -- santeri.vesalainen(at)gmail.com
 * Patrick Kaeding -- pkaeding(at)atlassian.com
+* Kay Hannay -- klinux(at)hannay.de
 
 ## See Also
 
