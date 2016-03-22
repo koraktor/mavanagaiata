@@ -128,6 +128,24 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
     protected String tagFormat;
 
     /**
+     * Whether to skip commits' containing a string
+     * <br>
+     * This is useful when using jgitflow and removing commits like "[maven-jgitflow]....[maven-jgitflow]"
+     */
+    @Parameter(property = "mavanagaiata.changelog.skipCommits",
+               defaultValue = "false")
+    protected boolean skipCommits;
+
+    /**
+     * The format for a tag line
+     *
+     * @since 0.7.0
+     */
+    @Parameter(property = "mavanagaiata.changelog.skipCommitFormat",
+               defaultValue = "[maven-jgitflow]")
+    protected String skipCommitFormat;
+
+    /**
      * Walks through the history of the currently checked out branch of the
      * Git repository and builds a changelog from the commits contained in that
      * branch.
@@ -269,6 +287,9 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
         }
 
         protected void run() throws GitRepositoryException {
+            if ( skipCommits && this.currentCommit.getMessageSubject().contains( skipCommitFormat )) {
+                return ;
+            }
             if (repository.getTags().containsKey(this.currentCommit.getId())) {
                 this.lastTag = this.currentTag;
                 this.currentTag = repository.getTags().get(this.currentCommit.getId());
