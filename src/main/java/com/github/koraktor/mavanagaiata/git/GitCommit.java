@@ -82,6 +82,13 @@ public interface GitCommit {
     public String getId();
 
     /**
+     * Returns the message of this commit
+     *
+     * @return The message of this commit
+     */
+    String getMessage();
+
+    /**
      * Returns the subject of the commit's message
      * <p>
      * The message subject is the first line of the commit message.

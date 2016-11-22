@@ -93,6 +93,10 @@ public class JGitCommit implements GitCommit {
         return this.commit.getName();
     }
 
+    public String getMessage() {
+        return commit.getFullMessage();
+    }
+
     public String getMessageSubject() {
         return this.commit.getShortMessage();
     }

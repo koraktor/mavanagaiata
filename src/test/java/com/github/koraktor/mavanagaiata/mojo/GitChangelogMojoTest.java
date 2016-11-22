@@ -36,6 +36,7 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
     private static GitCommit mockCommit(String id, String subject) {
         GitCommit commit = mock(GitCommit.class);
         when(commit.getId()).thenReturn(id);
+        when(commit.getMessage()).thenReturn(subject);
         when(commit.getMessageSubject()).thenReturn(subject);
         return commit;
     }
@@ -53,8 +54,7 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
         this.mojo.header       = "Changelog\\n=========\\n";
         this.mojo.skipTagged   = false;
         this.mojo.tagFormat    = "\\nVersion %s – %s\\n";
-        this.mojo.skipCommits  = false;
-        this.mojo.skipCommitFormat = "[maven-jgitflow]";
+        this.mojo.skipCommitsMatching  = null;
 
         this.mockCommits = new ArrayList<GitCommit>();
         this.mockCommits.add(mockCommit("598a75596868dec45f8e6a808a07d533bc0184f0", "8th commit"));
@@ -213,7 +213,7 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
 
     @Test
     public void testSkipCommits() throws Exception {
-        this.mojo.skipCommits = true;
+        this.mojo.skipCommitsMatching = "\\[maven-jgitflow\\]";
         this.mojo.initConfiguration();
         this.mojo.run();
 

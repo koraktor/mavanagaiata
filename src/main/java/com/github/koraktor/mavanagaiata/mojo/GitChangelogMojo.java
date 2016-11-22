@@ -9,6 +9,7 @@ package com.github.koraktor.mavanagaiata.mojo;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.regex.Pattern;
 
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -128,22 +129,14 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
     protected String tagFormat;
 
     /**
-     * Whether to skip commits' containing a string
-     * <br>
-     * This is useful when using jgitflow and removing commits like "[maven-jgitflow]....[maven-jgitflow]"
-     */
-    @Parameter(property = "mavanagaiata.changelog.skipCommits",
-               defaultValue = "false")
-    protected boolean skipCommits;
-
-    /**
-     * The format for a tag line
+     * Whether to skip commits that match the given regular expression
      *
-     * @since 0.7.0
+     * @since 0.8.0
      */
-    @Parameter(property = "mavanagaiata.changelog.skipCommitFormat",
-               defaultValue = "[maven-jgitflow]")
-    protected String skipCommitFormat;
+    @Parameter(property = "mavanagaiata.changelog.skipCommitsMatching")
+    protected String skipCommitsMatching;
+
+    protected Pattern skipCommitsPattern;
 
     /**
      * Walks through the history of the currently checked out branch of the
@@ -209,6 +202,10 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
         if (this.gitHubProject == null || this.gitHubProject.length() == 0 ||
             this.gitHubUser == null || this.gitHubUser.length() == 0) {
             this.createGitHubLinks = false;
+        }
+
+        if (skipCommitsMatching != null) {
+            skipCommitsPattern = Pattern.compile(skipCommitsMatching, Pattern.MULTILINE);
         }
     }
 
@@ -287,9 +284,10 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
         }
 
         protected void run() throws GitRepositoryException {
-            if ( skipCommits && this.currentCommit.getMessageSubject().contains( skipCommitFormat )) {
-                return ;
+            if (skipCommitsPattern != null && skipCommitsPattern.matcher(currentCommit.getMessage()).matches()) {
+                return;
             }
+
             if (repository.getTags().containsKey(this.currentCommit.getId())) {
                 this.lastTag = this.currentTag;
                 this.currentTag = repository.getTags().get(this.currentCommit.getId());
