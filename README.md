@@ -107,6 +107,7 @@ included LICENSE file.
 * Santeri Vesalainen -- santeri.vesalainen(at)gmail.com
 * Patrick Kaeding -- pkaeding(at)atlassian.com
 * Kay Hannay -- klinux(at)hannay.de
+* Jeff Kreska -- jeff.kreska(at)farecompare.com
 
 ## See Also
 

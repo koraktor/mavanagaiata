@@ -4,7 +4,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2015, Sebastian Staudt
+ * Copyright (c) 2011-2016, Sebastian Staudt
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -95,6 +95,10 @@
         <contributor>
             <name>Kay Hannay</name>
             <email>klinux@hannay.de</email>
+        </contributor>
+        <contributor>
+            <name>Jeff Kreska</name>
+            <email>jeff.kreska@farecompare.com</email>
         </contributor>
     </contributors>
 
