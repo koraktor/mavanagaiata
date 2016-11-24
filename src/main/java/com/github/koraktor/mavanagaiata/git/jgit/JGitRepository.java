@@ -168,7 +168,7 @@ public class JGitRepository extends AbstractGitRepository {
         } catch (Exception e) {
             throw new GitRepositoryException("Could not describe current commit.", e);
         } finally {
-            revWalk.release();
+            revWalk.close();
         }
     }
 
