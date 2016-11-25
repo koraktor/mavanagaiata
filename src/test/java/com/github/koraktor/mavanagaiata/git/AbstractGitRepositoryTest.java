@@ -72,6 +72,11 @@ public class AbstractGitRepositoryTest {
             return false;
         }
 
+        @Override
+        public boolean isOnUnbornBranch() throws GitRepositoryException {
+            return false;
+        }
+
         public void walkCommits(CommitWalkAction action)
                 throws GitRepositoryException {}
 

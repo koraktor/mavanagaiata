@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2014, Sebastian Staudt
+ * Copyright (c) 2011-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -105,7 +105,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * The commit or ref to use as starting point for operations
      */
     @Parameter(property = "mavanagaiata.head",
-               defaultValue = "HEAD")
+               defaultValue = GitRepository.DEFAULT_HEAD)
     protected String head;
 
     /**
@@ -220,6 +220,12 @@ abstract class AbstractGitMojo extends AbstractMojo {
         try {
             this.prepareParameters();
             this.initRepository();
+
+            if (repository.isOnUnbornBranch()) {
+                getLog().warn("Building from an unborn branch. Skipping…");
+
+                return false;
+            }
 
             return true;
         } catch (GitRepositoryException e) {

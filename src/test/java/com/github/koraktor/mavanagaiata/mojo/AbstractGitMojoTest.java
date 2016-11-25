@@ -159,8 +159,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
 
     @Test
     public void testExecuteInitFail() throws Exception {
-        doNothing().when(this.mojo).initRepository();
-        when(this.mojo.init()).thenReturn(false);
+        doReturn(false).when(mojo).init();
 
         this.mojo.execute();
 

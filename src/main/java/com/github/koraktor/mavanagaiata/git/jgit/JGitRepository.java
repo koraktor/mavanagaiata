@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2015, Sebastian Staudt
+ * Copyright (c) 2012-2016, Sebastian Staudt
  *               2015, Kay Hannay
  */
 
@@ -36,6 +36,7 @@ import org.eclipse.jgit.treewalk.FileTreeIterator;
 import com.github.koraktor.mavanagaiata.git.AbstractGitRepository;
 import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitCommit;
+import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
@@ -307,6 +308,11 @@ public class JGitRepository extends AbstractGitRepository {
     }
 
     @Override
+    public boolean isOnUnbornBranch() throws GitRepositoryException {
+        return getHeadObject().equals(ObjectId.zeroId());
+    }
+
+    @Override
     public void walkCommits(CommitWalkAction action)
             throws GitRepositoryException {
         try {
@@ -379,12 +385,11 @@ public class JGitRepository extends AbstractGitRepository {
         }
 
         if (this.headObject == null) {
-            if (this.headRef.equals("HEAD")) {
-                throw new GitRepositoryException(
-                    "HEAD could not be resolved. You're probably on an unborn branch.");
+            if (headRef.equals(GitRepository.DEFAULT_HEAD)) {
+                headObject = ObjectId.zeroId();
+            } else {
+                throw new GitRepositoryException("Ref \"" + headRef + "\" is invalid.");
             }
-            throw new GitRepositoryException(
-                String.format("Ref \"%s\" is invalid.", this.headRef));
         }
 
         return this.headObject;

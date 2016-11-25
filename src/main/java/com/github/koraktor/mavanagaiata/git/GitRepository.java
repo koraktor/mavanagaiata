@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2014, Sebastian Staudt
+ * Copyright (c) 2012-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
@@ -17,6 +17,11 @@ import java.util.Map;
  * @author Sebastian Staudt
  */
 public interface GitRepository {
+
+    /**
+     * The default head ref
+     */
+    String DEFAULT_HEAD = "HEAD";
 
     /**
      * Checks whether the Git repository is accessible.
@@ -119,6 +124,19 @@ public interface GitRepository {
      *         worktree state
      */
     public boolean isDirty(boolean ignoreUntracked) throws GitRepositoryException;
+
+    /**
+     * Returns whether this repository is currently on an “unborn” branch
+     *
+     * An “unborn” branch is a branch without any actual commits. This only
+     * applies when the configured head ref is actually {@code HEAD}.
+     * Otherwise a configuration error is assumed.
+     *
+     * @return {@code true} if the current branch is
+     * @throws GitRepositoryException if an error occurs while retrieving the
+     *         current HEAD commit
+     */
+    boolean isOnUnbornBranch() throws GitRepositoryException;
 
     /**
      * Sets the Git ref to use as the {@code HEAD} commit of the repository

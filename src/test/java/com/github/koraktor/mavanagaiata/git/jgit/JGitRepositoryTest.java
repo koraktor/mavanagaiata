@@ -490,12 +490,8 @@ public class JGitRepositoryTest {
         this.repository.setHeadRef("HEAD");
         when(this.repo.resolve("HEAD")).thenReturn(null);
 
-        try {
-            this.repository.getHeadObject();
-            fail("No exception thrown");
-        } catch (GitRepositoryException e) {
-            assertThat(e.getMessage(), is(equalTo("HEAD could not be resolved. You're probably on an unborn branch.")));
-        }
+
+        assertThat(repository.getHeadObject(), is(equalTo(ObjectId.zeroId())));
     }
 
     @Test
