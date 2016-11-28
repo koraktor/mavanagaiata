@@ -23,20 +23,20 @@ public interface GitTag {
      *
      * @return The creation date of this tag
      */
-    public Date getDate();
+    Date getDate();
 
     /**
      * Returns the name of this tag
      *
      * @return The name of this tag
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the timezone in which this tag has been created
      *
      * @return The timezone of this tag
      */
-    public TimeZone getTimeZone();
+    TimeZone getTimeZone();
 
 }

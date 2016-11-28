@@ -140,13 +140,16 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
             ContributorsWalkAction walkAction = new ContributorsWalkAction();
             this.repository.walkCommits(walkAction);
 
-            ArrayList<Contributor> contributors = new ArrayList<Contributor>(walkAction.contributors.values());
-            if (sort.equals("date")) {
-                Collections.sort(contributors, DATE_COMPARATOR);
-            } else if (sort.equals("name")) {
-                Collections.sort(contributors, NAME_COMPARATOR);
-            } else {
-                Collections.sort(contributors, COUNT_COMPARATOR);
+            ArrayList<Contributor> contributors = new ArrayList<>(walkAction.contributors.values());
+            switch (sort) {
+                case "date":
+                    Collections.sort(contributors, DATE_COMPARATOR);
+                    break;
+                case "name":
+                    Collections.sort(contributors, NAME_COMPARATOR);
+                    break;
+                default:
+                    Collections.sort(contributors, COUNT_COMPARATOR);
             }
 
             this.outputStream.println(this.header);
@@ -191,7 +194,7 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
         protected HashMap<String, Contributor> contributors;
 
         public ContributorsWalkAction() {
-            this.contributors = new HashMap<String, Contributor>();
+            this.contributors = new HashMap<>();
         }
 
         protected void run() throws GitRepositoryException {

@@ -54,10 +54,10 @@ public class MailMap {
      */
     public MailMap() {
         this.exists = false;
-        this.mailToMailMap = new HashMap<String, String>();
-        this.mailToNameMap = new HashMap<String, String>();
-        this.mailToNameAndMailMap = new HashMap<String, Map.Entry<String, String>>();
-        this.nameAndMailToNameAndMailMap = new HashMap<Map.Entry<String, String>, Map.Entry<String, String>>();
+        this.mailToMailMap = new HashMap<>();
+        this.mailToNameMap = new HashMap<>();
+        this.mailToNameAndMailMap = new HashMap<>();
+        this.nameAndMailToNameAndMailMap = new HashMap<>();
     }
 
     /**
@@ -89,7 +89,7 @@ public class MailMap {
             return this.mailToNameAndMailMap.get(mail).getValue();
         }
 
-        Map.Entry<String, String> nameAndMail = new AbstractMap.SimpleEntry<String, String>(name, mail);
+        Map.Entry<String, String> nameAndMail = new AbstractMap.SimpleEntry<>(name, mail);
         if (this.nameAndMailToNameAndMailMap.containsKey(nameAndMail)) {
             return this.nameAndMailToNameAndMailMap.get(nameAndMail).getValue();
         }
@@ -113,7 +113,7 @@ public class MailMap {
             return this.mailToNameAndMailMap.get(mail).getKey();
         }
 
-        Map.Entry<String, String> nameAndMail = new AbstractMap.SimpleEntry<String, String>(name, mail);
+        Map.Entry<String, String> nameAndMail = new AbstractMap.SimpleEntry<>(name, mail);
         if (this.nameAndMailToNameAndMailMap.containsKey(nameAndMail)) {
             return this.nameAndMailToNameAndMailMap.get(nameAndMail).getKey();
         }
@@ -220,15 +220,15 @@ public class MailMap {
 
             Matcher lineMatcher = NAME_AND_MAIL_TO_NAME_AND_MAIL_PATTERN.matcher(line);
             if (lineMatcher.matches()) {
-                Map.Entry<String, String> properNameAndMail = new AbstractMap.SimpleEntry<String, String>(lineMatcher.group(1), lineMatcher.group(2));
-                Map.Entry<String, String> commitNameAndMail = new AbstractMap.SimpleEntry<String, String>(lineMatcher.group(3), lineMatcher.group(4));
+                Map.Entry<String, String> properNameAndMail = new AbstractMap.SimpleEntry<>(lineMatcher.group(1), lineMatcher.group(2));
+                Map.Entry<String, String> commitNameAndMail = new AbstractMap.SimpleEntry<>(lineMatcher.group(3), lineMatcher.group(4));
                 this.nameAndMailToNameAndMailMap.put(commitNameAndMail, properNameAndMail);
                 continue;
             }
 
             lineMatcher = MAIL_TO_NAME_AND_MAIL_PATTERN.matcher(line);
             if (lineMatcher.matches()) {
-                Map.Entry<String, String> properNameAndMail = new AbstractMap.SimpleEntry<String, String>(lineMatcher.group(1), lineMatcher.group(2));
+                Map.Entry<String, String> properNameAndMail = new AbstractMap.SimpleEntry<>(lineMatcher.group(1), lineMatcher.group(2));
                 this.mailToNameAndMailMap.put(lineMatcher.group(3), properNameAndMail);
                 continue;
             }

@@ -23,63 +23,63 @@ public interface GitCommit {
      *
      * @return The author date of this commit
      */
-    public Date getAuthorDate();
+    Date getAuthorDate();
 
     /**
      * Returns the email address of the author of this commit
      *
      * @return The commit author's email address
      */
-    public String getAuthorEmailAddress();
+    String getAuthorEmailAddress();
 
     /**
      * Returns the name of the author of this commit
      *
      * @return The commit author's name
      */
-    public String getAuthorName();
+    String getAuthorName();
 
     /**
      * Returns the timezone in which this commit has been authored
      *
      * @return The author timezone of this commit
      */
-    public TimeZone getAuthorTimeZone();
+    TimeZone getAuthorTimeZone();
 
     /**
      * Returns the date when this commit has been committed
      *
      * @return The committer date of this commit
      */
-    public Date getCommitterDate();
+    Date getCommitterDate();
 
     /**
      * Returns the email address of the committer
      *
      * @return The committer's email address
      */
-    public String getCommitterEmailAddress();
+    String getCommitterEmailAddress();
 
     /**
      * Returns the name of the committer
      *
      * @return The committer's name
      */
-    public String getCommitterName();
+    String getCommitterName();
 
     /**
      * Returns the timezone in which this commit has been committed
      *
      * @return The committer timezone of this commit
      */
-    public TimeZone getCommitterTimeZone();
+    TimeZone getCommitterTimeZone();
 
     /**
      * Returns the SHA hash ID of this commit
      *
      * @return The SHA ID of this commit
      */
-    public String getId();
+    String getId();
 
     /**
      * Returns the message of this commit
@@ -95,6 +95,6 @@ public interface GitCommit {
      *
      * @return The message subject of this commit
      */
-    public String getMessageSubject();
+    String getMessageSubject();
 
 }

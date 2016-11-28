@@ -56,7 +56,7 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
         this.mojo.tagFormat    = "\\nVersion %s – %s\\n";
         this.mojo.skipCommitsMatching  = null;
 
-        this.mockCommits = new ArrayList<GitCommit>();
+        this.mockCommits = new ArrayList<>();
         this.mockCommits.add(mockCommit("598a75596868dec45f8e6a808a07d533bc0184f0", "8th commit"));
         this.mockCommits.add(mockCommit("6727d8c671ce9022047940ebb6568096b4362f90", "7th commit"));
         this.mockCommits.add(mockCommit("06cee865ab7f006a58be39f1d46f01dcb1880105", "6th commit"));
@@ -67,7 +67,7 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
         this.mockCommits.add(mockCommit("e82314841e1d990eeb33878cae55dadc8a11bf68", "1st commit"));
         this.mockCommits.add(mockCommit("f82314841e1d990eeb33878cae55dadc8a11bf61", "[maven-jgitflow]"));
 
-        HashMap<String, GitTag> tags = new HashMap<String, GitTag>();
+        HashMap<String, GitTag> tags = new HashMap<>();
         GitTag tag1 = mock(GitTag.class);
         when(tag1.getDate()).thenReturn(new Date(1162580880000L));
         when(tag1.getName()).thenReturn("1.0.0");

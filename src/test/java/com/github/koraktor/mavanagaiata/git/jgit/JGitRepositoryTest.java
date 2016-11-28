@@ -247,12 +247,12 @@ public class JGitRepositoryTest {
 
         JGitRepository repo = spy(this.repository);
 
-        Map<String, RevTag> rawTags = new HashMap<String, RevTag>();
+        Map<String, RevTag> rawTags = new HashMap<>();
         RevTag rawTag = this.createTag("2.0.0", head.getName());
         rawTags.put(head.getName(), rawTag);
         doReturn(rawTags).when(repo).getRawTags();
 
-        Map<String, GitTag> tags = new HashMap<String, GitTag>();
+        Map<String, GitTag> tags = new HashMap<>();
         tags.put(head.getName(), new JGitTag(rawTag));
         doReturn(tags).when(repo).getTags();
 
@@ -279,12 +279,12 @@ public class JGitRepositoryTest {
 
         JGitRepository repo = spy(this.repository);
 
-        Map<String, RevTag> rawTags = new HashMap<String, RevTag>();
+        Map<String, RevTag> rawTags = new HashMap<>();
         RevTag rawTag = this.createTag("2.0.0", head_2.getName());
         rawTags.put(head_2.getName(), rawTag);
         doReturn(rawTags).when(repo).getRawTags();
 
-        Map<String, GitTag> tags = new HashMap<String, GitTag>();
+        Map<String, GitTag> tags = new HashMap<>();
         tags.put(head_2.getName(), new JGitTag(rawTag));
         doReturn(tags).when(repo).getTags();
 
@@ -320,14 +320,14 @@ public class JGitRepositoryTest {
 
         JGitRepository repo = spy(this.repository);
 
-        Map<String, RevTag> rawTags = new HashMap<String, RevTag>();
+        Map<String, RevTag> rawTags = new HashMap<>();
         RevTag rawTagA1 = this.createTag("a1", head_a1.getName());
         RevTag rawTagB2 = this.createTag("b2", head_b2.getName());
         rawTags.put(head_a1.getName(), rawTagA1);
         rawTags.put(head_b2.getName(), rawTagB2);
         doReturn(rawTags).when(repo).getRawTags();
 
-        Map<String, GitTag> tags = new HashMap<String, GitTag>();
+        Map<String, GitTag> tags = new HashMap<>();
         tags.put(head_a1.getName(), new JGitTag(rawTagA1));
         tags.put(head_b2.getName(), new JGitTag(rawTagB2));
         doReturn(tags).when(repo).getTags();
@@ -368,14 +368,14 @@ public class JGitRepositoryTest {
 
         JGitRepository repo = spy(this.repository);
 
-        Map<String, RevTag> rawTags = new HashMap<String, RevTag>();
+        Map<String, RevTag> rawTags = new HashMap<>();
         RevTag rawTagA2 = this.createTag("a2", head_a2.getName());
         RevTag rawTagB1 = this.createTag("b1", head_b1.getName());
         rawTags.put(head_a2.getName(), rawTagA2);
         rawTags.put(head_b1.getName(), rawTagB1);
         doReturn(rawTags).when(repo).getRawTags();
 
-        Map<String, GitTag> tags = new HashMap<String, GitTag>();
+        Map<String, GitTag> tags = new HashMap<>();
         tags.put(head_a2.getName(), new JGitTag(rawTagA2));
         tags.put(head_b1.getName(), new JGitTag(rawTagB1));
         doReturn(tags).when(repo).getTags();
@@ -520,7 +520,7 @@ public class JGitRepositoryTest {
 
     @Test
     public void testGetTags() throws Exception {
-        Map<String, RevTag> rawTags = new HashMap<String, RevTag>();
+        Map<String, RevTag> rawTags = new HashMap<>();
         RevTag rawTag1 = this.createTag();
         rawTags.put("1.0.0", rawTag1);
         RevTag rawTag2 = this.createTag();
@@ -529,7 +529,7 @@ public class JGitRepositoryTest {
         JGitRepository repo = spy(this.repository);
         doReturn(rawTags).when(repo).getRawTags();
 
-        Map<String, GitTag> tags = new HashMap<String, GitTag>();
+        Map<String, GitTag> tags = new HashMap<>();
         JGitTag tag1 = new JGitTag(rawTag1);
         tags.put("1.0.0", tag1);
         JGitTag tag2 = new JGitTag(rawTag2);
@@ -541,7 +541,7 @@ public class JGitRepositoryTest {
     @Test
     public void testIsDirty() throws Exception {
         IndexDiff indexDiff = this.mockIndexDiff();
-        HashSet<String> untracked = new HashSet<String>();
+        HashSet<String> untracked = new HashSet<>();
         untracked.add("somefile");
         when(indexDiff.getUntracked()).thenReturn(untracked);
 
@@ -553,7 +553,7 @@ public class JGitRepositoryTest {
     @Test
     public void testIsDirtyIgnoreUntracked() throws Exception {
         IndexDiff indexDiff = this.mockIndexDiff();
-        HashSet<String> added = new HashSet<String>();
+        HashSet<String> added = new HashSet<>();
         added.add("somefile");
         when(indexDiff.getAdded()).thenReturn(added);
 
@@ -596,7 +596,7 @@ public class JGitRepositoryTest {
         RevWalk revWalk = mock(RevWalk.class);
         whenNew(RevWalk.class).withArguments(this.repo).thenReturn(revWalk);
 
-        Map<String, Ref> tagRefs = new HashMap<String, Ref>();
+        Map<String, Ref> tagRefs = new HashMap<>();
         Ref tagRef1 = mock(Ref.class);
         Ref tagRef2 = mock(Ref.class);
         tagRefs.put("1.0.0", tagRef1);
@@ -614,7 +614,7 @@ public class JGitRepositoryTest {
         when(revWalk.parseTag(tag2)).thenReturn(tag2);
         when(revWalk.peel(tag2)).thenReturn(commit2);
 
-        Map<String, RevTag> tags = new HashMap<String, RevTag>();
+        Map<String, RevTag> tags = new HashMap<>();
         tags.put(commit1.getName(), tag1);
         tags.put(commit2.getName(), tag2);
 

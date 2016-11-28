@@ -36,8 +36,8 @@ public class MailMapTest {
     public void testGetCanonicalMail() {
         MailMap mailMap = new MailMap();
         mailMap.mailToMailMap.put("oldmail@example.com", "newmail@example.com");
-        mailMap.mailToNameAndMailMap.put("oldmail2@example.com", new AbstractMap.SimpleEntry<String, String>("Test", "newmail2@example.com"));
-        mailMap.nameAndMailToNameAndMailMap.put(new AbstractMap.SimpleEntry<String, String>("Test", "oldmail3@example.com"), new AbstractMap.SimpleEntry<String, String>("Test", "newmail3@example.com"));
+        mailMap.mailToNameAndMailMap.put("oldmail2@example.com", new AbstractMap.SimpleEntry<>("Test", "newmail2@example.com"));
+        mailMap.nameAndMailToNameAndMailMap.put(new AbstractMap.SimpleEntry<>("Test", "oldmail3@example.com"), new AbstractMap.SimpleEntry<>("Test", "newmail3@example.com"));
 
         assertThat(mailMap.getCanonicalMail("Test", "oldmail@example.com"), is(equalTo("newmail@example.com")));
         assertThat(mailMap.getCanonicalMail("Test", "oldmail2@example.com"), is(equalTo("newmail2@example.com")));
@@ -49,8 +49,8 @@ public class MailMapTest {
     public void testGetCanonicalName() {
         MailMap mailMap = new MailMap();
         mailMap.mailToNameMap.put("mail1@example.com", "Test 1");
-        mailMap.mailToNameAndMailMap.put("mail2@example.com", new AbstractMap.SimpleEntry<String, String>("Test 2", "mail@example.com"));
-        mailMap.nameAndMailToNameAndMailMap.put(new AbstractMap.SimpleEntry<String, String>("Test", "mail3@example.com"), new AbstractMap.SimpleEntry<String, String>("Test 3", "mail@example.com"));
+        mailMap.mailToNameAndMailMap.put("mail2@example.com", new AbstractMap.SimpleEntry<>("Test 2", "mail@example.com"));
+        mailMap.nameAndMailToNameAndMailMap.put(new AbstractMap.SimpleEntry<>("Test", "mail3@example.com"), new AbstractMap.SimpleEntry<>("Test 3", "mail@example.com"));
 
         assertThat(mailMap.getCanonicalName("Test", "mail1@example.com"), is(equalTo("Test 1")));
         assertThat(mailMap.getCanonicalName("Test", "mail2@example.com"), is(equalTo("Test 2")));
@@ -124,9 +124,9 @@ public class MailMapTest {
         assertThat(mailMap.mailToNameMap.size(), is(1));
         assertThat(mailMap.mailToNameMap.get("realmail@example.com"), is(equalTo("Real Name")));
         assertThat(mailMap.mailToNameAndMailMap.size(), is(1));
-        assertThat(mailMap.mailToNameAndMailMap.get("oldmail@example.com"), is(equalTo((Map.Entry<String, String>) new AbstractMap.SimpleEntry<String, String>("Real Name", "newmail@example.com"))));
+        assertThat(mailMap.mailToNameAndMailMap.get("oldmail@example.com"), is(equalTo((Map.Entry<String, String>) new AbstractMap.SimpleEntry<>("Real Name", "newmail@example.com"))));
         assertThat(mailMap.nameAndMailToNameAndMailMap.size(), is(1));
-        assertThat(mailMap.nameAndMailToNameAndMailMap.get(new AbstractMap.SimpleEntry<String, String>("Fake Name", "oldmail@example.com")), is(equalTo((Map.Entry<String, String>) new AbstractMap.SimpleEntry<String, String>("Real Name", "newmail@example.com"))));
+        assertThat(mailMap.nameAndMailToNameAndMailMap.get(new AbstractMap.SimpleEntry<>("Fake Name", "oldmail@example.com")), is(equalTo((Map.Entry<String, String>) new AbstractMap.SimpleEntry<>("Real Name", "newmail@example.com"))));
     }
 
 }

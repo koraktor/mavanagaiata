@@ -28,12 +28,12 @@ public interface GitRepository {
      *
      * @throws GitRepositoryException if the repository is not accessible.
      */
-    public void check() throws GitRepositoryException;
+    void check() throws GitRepositoryException;
 
     /**
      * Closes any resources that are needed to access this repository
      */
-    public void close();
+    void close();
 
     /**
      * Describes the current Git commit like {@code git describe} does
@@ -41,7 +41,7 @@ public interface GitRepository {
      * @return The description of the current {@code HEAD} commit
      * @throws GitRepositoryException if the description cannot be created
      */
-    public GitTagDescription describe() throws GitRepositoryException;
+    GitTagDescription describe() throws GitRepositoryException;
 
     /**
      * Returns the abbreviated commit SHA ID of the current Git commit
@@ -50,7 +50,7 @@ public interface GitRepository {
      * @throws GitRepositoryException if the abbreviated commit ID cannot be
      *         determined
      */
-    public String getAbbreviatedCommitId() throws GitRepositoryException;
+    String getAbbreviatedCommitId() throws GitRepositoryException;
 
     /**
      * Returns the abbreviated commit SHA ID of the given Git commit
@@ -60,7 +60,7 @@ public interface GitRepository {
      * @throws GitRepositoryException if the abbreviated commit ID cannot be
      *         determined
      */
-    public String getAbbreviatedCommitId(GitCommit commit)
+    String getAbbreviatedCommitId(GitCommit commit)
         throws GitRepositoryException;
 
     /**
@@ -70,7 +70,7 @@ public interface GitRepository {
      * @throws GitRepositoryException if the current branch cannot be
      *         determined
      */
-    public String getBranch() throws GitRepositoryException;
+    String getBranch() throws GitRepositoryException;
 
     /**
      * Returns the current {@code HEAD} commit of the Git repository
@@ -79,7 +79,7 @@ public interface GitRepository {
      * @throws GitRepositoryException if the current commit cannot be
      *         determined
      */
-    public GitCommit getHeadCommit() throws GitRepositoryException;
+    GitCommit getHeadCommit() throws GitRepositoryException;
 
     /**
      * Returns a {@code MailMap} object that holds information from Git's
@@ -89,7 +89,7 @@ public interface GitRepository {
      * @throws GitRepositoryException if the {@code .mailmap} file cannot be
      *         read or parsed
      */
-    public MailMap getMailMap() throws GitRepositoryException;
+    MailMap getMailMap() throws GitRepositoryException;
 
     /**
      * Returns a map of tags available in this repository
@@ -104,14 +104,14 @@ public interface GitRepository {
      * @throws GitRepositoryException if an error occurs while determining the
      *         tags in this repository
      */
-    public Map<String, GitTag> getTags() throws GitRepositoryException;
+    Map<String, GitTag> getTags() throws GitRepositoryException;
 
     /**
      * Returns the worktree of the repository
      *
      * @return The worktree of the repository
      */
-    public File getWorkTree();
+    File getWorkTree();
 
     /**
      * Returns whether the worktree of the repository is in a clean state
@@ -123,7 +123,7 @@ public interface GitRepository {
      * @throws GitRepositoryException if an error occurs while checking the
      *         worktree state
      */
-    public boolean isDirty(boolean ignoreUntracked) throws GitRepositoryException;
+    boolean isDirty(boolean ignoreUntracked) throws GitRepositoryException;
 
     /**
      * Returns whether this repository is currently on an “unborn” branch
@@ -143,7 +143,7 @@ public interface GitRepository {
      *
      * @param headRef The ref to use as {@code HEAD}
      */
-    public void setHeadRef(String headRef);
+    void setHeadRef(String headRef);
 
     /**
      * Runs the given action for all commits reachable from the current
@@ -153,7 +153,7 @@ public interface GitRepository {
      * @throws GitRepositoryException if an error occurs during walking through
      *         the commits
      */
-    public void walkCommits(CommitWalkAction action)
+    void walkCommits(CommitWalkAction action)
         throws GitRepositoryException;
 
 }

@@ -100,7 +100,7 @@ public class JGitRepository extends AbstractGitRepository {
             throw new GitRepositoryException("Could not initialize repository", e);
         }
 
-        this.commitCache = new HashMap<ObjectId, RevCommit>();
+        commitCache = new HashMap<>();
     }
 
     @Override
@@ -129,16 +129,15 @@ public class JGitRepository extends AbstractGitRepository {
 
     @Override
     public GitTagDescription describe() throws GitRepositoryException {
-        final Map<RevCommit, RevTag> tagCommits = new HashMap<RevCommit, RevTag>();
+        final Map<RevCommit, RevTag> tagCommits = new HashMap<>();
         for (RevTag tag : this.getRawTags().values()) {
             tagCommits.put((RevCommit)tag.getObject(), tag);
         }
 
         final RevFlagSet allFlags = new RevFlagSet();
         final RevCommit start = this.getCommit(this.getHeadObject());
-        final RevWalk revWalk = this.getRevWalk();
 
-        try {
+        try (RevWalk revWalk = this.getRevWalk()) {
             //Check, if the start commit is a tag already
             if (tagCommits.containsKey(start)) {
                 GitTag tag = this.getTags().get(start.getId().getName());
@@ -168,8 +167,6 @@ public class JGitRepository extends AbstractGitRepository {
             return new GitTagDescription(this, this.getHeadCommit(), tag, bestCandidate.distance);
         } catch (Exception e) {
             throw new GitRepositoryException("Could not describe current commit.", e);
-        } finally {
-            revWalk.close();
         }
     }
 
@@ -187,7 +184,7 @@ public class JGitRepository extends AbstractGitRepository {
     private Collection<TagCandidate> findTagCandidates(RevWalk revWalk,
             Map<RevCommit,RevTag> tagCommits, RevFlagSet allFlags)
                     throws IOException {
-        final Collection<TagCandidate> candidates = new ArrayList<TagCandidate>();
+        final Collection<TagCandidate> candidates = new ArrayList<>();
         int distance = 0;
         RevCommit commit;
         while ((commit = revWalk.next()) != null) {
@@ -275,7 +272,7 @@ public class JGitRepository extends AbstractGitRepository {
     @Override
     public Map<String, GitTag> getTags()
             throws GitRepositoryException {
-        Map<String, GitTag> tags = new HashMap<String, GitTag>();
+        Map<String, GitTag> tags = new HashMap<>();
 
         for (Map.Entry<String, RevTag> tag : this.getRawTags().entrySet()) {
             tags.put(tag.getKey(), new JGitTag(tag.getValue()));
@@ -412,7 +409,7 @@ public class JGitRepository extends AbstractGitRepository {
             throws GitRepositoryException {
         RevWalk revWalk = this.getRevWalk();
         Map<String, Ref> tagRefs = this.repository.getTags();
-        Map<String, RevTag> tags = new HashMap<String, RevTag>();
+        Map<String, RevTag> tags = new HashMap<>();
 
         try {
             for (Map.Entry<String, Ref> tag : tagRefs.entrySet()) {
@@ -425,8 +422,6 @@ public class JGitRepository extends AbstractGitRepository {
                     tags.put(object.getName(), revTag);
                 } catch (IncorrectObjectTypeException ignored) {}
             }
-        } catch (MissingObjectException e) {
-            throw new GitRepositoryException("The tags could not be resolved.", e);
         } catch (IOException e) {
             throw new GitRepositoryException("The tags could not be resolved.", e);
         }

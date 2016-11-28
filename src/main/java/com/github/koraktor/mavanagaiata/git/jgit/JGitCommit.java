@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012, Sebastian Staudt
+ * Copyright (c) 2012-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git.jgit;
@@ -50,11 +50,9 @@ public class JGitCommit implements GitCommit {
      */
     @Override
     public boolean equals(Object object) {
-        if (object instanceof JGitCommit) {
-            return this.commit.equals(((JGitCommit) object).commit);
-        }
+        return object instanceof JGitCommit &&
+                commit.equals(((JGitCommit) object).commit);
 
-        return false;
     }
 
     public Date getAuthorDate() {

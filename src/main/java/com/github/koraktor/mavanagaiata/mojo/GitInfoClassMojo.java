@@ -136,7 +136,7 @@ public class GitInfoClassMojo extends AbstractGitMojo {
                 }
             };
 
-            List<FileUtils.FilterWrapper> filterWrappers = new ArrayList<FileUtils.FilterWrapper>();
+            List<FileUtils.FilterWrapper> filterWrappers = new ArrayList<>();
             filterWrappers.add(filterWrapper);
 
             File classDirectory = new File(this.outputDirectory, this.packageName.replace('.', '/'));
@@ -186,7 +186,7 @@ public class GitInfoClassMojo extends AbstractGitMojo {
         }
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
-        HashMap<String, String> values = new HashMap<String, String>();
+        HashMap<String, String> values = new HashMap<>();
         values.put("BRANCH", branch);
         values.put("CLASS_NAME", this.className);
         values.put("COMMIT_ABBREV", abbrevId);
