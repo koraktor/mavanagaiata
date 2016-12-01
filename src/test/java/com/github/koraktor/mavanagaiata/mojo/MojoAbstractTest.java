@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2013, Sebastian Staudt
+ * Copyright (c) 2011-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -43,12 +43,12 @@ public abstract class MojoAbstractTest<T extends AbstractGitMojo> {
 
     protected void testError(String errorMessage) {
         try {
-            this.mojo.repository = mock(JGitRepository.class, new Answer() {
+            repository = mock(JGitRepository.class, new Answer() {
                 public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                     throw new GitRepositoryException("");
                 }
             });
-            this.mojo.run();
+            this.mojo.run(repository);
             fail("No exception thrown.");
         } catch(Exception e) {
             assertThat(e, is(instanceOf(MavanagaiataMojoException.class)));
@@ -80,7 +80,6 @@ public abstract class MojoAbstractTest<T extends AbstractGitMojo> {
         this.mojo.dirtyIgnoreUntracked  = false;
         this.mojo.head                  = "HEAD";
         this.mojo.project               = project;
-        this.mojo.repository            = this.repository;
     }
 
     protected void assertProperty(Object value, String key) {

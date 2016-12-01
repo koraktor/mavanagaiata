@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2014, Sebastian Staudt
+ * Copyright (c) 2012-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -27,6 +27,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.shared.filtering.MavenFileFilter;
 import org.apache.maven.shared.filtering.MavenFilteringException;
+
+import com.github.koraktor.mavanagaiata.git.GitRepository;
 import org.codehaus.plexus.interpolation.InterpolatorFilterReader;
 import org.codehaus.plexus.interpolation.MapBasedValueSource;
 import org.codehaus.plexus.interpolation.RegexBasedInterpolator;
@@ -93,7 +95,7 @@ public class GitInfoClassMojo extends AbstractGitMojo {
      * @throws MavanagaiataMojoException if the info class cannot be generated
      */
     @Override
-    public void run() throws MavanagaiataMojoException {
+    public void run(GitRepository repository) throws MavanagaiataMojoException {
         this.addProperty("info-class.className", this.className);
         this.addProperty("info-class.packageName", this.packageName);
 
@@ -125,7 +127,7 @@ public class GitInfoClassMojo extends AbstractGitMojo {
             IOUtils.copy(templateStream, tempSourceFileStream);
             tempSourceFileStream.close();
 
-            final MapBasedValueSource valueSource = this.getValueSource();
+            final MapBasedValueSource valueSource = getValueSource(repository);
             FileUtils.FilterWrapper filterWrapper = new FileUtils.FilterWrapper() {
                 @Override
                 public Reader getReader(Reader fileReader) {
@@ -165,19 +167,17 @@ public class GitInfoClassMojo extends AbstractGitMojo {
         }
 
         this.project.addCompileSourceRoot(this.outputDirectory.getAbsolutePath());
-
-        this.cleanup();
     }
 
-    protected MapBasedValueSource getValueSource()
+    protected MapBasedValueSource getValueSource(GitRepository repository)
             throws GitRepositoryException {
-        GitTagDescription description = this.repository.describe();
+        GitTagDescription description = repository.describe();
 
-        String abbrevId  = this.repository.getAbbreviatedCommitId();
-        String shaId     = this.repository.getHeadCommit().getId();
+        String abbrevId  = repository.getAbbreviatedCommitId();
+        String shaId     = repository.getHeadCommit().getId();
         String describe  = description.toString();
-        boolean isDirty  = this.repository.isDirty(this.dirtyIgnoreUntracked);
-        String branch    = this.repository.getBranch();
+        boolean isDirty  = repository.isDirty(this.dirtyIgnoreUntracked);
+        String branch    = repository.getBranch();
 
         if (isDirty && this.dirtyFlag != null) {
             abbrevId += this.dirtyFlag;

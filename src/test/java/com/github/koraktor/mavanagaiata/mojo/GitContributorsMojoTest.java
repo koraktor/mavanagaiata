@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2014, Sebastian Staudt
+ * Copyright (c) 2011-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -37,10 +37,10 @@ public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContri
         this.mojo.showEmail         = false;
         this.mojo.sort              = "count";
 
-        doAnswer(new Answer() {
+        doAnswer(new Answer<GitContributorsMojo.ContributorsWalkAction>() {
             long dateCounter = new Date().getTime();
 
-            public Object answer(InvocationOnMock invocation) throws Throwable {
+            public GitContributorsMojo.ContributorsWalkAction answer(InvocationOnMock invocation) throws Throwable {
                 GitContributorsMojo.ContributorsWalkAction walkAction = ((GitContributorsMojo.ContributorsWalkAction) invocation.getArguments()[0]);
                 walkAction.execute(this.mockCommit("Sebastian Staudt", "koraktor@gmail.com"));
                 walkAction.execute(this.mockCommit("John Doe", "john.doe@example.com"));
@@ -48,7 +48,7 @@ public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContri
                 walkAction.execute(this.mockCommit("Joe Average", "joe.average@example.com"));
                 walkAction.execute(this.mockCommit("Sebastian Staudt", "koraktor@gmail.com"));
                 walkAction.execute(this.mockCommit("Sebastian Staudt", "koraktor@gmail.com"));
-                return null;
+                return walkAction;
             }
 
             private GitCommit mockCommit(String authorName, String authorEmail) {
@@ -97,7 +97,7 @@ public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContri
         this.mojo.showEmail         = true;
         this.mojo.sort              = "count";
         this.mojo.initConfiguration();
-        this.mojo.run();
+        mojo.generateOutput(repository, printStream);
 
         this.assertOutputLine("Authors");
         this.assertOutputLine("-------");
@@ -113,7 +113,7 @@ public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContri
     public void testSortCount() throws Exception {
         this.mojo.sort = "count";
         this.mojo.initConfiguration();
-        this.mojo.run();
+        mojo.generateOutput(repository, printStream);
 
         this.assertOutputLine("Contributors");
         this.assertOutputLine("============");
@@ -129,7 +129,7 @@ public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContri
     public void testSortDate() throws Exception {
         this.mojo.sort = "date";
         this.mojo.initConfiguration();
-        this.mojo.run();
+        mojo.generateOutput(repository, printStream);
 
         this.assertOutputLine("Contributors");
         this.assertOutputLine("============");
@@ -145,7 +145,7 @@ public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContri
     public void testSortName() throws Exception {
         this.mojo.sort = "name";
         this.mojo.initConfiguration();
-        this.mojo.run();
+        mojo.generateOutput(repository, printStream);
 
         this.assertOutputLine("Contributors");
         this.assertOutputLine("============");

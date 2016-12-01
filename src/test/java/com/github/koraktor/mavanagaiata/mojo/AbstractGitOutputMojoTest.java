@@ -2,19 +2,20 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2013, Sebastian Staudt
+ * Copyright (c) 2012-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.github.koraktor.mavanagaiata.git.GitRepository;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -24,9 +25,8 @@ import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
@@ -34,42 +34,24 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @PrepareForTest(AbstractGitOutputMojo.class)
 public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> {
 
+    GenericAbstractGitOutputMojo genericMojo() {
+        return (GenericAbstractGitOutputMojo) mojo;
+    }
+
     @Before
     @Override
     public void setup() {
-        this.mojo = new GenericAbstractGitOutputMojo();
-        this.mojo.dateFormat = "MM/dd/yyyy hh:mm a Z";
-    }
-
-    @Test
-    public void testCleanupOutputFile() {
-        this.mojo.outputStream = mock(PrintStream.class);
-        File outputFile = mock(File.class);
-
-        this.mojo.setOutputFile(outputFile);
-        this.mojo.cleanup();
-
-        verify(this.mojo.outputStream).flush();
-        verify(this.mojo.outputStream).close();
-    }
-
-    @Test
-    public void testCleanupStdout() {
-        this.mojo.outputStream = mock(PrintStream.class);
-
-        this.mojo.setOutputFile(null);
-        this.mojo.cleanup();
-
-        verify(this.mojo.outputStream).flush();
-        verifyNoMoreInteractions(this.mojo.outputStream);
+        mojo = new GenericAbstractGitOutputMojo();
+        mojo.dateFormat = "MM/dd/yyyy hh:mm a Z";
+        mojo.footer = "";
     }
 
     @Test
     public void testInitStdout() throws Exception {
-        this.mojo.setOutputFile(null);
-        this.mojo.initOutputStream();
+        mojo.setOutputFile(null);
+        mojo.run(repository);
 
-        assertThat(this.mojo.outputStream, is(System.out));
+        assertThat(genericMojo().printStream, is(System.out));
     }
 
     @Test
@@ -84,9 +66,9 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
 
         this.mojo.encoding = "someencoding";
         this.mojo.setOutputFile(outputFile);
-        this.mojo.initOutputStream();
+        this.mojo.run(repository);
 
-        assertThat(this.mojo.outputStream, is(printStream));
+        assertThat(genericMojo().printStream, is(printStream));
     }
 
     @Test
@@ -99,62 +81,65 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
         whenNew(PrintStream.class).withArguments(outputFile, "someencoding")
             .thenReturn(printStream);
 
-        this.mojo.encoding = "someencoding";
-        this.mojo.setOutputFile(outputFile);
-        this.mojo.initOutputStream();
+        mojo.encoding = "someencoding";
+        mojo.setOutputFile(outputFile);
+        mojo.run(repository);
 
-        assertThat(this.mojo.outputStream, is(printStream));
+        assertThat(((GenericAbstractGitOutputMojo) mojo).printStream, is(printStream));
 
         verify(parentFile).mkdirs();
     }
 
     @Test
     public void testInitOutputFileException() throws Exception {
-        IOException ioException = mock(IOException.class);
+        FileNotFoundException fileNotFoundException = mock(FileNotFoundException.class);
         File outputFile = mock(File.class);
         when(outputFile.getAbsolutePath()).thenReturn("/some/file");
         File parentFile = mock(File.class);
         when(outputFile.getParentFile()).thenReturn(parentFile);
         when(parentFile.exists()).thenReturn(true);
         whenNew(PrintStream.class).withArguments(outputFile, "someencoding")
-            .thenThrow(ioException);
+            .thenThrow(fileNotFoundException);
 
         this.mojo.encoding = "someencoding";
         this.mojo.setOutputFile(outputFile);
 
         try {
-            this.mojo.initOutputStream();
+            mojo.run(repository);
             fail("No exception thrown.");
         } catch (Exception e) {
             assertThat(e, is(instanceOf(MavanagaiataMojoException.class)));
             assertThat(e.getMessage(), is(equalTo("Could not open output file \"/some/file\" for writing.")));
-            assertThat(e.getCause(), is((Throwable) ioException));
+            assertThat(e.getCause(), is((Throwable) fileNotFoundException));
         }
     }
 
     @Test
-    public void testInsertFooter() {
-        this.mojo.outputStream = mock(PrintStream.class);
+    public void testGenerateOutputWithFooter() throws MavanagaiataMojoException {
+        PrintStream printStream = mock(PrintStream.class);
 
         this.mojo.footer = "Test footer";
-        this.mojo.insertFooter();
+        this.mojo.generateOutput(repository, printStream);
 
-        verify(this.mojo.outputStream).println("Test footer");
+        verify(printStream).println("Test footer");
+        verify(printStream).flush();
     }
 
     @Test
-    public void testInsertEmptyFooter() {
-        this.mojo.outputStream = mock(PrintStream.class);
+    public void testGenerateOutputWithoutFooter() throws MavanagaiataMojoException {
+        PrintStream printStream = mock(PrintStream.class);
 
-        this.mojo.footer = "";
-        this.mojo.insertFooter();
+        mojo.generateOutput(repository, printStream);
 
-        verifyZeroInteractions(this.mojo.outputStream);
+        verify(printStream, never()).println();
+        verify(printStream).flush();
     }
 
     class GenericAbstractGitOutputMojo extends AbstractGitOutputMojo {
 
-        protected File outputFile;
+        File outputFile;
+
+        PrintStream printStream;
 
         public File getOutputFile() {
             return this.outputFile;
@@ -164,7 +149,10 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
             this.outputFile = outputFile;
         }
 
-        protected void run() throws MavanagaiataMojoException {}
+        protected void writeOutput(GitRepository repository, PrintStream printStream)
+                throws MavanagaiataMojoException {
+            this.printStream = printStream;
+        }
 
     }
 

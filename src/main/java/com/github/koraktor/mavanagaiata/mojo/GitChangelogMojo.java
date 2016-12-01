@@ -9,6 +9,7 @@
 package com.github.koraktor.mavanagaiata.mojo;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
 
@@ -17,6 +18,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
+import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 
@@ -147,22 +149,21 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      * @throws MavanagaiataMojoException if retrieving information from the Git
      *         repository fails
      */
-    public void run() throws MavanagaiataMojoException {
+    @Override
+    protected void writeOutput(GitRepository repository, PrintStream printStream)
+            throws MavanagaiataMojoException {
         try {
-            this.outputStream.println(this.header);
+            printStream.println(header);
 
-            ChangelogWalkAction walkAction = new ChangelogWalkAction();
-            this.repository.walkCommits(walkAction);
+            ChangelogWalkAction result = repository.walkCommits(new ChangelogWalkAction(printStream));
 
-            if (this.createGitHubLinks) {
-                if (walkAction.getCurrentTag() == null) {
-                    this.insertGitHubLink(this.repository.getBranch(), null, true);
+            if (createGitHubLinks) {
+                if (result.getLatestTag() == null) {
+                    insertGitHubLink(printStream, repository.getBranch(), null, true);
                 } else {
-                    this.insertGitHubLink(walkAction.getCurrentTag(), (GitTag) null);
+                    insertGitHubLink(printStream, result.getLatestTag(), (GitTag) null);
                 }
             }
-
-            this.insertFooter();
         } catch (GitRepositoryException e) {
             throw MavanagaiataMojoException.create("Unable to generate changelog from Git", e);
         }
@@ -183,7 +184,7 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      * @throws MavanagaiataMojoException if an error occurs while accessing the
      *         Git repository or the changelog file
      */
-    protected boolean init() throws MavanagaiataMojoException {
+    protected GitRepository init() throws MavanagaiataMojoException {
         this.initConfiguration();
 
         return super.init();
@@ -210,13 +211,15 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
         }
     }
 
-    protected void insertGitHubLink(GitTag lastTag, String branch) {
-        this.insertGitHubLink(lastTag.getName(), branch, true);
+    protected void insertGitHubLink(PrintStream printStream, GitTag lastTag,
+                                    String branch) {
+        this.insertGitHubLink(printStream, lastTag.getName(), branch, true);
     }
 
-    protected void insertGitHubLink(GitTag lastTag, GitTag currentTag) {
+    protected void insertGitHubLink(PrintStream printStream, GitTag lastTag,
+                                    GitTag currentTag) {
         String tagName = (currentTag == null) ? null : currentTag.getName();
-        this.insertGitHubLink(lastTag.getName(), tagName, false);
+        this.insertGitHubLink(printStream, lastTag.getName(), tagName, false);
     }
 
     /**
@@ -232,7 +235,8 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      * @param currentRef The current tag or branch in the changelog
      * @param isBranch Whether the link is points to a branch
      */
-    protected void insertGitHubLink(String lastRef, String currentRef, boolean isBranch) {
+    protected void insertGitHubLink(PrintStream printStream, String lastRef,
+                                    String currentRef, boolean isBranch) {
         String url = String.format("https://github.com/%s/%s/",
             this.gitHubUser,
             this.gitHubProject);
@@ -254,7 +258,7 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
             linkText = String.format(this.gitHubTagLinkFormat, tagName, url);
         }
 
-        this.outputStream.println(linkText);
+        printStream.println(linkText);
     }
 
     /**
@@ -276,12 +280,15 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
 
         private GitTag lastTag;
 
-        public ChangelogWalkAction() {
+        private final PrintStream printStream;
+
+        ChangelogWalkAction(PrintStream printStream) {
             this.dateFormatter = new SimpleDateFormat(dateFormat);
+            this.printStream = printStream;
         }
 
-        public GitTag getCurrentTag() {
-            return this.currentTag;
+        GitTag getLatestTag() {
+            return currentTag;
         }
 
         protected void run() throws GitRepositoryException {
@@ -294,9 +301,9 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
                 this.currentTag = repository.getTags().get(this.currentCommit.getId());
                 if (createGitHubLinks) {
                     if (this.lastTag == null) {
-                        insertGitHubLink(this.currentTag, repository.getBranch());
+                        insertGitHubLink(printStream, currentTag, repository.getBranch());
                     } else {
-                        insertGitHubLink(this.currentTag, this.lastTag);
+                        insertGitHubLink(printStream, currentTag, lastTag);
                     }
                 }
 
@@ -307,17 +314,17 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
                 if (this.firstCommit && tagLine.startsWith("\n")) {
                     tagLine = tagLine.replaceFirst("\n", "");
                 }
-                outputStream.println(tagLine);
+                printStream.println(tagLine);
 
                 if (skipTagged) {
                     this.firstCommit = false;
                     return;
                 }
             } else if (this.firstCommit) {
-                outputStream.println(String.format(branchFormat, repository.getBranch()));
+                printStream.println(String.format(branchFormat, repository.getBranch()));
             }
 
-            outputStream.println(commitPrefix + this.currentCommit.getMessageSubject());
+            printStream.println(commitPrefix + currentCommit.getMessageSubject());
             this.firstCommit = false;
         }
 

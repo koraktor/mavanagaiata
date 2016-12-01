@@ -138,15 +138,12 @@ abstract class AbstractGitMojo extends AbstractMojo {
     @Parameter(property = "mavanagaiata.propertyPrefixes")
     protected String[] propertyPrefixes = { "mavanagaiata", "mvngit" };
 
-    protected GitRepository repository;
-
     /**
      * Generic execution sequence for a Mavanagaiata mojo
      * <p>
      * Will initialize any needed resources, run the actual mojo code and
      * cleanup afterwards.
      *
-     * @see #cleanup
      * @see #init
      * @see #run
      * @throws MojoExecutionException if the mojo execution fails and
@@ -156,25 +153,20 @@ abstract class AbstractGitMojo extends AbstractMojo {
      */
     public final void execute()
             throws MojoExecutionException, MojoFailureException {
-        if (!this.skip) {
-            boolean init = false;
-            try {
-                init = this.init();
+        if (skip) {
+            return;
+        }
 
-                if (init) {
-                    this.run();
-                }
-            } catch (MavanagaiataMojoException e) {
-                if (this.failGracefully) {
-                    throw new MojoFailureException(e.getMessage(), e);
-                }
-
-                throw new MojoExecutionException(e.getMessage(), e);
-            } finally {
-                if (init) {
-                    this.cleanup();
-                }
+        try (GitRepository repository = init()) {
+            if (repository != null) {
+                run(repository);
             }
+        } catch (MavanagaiataMojoException e) {
+            if (failGracefully) {
+                throw new MojoFailureException(e.getMessage(), e);
+            }
+
+            throw new MojoExecutionException(e.getMessage(), e);
         }
     }
 
@@ -196,18 +188,6 @@ abstract class AbstractGitMojo extends AbstractMojo {
     }
 
     /**
-     * Closes the JGit repository object
-     *
-     * @see GitRepository#close
-     */
-    protected void cleanup() {
-        if (this.repository != null) {
-            this.repository.close();
-            this.repository = null;
-        }
-    }
-
-    /**
      * Generic initialization for all Mavanagaiata mojos
      * <p>
      * This will initialize the JGit repository instance for further usage by
@@ -216,21 +196,21 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * @return <code>false</code> if the execution should be skipped
      * @throws MavanagaiataMojoException if the repository cannot be initialized
      */
-    protected boolean init() throws MavanagaiataMojoException {
+    protected GitRepository init() throws MavanagaiataMojoException {
         try {
-            this.prepareParameters();
-            this.initRepository();
+            prepareParameters();
+            GitRepository repository = initRepository();
 
             if (repository.isOnUnbornBranch()) {
                 getLog().warn("Building from an unborn branch. Skipping…");
 
-                return false;
+                return null;
             }
 
-            return true;
+            return repository;
         } catch (GitRepositoryException e) {
             if (this.skipNoGit) {
-                return false;
+                return null;
             }
             throw MavanagaiataMojoException.create("Unable to initialize Git repository", e);
         }
@@ -243,10 +223,12 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * @throws GitRepositoryException if retrieving information from the Git
      *         repository fails
      */
-    protected void initRepository() throws GitRepositoryException {
-        this.repository = new JGitRepository(this.baseDir, this.gitDir);
-        this.repository.check();
-        this.repository.setHeadRef(this.head);
+    protected GitRepository initRepository() throws GitRepositoryException {
+        GitRepository repository = new JGitRepository(baseDir, gitDir);
+        repository.check();
+        repository.setHeadRef(head);
+
+        return repository;
     }
 
     /**
@@ -266,6 +248,6 @@ abstract class AbstractGitMojo extends AbstractMojo {
      *
      * @throws MavanagaiataMojoException if there is an error during execution
      */
-    protected abstract void run() throws MavanagaiataMojoException;
+    protected abstract void run(GitRepository repository) throws MavanagaiataMojoException;
 
 }

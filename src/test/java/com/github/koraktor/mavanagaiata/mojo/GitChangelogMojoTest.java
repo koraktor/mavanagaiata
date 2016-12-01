@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2014, Sebastian Staudt
+ * Copyright (c) 2011-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -81,13 +81,14 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
 
         when(this.repository.getBranch()).thenReturn("master");
         when(this.repository.getTags()).thenReturn(tags);
-        doAnswer(new Answer() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
+        doAnswer(new Answer<GitChangelogMojo.ChangelogWalkAction>() {
+            public GitChangelogMojo.ChangelogWalkAction answer(InvocationOnMock invocation) throws Throwable {
                 GitChangelogMojo.ChangelogWalkAction walkAction = ((GitChangelogMojo.ChangelogWalkAction) invocation.getArguments()[0]);
+                walkAction.setRepository(repository);
                 for (GitCommit commit : GitChangelogMojoTest.this.mockCommits) {
                     walkAction.execute(commit);
                 }
-                return null;
+                return walkAction;
             }
         }).when(this.repository).walkCommits(any(GitChangelogMojo.ChangelogWalkAction.class));
     }
@@ -137,7 +138,7 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
         this.mojo.header            = "History\\n-------\\n";
         this.mojo.tagFormat         = "\\nTag %s on %s\\n";
         this.mojo.initConfiguration();
-        this.mojo.run();
+        mojo.generateOutput(repository, printStream);
 
         this.assertOutputLine("History");
         this.assertOutputLine("-------");
@@ -184,8 +185,8 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
 
     @Test
     public void testResult() throws Exception {
-        this.mojo.initConfiguration();
-        this.mojo.run();
+        mojo.initConfiguration();
+        mojo.generateOutput(repository, printStream);
 
         this.assertOutputLine("Changelog");
         this.assertOutputLine("=========");
@@ -213,9 +214,9 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
 
     @Test
     public void testSkipCommits() throws Exception {
-        this.mojo.skipCommitsMatching = "\\[maven-jgitflow\\]";
-        this.mojo.initConfiguration();
-        this.mojo.run();
+        mojo.skipCommitsMatching = "\\[maven-jgitflow\\]";
+        mojo.initConfiguration();
+        mojo.generateOutput(repository, printStream);
 
         this.assertOutputLine("Changelog");
         this.assertOutputLine("=========");
@@ -244,8 +245,8 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
     public void testStartTagged() throws Exception {
         this.mockCommits = this.mockCommits.subList(2, this.mockCommits.size());
 
-        this.mojo.initConfiguration();
-        this.mojo.run();
+        mojo.initConfiguration();
+        mojo.generateOutput(repository, printStream);
 
         this.assertOutputLine("Changelog");
         this.assertOutputLine("=========");
@@ -268,9 +269,9 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
 
     @Test
     public void testSkipTagged() throws Exception {
-        this.mojo.skipTagged = true;
-        this.mojo.initConfiguration();
-        this.mojo.run();
+        mojo.skipTagged = true;
+        mojo.initConfiguration();
+        mojo.generateOutput(repository, printStream);
 
         this.assertOutputLine("Changelog");
         this.assertOutputLine("=========");
@@ -299,8 +300,8 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
         when(this.repository.getTags())
             .thenReturn(new HashMap<String, GitTag>());
 
-        this.mojo.initConfiguration();
-        this.mojo.run();
+        mojo.initConfiguration();
+        mojo.generateOutput(repository, printStream);
 
         this.assertOutputLine("Changelog");
         this.assertOutputLine("=========");

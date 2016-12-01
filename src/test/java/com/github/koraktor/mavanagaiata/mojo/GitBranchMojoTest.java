@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2012, Sebastian Staudt
+ * Copyright (c) 2011-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -20,11 +20,11 @@ public class GitBranchMojoTest extends MojoAbstractTest<GitBranchMojo> {
 
     @Test
     public void testResult() throws Exception {
-        when(this.repository.getBranch()).thenReturn("master");
+        when(repository.getBranch()).thenReturn("master");
 
-        this.mojo.run();
+        mojo.run(repository);
 
-        this.assertProperty("master", "branch");
+        assertProperty("master", "branch");
     }
 
 }

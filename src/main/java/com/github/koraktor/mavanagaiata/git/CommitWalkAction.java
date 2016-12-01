@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012, Sebastian Staudt
+ * Copyright (c) 2012-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
@@ -16,6 +16,8 @@ package com.github.koraktor.mavanagaiata.git;
 public abstract class CommitWalkAction {
 
     protected GitCommit currentCommit;
+
+    protected GitRepository repository;
 
     /**
      * Executes this action for the given commit
@@ -35,5 +37,14 @@ public abstract class CommitWalkAction {
      * @throws GitRepositoryException if an error occurs during the action
      */
     protected abstract void run() throws GitRepositoryException;
+
+    /**
+     * Sets the repository this action should be executed in
+     *
+     * @param repository The repository for this action
+     */
+    public void setRepository(GitRepository repository) {
+        this.repository = repository;
+    }
 
 }

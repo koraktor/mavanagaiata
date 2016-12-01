@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2014, Sebastian Staudt
+ * Copyright (c) 2012-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
@@ -77,8 +77,10 @@ public class AbstractGitRepositoryTest {
             return false;
         }
 
-        public void walkCommits(CommitWalkAction action)
-                throws GitRepositoryException {}
+        public <T extends CommitWalkAction> T walkCommits(T action)
+                throws GitRepositoryException {
+            return action;
+        }
 
     }
 

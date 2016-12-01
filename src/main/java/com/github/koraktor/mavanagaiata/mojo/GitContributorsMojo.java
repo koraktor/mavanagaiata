@@ -2,12 +2,13 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2014, Sebastian Staudt
+ * Copyright (c) 2011-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,6 +21,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitCommit;
+import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.MailMap;
 
@@ -100,7 +102,7 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
     protected String sort;
 
     @Override
-    public boolean init() throws MavanagaiataMojoException {
+    public GitRepository init() throws MavanagaiataMojoException {
         this.initConfiguration();
 
         return super.init();
@@ -133,14 +135,15 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
      * @throws MavanagaiataMojoException if retrieving information from the Git
      *         repository fails
      */
-    public void run() throws MavanagaiataMojoException {
+    @Override
+    protected void writeOutput(GitRepository repository, PrintStream printStream)
+            throws MavanagaiataMojoException {
         try {
-            this.mailMap = this.repository.getMailMap();
+            mailMap = repository.getMailMap();
 
-            ContributorsWalkAction walkAction = new ContributorsWalkAction();
-            this.repository.walkCommits(walkAction);
+            ContributorsWalkAction result = repository.walkCommits(new ContributorsWalkAction());
 
-            ArrayList<Contributor> contributors = new ArrayList<>(walkAction.contributors.values());
+            ArrayList<Contributor> contributors = new ArrayList<>(result.contributors.values());
             switch (sort) {
                 case "date":
                     Collections.sort(contributors, DATE_COMPARATOR);
@@ -152,20 +155,18 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
                     Collections.sort(contributors, COUNT_COMPARATOR);
             }
 
-            this.outputStream.println(this.header);
+            printStream.println(this.header);
 
             for (Contributor contributor : contributors) {
-                this.outputStream.print(this.contributorPrefix + contributor.name);
+                printStream.print(this.contributorPrefix + contributor.name);
                 if (this.showEmail) {
-                    this.outputStream.print(" (" + contributor.emailAddress + ")");
+                    printStream.print(" (" + contributor.emailAddress + ")");
                 }
                 if (this.showCounts) {
-                    this.outputStream.print(" (" + contributor.count + ")");
+                    printStream.print(" (" + contributor.count + ")");
                 }
-                this.outputStream.println();
+                printStream.println();
             }
-
-            this.insertFooter();
         } catch (GitRepositoryException e) {
             throw MavanagaiataMojoException.create("Unable to read contributors from Git", e);
         }

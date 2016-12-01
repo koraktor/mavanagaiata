@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2014, Sebastian Staudt
+ * Copyright (c) 2011-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -13,11 +13,11 @@ import java.util.Properties;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.jgit.JGitRepository;
 import org.mockito.InOrder;
@@ -27,11 +27,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
@@ -49,18 +50,12 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     @Before
     @Override
     public void setup() throws Exception {
-        this.mojo = spy(new AbstractGitMojo() {
-            public void run() throws MavanagaiataMojoException {}
+        mojo = spy(new AbstractGitMojo() {
+            public void run(GitRepository repository)
+                    throws MavanagaiataMojoException {}
         });
 
         super.setup();
-    }
-
-    @After
-    public void tearDown() {
-        if (this.mojo != null) {
-            this.mojo.cleanup();
-        }
     }
 
     @Test
@@ -111,7 +106,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
 
     @Test
     public void testExecute() throws Exception {
-        doNothing().when(this.mojo).initRepository();
+        doReturn(repository).when(mojo).initRepository();
 
         this.mojo.execute();
 
@@ -119,15 +114,14 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         inOrder.verify(this.mojo).execute();
         inOrder.verify(this.mojo).init();
         inOrder.verify(this.mojo).prepareParameters();
-        inOrder.verify(this.mojo).run();
-        inOrder.verify(this.mojo).cleanup();
+        inOrder.verify(mojo).run(repository);
     }
 
     @Test
     public void testExecuteFail() throws Exception {
         MavanagaiataMojoException exception = MavanagaiataMojoException.create("", null);
-        doThrow(exception).when(this.mojo).run();
-        doNothing().when(this.mojo).initRepository();
+        doThrow(exception).when(mojo).run(repository);
+        doReturn(repository).when(mojo).initRepository();
 
         try {
             this.mojo.execute();
@@ -144,8 +138,8 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         this.mojo.failGracefully = true;
 
         MavanagaiataMojoException exception = MavanagaiataMojoException.create("", null);
-        doThrow(exception).when(this.mojo).run();
-        doNothing().when(this.mojo).initRepository();
+        doThrow(exception).when(mojo).run(repository);
+        doReturn(repository).when(this.mojo).initRepository();
 
         try {
             this.mojo.execute();
@@ -159,12 +153,11 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
 
     @Test
     public void testExecuteInitFail() throws Exception {
-        doReturn(false).when(mojo).init();
+        doReturn(null).when(mojo).init();
 
         this.mojo.execute();
 
-        verify(this.mojo, never()).run();
-        verify(this.mojo, never()).cleanup();
+        verify(mojo, never()).run(repository);
     }
 
     @Test
@@ -173,15 +166,14 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         this.mojo.execute();
 
         verify(this.mojo, never()).init();
-        verify(this.mojo, never()).run();
-        verify(this.mojo, never()).cleanup();
+        verify(mojo, never()).run(repository);
     }
 
     @Test
     public void testInit() throws Exception {
-        doNothing().when(this.mojo).initRepository();
+        doReturn(repository).when(this.mojo).initRepository();
 
-        assertThat(this.mojo.init(), is(true));
+        assertThat(mojo.init(), is(notNullValue()));
     }
 
     @Test
@@ -205,7 +197,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
 
         doThrow(new GitRepositoryException("")).when(this.mojo).initRepository();
 
-        assertThat(this.mojo.init(), is(false));
+        assertThat(mojo.init(), is(nullValue()));
     }
 
     @Test
@@ -228,7 +220,6 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     @Test
     public void testSkip() throws Exception {
         AbstractGitMojo mojo = spy(this.mojo);
-        doReturn(true).when(mojo).init();
         mojo.skip = true;
 
         mojo.execute();
@@ -242,7 +233,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         this.mojo.gitDir  = mock(File.class);
         when(this.mojo.gitDir.exists()).thenReturn(false);
 
-        assertThat(this.mojo.init(), is(false));
+        assertThat(mojo.init(), is(nullValue()));
     }
 
     @Test

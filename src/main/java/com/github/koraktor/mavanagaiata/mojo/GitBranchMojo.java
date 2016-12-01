@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2013, Sebastian Staudt
+ * Copyright (c) 2011-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -10,6 +10,7 @@ package com.github.koraktor.mavanagaiata.mojo;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
+import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 
 /**
@@ -31,9 +32,9 @@ public class GitBranchMojo extends AbstractGitMojo {
      * @throws MavanagaiataMojoException if retrieving information from the Git
      *         repository fails
      */
-    public void run() throws MavanagaiataMojoException {
+    public void run(GitRepository repository) throws MavanagaiataMojoException {
         try {
-            this.addProperty("branch", this.repository.getBranch());
+            addProperty("branch", repository.getBranch());
         } catch(GitRepositoryException e) {
             throw MavanagaiataMojoException.create("Unable to read Git branch", e);
         }

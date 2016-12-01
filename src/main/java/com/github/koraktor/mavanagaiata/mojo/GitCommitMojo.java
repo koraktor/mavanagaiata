@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2014, Sebastian Staudt
+ * Copyright (c) 2011-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -15,6 +15,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import com.github.koraktor.mavanagaiata.git.GitCommit;
+import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 
 /**
@@ -45,10 +46,10 @@ public class GitCommitMojo extends AbstractGitMojo {
      * @throws MavanagaiataMojoException if retrieving information from the Git
      *         repository fails
      */
-    public void run() throws MavanagaiataMojoException {
+    public void run(GitRepository repository) throws MavanagaiataMojoException {
         try {
-            GitCommit commit = this.repository.getHeadCommit();
-            String abbrevId  = this.repository.getAbbreviatedCommitId();
+            GitCommit commit = repository.getHeadCommit();
+            String abbrevId  = repository.getAbbreviatedCommitId();
             String shaId     = commit.getId();
             boolean isDirty  = false;
 
@@ -58,7 +59,7 @@ public class GitCommitMojo extends AbstractGitMojo {
             dateFormat.setTimeZone(commit.getCommitterTimeZone());
             String commitDate = dateFormat.format(commit.getCommitterDate());
 
-            if (this.repository.isDirty(this.dirtyIgnoreUntracked)) {
+            if (repository.isDirty(this.dirtyIgnoreUntracked)) {
                 isDirty = true;
 
                 if (this.dirtyFlag != null) {

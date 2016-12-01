@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2015, Sebastian Staudt
+ * Copyright (c) 2011-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -47,7 +47,7 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
     @Test
     public void testCustomDateFormat() throws MavanagaiataMojoException {
         this.mojo.dateFormat = "dd.MM.yyyy";
-        this.mojo.run();
+        mojo.run(repository);
 
         this.assertProperty("03.11.2006", "commit.author.date");
         this.assertProperty("29.05.2010", "commit.committer.date");
@@ -58,7 +58,7 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
         when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
         this.mojo.dirtyFlag = "*";
-        this.mojo.run();
+        mojo.run(repository);
 
         String headId = "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef*";
 
@@ -71,7 +71,7 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
     public void testDirtyWorktree() throws Exception {
         when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
-        this.mojo.run();
+        mojo.run(repository);
 
         String headId = "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef-dirty";
 
@@ -87,7 +87,7 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
 
         this.mojo.dirtyFlag = "null";
         this.mojo.prepareParameters();
-        this.mojo.run();
+        mojo.run(repository);
 
         String headId = "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef";
 
@@ -99,7 +99,7 @@ public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
 
     @Test
     public void testResult() throws MavanagaiataMojoException {
-        this.mojo.run();
+        mojo.run(repository);
 
         this.assertProperty("deadbeef", "commit.abbrev");
         this.assertProperty("11/03/2006 07:08 PM +0000", "commit.author.date");

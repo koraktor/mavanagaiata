@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2014, Sebastian Staudt
+ * Copyright (c) 2011-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -25,7 +25,7 @@ public class GitTagMojoTest extends MojoAbstractTest<GitTagMojo> {
         GitTagDescription description = mock(GitTagDescription.class);
         when(description.getNextTagName()).thenReturn("2.0.0");
         when(description.toString()).thenReturn("2.0.0-2-gdeadbeef");
-        when(this.repository.describe()).thenReturn(description);
+        when(repository.describe()).thenReturn(description);
     }
 
     @Test
@@ -35,43 +35,43 @@ public class GitTagMojoTest extends MojoAbstractTest<GitTagMojo> {
 
     @Test
     public void testResult() throws Exception {
-        this.mojo.run();
+        mojo.run(repository);
 
-        this.assertProperty("2.0.0-2-gdeadbeef", "tag.describe");
-        this.assertProperty("2.0.0", "tag.name");
+        assertProperty("2.0.0-2-gdeadbeef", "tag.describe");
+        assertProperty("2.0.0", "tag.name");
     }
 
     @Test
     public void testCustomDirtyFlag() throws Exception {
-        when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
+        when(repository.isDirty(mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
-        this.mojo.dirtyFlag = "*";
-        this.mojo.run();
+        mojo.dirtyFlag = "*";
+        mojo.run(repository);
 
-        this.assertProperty("2.0.0-2-gdeadbeef*", "tag.describe");
-        this.assertProperty("2.0.0", "tag.name");
+        assertProperty("2.0.0-2-gdeadbeef*", "tag.describe");
+        assertProperty("2.0.0", "tag.name");
     }
 
     @Test
     public void testDirty() throws Exception {
-        when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
+        when(repository.isDirty(mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
-        this.mojo.run();
+        mojo.run(repository);
 
-        this.assertProperty("2.0.0-2-gdeadbeef-dirty", "tag.describe");
-        this.assertProperty("2.0.0", "tag.name");
+        assertProperty("2.0.0-2-gdeadbeef-dirty", "tag.describe");
+        assertProperty("2.0.0", "tag.name");
     }
 
     @Test
     public void testDisabledDirtyFlag() throws Exception {
-        when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
+        when(repository.isDirty(mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
-        this.mojo.dirtyFlag = "null";
-        this.mojo.prepareParameters();
-        this.mojo.run();
+        mojo.dirtyFlag = "null";
+        mojo.prepareParameters();
+        mojo.run(repository);
 
-        this.assertProperty("2.0.0-2-gdeadbeef", "tag.describe");
-        this.assertProperty("2.0.0", "tag.name");
+        assertProperty("2.0.0-2-gdeadbeef", "tag.describe");
+        assertProperty("2.0.0", "tag.name");
     }
 
 }

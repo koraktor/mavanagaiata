@@ -16,7 +16,7 @@ import java.util.Map;
  *
  * @author Sebastian Staudt
  */
-public interface GitRepository {
+public interface GitRepository extends AutoCloseable {
 
     /**
      * The default head ref
@@ -153,7 +153,7 @@ public interface GitRepository {
      * @throws GitRepositoryException if an error occurs during walking through
      *         the commits
      */
-    void walkCommits(CommitWalkAction action)
-        throws GitRepositoryException;
+    <T extends CommitWalkAction> T walkCommits(T action)
+            throws GitRepositoryException;
 
 }

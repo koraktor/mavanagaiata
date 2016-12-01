@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2014, Sebastian Staudt
+ * Copyright (c) 2012-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -71,7 +71,7 @@ public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
 
     @Test
     public void testGetValueSource() throws Exception {
-        MapBasedValueSource valueSource = this.mojo.getValueSource();
+        MapBasedValueSource valueSource = mojo.getValueSource(repository);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(this.mojo.dateFormat);
 
@@ -92,7 +92,7 @@ public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
         when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
         this.mojo.prepareParameters();
-        MapBasedValueSource valueSource = this.mojo.getValueSource();
+        MapBasedValueSource valueSource = mojo.getValueSource(repository);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(this.mojo.dateFormat);
 
@@ -112,9 +112,9 @@ public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
     public void testGetValueSourceDisabledDirtyFlag() throws Exception {
         when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
-        this.mojo.dirtyFlag = "null";
-        this.mojo.prepareParameters();
-        MapBasedValueSource valueSource = this.mojo.getValueSource();
+        mojo.dirtyFlag = "null";
+        mojo.prepareParameters();
+        MapBasedValueSource valueSource = mojo.getValueSource(repository);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(this.mojo.dateFormat);
 
@@ -132,7 +132,7 @@ public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
 
     @Test
     public void testResult() throws Exception {
-        this.mojo.run();
+        mojo.run(repository);
 
         File targetFile = new File(this.mojo.outputDirectory, "com/github/koraktor/mavanagaita/GitInfo.java");
         verify(this.mojo.fileFilter).copyFile(any(File.class), eq(targetFile), eq(true), anyListOf(FileUtils.FilterWrapper.class), eq("UTF-8"), eq(true));
