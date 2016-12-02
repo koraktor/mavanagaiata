@@ -40,7 +40,7 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      *
      * @since 0.7.0
      */
-    @Parameter(property = "mavanagaiata.changelog.gitHubLinks",
+    @Parameter(property = "mavanagaiata.changelog.branchFormat",
                defaultValue = "Commits on branch \"%s\"\n")
     protected String branchFormat;
 
@@ -70,7 +70,7 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      *
      * @since 0.7.0
      */
-    @Parameter(property = "mavanagaiata.changelog.header",
+    @Parameter(property = "mavanagaiata.changelog.gitHubBranchLinkFormat",
                defaultValue = "\nSee Git history for changes in the \"%s\" branch since version %s at: %s")
     protected String gitHubBranchLinkFormat;
 
@@ -79,7 +79,7 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      *
      * @since 0.7.0
      */
-    @Parameter(property = "mavanagaiata.changelog.header",
+    @Parameter(property = "mavanagaiata.changelog.gitHubBranchOnlyLinkFormat",
                defaultValue = "\nSee Git history for changes in the \"%s\" branch at: %s")
     protected String gitHubBranchOnlyLinkFormat;
 
@@ -88,7 +88,7 @@ public class GitChangelogMojo extends AbstractGitOutputMojo {
      *
      * @since 0.7.0
      */
-    @Parameter(property = "mavanagaiata.changelog.header",
+    @Parameter(property = "mavanagaiata.changelog.gitHubTagLinkFormat",
                defaultValue = "\nSee Git history for version %s at: %s")
     protected String gitHubTagLinkFormat;
 
