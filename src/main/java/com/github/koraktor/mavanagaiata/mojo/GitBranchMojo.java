@@ -21,7 +21,8 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
  * @since 0.1.0
  */
 @Mojo(name ="branch",
-      defaultPhase = LifecyclePhase.INITIALIZE)
+      defaultPhase = LifecyclePhase.INITIALIZE,
+      threadSafe = true)
 public class GitBranchMojo extends AbstractGitMojo {
 
     /**

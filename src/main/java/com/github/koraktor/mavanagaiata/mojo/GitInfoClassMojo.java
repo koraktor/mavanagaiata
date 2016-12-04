@@ -45,7 +45,8 @@ import com.github.koraktor.mavanagaiata.git.GitTagDescription;
  * @since 0.5.0
  */
 @Mojo(name ="info-class",
-      defaultPhase = LifecyclePhase.GENERATE_SOURCES)
+      defaultPhase = LifecyclePhase.GENERATE_SOURCES,
+      threadSafe = true)
 public class GitInfoClassMojo extends AbstractGitMojo {
 
     /**

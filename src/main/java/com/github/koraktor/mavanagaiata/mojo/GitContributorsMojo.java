@@ -35,7 +35,8 @@ import com.github.koraktor.mavanagaiata.git.MailMap;
  * @since 0.2.0
  */
 @Mojo(name ="contributors",
-      defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
+      defaultPhase = LifecyclePhase.PROCESS_RESOURCES,
+      threadSafe = true)
 public class GitContributorsMojo extends AbstractGitOutputMojo {
 
     protected final static Comparator<Contributor> COUNT_COMPARATOR = new Comparator<Contributor>() {

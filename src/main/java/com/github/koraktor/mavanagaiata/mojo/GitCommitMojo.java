@@ -34,7 +34,8 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
  * @since 0.1.0
  */
 @Mojo(name ="commit",
-      defaultPhase = LifecyclePhase.INITIALIZE)
+      defaultPhase = LifecyclePhase.INITIALIZE,
+      threadSafe = true)
 public class GitCommitMojo extends AbstractGitMojo {
 
     /**

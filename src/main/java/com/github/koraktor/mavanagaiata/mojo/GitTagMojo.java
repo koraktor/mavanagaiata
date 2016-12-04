@@ -22,7 +22,8 @@ import com.github.koraktor.mavanagaiata.git.GitTagDescription;
  * @since 0.1.0
  */
 @Mojo(name ="tag",
-      defaultPhase = LifecyclePhase.INITIALIZE)
+      defaultPhase = LifecyclePhase.INITIALIZE,
+      threadSafe = true)
 public class GitTagMojo extends AbstractGitMojo {
 
     /**

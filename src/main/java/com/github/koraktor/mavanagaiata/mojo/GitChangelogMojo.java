@@ -32,7 +32,8 @@ import com.github.koraktor.mavanagaiata.git.GitTag;
  * @since 0.2.0
  */
 @Mojo(name ="changelog",
-      defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
+      defaultPhase = LifecyclePhase.PROCESS_RESOURCES,
+      threadSafe = true)
 public class GitChangelogMojo extends AbstractGitOutputMojo {
 
     /**
