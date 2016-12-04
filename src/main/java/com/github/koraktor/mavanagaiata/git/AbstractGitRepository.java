@@ -19,19 +19,6 @@ public abstract class AbstractGitRepository implements GitRepository {
 
     protected MailMap mailMap;
 
-    /**
-     * Call the {@code #close()} method of this repository once it isn't used
-     * anymore
-     *
-     * @see #close
-     */
-    @Override
-    public void finalize() throws Throwable {
-        this.close();
-
-        super.finalize();
-    }
-
     public String getAbbreviatedCommitId() throws GitRepositoryException {
         return this.getAbbreviatedCommitId(this.getHeadCommit());
     }

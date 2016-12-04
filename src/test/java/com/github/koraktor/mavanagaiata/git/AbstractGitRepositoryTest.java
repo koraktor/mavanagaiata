@@ -33,15 +33,11 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @PrepareForTest(AbstractGitRepository.class)
 public class AbstractGitRepositoryTest {
 
-    public static boolean closed = false;
-
     class GenericGitRepository extends AbstractGitRepository {
 
         public void check() throws GitRepositoryException {}
 
-        public void close() {
-            closed = true;
-        }
+        public void close() {}
 
         public GitTagDescription describe() throws GitRepositoryException {
             return null;
@@ -82,15 +78,6 @@ public class AbstractGitRepositoryTest {
             return action;
         }
 
-    }
-
-    @Test
-    public void testFinalize() throws Throwable {
-        closed = false;
-        AbstractGitRepository repo = new GenericGitRepository();
-        repo.finalize();
-
-        assertThat(closed, is(true));
     }
 
     @Test
