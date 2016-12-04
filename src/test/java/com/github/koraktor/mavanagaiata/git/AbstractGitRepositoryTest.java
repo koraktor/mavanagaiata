@@ -11,26 +11,17 @@ import java.io.File;
 import java.util.Map;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 /**
- *
- *
  * @author Sebastian Staudt
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(AbstractGitRepository.class)
 public class AbstractGitRepositoryTest {
 
     class GenericGitRepository extends AbstractGitRepository {
@@ -82,13 +73,14 @@ public class AbstractGitRepositoryTest {
 
     @Test
     public void testGetMailMap() throws Exception {
-        MailMap mailMap = mock(MailMap.class);
-        AbstractGitRepository repo = new GenericGitRepository();
-        whenNew(MailMap.class).withNoArguments().thenReturn(mailMap);
+        GitRepository repo = new GenericGitRepository();
+        MailMap mailMap = repo.getMailMap();
 
-        assertThat(repo.getMailMap(), is(equalTo(mailMap)));
-
-        verify(mailMap).parseMailMap(repo);
+        assertThat(mailMap.repository, is(equalTo(repo)));
+        assertThat(mailMap.mailToMailMap, is(notNullValue()));
+        assertThat(mailMap.mailToNameAndMailMap, is(notNullValue()));
+        assertThat(mailMap.mailToNameMap, is(notNullValue()));
+        assertThat(mailMap.nameAndMailToNameAndMailMap, is(notNullValue()));
     }
 
     @Test

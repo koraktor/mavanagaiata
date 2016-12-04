@@ -37,27 +37,26 @@ public class MailMap {
         NAME_AND_MAIL_TO_NAME_AND_MAIL_PATTERN = Pattern.compile("^(\\S.*?)\\s+<(\\S+)>\\s+(\\S.*?)\\s+<(\\S+)>$");
     }
 
-    protected boolean exists;
+    boolean exists = false;
 
-    protected Map<String, String> mailToMailMap;
+    Map<String, String> mailToMailMap;
 
-    protected Map<String, String> mailToNameMap;
+    Map<String, String> mailToNameMap;
 
-    protected Map<String, Map.Entry<String, String>> mailToNameAndMailMap;
+    Map<String, Map.Entry<String, String>> mailToNameAndMailMap;
 
-    protected Map<Map.Entry<String, String>, Map.Entry<String, String>> nameAndMailToNameAndMailMap;
+    Map<Map.Entry<String, String>, Map.Entry<String, String>> nameAndMailToNameAndMailMap;
+
+    GitRepository repository;
 
     /**
      * Creates a new mail map instance
      *
-     * @see #parseMailMap(GitRepository)
+     * @param repository The Git repository to parse the mail map for
+     * @see #parseMailMap
      */
-    public MailMap() {
-        this.exists = false;
-        this.mailToMailMap = new HashMap<>();
-        this.mailToNameMap = new HashMap<>();
-        this.mailToNameAndMailMap = new HashMap<>();
-        this.nameAndMailToNameAndMailMap = new HashMap<>();
+    MailMap(GitRepository repository) {
+        this.repository = repository;
     }
 
     /**
@@ -65,7 +64,7 @@ public class MailMap {
      *
      * @return {@code true} if the mail map has been parsed from an existing
      *         {@code .mailmap} file
-     * @see #parseMailMap(GitRepository)
+     * @see #parseMailMap
      */
     public boolean exists() {
         return this.exists;
@@ -80,7 +79,7 @@ public class MailMap {
      * @return The email address matching a mapping in the mail map or the
      *         initial email address
      */
-    protected String getCanonicalMail(String name, String mail) {
+    String getCanonicalMail(String name, String mail) {
         if (this.mailToMailMap.containsKey(mail)) {
             return this.mailToMailMap.get(mail);
         }
@@ -104,7 +103,7 @@ public class MailMap {
      * @param mail The actual email address from a commit
      * @return The name matching a mapping in the mail map or the initial name
      */
-    protected String getCanonicalName(String name, String mail) {
+    String getCanonicalName(String name, String mail) {
         if (this.mailToNameMap.containsKey(mail)) {
             return this.mailToNameMap.get(mail);
         }
@@ -176,20 +175,19 @@ public class MailMap {
      * If the file exists and contains valid content {@link #exists()} will
      * return {@code true}.
      *
-     * @param repository The Git repository to parse the mail map for
      * @see #parseMailMap(File)
      * @throws GitRepositoryException if the {@code .mailmap} file cannot be
      *         read
      */
-    public void parseMailMap(GitRepository repository) throws GitRepositoryException {
+    void parseMailMap() throws GitRepositoryException {
         File mailMap = new File(repository.getWorkTree(), ".mailmap");
 
         try {
-            this.parseMailMap(mailMap);
-            this.exists = !(this.mailToMailMap.isEmpty() &&
-                    this.mailToNameMap.isEmpty() &&
-                    this.mailToNameAndMailMap.isEmpty() &&
-                    this.nameAndMailToNameAndMailMap.isEmpty());
+            parseMailMap(mailMap);
+            exists = !(mailToMailMap.isEmpty() &&
+                    mailToNameMap.isEmpty() &&
+                    mailToNameAndMailMap.isEmpty() &&
+                    nameAndMailToNameAndMailMap.isEmpty());
         } catch (FileNotFoundException ignored) {
         } catch (IOException e) {
             throw new GitRepositoryException("Error while parsing the .mailmap.", e);
@@ -207,41 +205,46 @@ public class MailMap {
      *         exist
      * @throws IOException if the {@code .mailmap} file cannot be read
      */
-    protected void parseMailMap(File mailMap) throws IOException {
-        BufferedReader mailMapReader = new BufferedReader(new FileReader(mailMap));
+    void parseMailMap(File mailMap) throws IOException {
+        mailToMailMap = new HashMap<>();
+        mailToNameMap = new HashMap<>();
+        mailToNameAndMailMap = new HashMap<>();
+        nameAndMailToNameAndMailMap = new HashMap<>();
 
-        String line;
-        while ((line = mailMapReader.readLine()) != null) {
-            line = line.trim();
+        try (BufferedReader mailMapReader = new BufferedReader(new FileReader(mailMap))) {
+            String line;
+            while ((line = mailMapReader.readLine()) != null) {
+                line = line.trim();
 
-            if (line.isEmpty() || line.startsWith("#")) {
-                continue;
-            }
+                if (line.isEmpty() || line.startsWith("#")) {
+                    continue;
+                }
 
-            Matcher lineMatcher = NAME_AND_MAIL_TO_NAME_AND_MAIL_PATTERN.matcher(line);
-            if (lineMatcher.matches()) {
-                Map.Entry<String, String> properNameAndMail = new AbstractMap.SimpleEntry<>(lineMatcher.group(1), lineMatcher.group(2));
-                Map.Entry<String, String> commitNameAndMail = new AbstractMap.SimpleEntry<>(lineMatcher.group(3), lineMatcher.group(4));
-                this.nameAndMailToNameAndMailMap.put(commitNameAndMail, properNameAndMail);
-                continue;
-            }
+                Matcher lineMatcher = NAME_AND_MAIL_TO_NAME_AND_MAIL_PATTERN.matcher(line);
+                if (lineMatcher.matches()) {
+                    Map.Entry<String, String> properNameAndMail = new AbstractMap.SimpleEntry<>(lineMatcher.group(1), lineMatcher.group(2));
+                    Map.Entry<String, String> commitNameAndMail = new AbstractMap.SimpleEntry<>(lineMatcher.group(3), lineMatcher.group(4));
+                    nameAndMailToNameAndMailMap.put(commitNameAndMail, properNameAndMail);
+                    continue;
+                }
 
-            lineMatcher = MAIL_TO_NAME_AND_MAIL_PATTERN.matcher(line);
-            if (lineMatcher.matches()) {
-                Map.Entry<String, String> properNameAndMail = new AbstractMap.SimpleEntry<>(lineMatcher.group(1), lineMatcher.group(2));
-                this.mailToNameAndMailMap.put(lineMatcher.group(3), properNameAndMail);
-                continue;
-            }
+                lineMatcher = MAIL_TO_NAME_AND_MAIL_PATTERN.matcher(line);
+                if (lineMatcher.matches()) {
+                    Map.Entry<String, String> properNameAndMail = new AbstractMap.SimpleEntry<>(lineMatcher.group(1), lineMatcher.group(2));
+                    mailToNameAndMailMap.put(lineMatcher.group(3), properNameAndMail);
+                    continue;
+                }
 
-            lineMatcher = MAIL_TO_MAIL_PATTERN.matcher(line);
-            if (lineMatcher.matches()) {
-                this.mailToMailMap.put(lineMatcher.group(2), lineMatcher.group(1));
-                continue;
-            }
+                lineMatcher = MAIL_TO_MAIL_PATTERN.matcher(line);
+                if (lineMatcher.matches()) {
+                    mailToMailMap.put(lineMatcher.group(2), lineMatcher.group(1));
+                    continue;
+                }
 
-            lineMatcher = MAIL_TO_NAME_PATTERN.matcher(line);
-            if (lineMatcher.matches()) {
-                this.mailToNameMap.put(lineMatcher.group(2), lineMatcher.group(1));
+                lineMatcher = MAIL_TO_NAME_PATTERN.matcher(line);
+                if (lineMatcher.matches()) {
+                    mailToNameMap.put(lineMatcher.group(2), lineMatcher.group(1));
+                }
             }
         }
     }
