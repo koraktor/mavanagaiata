@@ -272,9 +272,9 @@
                 <artifactId>maven-plugin-plugin</artifactId>
                 <version>3.4</version>
                 <configuration>
-                    <!--<extractors>
+                    <extractors>
                         <extractor>java-annotations</extractor>
-                    </extractors>-->
+                    </extractors>
                     <goalPrefix>mavanagaiata</goalPrefix>
                     <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
                 </configuration>
