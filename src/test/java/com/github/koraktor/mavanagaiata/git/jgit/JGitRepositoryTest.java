@@ -1,13 +1,15 @@
-/**
+/*
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2013, Sebastian Staudt
+ * Copyright (c) 2012-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git.jgit;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -69,9 +71,9 @@ public class JGitRepositoryTest {
     @Rule
     protected ExpectedException exception = ExpectedException.none();
 
-    protected Repository repo;
+    private Repository repo;
 
-    protected JGitRepository repository;
+    private JGitRepository repository;
 
     @Before
     public void setup() throws Exception {
@@ -441,6 +443,20 @@ public class JGitRepositoryTest {
     }
 
     @Test
+    public void testGetBranchFailure() throws Exception {
+        FileNotFoundException exception = new FileNotFoundException();
+        when(repo.getBranch()).thenThrow(exception);
+
+        try {
+            repository.getBranch();
+            fail("No exception thrown.");
+        } catch (GitRepositoryException e) {
+            assertThat(e.getCause(), is((Throwable) exception));
+            assertThat(e.getMessage(), is(equalTo("Current branch could not be read.")));
+        }
+    }
+
+    @Test
     public void testGetCommit() throws Exception {
         ObjectId head = mock(ObjectId.class);
         RevWalk revWalk = mock(RevWalk.class);
@@ -551,6 +567,27 @@ public class JGitRepositoryTest {
     }
 
     @Test
+    public void testIsDirtyFailure() throws Exception {
+        FileTreeIterator fileTreeIterator = mock(FileTreeIterator.class);
+        whenNew(FileTreeIterator.class).
+            withArguments(repo).thenReturn(fileTreeIterator);
+
+        IOException exception = new IOException();
+        whenNew(IndexDiff.class).
+            withParameterTypes(Repository.class, ObjectId.class, WorkingTreeIterator.class).
+            withArguments(eq(repo), any(ObjectId.class), eq(fileTreeIterator)).
+            thenThrow(exception);
+
+        try {
+            repository.isDirty(false);
+            fail("No exception thrown.");
+        } catch (GitRepositoryException e) {
+            assertThat(e.getCause(), is((Throwable) exception));
+            assertThat(e.getMessage(), is(equalTo("Could not create repository diff.")));
+        }
+    }
+
+    @Test
     public void testIsDirtyIgnoreUntracked() throws Exception {
         IndexDiff indexDiff = this.mockIndexDiff();
         HashSet<String> added = new HashSet<>();
@@ -621,7 +658,12 @@ public class JGitRepositoryTest {
         assertThat(this.repository.getRawTags(), is(equalTo(tags)));
     }
 
-    protected IndexDiff mockIndexDiff() throws Exception {
+    @Test
+    public void testGetWorktree() {
+        assertThat(repository.getWorkTree(), is(equalTo(repo.getWorkTree())));
+    }
+
+    private IndexDiff mockIndexDiff() throws Exception {
         FileTreeIterator fileTreeIterator = mock(FileTreeIterator.class);
         whenNew(FileTreeIterator.class).
             withArguments(this.repo).thenReturn(fileTreeIterator);
