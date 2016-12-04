@@ -19,7 +19,6 @@ import java.util.Map;
 
 import org.eclipse.jgit.errors.AmbiguousObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
-import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
@@ -171,14 +170,13 @@ public class JGitRepository extends AbstractGitRepository {
     }
 
     /**
-     * Find up to 10 tag candidates in the current branch. One of these should be the latest tag.
+     * Find up to 10 tag candidates in the current branch. One of these should
+     * be the latest tag.
      *
      * @param revWalk Repository information
      * @param tagCommits Map of commits that are associated with a tag
      * @param allFlags All flags that have been set so far
-     *
      * @return A collection of tag candidates
-     *
      * @throws IOException
      */
     private Collection<TagCandidate> findTagCandidates(RevWalk revWalk,
@@ -214,13 +212,12 @@ public class JGitRepository extends AbstractGitRepository {
     }
 
     /**
-     * Correct the distance for all tag candidates. We have to check all branches to get the correct
-     * distance at the end.
+     * Correct the distance for all tag candidates. We have to check all
+     * branches to get the correct distance at the end.
      *
      * @param revWalk Repository information
      * @param candidates Collection of tag candidates
      * @param allFlags All flags that have been set so far
-     *
      * @throws IOException
      */
     private void correctDistance(RevWalk revWalk, Collection<TagCandidate> candidates, RevFlagSet allFlags)
@@ -347,14 +344,6 @@ public class JGitRepository extends AbstractGitRepository {
             this.commitCache.put(id, commit);
 
             return commit;
-        } catch (IncorrectObjectTypeException e) {
-            throw new GitRepositoryException(
-                    String.format("Object \"%s\" is not a commit.", id.getName()),
-                    e);
-        } catch (MissingObjectException e) {
-            throw new GitRepositoryException(
-                    String.format("Commit \"%s\" is missing.", id.getName()),
-                    e);
         } catch (IOException e) {
             throw new GitRepositoryException(
                     String.format("Commit \"%s\" could not be loaded.", id.getName()),
