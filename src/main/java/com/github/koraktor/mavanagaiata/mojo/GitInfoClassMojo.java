@@ -89,6 +89,31 @@ public class GitInfoClassMojo extends AbstractGitMojo {
     protected File templateFile;
 
     /**
+     * Returns an input stream for the template source file for the info class
+     * <p>
+     * This may either be the builtin template or an arbitrary source file set
+     * via {@code templatePath}.
+     *
+     * @return An input stream for the template source file
+     * @throws MavanagaiataMojoException if the template source cannot be found
+     */
+    protected InputStream getTemplateSource() throws MavanagaiataMojoException {
+        if (templateFile == null) {
+            String templatePath = "TemplateGitInfoClass.java";
+            return getClass().getResourceAsStream(templatePath);
+        } else {
+            try {
+                return new FileInputStream(templateFile);
+            } catch (FileNotFoundException e) {
+                throw MavanagaiataMojoException.create(
+                        "Info class template \"%s\" does not exist",
+                        e,
+                        templateFile.getAbsolutePath());
+            }
+        }
+    }
+
+    /**
      * Generates a info class filled providing information of the Git
      * repository
      *
@@ -99,23 +124,7 @@ public class GitInfoClassMojo extends AbstractGitMojo {
         this.addProperty("info-class.className", this.className);
         this.addProperty("info-class.packageName", this.packageName);
 
-        InputStream templateStream;
-        if (this.templateFile == null) {
-            String templatePath = "TemplateGitInfoClass.java";
-            templateStream = this.getClass().getResourceAsStream(templatePath);
-        } else {
-            try {
-                templateStream = new FileInputStream(this.templateFile);
-            } catch (FileNotFoundException e) {
-                throw MavanagaiataMojoException.create(
-                        "Info class template \"%s\" does not exist",
-                        e,
-                        this.templateFile.getAbsolutePath());
-            }
-        }
-
-        FileOutputStream tempSourceFileStream = null;
-        try {
+        try (InputStream templateStream = getTemplateSource()) {
             File tempSourceDir = File.createTempFile("mavanagaita-info-class", null);
             tempSourceDir.delete();
             tempSourceDir.mkdir();
@@ -123,9 +132,9 @@ public class GitInfoClassMojo extends AbstractGitMojo {
             String sourceFileName = this.className + ".java";
             File tempSourceFile = new File(tempSourceDir, sourceFileName);
             tempSourceFile.createNewFile();
-            tempSourceFileStream = new FileOutputStream(tempSourceFile);
-            IOUtils.copy(templateStream, tempSourceFileStream);
-            tempSourceFileStream.close();
+            try (FileOutputStream tempSourceFileStream = new FileOutputStream(tempSourceFile)) {
+                IOUtils.copy(templateStream, tempSourceFileStream);
+            }
 
             final MapBasedValueSource valueSource = getValueSource(repository);
             FileUtils.FilterWrapper filterWrapper = new FileUtils.FilterWrapper() {
@@ -153,17 +162,6 @@ public class GitInfoClassMojo extends AbstractGitMojo {
             throw MavanagaiataMojoException.create("Could not create temporary info class source", e);
         } catch (MavenFilteringException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (templateStream != null) {
-                    templateStream.close();
-                }
-                if (tempSourceFileStream != null) {
-                    tempSourceFileStream.close();
-                }
-            } catch (IOException e) {
-                throw MavanagaiataMojoException.create("Could not close temporary info class source", e);
-            }
         }
 
         this.project.addCompileSourceRoot(this.outputDirectory.getAbsolutePath());
