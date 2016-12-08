@@ -24,6 +24,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
  */
 public class AbstractGitRepositoryTest {
 
+    static GitCommit headCommit = mock(GitCommit.class);
+
     class GenericGitRepository extends AbstractGitRepository {
 
         public void check() throws GitRepositoryException {}
@@ -36,7 +38,7 @@ public class AbstractGitRepositoryTest {
 
         public String getAbbreviatedCommitId(GitCommit commit)
                 throws GitRepositoryException {
-            return null;
+            return commit == headCommit ? "deadbeef" : null;
         }
 
         public String getBranch() throws GitRepositoryException {
@@ -44,7 +46,7 @@ public class AbstractGitRepositoryTest {
         }
 
         public GitCommit getHeadCommit() throws GitRepositoryException {
-            return null;
+            return headCommit;
         }
 
         public File getWorkTree() {
@@ -69,6 +71,13 @@ public class AbstractGitRepositoryTest {
             return action;
         }
 
+    }
+
+    @Test
+    public void testGetAbbreviatedHead() throws Exception {
+        GitRepository repo = new GenericGitRepository();
+
+        assertThat(repo.getAbbreviatedCommitId(), is(equalTo("deadbeef")));
     }
 
     @Test

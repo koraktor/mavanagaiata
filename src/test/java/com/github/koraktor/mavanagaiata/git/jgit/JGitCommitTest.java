@@ -26,7 +26,7 @@ public class JGitCommitTest {
                 "author John Doe <john.doe@example.com> 1162580880 +0000\n" +
                 "committer Sebastian Staudt <koraktor@gmail.com> 1275131880 +0200\n" +
                 "\n" +
-                "Commit subject").getBytes());
+                "Commit subject\n\nFull message.").getBytes());
         Date authorDate = new Date(1162580880000L);
         Date committerDate = new Date(1275131880000L);
 
@@ -41,7 +41,8 @@ public class JGitCommitTest {
         assertThat(commit.getCommitterEmailAddress(), is(equalTo("koraktor@gmail.com")));
         assertThat(commit.getCommitterName(), is(equalTo("Sebastian Staudt")));
         assertThat(commit.getCommitterTimeZone(), is(TimeZone.getTimeZone("GMT+0200")));
-        assertThat(commit.getId(), is(equalTo("db1930d9def14aa4a0d8f7a3e0395e4a2c15855a")));
+        assertThat(commit.getId(), is(equalTo("518a7e6955ee38ecab34254e0796860bc679cfee")));
+        assertThat(commit.getMessage(), is(equalTo("Commit subject\n\nFull message.")));
         assertThat(commit.getMessageSubject(), is(equalTo("Commit subject")));
         assertThat(commit.hashCode(), is(equalTo(rawCommit.getId().hashCode())));
         assertThat(commit, is(equalTo(commit2)));
