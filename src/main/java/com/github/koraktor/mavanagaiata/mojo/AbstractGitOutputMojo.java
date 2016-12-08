@@ -91,7 +91,7 @@ abstract class AbstractGitOutputMojo extends AbstractGitMojo {
                 getOutputFile().getParentFile().mkdirs();
             }
 
-            try (PrintStream printStream = new PrintStream(getOutputFile(), encoding)) {
+            try (PrintStream printStream = createPrintStream()) {
                 generateOutput(repository, printStream);
             } catch (FileNotFoundException | UnsupportedEncodingException e) {
                 throw MavanagaiataMojoException.create(
@@ -100,6 +100,16 @@ abstract class AbstractGitOutputMojo extends AbstractGitMojo {
                                         getOutputFile().getAbsolutePath());
             }
         }
+    }
+
+    /**
+     * Creates a new print stream for the configured outputfile and encoding
+     *
+     * @return A new print stream
+     */
+    PrintStream createPrintStream()
+            throws FileNotFoundException, UnsupportedEncodingException {
+        return new PrintStream(getOutputFile(), encoding);
     }
 
     /**

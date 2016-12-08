@@ -21,11 +21,13 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> {
 
@@ -54,10 +56,9 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
         File outputFile = mock(File.class);
         File parentFile = mock(File.class);
         when(outputFile.getParentFile()).thenReturn(parentFile);
-        when(parentFile.exists()).thenReturn(true);
         PrintStream printStream = mock(PrintStream.class);
-        whenNew(PrintStream.class).withArguments(outputFile, "someencoding")
-            .thenReturn(printStream);
+        mojo = spy(mojo);
+        doReturn(printStream).when(mojo).createPrintStream();
 
         this.mojo.encoding = "someencoding";
         this.mojo.setOutputFile(outputFile);
@@ -71,10 +72,9 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
         File outputFile = mock(File.class);
         File parentFile = mock(File.class);
         when(outputFile.getParentFile()).thenReturn(parentFile);
-        when(parentFile.exists()).thenReturn(false);
         PrintStream printStream = mock(PrintStream.class);
-        whenNew(PrintStream.class).withArguments(outputFile, "someencoding")
-            .thenReturn(printStream);
+        mojo = spy(mojo);
+        doReturn(printStream).when(mojo).createPrintStream();
 
         mojo.encoding = "someencoding";
         mojo.setOutputFile(outputFile);
@@ -92,9 +92,8 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
         when(outputFile.getAbsolutePath()).thenReturn("/some/file");
         File parentFile = mock(File.class);
         when(outputFile.getParentFile()).thenReturn(parentFile);
-        when(parentFile.exists()).thenReturn(true);
-        whenNew(PrintStream.class).withArguments(outputFile, "someencoding")
-            .thenThrow(fileNotFoundException);
+        mojo = spy(mojo);
+        doThrow(fileNotFoundException).when(mojo).createPrintStream();
 
         this.mojo.encoding = "someencoding";
         this.mojo.setOutputFile(outputFile);
