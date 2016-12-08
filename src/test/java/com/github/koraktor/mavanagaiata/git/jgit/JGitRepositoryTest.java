@@ -17,9 +17,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 
+import org.eclipse.jgit.errors.AmbiguousObjectException;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.lib.AbbreviatedObjectId;
-import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
@@ -30,46 +30,37 @@ import org.eclipse.jgit.revwalk.RevObject;
 import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.treewalk.FileTreeIterator;
-import org.eclipse.jgit.treewalk.WorkingTreeIterator;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
 
 import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 import org.mockito.InOrder;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.spy;
-import static org.powermock.api.mockito.PowerMockito.verifyNew;
-import static org.powermock.api.mockito.PowerMockito.when;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
+import static org.mockito.Mockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ JGitRepository.class })
 public class JGitRepositoryTest {
 
     @Rule
-    protected ExpectedException exception = ExpectedException.none();
+    public ExpectedException exception = ExpectedException.none();
 
     private Repository repo;
 
@@ -77,16 +68,8 @@ public class JGitRepositoryTest {
 
     @Before
     public void setup() throws Exception {
-        this.repo = mock(Repository.class, RETURNS_DEEP_STUBS);
-
-        FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class);
-        whenNew(FileRepositoryBuilder.class).withNoArguments().thenReturn(repoBuilder);
-        when(repoBuilder.build()).thenReturn(this.repo);
-
-        File someDir = mock(File.class);
-        when(someDir.exists()).thenReturn(true);
-
-        this.repository = new JGitRepository(someDir, someDir);
+        repository = new JGitRepository();
+        repository.repository = repo = mock(Repository.class, RETURNS_DEEP_STUBS);
     }
 
     @Test
@@ -95,16 +78,15 @@ public class JGitRepositoryTest {
         when(workTree.exists()).thenReturn(true);
 
         File gitDir = mock(File.class);
-        whenNew(File.class).withArguments(workTree, Constants.DOT_GIT).
-                thenReturn(gitDir);
         when(gitDir.getParentFile()).thenReturn(workTree);
 
         FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class);
-        whenNew(FileRepositoryBuilder.class).withNoArguments().thenReturn(repoBuilder);
         when(repoBuilder.getGitDir()).thenReturn(gitDir);
-        when(repoBuilder.build()).thenReturn(this.repo);
 
-        new JGitRepository(workTree, null);
+        JGitRepository repository = spy(new JGitRepository());
+        when(repository.getRepositoryBuiler()).thenReturn(repoBuilder);
+
+        repository.buildRepository(workTree, null);
 
         InOrder inOrder = inOrder(repoBuilder);
         inOrder.verify(repoBuilder).findGitDir(workTree);
@@ -120,11 +102,12 @@ public class JGitRepositoryTest {
         when(gitDir.exists()).thenReturn(true);
 
         FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class);
-        whenNew(FileRepositoryBuilder.class).withNoArguments().thenReturn(repoBuilder);
         when(repoBuilder.getGitDir()).thenReturn(gitDir);
-        when(repoBuilder.build()).thenReturn(this.repo);
 
-        new JGitRepository(workTree, gitDir);
+        JGitRepository repository = spy(new JGitRepository());
+        when(repository.getRepositoryBuiler()).thenReturn(repoBuilder);
+
+        repository.buildRepository(workTree, gitDir);
 
         InOrder inOrder = inOrder(repoBuilder);
         inOrder.verify(repoBuilder).setGitDir(gitDir);
@@ -138,17 +121,13 @@ public class JGitRepositoryTest {
         File workTreeChild = mock(File.class);
         when(workTreeChild.exists()).thenReturn(true);
 
-        File gitDir = mock(File.class);
-        whenNew(File.class).withArguments(workTree, Constants.DOT_GIT).
-                thenReturn(gitDir);
-        when(gitDir.getParentFile()).thenReturn(workTree);
+        FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class, RETURNS_DEEP_STUBS);
+        when(repoBuilder.getGitDir().getParentFile()).thenReturn(workTree);
 
-        FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class);
-        whenNew(FileRepositoryBuilder.class).withNoArguments().thenReturn(repoBuilder);
-        when(repoBuilder.getGitDir()).thenReturn(gitDir);
-        when(repoBuilder.build()).thenReturn(this.repo);
+        JGitRepository repository = spy(new JGitRepository());
+        when(repository.getRepositoryBuiler()).thenReturn(repoBuilder);
 
-        new JGitRepository(workTreeChild, null);
+        repository.buildRepository(workTreeChild, null);
 
         InOrder inOrder = inOrder(repoBuilder);
         inOrder.verify(repoBuilder).findGitDir(workTreeChild);
@@ -204,8 +183,6 @@ public class JGitRepositoryTest {
         when(indexDiff.getUntracked()).thenReturn(Collections.<String>emptySet());
 
         assertThat(this.repository.isDirty(false), is(false));
-
-        verify(indexDiff).diff();
     }
 
     @Test
@@ -219,8 +196,6 @@ public class JGitRepositoryTest {
         when(indexDiff.getConflicting()).thenReturn(Collections.<String> emptySet());
 
         assertThat(this.repository.isDirty(true), is(false));
-
-        verify(indexDiff).diff();
     }
 
     @Test
@@ -459,9 +434,8 @@ public class JGitRepositoryTest {
     @Test
     public void testGetCommit() throws Exception {
         ObjectId head = mock(ObjectId.class);
-        RevWalk revWalk = mock(RevWalk.class);
         RevCommit commit = mock(RevCommit.class);
-        whenNew(RevWalk.class).withArguments(this.repo).thenReturn(revWalk);
+        RevWalk revWalk = mockRevWalk();
         when(revWalk.parseCommit(head)).thenReturn(commit);
 
         assertThat(this.repository.getCommit(head), is(commit));
@@ -472,13 +446,12 @@ public class JGitRepositoryTest {
     public void testGetCommitCached() throws Exception {
         ObjectId head = mock(ObjectId.class);
         RevCommit commit = mock(RevCommit.class);
-        this.repository.commitCache.put(head, commit);
+        repository.commitCache.put(head, commit);
+        repository.commitCache = spy(repository.commitCache);
 
-        whenNew(RevWalk.class).withArguments(this.repo).thenReturn(null);
+        assertThat(repository.getCommit(head), is(commit));
 
-        assertThat(this.repository.getCommit(head), is(commit));
-
-        verifyNew(RevWalk.class, never()).withArguments(this.repo);
+        verify(repository.commitCache, never()).put(any(ObjectId.class), any(RevCommit.class));
     }
 
     @Test
@@ -499,6 +472,38 @@ public class JGitRepositoryTest {
 
         assertThat(this.repository.getHeadObject(), is(head));
         assertThat(this.repository.headObject, is(head));
+    }
+
+    @Test
+    public void testGetHeadObjectAmbiguous() throws Exception {
+        Throwable exception = mock(AmbiguousObjectException.class);
+
+        repository.setHeadRef("something");
+        when(repo.resolve("something")).thenThrow(exception);
+
+        try {
+            repository.getHeadObject();
+            fail("No exception thrown.");
+        } catch (GitRepositoryException e) {
+            assertThat(e.getCause(), is(exception));
+            assertThat(e.getMessage(), is(equalTo("Ref \"something\" is ambiguous.")));
+        }
+    }
+
+    @Test
+    public void testGetHeadObjectFailure() throws Exception {
+        Throwable exception = mock(IOException.class);
+
+        repository.setHeadRef("broken");
+        when(repo.resolve("broken")).thenThrow(exception);
+
+        try {
+            repository.getHeadObject();
+            fail("No exception thrown.");
+        } catch (GitRepositoryException e) {
+            assertThat(e.getCause(), is(exception));
+            assertThat(e.getMessage(), is(equalTo("Ref \"broken\" could not be resolved.")));
+        }
     }
 
     @Test
@@ -562,27 +567,19 @@ public class JGitRepositoryTest {
         when(indexDiff.getUntracked()).thenReturn(untracked);
 
         assertThat(this.repository.isDirty(false), is(true));
-
-        verify(indexDiff).diff();
     }
 
     @Test
     public void testIsDirtyFailure() throws Exception {
-        FileTreeIterator fileTreeIterator = mock(FileTreeIterator.class);
-        whenNew(FileTreeIterator.class).
-            withArguments(repo).thenReturn(fileTreeIterator);
-
-        IOException exception = new IOException();
-        whenNew(IndexDiff.class).
-            withParameterTypes(Repository.class, ObjectId.class, WorkingTreeIterator.class).
-            withArguments(eq(repo), any(ObjectId.class), eq(fileTreeIterator)).
-            thenThrow(exception);
+        Throwable exception = new IOException();
+        repository = spy(repository);
+        doThrow(exception).when(repository).createIndexDiff();
 
         try {
             repository.isDirty(false);
             fail("No exception thrown.");
         } catch (GitRepositoryException e) {
-            assertThat(e.getCause(), is((Throwable) exception));
+            assertThat(e.getCause(), is(exception));
             assertThat(e.getMessage(), is(equalTo("Could not create repository diff.")));
         }
     }
@@ -595,16 +592,12 @@ public class JGitRepositoryTest {
         when(indexDiff.getAdded()).thenReturn(added);
 
         assertThat(this.repository.isDirty(true), is(true));
-
-        verify(indexDiff).diff();
     }
 
     @Test
     public void testWalkCommits() throws Exception {
         CommitWalkAction action = mock(CommitWalkAction.class);
-
-        RevWalk revWalk = mock(RevWalk.class);
-        whenNew(RevWalk.class).withArguments(this.repo).thenReturn(revWalk);
+        RevWalk revWalk = mockRevWalk();
 
         RevCommit head = this.createCommit();
         RevCommit head_1 = this.createCommit();
@@ -630,8 +623,7 @@ public class JGitRepositoryTest {
 
     @Test
     public void testGetRawTags() throws Exception {
-        RevWalk revWalk = mock(RevWalk.class);
-        whenNew(RevWalk.class).withArguments(this.repo).thenReturn(revWalk);
+        RevWalk revWalk = mockRevWalk();
 
         Map<String, Ref> tagRefs = new HashMap<>();
         Ref tagRef1 = mock(Ref.class);
@@ -664,17 +656,21 @@ public class JGitRepositoryTest {
     }
 
     private IndexDiff mockIndexDiff() throws Exception {
-        FileTreeIterator fileTreeIterator = mock(FileTreeIterator.class);
-        whenNew(FileTreeIterator.class).
-            withArguments(this.repo).thenReturn(fileTreeIterator);
+        repository = spy(repository);
 
         IndexDiff indexDiff = mock(IndexDiff.class);
-        whenNew(IndexDiff.class).
-            withParameterTypes(Repository.class, ObjectId.class, WorkingTreeIterator.class).
-            withArguments(eq(this.repo), any(ObjectId.class), eq(fileTreeIterator)).
-            thenReturn(indexDiff);
+        doReturn(indexDiff).when(repository).getIndexDiff();
 
         return indexDiff;
+    }
+
+    private RevWalk mockRevWalk() {
+        repository = spy(repository);
+
+        RevWalk revWalk = mock(RevWalk.class);
+        doReturn(revWalk).when(repository).getRevWalk();
+
+        return revWalk;
     }
 
     private RevCommit createCommit() {

@@ -15,14 +15,11 @@ import org.apache.maven.plugin.MojoFailureException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
-import com.github.koraktor.mavanagaiata.git.jgit.JGitRepository;
+import org.codehaus.plexus.util.FileUtils;
 import org.mockito.InOrder;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -36,15 +33,12 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.spy;
-import static org.powermock.api.mockito.PowerMockito.when;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
+import static org.mockito.Mockito.when;
 
-@PrepareForTest(AbstractGitMojo.class)
-@RunWith(PowerMockRunner.class)
 public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
 
     @Before
@@ -111,7 +105,6 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         this.mojo.execute();
 
         InOrder inOrder = inOrder(this.mojo);
-        inOrder.verify(this.mojo).execute();
         inOrder.verify(this.mojo).init();
         inOrder.verify(this.mojo).prepareParameters();
         inOrder.verify(mojo).run(repository);
@@ -202,24 +195,29 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
 
     @Test
     public void testInitRepository() throws Exception {
-        File baseDir = mock(File.class);
-        File gitDir = mock(File.class);
+        File baseDir = File.createTempFile("mavanagaiata-tests-baseDir", null);
+        baseDir.delete();
+        baseDir.mkdirs();
+        FileUtils.forceDeleteOnExit(baseDir);
+
+        File gitDir = File.createTempFile("mavanagaiata-tests-gitDir", null);
+        gitDir.delete();
+        new File(gitDir, "objects").mkdirs();
+        FileUtils.forceDeleteOnExit(gitDir);
+
         this.mojo.baseDir = baseDir;
         this.mojo.gitDir = gitDir;
         this.mojo.head = "HEAD";
 
-        JGitRepository repo = mock(JGitRepository.class);
-        whenNew(JGitRepository.class).withArguments(baseDir, gitDir).thenReturn(repo);
+        GitRepository repository = mojo.initRepository();
 
-        this.mojo.initRepository();
-
-        verify(repo).check();
-        verify(repo).setHeadRef("HEAD");
+        assertThat(repository.getHeadRef(), is(equalTo("HEAD")));
+        assertThat(repository.getWorkTree(), is(baseDir));
+        assertThat(repository.isChecked(), is(true));
     }
 
     @Test
     public void testSkip() throws Exception {
-        AbstractGitMojo mojo = spy(this.mojo);
         mojo.skip = true;
 
         mojo.execute();

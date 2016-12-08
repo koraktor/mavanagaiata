@@ -50,6 +50,8 @@ public class JGitRepository extends AbstractGitRepository {
 
     protected Map<ObjectId, RevCommit> commitCache;
 
+    boolean checked;
+
     protected Repository repository;
 
     protected ObjectId headObject;
@@ -57,7 +59,14 @@ public class JGitRepository extends AbstractGitRepository {
     protected RevWalk revWalk;
 
     /**
-     * Creates a new instance from a JGit repository object
+     * Creates a new empty instance
+     */
+    JGitRepository() {
+        commitCache = new HashMap<>();
+    }
+
+    /**
+     * Creates a new instance for the given worktree and or Git directory
      *
      * @param workTree The worktree of the repository or {@code null}
      * @param gitDir The GIT_DIR of the repository or {@code null}
@@ -66,8 +75,13 @@ public class JGitRepository extends AbstractGitRepository {
      */
     public JGitRepository(File workTree, File gitDir)
             throws GitRepositoryException {
-        FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-        repositoryBuilder.readEnvironment();
+        this();
+
+        buildRepository(workTree, gitDir);
+    }
+
+    void buildRepository(File workTree, File gitDir) throws GitRepositoryException {
+        FileRepositoryBuilder repositoryBuilder = getRepositoryBuiler();
 
         if (gitDir == null && workTree == null) {
             throw new GitRepositoryException("Neither worktree nor GIT_DIR is set.");
@@ -98,8 +112,6 @@ public class JGitRepository extends AbstractGitRepository {
         } catch (IOException e) {
             throw new GitRepositoryException("Could not initialize repository", e);
         }
-
-        commitCache = new HashMap<>();
     }
 
     @Override
@@ -109,6 +121,8 @@ public class JGitRepository extends AbstractGitRepository {
                 this.repository.getDirectory() : this.repository.getWorkTree();
             throw new GitRepositoryException(path.getAbsolutePath() + " is not a Git repository.");
         }
+
+        checked = true;
     }
 
     /**
@@ -133,16 +147,17 @@ public class JGitRepository extends AbstractGitRepository {
             tagCommits.put((RevCommit)tag.getObject(), tag);
         }
 
-        final RevFlagSet allFlags = new RevFlagSet();
         final RevCommit start = this.getCommit(this.getHeadObject());
 
-        try (RevWalk revWalk = this.getRevWalk()) {
-            //Check, if the start commit is a tag already
-            if (tagCommits.containsKey(start)) {
-                GitTag tag = this.getTags().get(start.getId().getName());
+        //Check, if the start commit is a tag already
+        if (tagCommits.containsKey(start)) {
+            GitTag tag = getTags().get(start.getId().getName());
 
-                return new GitTagDescription(this, this.getHeadCommit(), tag, 0);
-            }
+            return new GitTagDescription(this, getHeadCommit(), tag,0);
+        }
+
+        try (RevWalk revWalk = getRevWalk()) {
+            final RevFlagSet allFlags = new RevFlagSet();
 
             revWalk.markStart(start);
             final Collection<TagCandidate> candidates = findTagCandidates(revWalk, tagCommits, allFlags);
@@ -169,6 +184,11 @@ public class JGitRepository extends AbstractGitRepository {
         }
     }
 
+    @Override
+    public String getHeadRef() {
+        return headRef;
+    }
+
     /**
      * Find up to 10 tag candidates in the current branch. One of these should
      * be the latest tag.
@@ -177,7 +197,7 @@ public class JGitRepository extends AbstractGitRepository {
      * @param tagCommits Map of commits that are associated with a tag
      * @param allFlags All flags that have been set so far
      * @return A collection of tag candidates
-     * @throws IOException
+     * @throws IOException if there’s an error during the rev walk
      */
     private Collection<TagCandidate> findTagCandidates(RevWalk revWalk,
             Map<RevCommit,RevTag> tagCommits, RevFlagSet allFlags)
@@ -218,7 +238,7 @@ public class JGitRepository extends AbstractGitRepository {
      * @param revWalk Repository information
      * @param candidates Collection of tag candidates
      * @param allFlags All flags that have been set so far
-     * @throws IOException
+     * @throws IOException if there’s an error during the rev walk
      */
     private void correctDistance(RevWalk revWalk, Collection<TagCandidate> candidates, RevFlagSet allFlags)
             throws IOException {
@@ -266,6 +286,49 @@ public class JGitRepository extends AbstractGitRepository {
         return new JGitCommit(this.getCommit(this.getHeadObject()));
     }
 
+    /**
+     * Creates a new JGit {@code IndexDiff} instance for this repository and
+     * worktree
+     *
+     * @return A new index diff
+     * @throws GitRepositoryException if the {@code HEAD} object cannot be
+     *         resolved
+     * @throws IOException if the index diff cannot be created
+     */
+    IndexDiff createIndexDiff() throws GitRepositoryException, IOException {
+        FileTreeIterator workTreeIterator = new FileTreeIterator(repository);
+        return new IndexDiff(repository, getHeadObject(), workTreeIterator);
+    }
+
+    /**
+     * Runs a diff operation for the repository and worktree
+     *
+     * @return A index diff for the for the current worktree state
+     * @throws GitRepositoryException if the index diff cannot be created
+     */
+    IndexDiff getIndexDiff() throws GitRepositoryException {
+        try {
+            IndexDiff indexDiff = createIndexDiff();
+            indexDiff.diff();
+
+            return indexDiff;
+        } catch (IOException e) {
+            throw new GitRepositoryException("Could not create repository diff.", e);
+        }
+    }
+
+    /**
+     * Creates a new JGit {@code FileRepositoryBuilder} instance
+     *
+     * @return A new repository builder
+     */
+    FileRepositoryBuilder getRepositoryBuiler() {
+        FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
+        repositoryBuilder.readEnvironment();
+
+        return repositoryBuilder;
+    }
+
     @Override
     public Map<String, GitTag> getTags()
             throws GitRepositoryException {
@@ -283,22 +346,20 @@ public class JGitRepository extends AbstractGitRepository {
     }
 
     @Override
+    public boolean isChecked() {
+        return checked;
+    }
+
+    @Override
     public boolean isDirty(boolean ignoreUntracked) throws GitRepositoryException {
-        try {
-            FileTreeIterator workTreeIterator = new FileTreeIterator(this.repository);
-            IndexDiff indexDiff = new IndexDiff(this.repository, this.getHeadObject(), workTreeIterator);
-            indexDiff.diff();
+        IndexDiff indexDiff = getIndexDiff();
 
-            return !ignoreUntracked && !indexDiff.getUntracked().isEmpty() ||
-                    !(indexDiff.getAdded().isEmpty() && indexDiff.getChanged().isEmpty() &&
-                    indexDiff.getRemoved().isEmpty() &&
-                    indexDiff.getMissing().isEmpty() &&
-                    indexDiff.getModified().isEmpty() &&
-                    indexDiff.getConflicting().isEmpty());
-
-        } catch (IOException e) {
-            throw new GitRepositoryException("Could not create repository diff.", e);
-        }
+        return !ignoreUntracked && !indexDiff.getUntracked().isEmpty() ||
+                !(indexDiff.getAdded().isEmpty() && indexDiff.getChanged().isEmpty() &&
+                indexDiff.getRemoved().isEmpty() &&
+                indexDiff.getMissing().isEmpty() &&
+                indexDiff.getModified().isEmpty() &&
+                indexDiff.getConflicting().isEmpty());
     }
 
     @Override

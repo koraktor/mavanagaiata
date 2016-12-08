@@ -13,11 +13,8 @@ import java.io.PrintStream;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import com.github.koraktor.mavanagaiata.git.GitRepository;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -30,8 +27,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(AbstractGitOutputMojo.class)
 public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> {
 
     GenericAbstractGitOutputMojo genericMojo() {

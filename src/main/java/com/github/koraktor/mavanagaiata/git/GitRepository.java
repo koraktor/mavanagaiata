@@ -82,6 +82,13 @@ public interface GitRepository extends AutoCloseable {
     GitCommit getHeadCommit() throws GitRepositoryException;
 
     /**
+     * Returns the Git ref used as the {@code HEAD} commit of the repository
+     *
+     * @return The ref used as {@code HEAD}
+     */
+    String getHeadRef();
+
+    /**
      * Returns a {@code MailMap} object that holds information from Git's
      * {@code .mailmap} file
      *
@@ -112,6 +119,14 @@ public interface GitRepository extends AutoCloseable {
      * @return The worktree of the repository
      */
     File getWorkTree();
+
+    /**
+     * Returns whether this repository instance has been checked
+     *
+     * @return {@code true} if this repository has already been checked
+     * @see #check
+     */
+    boolean isChecked();
 
     /**
      * Returns whether the worktree of the repository is in a clean state

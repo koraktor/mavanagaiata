@@ -9,20 +9,20 @@ package com.github.koraktor.mavanagaiata.mojo;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.apache.maven.shared.filtering.MavenFileFilter;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 import org.codehaus.plexus.interpolation.MapBasedValueSource;
 import org.codehaus.plexus.util.FileUtils;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -32,13 +32,10 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 /**
  * @author Sebastian Staudt
  */
-@PrepareForTest(GitInfoClassMojo.class)
-@RunWith(PowerMockRunner.class)
 public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
 
     private Date timestamp;
@@ -62,11 +59,14 @@ public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
         GitTagDescription description = mock(GitTagDescription.class);
         when(description.getNextTagName()).thenReturn("v1.2.3");
         when(description.toString()).thenReturn("v1.2.3-4-gdeadbeef");
-        this.timestamp = new Date(1275131880000L);
-        whenNew(Date.class).withNoArguments().thenReturn(this.timestamp);
         when(this.repository.describe()).thenReturn(description);
         when(this.repository.getBranch()).thenReturn("master");
         when(this.repository.getHeadCommit().getId()).thenReturn("deadbeefdeadbeefdeadbeefdeadbeef");
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        timestamp = calendar.getTime();
     }
 
     @Test
@@ -83,7 +83,7 @@ public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
         assertThat(valueSource.getValue("DIRTY").toString(), is(equalTo("false")));
         assertThat(valueSource.getValue("PACKAGE_NAME").toString(), is(equalTo("com.github.koraktor.mavanagaita")));
         assertThat(valueSource.getValue("TAG_NAME").toString(), is(equalTo("v1.2.3")));
-        assertThat(valueSource.getValue("TIMESTAMP").toString(), is(equalTo(dateFormat.format(this.timestamp))));
+        assertThat(dateFormat.parse(valueSource.getValue("TIMESTAMP").toString()), is(greaterThanOrEqualTo(timestamp)));
         assertThat(valueSource.getValue("VERSION").toString(), is(equalTo("1.2.3")));
     }
 
@@ -104,7 +104,7 @@ public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
         assertThat(valueSource.getValue("DIRTY").toString(), is(equalTo("true")));
         assertThat(valueSource.getValue("PACKAGE_NAME").toString(), is(equalTo("com.github.koraktor.mavanagaita")));
         assertThat(valueSource.getValue("TAG_NAME").toString(), is(equalTo("v1.2.3")));
-        assertThat(valueSource.getValue("TIMESTAMP").toString(), is(equalTo(dateFormat.format(this.timestamp))));
+        assertThat(dateFormat.parse(valueSource.getValue("TIMESTAMP").toString()), is(greaterThanOrEqualTo(timestamp)));
         assertThat(valueSource.getValue("VERSION").toString(), is(equalTo("1.2.3")));
     }
 
@@ -126,7 +126,7 @@ public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
         assertThat(valueSource.getValue("DIRTY").toString(), is(equalTo("true")));
         assertThat(valueSource.getValue("PACKAGE_NAME").toString(), is(equalTo("com.github.koraktor.mavanagaita")));
         assertThat(valueSource.getValue("TAG_NAME").toString(), is(equalTo("v1.2.3")));
-        assertThat(valueSource.getValue("TIMESTAMP").toString(), is(equalTo(dateFormat.format(this.timestamp))));
+        assertThat(dateFormat.parse(valueSource.getValue("TIMESTAMP").toString()), is(greaterThanOrEqualTo(timestamp)));
         assertThat(valueSource.getValue("VERSION").toString(), is(equalTo("1.2.3")));
     }
 

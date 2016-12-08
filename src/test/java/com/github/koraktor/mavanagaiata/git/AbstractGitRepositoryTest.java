@@ -49,12 +49,21 @@ public class AbstractGitRepositoryTest {
             return headCommit;
         }
 
+        public String getHeadRef() {
+            return null;
+        }
+
         public File getWorkTree() {
             return new File("test");
         }
 
         public Map<String, GitTag> getTags() throws GitRepositoryException {
             return null;
+        }
+
+        @Override
+        public boolean isChecked() {
+            return false;
         }
 
         public boolean isDirty(boolean dirtyCheckLoose) throws GitRepositoryException {
