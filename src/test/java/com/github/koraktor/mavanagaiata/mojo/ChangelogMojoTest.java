@@ -31,13 +31,13 @@ import static org.mockito.Mockito.when;
 
 public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
 
-    protected List<GitCommit> mockCommits;
+    private List<GitCommit> mockCommits;
 
-    private static GitCommit mockCommit(String id, String subject) {
+    private static GitCommit mockCommit(String id, String message) {
         GitCommit commit = mock(GitCommit.class);
         when(commit.getId()).thenReturn(id);
-        when(commit.getMessage()).thenReturn(subject);
-        when(commit.getMessageSubject()).thenReturn(subject);
+        when(commit.getMessage()).thenReturn(message);
+        when(commit.getMessageSubject()).thenReturn(message.split("\\n\\n")[0]);
         return commit;
     }
 
@@ -61,11 +61,10 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         this.mockCommits.add(mockCommit("6727d8c671ce9022047940ebb6568096b4362f90", "7th commit"));
         this.mockCommits.add(mockCommit("06cee865ab7f006a58be39f1d46f01dcb1880105", "6th commit"));
         this.mockCommits.add(mockCommit("99982df241980fdeebbb01216b5e80286163c62e", "5th commit"));
-        this.mockCommits.add(mockCommit("afb48c6be4278ba7f5e4197b80adbbb80c6df3a7", "4th commit"));
+        this.mockCommits.add(mockCommit("afb48c6be4278ba7f5e4197b80adbbb80c6df3a7", "4th commit\n\n[ci skip]"));
         this.mockCommits.add(mockCommit("5979a86e9bb091fc792529bee68ed222000ebc7e", "3rd commit"));
         this.mockCommits.add(mockCommit("b3b28176c1a05b76fb9231abe2f2cbbf15a86118", "2nd commit"));
         this.mockCommits.add(mockCommit("e82314841e1d990eeb33878cae55dadc8a11bf68", "1st commit"));
-        this.mockCommits.add(mockCommit("f82314841e1d990eeb33878cae55dadc8a11bf61", "[maven-jgitflow]"));
 
         HashMap<String, GitTag> tags = new HashMap<>();
         GitTag tag1 = mock(GitTag.class);
@@ -163,7 +162,6 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         this.assertOutputLine("- 3rd commit");
         this.assertOutputLine("- 2nd commit");
         this.assertOutputLine("- 1st commit");
-        this.assertOutputLine("- [maven-jgitflow]");
         this.assertOutputLine("");
         this.assertOutputLine("Git history for 1.0.0: https://github.com/koraktor/mavanagaiata/commits/1.0.0");
         this.assertOutputLine("");
@@ -207,14 +205,13 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         this.assertOutputLine(" * 3rd commit");
         this.assertOutputLine(" * 2nd commit");
         this.assertOutputLine(" * 1st commit");
-        this.assertOutputLine(" * [maven-jgitflow]");
         this.assertOutputLine("Footer");
         this.assertOutputLine(null);
     }
 
     @Test
     public void testSkipCommits() throws Exception {
-        mojo.skipCommitsMatching = "\\[maven-jgitflow\\]";
+        mojo.skipCommitsMatching = "\\[ci skip\\]";
         mojo.initConfiguration();
         mojo.generateOutput(repository, printStream);
 
@@ -230,7 +227,6 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         this.assertOutputLine("");
         this.assertOutputLine(" * 6th commit");
         this.assertOutputLine(" * 5th commit");
-        this.assertOutputLine(" * 4th commit");
         this.assertOutputLine("");
         this.assertOutputLine("Version 1.0.0 – 11/03/2006 07:08 PM +0000");
         this.assertOutputLine("");
@@ -262,7 +258,6 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         this.assertOutputLine(" * 3rd commit");
         this.assertOutputLine(" * 2nd commit");
         this.assertOutputLine(" * 1st commit");
-        this.assertOutputLine(" * [maven-jgitflow]");
         this.assertOutputLine("Footer");
         this.assertOutputLine(null);
     }
@@ -290,7 +285,6 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         this.assertOutputLine("");
         this.assertOutputLine(" * 2nd commit");
         this.assertOutputLine(" * 1st commit");
-        this.assertOutputLine(" * [maven-jgitflow]");
         this.assertOutputLine("Footer");
         this.assertOutputLine(null);
     }
@@ -316,7 +310,6 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         this.assertOutputLine(" * 3rd commit");
         this.assertOutputLine(" * 2nd commit");
         this.assertOutputLine(" * 1st commit");
-        this.assertOutputLine(" * [maven-jgitflow]");
         this.assertOutputLine("Footer");
         this.assertOutputLine(null);
     }

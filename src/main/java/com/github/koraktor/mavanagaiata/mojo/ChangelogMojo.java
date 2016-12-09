@@ -293,7 +293,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
         }
 
         protected void run() throws GitRepositoryException {
-            if (skipCommitsPattern != null && skipCommitsPattern.matcher(currentCommit.getMessage()).matches()) {
+            if (skipCommitsPattern != null && skipCommitsPattern.matcher(currentCommit.getMessage()).find()) {
                 return;
             }
 
