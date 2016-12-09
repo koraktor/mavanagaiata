@@ -29,7 +29,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelogMojo> {
+public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
 
     protected List<GitCommit> mockCommits;
 
@@ -81,16 +81,16 @@ public class GitChangelogMojoTest extends GitOutputMojoAbstractTest<GitChangelog
 
         when(this.repository.getBranch()).thenReturn("master");
         when(this.repository.getTags()).thenReturn(tags);
-        doAnswer(new Answer<GitChangelogMojo.ChangelogWalkAction>() {
-            public GitChangelogMojo.ChangelogWalkAction answer(InvocationOnMock invocation) throws Throwable {
-                GitChangelogMojo.ChangelogWalkAction walkAction = ((GitChangelogMojo.ChangelogWalkAction) invocation.getArguments()[0]);
+        doAnswer(new Answer<ChangelogMojo.ChangelogWalkAction>() {
+            public ChangelogMojo.ChangelogWalkAction answer(InvocationOnMock invocation) throws Throwable {
+                ChangelogMojo.ChangelogWalkAction walkAction = ((ChangelogMojo.ChangelogWalkAction) invocation.getArguments()[0]);
                 walkAction.setRepository(repository);
-                for (GitCommit commit : GitChangelogMojoTest.this.mockCommits) {
+                for (GitCommit commit : ChangelogMojoTest.this.mockCommits) {
                     walkAction.execute(commit);
                 }
                 return walkAction;
             }
-        }).when(this.repository).walkCommits(any(GitChangelogMojo.ChangelogWalkAction.class));
+        }).when(this.repository).walkCommits(any(ChangelogMojo.ChangelogWalkAction.class));
     }
 
     @Test

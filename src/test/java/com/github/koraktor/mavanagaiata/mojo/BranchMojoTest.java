@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import static org.mockito.Mockito.when;
 
-public class GitBranchMojoTest extends MojoAbstractTest<GitBranchMojo> {
+public class BranchMojoTest extends MojoAbstractTest<BranchMojo> {
 
     @Test
     public void testError() {

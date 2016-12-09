@@ -23,7 +23,7 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 @Mojo(name ="branch",
       defaultPhase = LifecyclePhase.INITIALIZE,
       threadSafe = true)
-public class GitBranchMojo extends AbstractGitMojo {
+public class BranchMojo extends AbstractGitMojo {
 
     /**
      * Information about the currently checked out Git branch is retrieved

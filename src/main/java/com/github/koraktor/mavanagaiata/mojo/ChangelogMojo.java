@@ -34,7 +34,7 @@ import com.github.koraktor.mavanagaiata.git.GitTag;
 @Mojo(name ="changelog",
       defaultPhase = LifecyclePhase.PROCESS_RESOURCES,
       threadSafe = true)
-public class GitChangelogMojo extends AbstractGitOutputMojo {
+public class ChangelogMojo extends AbstractGitOutputMojo {
 
     /**
      * The format for the branch line

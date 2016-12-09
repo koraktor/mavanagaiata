@@ -18,7 +18,7 @@ import com.github.koraktor.mavanagaiata.git.GitCommit;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class GitCommitMojoTest extends MojoAbstractTest<GitCommitMojo> {
+public class CommitMojoTest extends MojoAbstractTest<CommitMojo> {
 
     @Before
     public void setup() throws Exception{

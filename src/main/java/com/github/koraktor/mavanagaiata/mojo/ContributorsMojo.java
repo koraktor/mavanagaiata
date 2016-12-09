@@ -37,7 +37,7 @@ import com.github.koraktor.mavanagaiata.git.MailMap;
 @Mojo(name ="contributors",
       defaultPhase = LifecyclePhase.PROCESS_RESOURCES,
       threadSafe = true)
-public class GitContributorsMojo extends AbstractGitOutputMojo {
+public class ContributorsMojo extends AbstractGitOutputMojo {
 
     protected final static Comparator<Contributor> COUNT_COMPARATOR = new Comparator<Contributor>() {
         public int compare(Contributor contributor1, Contributor contributor2) {
@@ -225,9 +225,9 @@ public class GitContributorsMojo extends AbstractGitOutputMojo {
             this.firstCommitDate = commit.getAuthorDate();
             this.name            = commit.getAuthorName();
 
-            if (GitContributorsMojo.this.mailMap.exists()) {
-                this.emailAddress = GitContributorsMojo.this.mailMap.getCanonicalAuthorEmailAddress(commit);
-                this.name = GitContributorsMojo.this.mailMap.getCanonicalAuthorName(commit);
+            if (ContributorsMojo.this.mailMap.exists()) {
+                this.emailAddress = ContributorsMojo.this.mailMap.getCanonicalAuthorEmailAddress(commit);
+                this.name = ContributorsMojo.this.mailMap.getCanonicalAuthorName(commit);
             }
         }
 

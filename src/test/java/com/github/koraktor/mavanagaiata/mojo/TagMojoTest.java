@@ -15,7 +15,7 @@ import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class GitTagMojoTest extends MojoAbstractTest<GitTagMojo> {
+public class TagMojoTest extends MojoAbstractTest<TagMojo> {
 
     @Before
     @Override

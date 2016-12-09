@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Sebastian Staudt
  */
-public class GitInfoClassMojoTest extends MojoAbstractTest<GitInfoClassMojo> {
+public class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
 
     private Date timestamp;
 

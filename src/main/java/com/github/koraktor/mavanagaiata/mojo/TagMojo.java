@@ -24,7 +24,7 @@ import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 @Mojo(name ="tag",
       defaultPhase = LifecyclePhase.INITIALIZE,
       threadSafe = true)
-public class GitTagMojo extends AbstractGitMojo {
+public class TagMojo extends AbstractGitMojo {
 
     /**
      * This will first read all tags and walk the commit hierarchy down from

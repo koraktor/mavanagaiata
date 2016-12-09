@@ -24,7 +24,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContributorsMojo> {
+public class ContributorsMojoTest extends GitOutputMojoAbstractTest<ContributorsMojo> {
 
     @Before
     @Override
@@ -37,11 +37,11 @@ public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContri
         this.mojo.showEmail         = false;
         this.mojo.sort              = "count";
 
-        doAnswer(new Answer<GitContributorsMojo.ContributorsWalkAction>() {
+        doAnswer(new Answer<ContributorsMojo.ContributorsWalkAction>() {
             long dateCounter = new Date().getTime();
 
-            public GitContributorsMojo.ContributorsWalkAction answer(InvocationOnMock invocation) throws Throwable {
-                GitContributorsMojo.ContributorsWalkAction walkAction = ((GitContributorsMojo.ContributorsWalkAction) invocation.getArguments()[0]);
+            public ContributorsMojo.ContributorsWalkAction answer(InvocationOnMock invocation) throws Throwable {
+                ContributorsMojo.ContributorsWalkAction walkAction = ((ContributorsMojo.ContributorsWalkAction) invocation.getArguments()[0]);
                 walkAction.execute(this.mockCommit("Sebastian Staudt", "koraktor@gmail.com"));
                 walkAction.execute(this.mockCommit("John Doe", "john.doe@example.com"));
                 walkAction.execute(this.mockCommit("Joe Average", "joe.average@example.com"));
@@ -58,7 +58,7 @@ public class GitContributorsMojoTest extends GitOutputMojoAbstractTest<GitContri
                 when(commit.getAuthorDate()).thenReturn(new Date(dateCounter ++));
                 return commit;
             }
-        }).when(this.repository).walkCommits(any(GitContributorsMojo.ContributorsWalkAction.class));
+        }).when(this.repository).walkCommits(any(ContributorsMojo.ContributorsWalkAction.class));
     }
 
     @Test

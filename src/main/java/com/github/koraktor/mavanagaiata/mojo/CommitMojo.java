@@ -36,7 +36,7 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 @Mojo(name ="commit",
       defaultPhase = LifecyclePhase.INITIALIZE,
       threadSafe = true)
-public class GitCommitMojo extends AbstractGitMojo {
+public class CommitMojo extends AbstractGitMojo {
 
     /**
      * The ID (full and abbreviated) of the current Git commit out Git branch
