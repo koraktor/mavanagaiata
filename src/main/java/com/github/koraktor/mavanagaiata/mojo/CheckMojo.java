@@ -1,0 +1,102 @@
+/*
+ * This code is free software; you can redistribute it and/or modify it under
+ * the terms of the new BSD License.
+ *
+ * Copyright (c) 2016, Sebastian Staudt
+ */
+
+package com.github.koraktor.mavanagaiata.mojo;
+
+import java.util.regex.Pattern;
+
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+
+import com.github.koraktor.mavanagaiata.git.GitRepository;
+import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
+
+/**
+ * This goal checks various aspects of a Git repository to ensure it is in a
+ * valid state prior to a build
+ *
+ * @author Sebastian Staudt
+ * @since 0.8.0
+ */
+@Mojo(name = "check",
+      defaultPhase = LifecyclePhase.VALIDATE,
+      threadSafe = true)
+public class CheckMojo extends AbstractGitMojo {
+
+    Pattern commitMessagePattern;
+
+    @Parameter(property = "mavanagaiata.checkBranch")
+    String checkBranch;
+
+    @Parameter(property = "mavanagaiata.checkClean",
+                   defaultValue = "true")
+    boolean checkClean;
+
+    @Parameter(property = "mavanagaiata.checkCommitMessage")
+    String checkCommitMessage;
+
+    @Parameter(property = "mavanagaiata.requireTag",
+               defaultValue = "false")
+    boolean checkTag;
+
+    @Override
+    protected GitRepository init() throws MavanagaiataMojoException {
+        initConfiguration();
+
+        return super.init();
+    }
+
+    /**
+     * Compiles the commit message check regex
+     */
+    void initConfiguration() {
+        if (checkCommitMessage != null) {
+            commitMessagePattern = Pattern.compile(checkCommitMessage, Pattern.MULTILINE);
+        }
+    }
+
+    @Override
+    protected void run(GitRepository repository)
+            throws MavanagaiataMojoException {
+        try {
+            if (!head.equals(GitRepository.DEFAULT_HEAD)) {
+                getLog().warn("Your configuration specifies `" + head +
+                        "` (instead of `" + GitRepository.DEFAULT_HEAD + "`) " +
+                        "as the current commit. The results of these checks " +
+                        "might not match the actual repository state.");
+            }
+
+            if (checkBranch != null && !repository.getBranch().equals(checkBranch)) {
+                throw new CheckMojoException(CheckMojoException.Type.WRONG_BRANCH, repository.getBranch(), checkBranch);
+            }
+
+            if (checkClean && repository.isDirty(dirtyIgnoreUntracked)) {
+                throw new CheckMojoException(CheckMojoException.Type.UNCLEAN);
+            }
+
+            if (checkTag) {
+                if (!repository.describe().isTagged()) {
+                    throw new CheckMojoException(CheckMojoException.Type.UNTAGGED);
+                }
+
+                if (!checkClean && repository.isDirty(dirtyIgnoreUntracked)) {
+                    getLog().warn("The current commit (`" + head +
+                            "`) is tagged, but the worktree is unclean. This " +
+                            "is probably undesirable.");
+                }
+            }
+
+            if (commitMessagePattern != null && !commitMessagePattern.matcher(repository.getHeadCommit().getMessage()).find()) {
+                throw new CheckMojoException(CheckMojoException.Type.WRONG_COMMIT_MSG, checkCommitMessage);
+            }
+        } catch (GitRepositoryException e) {
+            throw new MavanagaiataMojoException("Error while checking repository.", e);
+        }
+    }
+
+}

@@ -161,7 +161,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
                 run(repository);
             }
         } catch (MavanagaiataMojoException e) {
-            if (failGracefully) {
+            if (failGracefully || e.isGraceful()) {
                 throw new MojoFailureException(e.getMessage(), e);
             }
 

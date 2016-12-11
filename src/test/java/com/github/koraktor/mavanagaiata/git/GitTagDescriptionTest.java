@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012, Sebastian Staudt
+ * Copyright (c) 2012-2016, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
@@ -39,6 +39,7 @@ public class GitTagDescriptionTest {
         GitTagDescription description = new GitTagDescription(this.repository, this.commit, this.tag, 3);
 
         assertThat(description.getNextTagName(), is(equalTo("1.0.0")));
+        assertThat(description.isTagged(), is(false));
         assertThat(description.toString(), is(equalTo("1.0.0-3-gdeadbeef")));
     }
 
@@ -47,6 +48,7 @@ public class GitTagDescriptionTest {
         GitTagDescription description = new GitTagDescription(this.repository, this.commit, null, -1);
 
         assertThat(description.getNextTagName(), is(equalTo("")));
+        assertThat(description.isTagged(), is(false));
         assertThat(description.toString(), is(equalTo("deadbeef")));
     }
 
@@ -55,6 +57,7 @@ public class GitTagDescriptionTest {
         GitTagDescription description = new GitTagDescription(this.repository, this.commit, this.tag, 0);
 
         assertThat(description.getNextTagName(), is(equalTo("1.0.0")));
+        assertThat(description.isTagged(), is(true));
         assertThat(description.toString(), is(equalTo("1.0.0")));
     }
 
