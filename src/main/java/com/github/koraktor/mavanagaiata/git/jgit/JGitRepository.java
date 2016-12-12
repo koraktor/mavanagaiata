@@ -179,7 +179,7 @@ public class JGitRepository extends AbstractGitRepository {
             GitTag tag = new JGitTag(bestCandidate.commit);
 
             return new GitTagDescription(this, this.getHeadCommit(), tag, bestCandidate.distance);
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new GitRepositoryException("Could not describe current commit.", e);
         }
     }
@@ -267,7 +267,7 @@ public class JGitRepository extends AbstractGitRepository {
                     .abbreviate(rawCommit).name();
         } catch (IOException e) {
             throw new GitRepositoryException(
-                String.format("Commit \"%s\" could not be abbreviated.", this.getHeadObject().getName()),
+                String.format("Commit \"%s\" could not be abbreviated.", commit.getId()),
                 e);
         }
     }

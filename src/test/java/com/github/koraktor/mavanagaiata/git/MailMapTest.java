@@ -21,7 +21,7 @@ import org.mockito.stubbing.Answer;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -56,6 +56,18 @@ public class MailMapTest {
         assertThat(mailMap.getCanonicalMail("Test", "oldmail2@example.com"), is(equalTo("newmail2@example.com")));
         assertThat(mailMap.getCanonicalMail("Test", "oldmail3@example.com"), is(equalTo("newmail3@example.com")));
         assertThat(mailMap.getCanonicalMail("Test", "unknown@example.com"), is(equalTo("unknown@example.com")));
+
+        GitCommit commit1 = mock(GitCommit.class);
+        when(commit1.getAuthorName()).thenReturn("Test");
+        when(commit1.getAuthorEmailAddress()).thenReturn("oldmail@example.com");
+        GitCommit commit2 = mock(GitCommit.class);
+        when(commit2.getCommitterName()).thenReturn("Unknown");
+        when(commit2.getCommitterEmailAddress()).thenReturn("unknown@example.com");
+
+        assertThat(mailMap.getCanonicalAuthorEmailAddress(commit1), is(equalTo("newmail@example.com")));
+        assertThat(mailMap.getCanonicalAuthorName(commit1), is(equalTo("Test")));
+        assertThat(mailMap.getCanonicalCommitterEmailAddress(commit2), is(equalTo("unknown@example.com")));
+        assertThat(mailMap.getCanonicalCommitterName(commit2), is(equalTo("Unknown")));
     }
 
     @Test
@@ -72,6 +84,18 @@ public class MailMapTest {
         assertThat(mailMap.getCanonicalName("Test", "mail2@example.com"), is(equalTo("Test 2")));
         assertThat(mailMap.getCanonicalName("Test", "mail3@example.com"), is(equalTo("Test 3")));
         assertThat(mailMap.getCanonicalName("Unknown", "mail@example.com"), is(equalTo("Unknown")));
+
+        GitCommit commit1 = mock(GitCommit.class);
+        when(commit1.getAuthorName()).thenReturn("Test");
+        when(commit1.getAuthorEmailAddress()).thenReturn("mail1@example.com");
+        GitCommit commit2 = mock(GitCommit.class);
+        when(commit2.getCommitterName()).thenReturn("Unknown");
+        when(commit2.getCommitterEmailAddress()).thenReturn("mail@example.com");
+
+        assertThat(mailMap.getCanonicalAuthorEmailAddress(commit1), is(equalTo("mail1@example.com")));
+        assertThat(mailMap.getCanonicalAuthorName(commit1), is(equalTo("Test 1")));
+        assertThat(mailMap.getCanonicalCommitterEmailAddress(commit2), is(equalTo("mail@example.com")));
+        assertThat(mailMap.getCanonicalCommitterName(commit2), is(equalTo("Unknown")));
     }
 
     @Test
@@ -79,10 +103,10 @@ public class MailMapTest {
         MailMap mailMap = new MailMap(repo);
 
         assertThat(mailMap.exists, is(false));
-        assertThat(mailMap.mailToMailMap, is(nullValue()));
-        assertThat(mailMap.mailToNameMap, is(nullValue()));
-        assertThat(mailMap.mailToNameAndMailMap, is(nullValue()));
-        assertThat(mailMap.nameAndMailToNameAndMailMap, is(nullValue()));
+        assertThat(mailMap.mailToMailMap, is(instanceOf(Map.class)));
+        assertThat(mailMap.mailToNameMap, is(instanceOf(Map.class)));
+        assertThat(mailMap.mailToNameAndMailMap, is(instanceOf(Map.class)));
+        assertThat(mailMap.nameAndMailToNameAndMailMap, is(instanceOf(Map.class)));
         assertThat(mailMap.repository, is(repo));
     }
 
@@ -131,6 +155,7 @@ public class MailMapTest {
     @Test
     public void testParseFromFile() throws Exception {
         MailMap mailMap = new MailMap(repo);
+        mailMap.mailToMailMap.put("old@example.com", "Old");
         File mailMapFile = new File(this.getClass().getResource("/.mailmap").getFile());
 
         mailMap.parseMailMap(mailMapFile);

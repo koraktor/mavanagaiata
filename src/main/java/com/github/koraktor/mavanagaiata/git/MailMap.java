@@ -57,6 +57,11 @@ public class MailMap {
      */
     MailMap(GitRepository repository) {
         this.repository = repository;
+
+        mailToMailMap = new HashMap<>();
+        mailToNameMap = new HashMap<>();
+        mailToNameAndMailMap = new HashMap<>();
+        nameAndMailToNameAndMailMap = new HashMap<>();
     }
 
     /**
@@ -206,10 +211,10 @@ public class MailMap {
      * @throws IOException if the {@code .mailmap} file cannot be read
      */
     void parseMailMap(File mailMap) throws IOException {
-        mailToMailMap = new HashMap<>();
-        mailToNameMap = new HashMap<>();
-        mailToNameAndMailMap = new HashMap<>();
-        nameAndMailToNameAndMailMap = new HashMap<>();
+        mailToMailMap.clear();
+        mailToNameMap.clear();
+        mailToNameAndMailMap.clear();
+        nameAndMailToNameAndMailMap.clear();
 
         try (BufferedReader mailMapReader = new BufferedReader(new FileReader(mailMap))) {
             String line;

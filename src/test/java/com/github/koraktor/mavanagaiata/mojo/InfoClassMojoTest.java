@@ -8,6 +8,7 @@
 package com.github.koraktor.mavanagaiata.mojo;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,6 +19,7 @@ import org.apache.maven.shared.filtering.MavenFileFilter;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 import org.codehaus.plexus.interpolation.MapBasedValueSource;
 import org.codehaus.plexus.util.FileUtils;
@@ -26,10 +28,12 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -67,6 +71,35 @@ public class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         timestamp = calendar.getTime();
+    }
+
+    @Test
+    public void testFailureCreateSource() throws Exception {
+        Throwable exception = new FileNotFoundException();
+        mojo = spy(mojo);
+        when(mojo.getTemplateSource()).thenThrow(exception);
+
+        try {
+            mojo.run(repository);
+            fail("No exception thrown.");
+        } catch (MavanagaiataMojoException e) {
+            assertThat(e.getCause(), is(exception));
+            assertThat(e.getMessage(), is(equalTo("Could not create info class source")));
+        }
+    }
+
+    @Test
+    public void testFailureRepository() throws Exception {
+        Throwable exception = new GitRepositoryException("");
+        when(repository.describe()).thenThrow(exception);
+
+        try {
+            mojo.run(repository);
+            fail("No exception thrown.");
+        } catch (MavanagaiataMojoException e) {
+            assertThat(e.getCause(), is(exception));
+            assertThat(e.getMessage(), is(equalTo("Could not get all information from repository")));
+        }
     }
 
     @Test

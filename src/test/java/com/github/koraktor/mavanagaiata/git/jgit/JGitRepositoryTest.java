@@ -135,6 +135,26 @@ public class JGitRepositoryTest {
     }
 
     @Test
+    public void testBuildRepositoryFailure() throws Exception {
+        repository = spy(repository);
+        FileRepositoryBuilder repositoryBuilder = mock(FileRepositoryBuilder.class);
+        when(repository.getRepositoryBuiler()).thenReturn(repositoryBuilder);
+
+        Throwable exception = mock(IOException.class);
+        when(repositoryBuilder.build()).thenThrow(exception);
+
+        try {
+            File gitDir = mock(File.class);
+            when(gitDir.exists()).thenReturn(true);
+            repository.buildRepository(null, gitDir);
+            fail("No exception thrown.");
+        } catch (GitRepositoryException e) {
+            assertThat(e.getCause(), is(exception));
+            assertThat(e.getMessage(), is(equalTo("Could not initialize repository")));
+        }
+    }
+
+    @Test
     public void testCheckFails() throws GitRepositoryException {
         File gitDir = mock(File.class);
         when(gitDir.getAbsolutePath()).thenReturn("/some/repo/.git");
@@ -411,6 +431,23 @@ public class JGitRepositoryTest {
     }
 
     @Test
+    public void testGetAbbreviatedCommitIdFailure() throws Exception {
+        RevCommit rawCommit = createCommit();
+        JGitCommit commit = new JGitCommit(rawCommit);
+
+        Throwable exception = mock(IOException.class);
+        when(this.repo.getObjectDatabase().newReader().abbreviate(rawCommit)).thenThrow(exception);
+
+        try {
+            repository.getAbbreviatedCommitId(commit);
+            fail("No exception thrown.");
+        } catch (GitRepositoryException e) {
+            assertThat(e.getCause(), is(exception));
+            assertThat(e.getMessage(), is(equalTo("Commit \"" + commit.getId() + "\" could not be abbreviated.")));
+        }
+    }
+
+    @Test
     public void testGetBranch() throws Exception {
         when(this.repo.getBranch()).thenReturn("master");
 
@@ -592,6 +629,13 @@ public class JGitRepositoryTest {
         when(indexDiff.getAdded()).thenReturn(added);
 
         assertThat(this.repository.isDirty(true), is(true));
+    }
+
+    @Test
+    public void testIsOnUnbornBranch() throws Exception {
+        when(repo.resolve("HEAD")).thenReturn(ObjectId.zeroId());
+
+        assertThat(repository.isOnUnbornBranch(), is(true));
     }
 
     @Test
