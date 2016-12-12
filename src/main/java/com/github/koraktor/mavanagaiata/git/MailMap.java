@@ -129,7 +129,7 @@ public class MailMap {
      * @see #getCanonicalMail(String, String)
      */
     public String getCanonicalAuthorEmailAddress(GitCommit commit) {
-        return this.getCanonicalMail(commit.getCommitterName(), commit.getCommitterEmailAddress());
+        return this.getCanonicalMail(commit.getAuthorName(), commit.getAuthorEmailAddress());
     }
 
     /**
