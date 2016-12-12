@@ -128,8 +128,16 @@
                         </configuration>
                         <executions>
                             <execution>
+                                <id>check</id>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <configuration>
+                                    <requireTagged>true</requireTagged>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>git-info</id>
-                                <phase>generate-sources</phase>
                                 <goals>
                                     <goal>info-class</goal>
                                 </goals>
