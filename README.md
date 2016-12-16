@@ -3,6 +3,7 @@ Mavanagaiata
 
 [![Build Status](https://travis-ci.org/koraktor/mavanagaiata.svg?branch=master)](https://travis-ci.org/koraktor/mavanagaiata)
 [![Coverage Status](https://coveralls.io/repos/koraktor/mavanagaiata/badge.svg?branch=master&service=github)](https://coveralls.io/github/koraktor/mavanagaiata)
+[![Maven Release](https://img.shields.io/maven-central/v/com.github.koraktor/mavanagaiata.svg)](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.github.koraktor%22%20AND%20a%3A%22mavanagaiata%22)
 
 Mavanagaiata – \[maˈvanaˈɡaːjaˈta\] – is a Maven plugin providing information
 about the Git repository of your project.
@@ -13,8 +14,9 @@ about the Git repository of your project.
 
 ## Dependencies
 
- * Apache Commons IO 2.4
- * JGit 3.7.1
+ * Apache Commons IO 2.5
+ * JGit 4.5.0
+ * Maven Filtering 1.1
 
 ## Installation
 
@@ -112,10 +114,10 @@ included LICENSE file.
 ## See Also
 
 * [Mavanagaiata home](https://koraktor.de/mavanagaiata)
-* [GitHub project page](https://github.com/koraktor/mavanagaiata)
+* [GitHub project page][1]
 * [Gitter chat](https://gitter.im/koraktor/mavanagaiata)
 * [Google group](http://groups.google.com/group/mavanagaiata)
-* [Ohloh profile](http://www.ohloh.net/projects/mavanagaiata)
+* [Open Hub profile](https://www.openhub.net/p/mavanagaiata)
 
  [1]: https://github.com/koraktor/mavanagaiata
  [2]: https://github.com/koraktor/mavanagaiata/issues
