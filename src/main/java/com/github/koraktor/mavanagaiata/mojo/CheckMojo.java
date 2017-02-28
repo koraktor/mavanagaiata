@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2016, Sebastian Staudt
+ * Copyright (c) 2016-2017, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -19,6 +19,14 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 /**
  * This goal checks various aspects of a Git repository to ensure it is in a
  * valid state prior to a build
+ * <p>
+ * The following checks are available:
+ * <ul>
+ * <li>Clean working directory (enabled by default)
+ * <li>Tagged commit
+ * <li>Branch name
+ * <li>Commit message
+ * </ul>
  *
  * @author Sebastian Staudt
  * @since 0.8.0
@@ -30,16 +38,28 @@ public class CheckMojo extends AbstractGitMojo {
 
     Pattern commitMessagePattern;
 
+    /**
+     * Check whether the current branch is the given branch
+     */
     @Parameter(property = "mavanagaiata.checkBranch")
     String checkBranch;
 
+    /**
+     * Check if the working directory is clean
+     */
     @Parameter(property = "mavanagaiata.checkClean",
                    defaultValue = "true")
     boolean checkClean;
 
+    /**
+     * Check whether the message of the current commit matches the given format
+     */
     @Parameter(property = "mavanagaiata.checkCommitMessage")
     String checkCommitMessage;
 
+    /**
+     * Check whether the current commit is tagged
+     */
     @Parameter(property = "mavanagaiata.requireTag",
                defaultValue = "false")
     boolean checkTag;
