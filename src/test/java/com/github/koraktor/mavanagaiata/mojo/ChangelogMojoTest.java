@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2016, Sebastian Staudt
+ * Copyright (c) 2011-2017, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -24,7 +24,7 @@ import org.mockito.stubbing.Answer;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

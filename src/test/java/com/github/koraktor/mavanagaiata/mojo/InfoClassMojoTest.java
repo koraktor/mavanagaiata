@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2016, Sebastian Staudt
+ * Copyright (c) 2012-2017, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -170,7 +170,5 @@ public class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
         File targetFile = new File(this.mojo.outputDirectory, "com/github/koraktor/mavanagaita/GitInfo.java");
         verify(this.mojo.fileFilter).copyFile(any(File.class), eq(targetFile), eq(true), anyListOf(FileUtils.FilterWrapper.class), eq("UTF-8"), eq(true));
     }
-
-
 
 }
