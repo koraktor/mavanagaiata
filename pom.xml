@@ -205,7 +205,7 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>2.2.1</version>
+            <version>3.3.9</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

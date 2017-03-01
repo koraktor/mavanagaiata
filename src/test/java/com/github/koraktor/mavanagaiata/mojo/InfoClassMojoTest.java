@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.apache.maven.shared.filtering.MavenFileFilter;
+import org.apache.maven.shared.utils.io.FileUtils;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,8 +23,8 @@ import org.junit.Test;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 import org.codehaus.plexus.interpolation.MapBasedValueSource;
-import org.codehaus.plexus.util.FileUtils;
 
+import static org.apache.commons.io.FileUtils.forceDeleteOnExit;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -55,7 +56,7 @@ public class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
         this.mojo.outputDirectory = File.createTempFile("mavanagaiata-tests", null);
         this.mojo.outputDirectory.delete();
         this.mojo.outputDirectory.mkdirs();
-        FileUtils.forceDeleteOnExit(this.mojo.outputDirectory);
+        forceDeleteOnExit(mojo.outputDirectory);
 
         when(this.mojo.project.getVersion()).thenReturn("1.2.3");
 

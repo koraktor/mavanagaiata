@@ -27,15 +27,17 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.shared.filtering.MavenFileFilter;
 import org.apache.maven.shared.filtering.MavenFilteringException;
+import org.apache.maven.shared.utils.io.FileUtils;
 
 import com.github.koraktor.mavanagaiata.git.GitRepository;
 import org.codehaus.plexus.interpolation.InterpolatorFilterReader;
 import org.codehaus.plexus.interpolation.MapBasedValueSource;
 import org.codehaus.plexus.interpolation.RegexBasedInterpolator;
-import org.codehaus.plexus.util.FileUtils;
 
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
+
+import static org.apache.commons.io.FileUtils.forceDeleteOnExit;
 
 /**
  * This goal generates the source code for a Java class with Git information
@@ -122,7 +124,7 @@ public class InfoClassMojo extends AbstractGitMojo {
             File tempSourceDir = File.createTempFile("mavanagaita-info-class", null);
             tempSourceDir.delete();
             tempSourceDir.mkdir();
-            FileUtils.forceDeleteOnExit(tempSourceDir);
+            forceDeleteOnExit(tempSourceDir);
             String sourceFileName = this.className + ".java";
             File tempSourceFile = new File(tempSourceDir, sourceFileName);
             tempSourceFile.createNewFile();
