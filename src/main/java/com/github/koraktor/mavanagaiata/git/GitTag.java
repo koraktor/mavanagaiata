@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012, Sebastian Staudt
+ * Copyright (c) 2012-2017, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
@@ -38,5 +38,10 @@ public interface GitTag {
      * @return The timezone of this tag
      */
     TimeZone getTimeZone();
+
+    /**
+     * Load tag meta data
+     */
+    void load(GitRepository repository) throws GitRepositoryException;
 
 }

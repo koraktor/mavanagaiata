@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2016, Sebastian Staudt
+ * Copyright (c) 2011-2017, Sebastian Staudt
  *               2016, Jeff Kreska
  */
 
@@ -308,8 +308,9 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
                     }
                 }
 
-                this.dateFormatter.setTimeZone(this.currentTag.getTimeZone());
-                String dateString = this.dateFormatter.format(this.currentTag.getDate());
+                currentTag.load(repository);
+                dateFormatter.setTimeZone(currentTag.getTimeZone());
+                String dateString = dateFormatter.format(currentTag.getDate());
 
                 String tagLine = String.format(tagFormat, this.currentTag.getName(), dateString);
                 if (this.firstCommit && tagLine.startsWith("\n")) {

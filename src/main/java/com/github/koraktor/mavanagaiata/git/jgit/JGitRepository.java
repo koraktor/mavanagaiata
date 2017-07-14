@@ -460,7 +460,7 @@ public class JGitRepository extends AbstractGitRepository {
         try {
             for (Map.Entry<String, Ref> tag : tagRefs.entrySet()) {
                 try {
-                    RevTag revTag = revWalk.parseTag(tag.getValue().getObjectId());
+                    RevTag revTag = revWalk.lookupTag(tag.getValue().getObjectId());
                     RevObject object = revWalk.peel(revTag);
                     if (!(object instanceof RevCommit)) {
                         continue;

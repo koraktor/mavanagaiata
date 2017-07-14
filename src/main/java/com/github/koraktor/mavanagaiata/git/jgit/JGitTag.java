@@ -2,16 +2,20 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2016, Sebastian Staudt
+ * Copyright (c) 2012-2017, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git.jgit;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.revwalk.RevTag;
 
+import com.github.koraktor.mavanagaiata.git.GitRepository;
+import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 
 /**
@@ -22,6 +26,8 @@ import com.github.koraktor.mavanagaiata.git.GitTag;
 public class JGitTag implements GitTag {
 
     protected RevTag tag;
+
+    protected PersonIdent taggerIdent;
 
     /**
      * Creates a new instance from a JGit tag object
@@ -39,7 +45,7 @@ public class JGitTag implements GitTag {
     }
 
     public Date getDate() {
-        return this.tag.getTaggerIdent().getWhen();
+        return taggerIdent.getWhen();
     }
 
     public String getName() {
@@ -47,7 +53,23 @@ public class JGitTag implements GitTag {
     }
 
     public TimeZone getTimeZone() {
-        return this.tag.getTaggerIdent().getTimeZone();
+        return taggerIdent.getTimeZone();
+    }
+
+    @Override
+    public void load(GitRepository repository) throws GitRepositoryException {
+        if (taggerIdent != null) {
+            return;
+        }
+
+        try {
+            ((JGitRepository) repository).getRevWalk().parseBody(tag);
+        } catch (IOException e) {
+            throw new GitRepositoryException("Failed to load tag meta data.", e);
+        }
+
+        taggerIdent = tag.getTaggerIdent();
+        tag.disposeBody();
     }
 
 }
