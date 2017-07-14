@@ -394,15 +394,13 @@ public class JGitRepository extends AbstractGitRepository {
      * @throws GitRepositoryException if the commit object cannot be retrieved
      */
     protected RevCommit getCommit(ObjectId id) throws GitRepositoryException {
-        if (this.commitCache.containsKey(id)) {
-            return this.commitCache.get(id);
+        if (commitCache.containsKey(id)) {
+            return commitCache.get(id);
         }
 
         try {
-            RevWalk revWalk = this.getRevWalk();
-            RevCommit commit = revWalk.parseCommit(id);
-
-            this.commitCache.put(id, commit);
+            RevCommit commit = repository.parseCommit(id);
+            commitCache.put(id, commit);
 
             return commit;
         } catch (IOException e) {
