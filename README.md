@@ -10,7 +10,7 @@ about the Git repository of your project.
 
 ## Requirements
 
- * Maven 2.2.1 or newer
+ * Maven 3.0.5 or newer
 
 ## Dependencies
 
