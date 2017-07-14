@@ -17,7 +17,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 
-import org.eclipse.jgit.errors.AmbiguousObjectException;
+import org.mockito.InOrder;
+
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.lib.AbbreviatedObjectId;
 import org.eclipse.jgit.lib.IndexDiff;
@@ -40,10 +41,10 @@ import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
-import org.mockito.InOrder;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -69,6 +70,7 @@ public class JGitRepositoryTest {
     @Before
     public void setup() throws Exception {
         repository = new JGitRepository();
+        repository.setHeadRef("HEAD");
         repository.repository = repo = mock(Repository.class, RETURNS_DEEP_STUBS);
     }
 
@@ -503,28 +505,11 @@ public class JGitRepositoryTest {
 
     @Test
     public void testGetHeadObject() throws Exception {
-        this.repository.setHeadRef("HEAD");
         ObjectId head = mock(ObjectId.class);
-        when(this.repo.resolve("HEAD")).thenReturn(head);
+        when(repo.resolve("HEAD")).thenReturn(head);
 
-        assertThat(this.repository.getHeadObject(), is(head));
-        assertThat(this.repository.headObject, is(head));
-    }
-
-    @Test
-    public void testGetHeadObjectAmbiguous() throws Exception {
-        Throwable exception = mock(AmbiguousObjectException.class);
-
-        repository.setHeadRef("something");
-        when(repo.resolve("something")).thenThrow(exception);
-
-        try {
-            repository.getHeadObject();
-            fail("No exception thrown.");
-        } catch (GitRepositoryException e) {
-            assertThat(e.getCause(), is(exception));
-            assertThat(e.getMessage(), is(equalTo("Ref \"something\" is ambiguous.")));
-        }
+        assertThat(repository.getHeadObject(), is(head));
+        assertThat(repository.headObject, is(head));
     }
 
     @Test
@@ -532,7 +517,7 @@ public class JGitRepositoryTest {
         Throwable exception = mock(IOException.class);
 
         repository.setHeadRef("broken");
-        when(repo.resolve("broken")).thenThrow(exception);
+        when(repo.findRef("broken")).thenThrow(exception);
 
         try {
             repository.getHeadObject();
@@ -544,24 +529,15 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testGetHeadObjectInvalidHead() throws Exception {
-        this.repository.setHeadRef("HEAD");
-        when(this.repo.resolve("HEAD")).thenReturn(null);
-
-
-        assertThat(repository.getHeadObject(), is(equalTo(ObjectId.zeroId())));
-    }
-
-    @Test
     public void testGetHeadObjectInvalidRef() throws Exception {
-        this.repository.setHeadRef("master");
-        when(this.repo.resolve("master")).thenReturn(null);
+        when(repo.findRef("HEAD")).thenReturn(null);
 
         try {
-            this.repository.getHeadObject();
-            fail("No exception thrown");
+            repository.getHeadObject();
+            fail("No exception thrown.");
         } catch (GitRepositoryException e) {
-            assertThat(e.getMessage(), is(equalTo("Ref \"master\" is invalid.")));
+            assertThat(e.getCause(), is(nullValue()));
+            assertThat(e.getMessage(), is(equalTo("Ref \"HEAD\" is invalid.")));
         }
     }
 
@@ -681,10 +657,10 @@ public class JGitRepositoryTest {
         RevCommit commit1 = this.createCommit();
         RevObject commit2 = this.createCommit();
         when(tagRef1.getObjectId()).thenReturn(tag1);
-        when(revWalk.parseTag(tag1)).thenReturn(tag1);
+        when(revWalk.lookupTag(tag1)).thenReturn(tag1);
         when(revWalk.peel(tag1)).thenReturn(commit1);
         when(tagRef2.getObjectId()).thenReturn(tag2);
-        when(revWalk.parseTag(tag2)).thenReturn(tag2);
+        when(revWalk.lookupTag(tag2)).thenReturn(tag2);
         when(revWalk.peel(tag2)).thenReturn(commit2);
 
         Map<String, RevTag> tags = new HashMap<>();

@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2016, Sebastian Staudt
+ * Copyright (c) 2012-2017, Sebastian Staudt
  *               2015, Kay Hannay
  */
 
@@ -17,7 +17,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.jgit.errors.AmbiguousObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.lib.ObjectId;
@@ -35,7 +34,6 @@ import org.eclipse.jgit.treewalk.FileTreeIterator;
 import com.github.koraktor.mavanagaiata.git.AbstractGitRepository;
 import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitCommit;
-import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
@@ -417,29 +415,27 @@ public class JGitRepository extends AbstractGitRepository {
      * @throws GitRepositoryException if the ref cannot be resolved
      */
     protected ObjectId getHeadObject() throws GitRepositoryException {
-        if (this.headObject == null) {
+        if (headObject == null) {
             try {
-                this.headObject = this.repository.resolve(this.headRef);
-            } catch (AmbiguousObjectException e) {
-                throw new GitRepositoryException(
-                    String.format("Ref \"%s\" is ambiguous.", this.headRef),
-                    e);
+                Ref head = repository.findRef(headRef);
+                if (head == null) {
+                    throw new GitRepositoryException(
+                            String.format("Ref \"%s\" is invalid.", headRef));
+                }
+
+                headObject = head.getObjectId();
             } catch (IOException e) {
                 throw new GitRepositoryException(
-                    String.format("Ref \"%s\" could not be resolved.", this.headRef),
+                    String.format("Ref \"%s\" could not be resolved.", headRef),
                     e);
             }
         }
 
-        if (this.headObject == null) {
-            if (headRef.equals(GitRepository.DEFAULT_HEAD)) {
-                headObject = ObjectId.zeroId();
-            } else {
-                throw new GitRepositoryException("Ref \"" + headRef + "\" is invalid.");
-            }
+        if (headObject == null) {
+            headObject = ObjectId.zeroId();
         }
 
-        return this.headObject;
+        return headObject;
     }
 
     /**
