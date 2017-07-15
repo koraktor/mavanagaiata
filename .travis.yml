@@ -10,6 +10,10 @@ notifications:
   webhooks:
     urls:
       - https://webhooks.gitter.im/endpoint/c6cc872b193cbad86273/529f9078ed5ab0b3bf04ef9a/
-script: mvn test -Dsurefire.useFile=false
-after_success:
-  - mvn clean cobertura:cobertura coveralls:report -Dmaven.plugin.skip=true -B
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+script:
+  - mvn cobertura:cobertura -Dsurefire.useFile=false
+after_build:
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
