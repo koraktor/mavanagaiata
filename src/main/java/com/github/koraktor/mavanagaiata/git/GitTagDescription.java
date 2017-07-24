@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2016, Sebastian Staudt
+ * Copyright (c) 2012-2017, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
@@ -15,13 +15,11 @@ package com.github.koraktor.mavanagaiata.git;
  */
 public class GitTagDescription {
 
-    protected String abbreviatedCommitId;
+    private String abbreviatedCommitId;
 
-    protected GitCommit commit;
+    private int distance;
 
-    protected int distance;
-
-    protected GitTag nextTag;
+    private GitTag nextTag;
 
     /**
      * Create a new description for the given information
@@ -36,7 +34,6 @@ public class GitTagDescription {
                              GitTag nextTag, int distance)
             throws GitRepositoryException {
         this.abbreviatedCommitId = repository.getAbbreviatedCommitId(commit);
-        this.commit              = commit;
         this.distance            = distance;
         this.nextTag             = nextTag;
     }
