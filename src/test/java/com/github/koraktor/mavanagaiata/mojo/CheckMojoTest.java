@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2016, Sebastian Staudt
+ * Copyright (c) 2016-2017, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -52,6 +52,7 @@ public class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
             fail("No exception thrown.");
         } catch (CheckMojoException e) {
             assertThat(e.type, is(CheckMojoException.Type.WRONG_BRANCH));
+            assertThat(e.isGraceful(), is(true));
         }
     }
 
@@ -75,6 +76,7 @@ public class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
             fail("No exception thrown.");
         } catch (CheckMojoException e) {
             assertThat(e.type, is(CheckMojoException.Type.UNCLEAN));
+            assertThat(e.isGraceful(), is(true));
         }
     }
 
@@ -99,6 +101,7 @@ public class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
             fail("No exception thrown.");
         } catch (CheckMojoException e) {
             assertThat(e.type, is(CheckMojoException.Type.WRONG_COMMIT_MSG));
+            assertThat(e.isGraceful(), is(true));
         }
     }
 
@@ -123,6 +126,7 @@ public class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
             fail("No exception thrown.");
         } catch (CheckMojoException e) {
             assertThat(e.type, is(CheckMojoException.Type.UNTAGGED));
+            assertThat(e.isGraceful(), is(true));
         }
     }
 
@@ -162,6 +166,7 @@ public class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
         } catch (MavanagaiataMojoException e) {
             assertThat(e.getCause(), is(exception));
             assertThat(e.getMessage(), is(equalTo("Error while checking repository.")));
+            assertThat(e.isGraceful(), is(false));
         }
     }
 
