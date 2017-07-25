@@ -80,15 +80,20 @@ abstract class AbstractGitOutputMojo extends AbstractGitMojo {
      * and a new <code>PrintStream</code> for that file is created.
      *
      * @throws MavanagaiataMojoException if the file specified by
-     *         <code>outputFile</code> cannot be opened for writing
+     *         <code>outputFile</code> cannot be opened for writing or the
+     *         target directory cannot be created
      */
     @Override
     protected final void run(GitRepository repository) throws MavanagaiataMojoException {
         if (getOutputFile() == null) {
             generateOutput(repository, System.out);
         } else {
-            if (!getOutputFile().getParentFile().exists()) {
-                getOutputFile().getParentFile().mkdirs();
+            File parentDirectory = getOutputFile().getParentFile();
+            if (parentDirectory.isFile() ||
+                    (!parentDirectory.exists() && !parentDirectory.mkdirs())) {
+                throw MavanagaiataMojoException.create("Could not create directory \"%s\" for output file.",
+                        null,
+                        parentDirectory.getAbsolutePath());
             }
 
             try (PrintStream printStream = createPrintStream()) {
@@ -124,7 +129,7 @@ abstract class AbstractGitOutputMojo extends AbstractGitMojo {
      *
      * @param repository The repository the mojo is running in
      * @param printStream The stream the output should be printed to
-     * @throws MavanagaiataMojoException
+     * @throws MavanagaiataMojoException if the output cannot be generated
      */
     protected abstract void writeOutput(GitRepository repository, PrintStream printStream)
             throws MavanagaiataMojoException;
@@ -134,6 +139,7 @@ abstract class AbstractGitOutputMojo extends AbstractGitMojo {
      * calling the main mojo implementation
      *
      * @see #writeOutput
+     * @throws MavanagaiataMojoException if the output cannot be generated
      */
     protected void generateOutput(GitRepository repository, PrintStream printStream)
             throws MavanagaiataMojoException {
