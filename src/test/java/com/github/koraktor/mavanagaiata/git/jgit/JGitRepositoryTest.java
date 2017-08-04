@@ -17,6 +17,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 
+import org.mockito.InOrder;
+
 import org.eclipse.jgit.errors.AmbiguousObjectException;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.lib.AbbreviatedObjectId;
@@ -40,7 +42,6 @@ import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
-import org.mockito.InOrder;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -256,9 +257,6 @@ public class JGitRepositoryTest {
         when(this.repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
 
         GitTagDescription description = repo.describe();
-        assertThat(head.has(RevFlag.SEEN), is(false));
-        assertThat(head_1.has(RevFlag.SEEN), is(false));
-        assertThat(head_2.has(RevFlag.SEEN), is(false));
         assertThat(description.getNextTagName(), is(equalTo("2.0.0")));
         assertThat(description.toString(), is(equalTo("2.0.0")));
     }
@@ -293,9 +291,6 @@ public class JGitRepositoryTest {
         when(this.repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
 
         GitTagDescription description = repo.describe();
-        assertThat(head.has(RevFlag.SEEN), is(true));
-        assertThat(head_1.has(RevFlag.SEEN), is(true));
-        assertThat(head_2.has(RevFlag.SEEN), is(true));
         assertThat(description.getNextTagName(), is(equalTo("2.0.0")));
         assertThat(description.toString(), is(equalTo("2.0.0-2-g" + abbrevId.name())));
     }
@@ -338,12 +333,8 @@ public class JGitRepositoryTest {
         when(this.repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
 
         GitTagDescription description = repo.describe();
-        assertThat(head.has(RevFlag.SEEN), is(true));
-        assertThat(head_a1.has(RevFlag.SEEN), is(true));
-        assertThat(head_b1.has(RevFlag.SEEN), is(true));
-        assertThat(head_b2.has(RevFlag.SEEN), is(true));
         assertThat(description.getNextTagName(), is(equalTo("a1")));
-        assertThat(description.toString(), is(equalTo("a1-2-g" + abbrevId.name())));
+        assertThat(description.toString(), is(equalTo("a1-3-g" + abbrevId.name())));
     }
 
     @Test
@@ -386,13 +377,8 @@ public class JGitRepositoryTest {
         when(this.repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
 
         GitTagDescription description = repo.describe();
-        assertThat(head.has(RevFlag.SEEN), is(true));
-        assertThat(head_a1.has(RevFlag.SEEN), is(true));
-        assertThat(head_a2.has(RevFlag.SEEN), is(true));
-        assertThat(head_b1.has(RevFlag.SEEN), is(true));
-        assertThat(head_b2.has(RevFlag.SEEN), is(true));
         assertThat(description.getNextTagName(), is(equalTo("b1")));
-        assertThat(description.toString(), is(equalTo("b1-2-g" + abbrevId.name())));
+        assertThat(description.toString(), is(equalTo("b1-3-g" + abbrevId.name())));
     }
 
     @Test
@@ -412,9 +398,6 @@ public class JGitRepositoryTest {
         when(this.repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
 
         GitTagDescription description = this.repository.describe();
-        assertThat(head.has(RevFlag.SEEN), is(true));
-        assertThat(head_1.has(RevFlag.SEEN), is(true));
-        assertThat(head_2.has(RevFlag.SEEN), is(true));
         assertThat(description.getNextTagName(), is(equalTo("")));
         assertThat(description.toString(), is(equalTo(abbrevId.name())));
     }
@@ -722,9 +705,9 @@ public class JGitRepositoryTest {
     }
 
     private RevCommit createCommit(int numParents) {
-        String parents = "";
+        StringBuilder parents = new StringBuilder();
         for (; numParents > 0; numParents--) {
-            parents += String.format("parent %040x\n", new Random().nextLong());
+            parents.append(String.format("parent %040x\n", new java.util.Random().nextLong()));
         }
         String commitData = String.format("tree %040x\n" +
             parents +

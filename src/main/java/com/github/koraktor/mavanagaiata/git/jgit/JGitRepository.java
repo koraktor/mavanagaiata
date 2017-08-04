@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2016, Sebastian Staudt
+ * Copyright (c) 2012-2017, Sebastian Staudt
  *               2015, Kay Hannay
  */
 
@@ -27,6 +27,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevFlag;
 import org.eclipse.jgit.revwalk.RevFlagSet;
 import org.eclipse.jgit.revwalk.RevObject;
+import org.eclipse.jgit.revwalk.RevSort;
 import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
@@ -48,11 +49,13 @@ import com.github.koraktor.mavanagaiata.git.GitTagDescription;
  */
 public class JGitRepository extends AbstractGitRepository {
 
+    private static final int MAX_DESCRIBE_CANDIDATES = 10;
+
     protected Map<ObjectId, RevCommit> commitCache;
 
     boolean checked;
 
-    protected Repository repository;
+    public Repository repository;
 
     protected ObjectId headObject;
 
@@ -144,12 +147,14 @@ public class JGitRepository extends AbstractGitRepository {
     public GitTagDescription describe() throws GitRepositoryException {
         final Map<RevCommit, RevTag> tagCommits = new HashMap<>();
         for (RevTag tag : this.getRawTags().values()) {
-            tagCommits.put((RevCommit)tag.getObject(), tag);
+            if (tag.getObject() instanceof RevCommit) {
+                tagCommits.put((RevCommit) tag.getObject(), tag);
+            }
         }
 
         final RevCommit start = this.getCommit(this.getHeadObject());
 
-        //Check, if the start commit is a tag already
+        // Check if the start commit is already tagged
         if (tagCommits.containsKey(start)) {
             GitTag tag = getTags().get(start.getId().getName());
 
@@ -157,17 +162,16 @@ public class JGitRepository extends AbstractGitRepository {
         }
 
         try (RevWalk revWalk = getRevWalk()) {
-            final RevFlagSet allFlags = new RevFlagSet();
-
             revWalk.markStart(start);
+            revWalk.setRetainBody(false);
+            revWalk.sort(RevSort.COMMIT_TIME_DESC);
+
+            final RevFlagSet allFlags = new RevFlagSet();
             final Collection<TagCandidate> candidates = findTagCandidates(revWalk, tagCommits, allFlags);
 
             if (candidates.isEmpty()) {
                 return new GitTagDescription(this, this.getHeadCommit(), null, -1);
             }
-
-            //Now we have to correct the distance of the tag candidates
-            correctDistance(revWalk, candidates, allFlags);
 
             TagCandidate bestCandidate = Collections.min(candidates, new Comparator<TagCandidate>() {
                 @Override
@@ -176,7 +180,13 @@ public class JGitRepository extends AbstractGitRepository {
                 }
             });
 
-            GitTag tag = new JGitTag(bestCandidate.commit);
+            // We hit the maximum of candidates so there may be still be
+            // commits that add up to the distance
+            if (candidates.size() == MAX_DESCRIBE_CANDIDATES) {
+                correctDistance(revWalk, bestCandidate, allFlags);
+            }
+
+            GitTag tag = new JGitTag(bestCandidate.tag);
 
             return new GitTagDescription(this, this.getHeadCommit(), tag, bestCandidate.distance);
         } catch (IOException e) {
@@ -203,31 +213,36 @@ public class JGitRepository extends AbstractGitRepository {
             Map<RevCommit,RevTag> tagCommits, RevFlagSet allFlags)
                     throws IOException {
         final Collection<TagCandidate> candidates = new ArrayList<>();
-        int distance = 0;
+        int distance = 1;
+        revWalk.next();
         RevCommit commit;
         while ((commit = revWalk.next()) != null) {
-            commit.add(RevFlag.SEEN);
+            for (TagCandidate candidate : candidates) {
+                if (candidate.excludes(commit)) {
+                    candidate.distance ++;
+                }
+            }
+
             if (!commit.hasAny(allFlags)) {
                 if (tagCommits.containsKey(commit)) {
-                    RevTag tagCommit = tagCommits.get(commit);
-                    RevFlag flag = revWalk.newFlag(tagCommit.getTagName());
-                    candidates.add(new TagCandidate(tagCommit, distance, flag));
+                    RevTag tag = tagCommits.get(commit);
+                    RevFlag flag = revWalk.newFlag(tag.getTagName());
+                    candidates.add(new TagCandidate(tag, distance, flag));
                     commit.add(flag);
                     commit.carry(flag);
                     revWalk.carry(flag);
                     allFlags.add(flag);
                 }
             }
-            for (TagCandidate candidate : candidates) {
-                if (!candidate.isRelated(commit)) {
-                    candidate.distance++;
-                }
-            }
-            if (candidates.size() >= 10) {
+
+            // Only consider a maximum of 10 candidates
+            if (candidates.size() == MAX_DESCRIBE_CANDIDATES) {
                 break;
             }
-            distance++;
+
+            distance ++;
         }
+
         return candidates;
     }
 
@@ -236,11 +251,11 @@ public class JGitRepository extends AbstractGitRepository {
      * branches to get the correct distance at the end.
      *
      * @param revWalk Repository information
-     * @param candidates Collection of tag candidates
+     * @param candidate Collection of tag candidates
      * @param allFlags All flags that have been set so far
      * @throws IOException if there’s an error during the rev walk
      */
-    private void correctDistance(RevWalk revWalk, Collection<TagCandidate> candidates, RevFlagSet allFlags)
+    private void correctDistance(RevWalk revWalk, TagCandidate candidate, RevFlagSet allFlags)
             throws IOException {
         RevCommit commit;
         while ((commit = revWalk.next()) != null) {
@@ -249,12 +264,8 @@ public class JGitRepository extends AbstractGitRepository {
                 for (RevCommit parent : commit.getParents()) {
                     parent.add(RevFlag.SEEN);
                 }
-            } else {
-                for (TagCandidate candidate : candidates) {
-                    if (!candidate.isRelated(commit)) {
-                        candidate.distance ++;
-                    }
-                }
+            } else if (candidate.excludes(commit)) {
+                candidate.distance ++;
             }
         }
     }
@@ -491,6 +502,8 @@ public class JGitRepository extends AbstractGitRepository {
     protected RevWalk getRevWalk() {
         if (this.revWalk == null) {
             this.revWalk = new RevWalk(this.repository);
+        } else {
+            revWalk.reset();
         }
 
         return this.revWalk;
@@ -500,18 +513,18 @@ public class JGitRepository extends AbstractGitRepository {
      * This class represents a tag candidate which could be the latest tag in the branch.
      */
     private class TagCandidate {
-        private final RevTag commit;
-        private int distance;
+        private final RevTag tag;
         private final RevFlag flag;
+        private int distance;
 
-        TagCandidate(RevTag commit, int distance, RevFlag flag) {
-            this.commit = commit;
+        TagCandidate(RevTag tag, int distance, RevFlag flag) {
+            this.tag = tag;
             this.distance = distance;
             this.flag = flag;
         }
 
-        boolean isRelated(RevCommit commit) {
-            return commit.has(flag);
+        boolean excludes(RevCommit commit) {
+            return !commit.has(flag);
         }
     }
 
