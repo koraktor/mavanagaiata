@@ -371,7 +371,7 @@
                     <format>xml</format>
                     <instrumentation>
                         <excludes>
-                            <exclude>com/github/koraktor/mavanagaiata/HelpMojo.class</exclude>
+                            <exclude>com/github/koraktor/mavanagaiata/mojo/HelpMojo.class</exclude>
                             <exclude>com/github/koraktor/mavanagaiata/mojo/VersionHelper.class</exclude>
                         </excludes>
                     </instrumentation>
