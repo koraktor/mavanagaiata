@@ -17,4 +17,6 @@ before_script:
 script:
   - mvn cobertura:cobertura -Dsurefire.useFile=false
 after_script:
-  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./cc-test-reporter after-build -t cobertura -p "$(pwd)/target/cobertura" --exit-code $TRAVIS_TEST_RESULT; fi
+  - cd src/main/java
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ../../../cc-test-reporter format-coverage -t cobertura ../../../target/site/cobertura/coverage.xml; fi
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ../../../cc-test-reporter upload-coverage; fi
