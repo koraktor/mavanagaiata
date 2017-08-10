@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2016, Sebastian Staudt
+ * Copyright (c) 2012-2017, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -29,11 +29,11 @@ import org.apache.maven.shared.filtering.MavenFileFilter;
 import org.apache.maven.shared.filtering.MavenFilteringException;
 import org.apache.maven.shared.utils.io.FileUtils;
 
-import com.github.koraktor.mavanagaiata.git.GitRepository;
 import org.codehaus.plexus.interpolation.InterpolatorFilterReader;
 import org.codehaus.plexus.interpolation.MapBasedValueSource;
 import org.codehaus.plexus.interpolation.RegexBasedInterpolator;
 
+import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 
@@ -56,24 +56,24 @@ public class InfoClassMojo extends AbstractGitMojo {
      */
     @Parameter(property = "mavanagaiata.info-class.className",
                defaultValue = "GitInfo")
-    protected String className;
+    String className;
 
     /**
      * The encoding of the generated source file
      */
     @Parameter(property = "mavanagaiata.info-class.encoding",
                defaultValue = "${project.build.sourceEncoding}")
-    protected String encoding;
+    String encoding;
 
     @Component
-    protected MavenFileFilter fileFilter;
+    MavenFileFilter fileFilter;
 
     /**
      * The name of the package in which the class will be generated
      */
     @Parameter(property = "mavanagaiata.info-class.packageName",
                defaultValue = "${project.groupId}.${project.artifactId}")
-    protected String packageName;
+    String packageName;
 
     /**
      * The directory to write the source code to
@@ -83,13 +83,13 @@ public class InfoClassMojo extends AbstractGitMojo {
      */
     @Parameter(property = "mavanagaiata.info-class.outputDirectory",
                defaultValue = "${project.build.directory}/generated-sources/mavanagaiata")
-    protected File outputDirectory;
+    File outputDirectory;
 
     /**
      * The path to an alternative template for the info class
      */
     @Parameter(property = "mavanagaiata.info-class.templatePath")
-    protected File templateFile;
+    private File templateFile;
 
     /**
      * Returns an input stream for the template source file for the info class
@@ -98,9 +98,9 @@ public class InfoClassMojo extends AbstractGitMojo {
      * via {@code templatePath}.
      *
      * @return An input stream for the template source file
-     * @throws MavanagaiataMojoException if the template source cannot be found
+     * @throws FileNotFoundException if the template source cannot be found
      */
-    protected InputStream getTemplateSource() throws FileNotFoundException {
+    InputStream getTemplateSource() throws FileNotFoundException {
         if (templateFile == null) {
             String templatePath = "TemplateGitInfoClass.java";
             return getClass().getResourceAsStream(templatePath);
@@ -117,17 +117,20 @@ public class InfoClassMojo extends AbstractGitMojo {
      */
     @Override
     public void run(GitRepository repository) throws MavanagaiataMojoException {
-        this.addProperty("info-class.className", this.className);
-        this.addProperty("info-class.packageName", this.packageName);
+        addProperty("info-class.className", className);
+        addProperty("info-class.packageName", packageName);
 
         try (InputStream templateStream = getTemplateSource()) {
             File tempSourceDir = File.createTempFile("mavanagaita-info-class", null);
-            tempSourceDir.delete();
-            tempSourceDir.mkdir();
+            if (!(tempSourceDir.delete() && tempSourceDir.mkdir())) {
+                throw MavanagaiataMojoException.create("Could not create temporary directory %s", null, tempSourceDir.getAbsolutePath());
+            }
             forceDeleteOnExit(tempSourceDir);
-            String sourceFileName = this.className + ".java";
+            String sourceFileName = className + ".java";
             File tempSourceFile = new File(tempSourceDir, sourceFileName);
-            tempSourceFile.createNewFile();
+            if (!tempSourceFile.createNewFile()) {
+                throw MavanagaiataMojoException.create("Could not create temporary file %s", null, tempSourceFile.getAbsolutePath());
+            }
             try (FileOutputStream tempSourceFileStream = new FileOutputStream(tempSourceFile)) {
                 IOUtils.copy(templateStream, tempSourceFileStream);
             }
@@ -146,49 +149,49 @@ public class InfoClassMojo extends AbstractGitMojo {
             List<FileUtils.FilterWrapper> filterWrappers = new ArrayList<>();
             filterWrappers.add(filterWrapper);
 
-            File classDirectory = new File(this.outputDirectory, this.packageName.replace('.', '/'));
-            classDirectory.mkdirs();
-            File outputFile = new File(classDirectory, sourceFileName);
-            outputFile.createNewFile();
+            File packageDirectory = new File(outputDirectory, packageName.replace('.', '/'));
+            File outputFile = new File(packageDirectory, sourceFileName);
+            if (!((packageDirectory.exists() || packageDirectory.mkdirs()) && outputFile.createNewFile())) {
+                throw MavanagaiataMojoException.create("Could not create class source: %s", null, outputFile.getAbsolutePath());
+            }
 
-            this.fileFilter.copyFile(tempSourceFile, outputFile, true, filterWrappers, this.encoding, true);
+            fileFilter.copyFile(tempSourceFile, outputFile, true, filterWrappers, encoding, true);
         } catch (GitRepositoryException e) {
             throw MavanagaiataMojoException.create("Could not get all information from repository", e);
         } catch (IOException | MavenFilteringException e) {
             throw MavanagaiataMojoException.create("Could not create info class source", e);
         }
 
-        this.project.addCompileSourceRoot(this.outputDirectory.getAbsolutePath());
+        project.addCompileSourceRoot(outputDirectory.getAbsolutePath());
     }
 
-    protected MapBasedValueSource getValueSource(GitRepository repository)
+    MapBasedValueSource getValueSource(GitRepository repository)
             throws GitRepositoryException {
         GitTagDescription description = repository.describe();
 
         String abbrevId  = repository.getAbbreviatedCommitId();
         String shaId     = repository.getHeadCommit().getId();
         String describe  = description.toString();
-        boolean isDirty  = repository.isDirty(this.dirtyIgnoreUntracked);
+        boolean isDirty  = repository.isDirty(dirtyIgnoreUntracked);
         String branch    = repository.getBranch();
 
-        if (isDirty && this.dirtyFlag != null) {
-            abbrevId += this.dirtyFlag;
-            shaId    += this.dirtyFlag;
-            describe += this.dirtyFlag;
+        if (isDirty && dirtyFlag != null) {
+            abbrevId += dirtyFlag;
+            shaId    += dirtyFlag;
+            describe += dirtyFlag;
         }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
         HashMap<String, String> values = new HashMap<>();
         values.put("BRANCH", branch);
-        values.put("CLASS_NAME", this.className);
+        values.put("CLASS_NAME", className);
         values.put("COMMIT_ABBREV", abbrevId);
         values.put("COMMIT_SHA", shaId);
         values.put("DESCRIBE", describe);
         values.put("DIRTY", Boolean.toString(isDirty));
-        values.put("PACKAGE_NAME", this.packageName);
+        values.put("PACKAGE_NAME", packageName);
         values.put("TAG_NAME", description.getNextTagName());
-        values.put("TIMESTAMP", dateFormat.format(new Date()));
-        values.put("VERSION", this.project.getVersion());
+        values.put("TIMESTAMP", new SimpleDateFormat(dateFormat).format(new Date()));
+        values.put("VERSION", project.getVersion());
 
         String version = VersionHelper.getVersion();
         if (version != null) {
