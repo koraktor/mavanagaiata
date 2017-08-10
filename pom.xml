@@ -287,7 +287,7 @@
                 <configuration>
                     <links>
                         <link>http://docs.oracle.com/javase/8/docs/api/</link>
-                        <link>http://download.eclipse.org/jgit/docs/jgit-${jgit.version}/apidocs/</link>
+                        <link>http://download.eclipse.org/jgit/site/${jgit.version}/apidocs/</link>
                     </links>
                     <show>private</show>
                 </configuration>
@@ -414,7 +414,7 @@
                 <configuration>
                     <links>
                         <link>http://docs.oracle.com/javase/8/docs/api/</link>
-                        <link>http://download.eclipse.org/jgit/docs/jgit-${jgit.version}/apidocs/</link>
+                        <link>http://download.eclipse.org/jgit/site/${jgit.version}/apidocs/</link>
                     </links>
                     <show>private</show>
                 </configuration>
