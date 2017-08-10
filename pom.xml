@@ -286,7 +286,7 @@
                 <version>2.10.4</version>
                 <configuration>
                     <links>
-                        <link>http://docs.oracle.com/javase/8/docs/api/</link>
+                        <link>https://docs.oracle.com/javase/8/docs/api/</link>
                         <link>http://download.eclipse.org/jgit/site/${jgit.version}/apidocs/</link>
                     </links>
                     <show>private</show>
@@ -413,7 +413,7 @@
                 <version>2.10.4</version>
                 <configuration>
                     <links>
-                        <link>http://docs.oracle.com/javase/8/docs/api/</link>
+                        <link>https://docs.oracle.com/javase/8/docs/api/</link>
                         <link>http://download.eclipse.org/jgit/site/${jgit.version}/apidocs/</link>
                     </links>
                     <show>private</show>
