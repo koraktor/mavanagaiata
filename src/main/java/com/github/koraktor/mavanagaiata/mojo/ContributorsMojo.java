@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2016, Sebastian Staudt
+ * Copyright (c) 2011-2017, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -113,15 +113,15 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
      * Selects the attribute to use for sorting contributors
      */
     protected void initConfiguration() {
-        this.contributorPrefix = this.contributorPrefix.replaceAll("([^\\\\])\\\\n", "$1\n");
-        this.header            = this.header.replaceAll("([^\\\\])\\\\n", "$1\n");
+        contributorPrefix = unescapeFormatNewlines(contributorPrefix);
+        header            = unescapeFormatNewlines(header);
 
-        if (this.sort == null) {
-            this.sort = "count";
+        if (sort == null) {
+            sort = "count";
         } else {
-            this.sort = this.sort.toLowerCase();
-            if (!this.sort.equals("date") && !this.sort.equals("name")) {
-                this.sort = "count";
+            sort = sort.toLowerCase();
+            if (!sort.equals("date") && !sort.equals("name")) {
+                sort = "count";
             }
         }
 

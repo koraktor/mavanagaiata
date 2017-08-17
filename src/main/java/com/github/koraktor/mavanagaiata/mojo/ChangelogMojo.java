@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2016, Sebastian Staudt
+ * Copyright (c) 2011-2017, Sebastian Staudt
  *               2016, Jeff Kreska
  */
 
@@ -13,6 +13,7 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -194,17 +195,16 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
     protected void initConfiguration() {
         super.initConfiguration();
 
-        this.branchFormat               = this.branchFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
-        this.commitPrefix               = this.commitPrefix.replaceAll("(|[^\\\\])\\\\n", "$1\n");
-        this.gitHubBranchLinkFormat     = this.gitHubBranchLinkFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
-        this.gitHubBranchOnlyLinkFormat = this.gitHubBranchOnlyLinkFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
-        this.gitHubTagLinkFormat        = this.gitHubTagLinkFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
-        this.header                     = this.header.replaceAll("(|[^\\\\])\\\\n", "$1\n");
-        this.tagFormat                  = this.tagFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
+        branchFormat               = unescapeFormatNewlines(branchFormat);
+        commitPrefix               = unescapeFormatNewlines(commitPrefix);
+        gitHubBranchLinkFormat     = unescapeFormatNewlines(gitHubBranchLinkFormat);
+        gitHubBranchOnlyLinkFormat = unescapeFormatNewlines(gitHubBranchOnlyLinkFormat);
+        gitHubTagLinkFormat        = unescapeFormatNewlines(gitHubTagLinkFormat);
+        header                     = unescapeFormatNewlines(header);
+        tagFormat                  = unescapeFormatNewlines(tagFormat);
 
-        if (this.gitHubProject == null || this.gitHubProject.length() == 0 ||
-            this.gitHubUser == null || this.gitHubUser.length() == 0) {
-            this.createGitHubLinks = false;
+        if (StringUtils.isEmpty(gitHubUser) || StringUtils.isEmpty(gitHubProject)) {
+            createGitHubLinks = false;
         }
 
         if (skipCommitsMatching != null) {
