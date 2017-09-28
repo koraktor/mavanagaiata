@@ -7,7 +7,7 @@ engines:
         - "java-design"
         - "java-empty"
         - "java-naming"
-        - "java-optimization"
+        - "java-optimizations"
         - "java-unnecessary"
         - "java-unusedcode"
 ratings:
