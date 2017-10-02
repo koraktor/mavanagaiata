@@ -13,7 +13,6 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -203,7 +202,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
         header                     = unescapeFormatNewlines(header);
         tagFormat                  = unescapeFormatNewlines(tagFormat);
 
-        if (StringUtils.isEmpty(gitHubUser) || StringUtils.isEmpty(gitHubProject)) {
+        if (gitHubUser == null || gitHubUser.isEmpty() || gitHubProject == null || gitHubProject.isEmpty()) {
             createGitHubLinks = false;
         }
 
