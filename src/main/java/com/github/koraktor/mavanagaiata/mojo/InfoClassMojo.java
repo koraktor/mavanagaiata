@@ -151,7 +151,14 @@ public class InfoClassMojo extends AbstractGitMojo {
 
             File packageDirectory = new File(outputDirectory, packageName.replace('.', '/'));
             File outputFile = new File(packageDirectory, sourceFileName);
-            if (!((packageDirectory.exists() || packageDirectory.mkdirs()) && outputFile.createNewFile())) {
+            boolean fileOk;
+            if (outputFile.exists()) {
+                fileOk = outputFile.delete();
+            } else {
+                fileOk = (packageDirectory.exists() || packageDirectory.mkdirs()) && outputFile.createNewFile();
+            }
+
+            if (!fileOk) {
                 throw MavanagaiataMojoException.create("Could not create class source: %s", null, outputFile.getAbsolutePath());
             }
 
