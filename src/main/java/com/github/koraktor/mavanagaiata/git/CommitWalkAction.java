@@ -31,6 +31,14 @@ public abstract class CommitWalkAction {
     }
 
     /**
+     * Prepare the walk action
+     * <p>
+     * This can be used to load required data for the walk action, e.g. all
+     * tags.
+     */
+    public void prepare() throws GitRepositoryException {}
+
+    /**
      * The code of the action that should be executed for each commit during a
      * commit walk
      *

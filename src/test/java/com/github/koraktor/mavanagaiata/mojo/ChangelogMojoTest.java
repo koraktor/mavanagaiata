@@ -15,11 +15,11 @@ import java.util.TimeZone;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.github.koraktor.mavanagaiata.git.GitCommit;
 import com.github.koraktor.mavanagaiata.git.GitTag;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -84,6 +84,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
             public ChangelogMojo.ChangelogWalkAction answer(InvocationOnMock invocation) throws Throwable {
                 ChangelogMojo.ChangelogWalkAction walkAction = ((ChangelogMojo.ChangelogWalkAction) invocation.getArguments()[0]);
                 walkAction.setRepository(repository);
+                walkAction.prepare();
                 for (GitCommit commit : ChangelogMojoTest.this.mockCommits) {
                     walkAction.execute(commit);
                 }
