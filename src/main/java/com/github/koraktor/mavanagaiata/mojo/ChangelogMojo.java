@@ -207,7 +207,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
             createGitHubLinks = false;
         }
 
-        if (skipCommitsMatching != null) {
+        if (skipCommitsMatching != null && !skipCommitsMatching.isEmpty()) {
             skipCommitsPattern = Pattern.compile(skipCommitsMatching, Pattern.MULTILINE);
         }
     }
