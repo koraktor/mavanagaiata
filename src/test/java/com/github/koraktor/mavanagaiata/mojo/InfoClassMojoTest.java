@@ -17,14 +17,14 @@ import java.util.GregorianCalendar;
 import org.apache.maven.shared.filtering.MavenFileFilter;
 import org.apache.maven.shared.utils.io.FileUtils;
 
+import org.codehaus.plexus.interpolation.MapBasedValueSource;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
-import org.codehaus.plexus.interpolation.MapBasedValueSource;
 
-import static org.apache.commons.io.FileUtils.forceDeleteOnExit;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -49,24 +49,24 @@ public class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
     public void setup() throws Exception{
         super.setup();
 
-        this.mojo.className       = "GitInfo";
-        this.mojo.encoding        = "UTF-8";
-        this.mojo.fileFilter      = mock(MavenFileFilter.class);
-        this.mojo.packageName     = "com.github.koraktor.mavanagaita";
-        this.mojo.outputDirectory = File.createTempFile("mavanagaiata-tests", null);
-        this.mojo.outputDirectory.delete();
-        this.mojo.outputDirectory.mkdirs();
-        forceDeleteOnExit(mojo.outputDirectory);
+        mojo.className       = "GitInfo";
+        mojo.encoding        = "UTF-8";
+        mojo.fileFilter      = mock(MavenFileFilter.class);
+        mojo.packageName     = "com.github.koraktor.mavanagaita";
+        mojo.outputDirectory = File.createTempFile("mavanagaiata-tests", null);
+        if (!(mojo.outputDirectory.delete() && mojo.outputDirectory.mkdirs())) {
+            fail("Unable to create output directory.");
+        }
 
-        when(this.mojo.project.getVersion()).thenReturn("1.2.3");
+        when(mojo.project.getVersion()).thenReturn("1.2.3");
 
-        when(this.repository.getAbbreviatedCommitId()).thenReturn("deadbeef");
+        when(repository.getAbbreviatedCommitId()).thenReturn("deadbeef");
         GitTagDescription description = mock(GitTagDescription.class);
         when(description.getNextTagName()).thenReturn("v1.2.3");
         when(description.toString()).thenReturn("v1.2.3-4-gdeadbeef");
-        when(this.repository.describe()).thenReturn(description);
-        when(this.repository.getBranch()).thenReturn("master");
-        when(this.repository.getHeadCommit().getId()).thenReturn("deadbeefdeadbeefdeadbeefdeadbeef");
+        when(repository.describe()).thenReturn(description);
+        when(repository.getBranch()).thenReturn("master");
+        when(repository.getHeadCommit().getId()).thenReturn("deadbeefdeadbeefdeadbeefdeadbeef");
 
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.set(Calendar.SECOND, 0);
@@ -107,10 +107,10 @@ public class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
     public void testGetValueSource() throws Exception {
         MapBasedValueSource valueSource = mojo.getValueSource(repository);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat(this.mojo.dateFormat);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(mojo.dateFormat);
 
         assertThat(valueSource.getValue("BRANCH").toString(), is(equalTo("master")));
-        assertThat(valueSource.getValue("CLASS_NAME").toString(), is(equalTo(this.mojo.className)));
+        assertThat(valueSource.getValue("CLASS_NAME").toString(), is(equalTo(mojo.className)));
         assertThat(valueSource.getValue("COMMIT_ABBREV").toString(), is(equalTo("deadbeef")));
         assertThat(valueSource.getValue("COMMIT_SHA").toString(), is(equalTo("deadbeefdeadbeefdeadbeefdeadbeef")));
         assertThat(valueSource.getValue("DESCRIBE").toString(), is(equalTo("v1.2.3-4-gdeadbeef")));
@@ -123,15 +123,15 @@ public class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
 
     @Test
     public void testGetValueSourceDirty() throws Exception {
-        when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
+        when(repository.isDirty(mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
-        this.mojo.prepareParameters();
+        mojo.prepareParameters();
         MapBasedValueSource valueSource = mojo.getValueSource(repository);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat(this.mojo.dateFormat);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(mojo.dateFormat);
 
         assertThat(valueSource.getValue("BRANCH").toString(), is(equalTo("master")));
-        assertThat(valueSource.getValue("CLASS_NAME").toString(), is(equalTo(this.mojo.className)));
+        assertThat(valueSource.getValue("CLASS_NAME").toString(), is(equalTo(mojo.className)));
         assertThat(valueSource.getValue("COMMIT_ABBREV").toString(), is(equalTo("deadbeef-dirty")));
         assertThat(valueSource.getValue("COMMIT_SHA").toString(), is(equalTo("deadbeefdeadbeefdeadbeefdeadbeef-dirty")));
         assertThat(valueSource.getValue("DESCRIBE").toString(), is(equalTo("v1.2.3-4-gdeadbeef-dirty")));
@@ -144,16 +144,16 @@ public class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
 
     @Test
     public void testGetValueSourceDisabledDirtyFlag() throws Exception {
-        when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
+        when(repository.isDirty(mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
         mojo.dirtyFlag = "null";
         mojo.prepareParameters();
         MapBasedValueSource valueSource = mojo.getValueSource(repository);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat(this.mojo.dateFormat);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(mojo.dateFormat);
 
         assertThat(valueSource.getValue("BRANCH").toString(), is(equalTo("master")));
-        assertThat(valueSource.getValue("CLASS_NAME").toString(), is(equalTo(this.mojo.className)));
+        assertThat(valueSource.getValue("CLASS_NAME").toString(), is(equalTo(mojo.className)));
         assertThat(valueSource.getValue("COMMIT_ABBREV").toString(), is(equalTo("deadbeef")));
         assertThat(valueSource.getValue("COMMIT_SHA").toString(), is(equalTo("deadbeefdeadbeefdeadbeefdeadbeef")));
         assertThat(valueSource.getValue("DESCRIBE").toString(), is(equalTo("v1.2.3-4-gdeadbeef")));
@@ -168,8 +168,13 @@ public class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
     public void testResult() throws Exception {
         mojo.run(repository);
 
-        File targetFile = new File(this.mojo.outputDirectory, "com/github/koraktor/mavanagaita/GitInfo.java");
-        verify(this.mojo.fileFilter).copyFile(any(File.class), eq(targetFile), eq(true), anyListOf(FileUtils.FilterWrapper.class), eq("UTF-8"), eq(true));
+        File targetFile = new File(mojo.outputDirectory, "com/github/koraktor/mavanagaita/GitInfo.java");
+        verify(mojo.fileFilter).copyFile(any(File.class), eq(targetFile), eq(true), anyListOf(FileUtils.FilterWrapper.class), eq("UTF-8"), eq(true));
     }
 
+    @After
+    public void teardown() {
+        mojo.outputDirectory.delete();
+    }
 }
+

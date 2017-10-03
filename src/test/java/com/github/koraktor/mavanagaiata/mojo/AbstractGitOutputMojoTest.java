@@ -19,6 +19,7 @@ import com.github.koraktor.mavanagaiata.git.GitRepository;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
@@ -31,7 +32,7 @@ import static org.mockito.Mockito.when;
 
 public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> {
 
-    GenericAbstractGitOutputMojo genericMojo() {
+    private GenericAbstractGitOutputMojo genericMojo() {
         return (GenericAbstractGitOutputMojo) mojo;
     }
 
@@ -55,6 +56,8 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
     public void testInitOutputFile() throws Exception {
         File outputFile = mock(File.class);
         File parentFile = mock(File.class);
+        when(parentFile.exists()).thenReturn(true);
+        when(parentFile.isDirectory()).thenReturn(true);
         when(outputFile.getParentFile()).thenReturn(parentFile);
         PrintStream printStream = mock(PrintStream.class);
         mojo = spy(mojo);
@@ -71,6 +74,8 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
     public void testInitOutputFileCreateDirectories() throws Exception {
         File outputFile = mock(File.class);
         File parentFile = mock(File.class);
+        when(parentFile.exists()).thenReturn(false);
+        when(parentFile.mkdirs()).thenReturn(true);
         when(outputFile.getParentFile()).thenReturn(parentFile);
         PrintStream printStream = mock(PrintStream.class);
         mojo = spy(mojo);
@@ -81,8 +86,30 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
         mojo.run(repository);
 
         assertThat(((GenericAbstractGitOutputMojo) mojo).printStream, is(printStream));
+    }
 
-        verify(parentFile).mkdirs();
+    @Test
+    public void testInitOutputFileCreateDirectoriesFailed() throws Exception {
+        File outputFile = mock(File.class);
+        File parentFile = mock(File.class);
+        when(parentFile.exists()).thenReturn(false);
+        when(parentFile.getAbsolutePath()).thenReturn("/some");
+        when(parentFile.mkdirs()).thenReturn(false);
+        when(outputFile.getParentFile()).thenReturn(parentFile);
+        PrintStream printStream = mock(PrintStream.class);
+        mojo = spy(mojo);
+        doReturn(printStream).when(mojo).createPrintStream();
+
+        mojo.encoding = "someencoding";
+        mojo.setOutputFile(outputFile);
+
+        try {
+            mojo.run(repository);
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(MavanagaiataMojoException.class)));
+            assertThat(e.getMessage(), is(equalTo("Could not create directory \"/some\" for output file.")));
+            assertThat(e.getCause(), is(nullValue()));
+        }
     }
 
     @Test
@@ -91,6 +118,7 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
         File outputFile = mock(File.class);
         when(outputFile.getAbsolutePath()).thenReturn("/some/file");
         File parentFile = mock(File.class);
+        when(parentFile.exists()).thenReturn(true);
         when(outputFile.getParentFile()).thenReturn(parentFile);
         mojo = spy(mojo);
         doThrow(fileNotFoundException).when(mojo).createPrintStream();

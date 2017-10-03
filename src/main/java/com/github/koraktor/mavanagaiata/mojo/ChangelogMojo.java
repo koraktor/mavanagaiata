@@ -11,6 +11,7 @@ package com.github.koraktor.mavanagaiata.mojo;
 import java.io.File;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -194,20 +195,19 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
     protected void initConfiguration() {
         super.initConfiguration();
 
-        this.branchFormat               = this.branchFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
-        this.commitPrefix               = this.commitPrefix.replaceAll("(|[^\\\\])\\\\n", "$1\n");
-        this.gitHubBranchLinkFormat     = this.gitHubBranchLinkFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
-        this.gitHubBranchOnlyLinkFormat = this.gitHubBranchOnlyLinkFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
-        this.gitHubTagLinkFormat        = this.gitHubTagLinkFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
-        this.header                     = this.header.replaceAll("(|[^\\\\])\\\\n", "$1\n");
-        this.tagFormat                  = this.tagFormat.replaceAll("(|[^\\\\])\\\\n", "$1\n");
+        branchFormat               = unescapeFormatNewlines(branchFormat);
+        commitPrefix               = unescapeFormatNewlines(commitPrefix);
+        gitHubBranchLinkFormat     = unescapeFormatNewlines(gitHubBranchLinkFormat);
+        gitHubBranchOnlyLinkFormat = unescapeFormatNewlines(gitHubBranchOnlyLinkFormat);
+        gitHubTagLinkFormat        = unescapeFormatNewlines(gitHubTagLinkFormat);
+        header                     = unescapeFormatNewlines(header);
+        tagFormat                  = unescapeFormatNewlines(tagFormat);
 
-        if (this.gitHubProject == null || this.gitHubProject.length() == 0 ||
-            this.gitHubUser == null || this.gitHubUser.length() == 0) {
-            this.createGitHubLinks = false;
+        if (gitHubUser == null || gitHubUser.isEmpty() || gitHubProject == null || gitHubProject.isEmpty()) {
+            createGitHubLinks = false;
         }
 
-        if (skipCommitsMatching != null) {
+        if (skipCommitsMatching != null && !skipCommitsMatching.isEmpty()) {
             skipCommitsPattern = Pattern.compile(skipCommitsMatching, Pattern.MULTILINE);
         }
     }
@@ -283,8 +283,9 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
 
         private final PrintStream printStream;
 
-        ChangelogWalkAction(PrintStream printStream) {
-            this.dateFormatter = new SimpleDateFormat(dateFormat);
+        private Map<String, GitTag> tags;
+
+        ChangelogWalkAction(PrintStream printStream) throws GitRepositoryException {
             this.printStream = printStream;
         }
 
@@ -292,14 +293,20 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
             return currentTag;
         }
 
+        @Override
+        public void prepare() throws GitRepositoryException {
+            dateFormatter = new SimpleDateFormat(dateFormat);
+            tags = repository.getTags();
+        }
+
         protected void run() throws GitRepositoryException {
             if (skipCommitsPattern != null && skipCommitsPattern.matcher(currentCommit.getMessage()).find()) {
                 return;
             }
 
-            if (repository.getTags().containsKey(this.currentCommit.getId())) {
+            if (tags.containsKey(this.currentCommit.getId())) {
                 this.lastTag = this.currentTag;
-                this.currentTag = repository.getTags().get(this.currentCommit.getId());
+                this.currentTag = tags.get(this.currentCommit.getId());
                 if (createGitHubLinks) {
                     if (this.lastTag == null) {
                         insertGitHubLink(printStream, currentTag, repository.getBranch());

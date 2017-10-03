@@ -12,9 +12,15 @@ matrix:
   fast_finish: true
 
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B
-script: mvn test -Dsurefire.useFile=false
-after_success:
-  - mvn clean cobertura:cobertura coveralls:report -Dmaven.plugin.skip=true -B
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+script:
+  - mvn cobertura:cobertura -Dsurefire.useFile=false
+after_script:
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./cc-test-reporter format-coverage -t cobertura target/site/cobertura/coverage.xml; fi
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./cc-test-reporter upload-coverage; fi
 
 notifications:
   webhooks:

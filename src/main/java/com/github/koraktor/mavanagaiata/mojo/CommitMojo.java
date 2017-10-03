@@ -25,9 +25,9 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
  * "mavanagaiata.commit.abbrev" and "mvngit.commit.abbrev" properties.
  * Additionally the author's and committer's name and email address are stored
  * in the properties "mavanagaiata.commit.author.name",
- * "mavanagaiata.commit.author.email", "mvngit.commit.auhtor.name" and
+ * "mavanagaiata.commit.author.email", "mvngit.commit.author.name" and
  * "mvngit.commit.author.email", and "mavanagaiata.commit.committer.name",
- * "mavanagaiata.commit.committer.email", "mvngit.commit.commiter.name" and
+ * "mavanagaiata.commit.committer.email", "mvngit.commit.committer.name" and
  * "mvngit.commit.committer.email" respectively.
  *
  * @author Sebastian Staudt
