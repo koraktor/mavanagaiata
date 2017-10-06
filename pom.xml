@@ -117,7 +117,7 @@
 
     <profiles>
         <profile>
-            <id>bootstrap</id>
+            <id>release</id>
             <build>
                 <defaultGoal>install</defaultGoal>
                 <plugins>
