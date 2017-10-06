@@ -134,7 +134,8 @@ abstract class AbstractGitMojo extends AbstractMojo {
     /**
      * The prefixes to prepend to property keys
      */
-    @Parameter(property = "mavanagaiata.propertyPrefixes")
+    @Parameter(property = "mavanagaiata.propertyPrefixes",
+                defaultValue = "mavanagaiata,mvngit")
     protected String[] propertyPrefixes = { "mavanagaiata", "mvngit" };
 
     /**
