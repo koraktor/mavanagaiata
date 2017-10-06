@@ -307,8 +307,8 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
             if (tags.containsKey(this.currentCommit.getId())) {
                 this.lastTag = this.currentTag;
                 this.currentTag = tags.get(this.currentCommit.getId());
-                if (createGitHubLinks) {
-                    if (this.lastTag == null) {
+                if (createGitHubLinks && !firstCommit) {
+                    if (lastTag == null) {
                         insertGitHubLink(printStream, currentTag, repository.getBranch());
                     } else {
                         insertGitHubLink(printStream, currentTag, lastTag);
