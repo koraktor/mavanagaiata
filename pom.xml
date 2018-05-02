@@ -24,7 +24,7 @@
 
     <name>Mavanagaiata</name>
     <description>Maven plugin providing project information from Git</description>
-    <url>http://koraktor.de/mavanagaiata</url>
+    <url>https://koraktor.de/mavanagaiata</url>
     <inceptionYear>2011</inceptionYear>
     <licenses>
         <license>
@@ -79,7 +79,7 @@
             <id>koraktor</id>
             <name>Sebastian Staudt</name>
             <email>koraktor@gmail.com</email>
-            <url>http://koraktor.de</url>
+            <url>https://koraktor.de</url>
         </developer>
     </developers>
 
