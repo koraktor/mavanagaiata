@@ -46,6 +46,8 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
     public void setup() throws Exception {
         super.setup();
 
+        Locale.setDefault(Locale.ENGLISH);
+
         this.mojo.branchFormat = "Commits on branch \"master\"\\n";
         this.mojo.commitPrefix = " * ";
         this.mojo.gitHubBranchLinkFormat = "\\nSee Git history for changes in the \"%s\" branch since version %s at: %s";
