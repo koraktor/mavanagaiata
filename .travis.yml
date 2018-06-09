@@ -23,9 +23,9 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 script:
-  - mvn cobertura:cobertura -Dsurefire.useFile=false
+  - mvn -Dsurefire.useFile=false jacoco:prepare-agent test jacoco:report
 after_script:
-  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./cc-test-reporter format-coverage -t cobertura target/site/cobertura/coverage.xml; fi
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./cc-test-reporter format-coverage -t jacoco target/site/jacoco/jacoco.xml; fi
   - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./cc-test-reporter upload-coverage; fi
 
 notifications:
