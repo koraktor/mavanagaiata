@@ -384,27 +384,7 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.1</version>
-                <configuration>
-                    <excludes>
-                        <exclude>**/HelpMojo.*</exclude>
-                        <exclude>**/VersionHelper.*</exclude>
-                    </excludes>
-                    <rules>
-                        <element>CLASS</element>
-                        <limits>
-                            <limit>
-                                <counter>BRANCH</counter>
-                                <value>COVEREDRATIO</value>
-                                <minimum>85%</minimum>
-                            </limit>
-                            <limit>
-                                <counter>LINE</counter>
-                                <value>COVEREDRATIO</value>
-                                <minimum>85%</minimum>
-                            </limit>
-                        </limits>
-                    </rules>
-                </configuration>
+                <configuration></configuration>
             </plugin>
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
@@ -470,6 +450,27 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.1</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/HelpMojo.*</exclude>
+                        <exclude>**/VersionHelper.*</exclude>
+                    </excludes>
+                    <rules>
+                        <element>CLASS</element>
+                        <limits>
+                            <limit>
+                                <counter>BRANCH</counter>
+                                <value>COVEREDRATIO</value>
+                                <minimum>85%</minimum>
+                            </limit>
+                            <limit>
+                                <counter>LINE</counter>
+                                <value>COVEREDRATIO</value>
+                                <minimum>85%</minimum>
+                            </limit>
+                        </limits>
+                    </rules>
+                </configuration>
                 <reportSets>
                     <reportSet>
                         <reports>
