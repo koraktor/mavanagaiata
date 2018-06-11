@@ -30,13 +30,11 @@
 
     <custom>
         <fluidoSkin>
-            <facebookLike />
             <gitHub>
                 <projectId>koraktor/mavanagaiata</projectId>
                 <ribbonOrientation>right</ribbonOrientation>
                 <ribbonColor>black</ribbonColor>
             </gitHub>
-            <googlePlusOne />
             <ohloh>
                 <projectId>mavanagaiata</projectId>
                 <widget>factoids</widget>
