@@ -4,7 +4,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2015, Sebastian Staudt
+ * Copyright (c) 2012-2018, Sebastian Staudt
 -->
 
 <project xmlns="http://maven.apache.org/DECORATION/1.7.0"
@@ -15,7 +15,7 @@
     <skin>
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-fluido-skin</artifactId>
-        <version>1.6</version>
+        <version>1.7</version>
     </skin>
 
     <body>
