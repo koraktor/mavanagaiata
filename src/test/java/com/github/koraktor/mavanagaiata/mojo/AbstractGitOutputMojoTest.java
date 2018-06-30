@@ -171,8 +171,7 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
             this.outputFile = outputFile;
         }
 
-        protected void writeOutput(GitRepository repository, PrintStream printStream)
-                throws MavanagaiataMojoException {
+        protected void writeOutput(GitRepository repository, PrintStream printStream) {
             this.printStream = printStream;
         }
 

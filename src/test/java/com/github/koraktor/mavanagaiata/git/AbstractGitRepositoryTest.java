@@ -24,28 +24,27 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
  */
 public class AbstractGitRepositoryTest {
 
-    static GitCommit headCommit = mock(GitCommit.class);
+    private static GitCommit headCommit = mock(GitCommit.class);
 
     class GenericGitRepository extends AbstractGitRepository {
 
-        public void check() throws GitRepositoryException {}
+        public void check() {}
 
         public void close() {}
 
-        public GitTagDescription describe() throws GitRepositoryException {
+        public GitTagDescription describe() {
             return null;
         }
 
-        public String getAbbreviatedCommitId(GitCommit commit)
-                throws GitRepositoryException {
+        public String getAbbreviatedCommitId(GitCommit commit) {
             return commit == headCommit ? "deadbeef" : null;
         }
 
-        public String getBranch() throws GitRepositoryException {
+        public String getBranch() {
             return null;
         }
 
-        public GitCommit getHeadCommit() throws GitRepositoryException {
+        public GitCommit getHeadCommit() {
             return headCommit;
         }
 
@@ -57,7 +56,7 @@ public class AbstractGitRepositoryTest {
             return new File("test");
         }
 
-        public Map<String, GitTag> getTags() throws GitRepositoryException {
+        public Map<String, GitTag> getTags() {
             return null;
         }
 
@@ -66,17 +65,16 @@ public class AbstractGitRepositoryTest {
             return false;
         }
 
-        public boolean isDirty(boolean dirtyCheckLoose) throws GitRepositoryException {
+        public boolean isDirty(boolean dirtyCheckLoose) {
             return false;
         }
 
         @Override
-        public boolean isOnUnbornBranch() throws GitRepositoryException {
+        public boolean isOnUnbornBranch() {
             return false;
         }
 
-        public <T extends CommitWalkAction> T walkCommits(T action)
-                throws GitRepositoryException {
+        public <T extends CommitWalkAction> T walkCommits(T action) {
             return action;
         }
 
@@ -102,7 +100,7 @@ public class AbstractGitRepositoryTest {
     }
 
     @Test
-    public void testGetMailMapAlreadyParsed() throws Exception {
+    public void testGetMailMapAlreadyParsed() {
         AbstractGitRepository repo = new GenericGitRepository();
         repo.mailMap = mock(MailMap.class);
 
@@ -110,7 +108,7 @@ public class AbstractGitRepositoryTest {
     }
 
     @Test
-    public void testSetHeadRef() throws Exception {
+    public void testSetHeadRef() {
         AbstractGitRepository repo = new GenericGitRepository();
         repo.setHeadRef("HEAD");
 

@@ -10,7 +10,6 @@ package com.github.koraktor.mavanagaiata.git.jgit;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,7 +18,6 @@ import java.util.Random;
 
 import org.mockito.InOrder;
 
-import org.eclipse.jgit.errors.AmbiguousObjectException;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.lib.AbbreviatedObjectId;
 import org.eclipse.jgit.lib.IndexDiff;
@@ -43,6 +41,7 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 
+import static java.util.Collections.emptySet;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -69,7 +68,7 @@ public class JGitRepositoryTest {
     private JGitRepository repository;
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         repository = new JGitRepository();
         repository.setHeadRef("HEAD");
         repository.repository = repo = mock(Repository.class, RETURNS_DEEP_STUBS);
@@ -197,13 +196,13 @@ public class JGitRepositoryTest {
     @Test
     public void testClean() throws Exception {
         IndexDiff indexDiff = this.mockIndexDiff();
-        when(indexDiff.getAdded()).thenReturn(Collections.<String> emptySet());
-        when(indexDiff.getChanged()).thenReturn(Collections.<String>emptySet());
-        when(indexDiff.getRemoved()).thenReturn(Collections.<String>emptySet());
-        when(indexDiff.getMissing()).thenReturn(Collections.<String> emptySet());
-        when(indexDiff.getModified()).thenReturn(Collections.<String>emptySet());
-        when(indexDiff.getConflicting()).thenReturn(Collections.<String>emptySet());
-        when(indexDiff.getUntracked()).thenReturn(Collections.<String>emptySet());
+        when(indexDiff.getAdded()).thenReturn(emptySet());
+        when(indexDiff.getChanged()).thenReturn(emptySet());
+        when(indexDiff.getRemoved()).thenReturn(emptySet());
+        when(indexDiff.getMissing()).thenReturn(emptySet());
+        when(indexDiff.getModified()).thenReturn(emptySet());
+        when(indexDiff.getConflicting()).thenReturn(emptySet());
+        when(indexDiff.getUntracked()).thenReturn(emptySet());
 
         assertThat(this.repository.isDirty(false), is(false));
     }
@@ -211,12 +210,12 @@ public class JGitRepositoryTest {
     @Test
     public void testCleanIgnoreUntracked() throws Exception {
         IndexDiff indexDiff = this.mockIndexDiff();
-        when(indexDiff.getAdded()).thenReturn(Collections.<String> emptySet());
-        when(indexDiff.getChanged()).thenReturn(Collections.<String> emptySet());
-        when(indexDiff.getRemoved()).thenReturn(Collections.<String> emptySet());
-        when(indexDiff.getMissing()).thenReturn(Collections.<String> emptySet());
-        when(indexDiff.getModified()).thenReturn(Collections.<String> emptySet());
-        when(indexDiff.getConflicting()).thenReturn(Collections.<String> emptySet());
+        when(indexDiff.getAdded()).thenReturn(emptySet());
+        when(indexDiff.getChanged()).thenReturn(emptySet());
+        when(indexDiff.getRemoved()).thenReturn(emptySet());
+        when(indexDiff.getMissing()).thenReturn(emptySet());
+        when(indexDiff.getModified()).thenReturn(emptySet());
+        when(indexDiff.getConflicting()).thenReturn(emptySet());
 
         assertThat(this.repository.isDirty(true), is(false));
     }
@@ -448,7 +447,7 @@ public class JGitRepositoryTest {
             repository.getBranch();
             fail("No exception thrown.");
         } catch (GitRepositoryException e) {
-            assertThat(e.getCause(), is((Throwable) exception));
+            assertThat(e.getCause(), is(exception));
             assertThat(e.getMessage(), is(equalTo("Current branch could not be read.")));
         }
     }

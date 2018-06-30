@@ -45,15 +45,14 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     @Override
     public void setup() throws Exception {
         mojo = spy(new AbstractGitMojo() {
-            public void run(GitRepository repository)
-                    throws MavanagaiataMojoException {}
+            public void run(GitRepository repository) {}
         });
 
         super.setup();
     }
 
     @Test
-    public void testErrors() throws Exception {
+    public void testErrors() {
         this.mojo.baseDir = null;
         try {
             this.mojo.initRepository();

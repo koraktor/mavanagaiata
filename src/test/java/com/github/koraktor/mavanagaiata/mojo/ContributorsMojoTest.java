@@ -67,7 +67,7 @@ public class ContributorsMojoTest extends GitOutputMojoAbstractTest<Contributors
     }
 
     @Test
-    public void testInitConfiguration() throws Exception {
+    public void testInitConfiguration() {
         this.mojo.sort = null;
         this.mojo.initConfiguration();
         assertThat(this.mojo.sort, is(equalTo("count")));

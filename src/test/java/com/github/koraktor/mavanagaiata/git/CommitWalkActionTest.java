@@ -25,7 +25,7 @@ public class CommitWalkActionTest {
 
     class GenericCommitWalkAction extends CommitWalkAction {
 
-        protected void run() throws GitRepositoryException {}
+        protected void run() {}
 
     }
 

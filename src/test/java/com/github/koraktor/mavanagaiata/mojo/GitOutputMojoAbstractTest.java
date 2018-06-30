@@ -48,7 +48,7 @@ abstract class GitOutputMojoAbstractTest<T extends AbstractGitOutputMojo> extend
         printStream = new PrintStream(outputStream);
     }
 
-    protected void assertOutputLine(String line) throws IOException {
+    void assertOutputLine(String line) throws IOException {
         if (this.reader == null) {
             this.reader = new BufferedReader(new StringReader(this.outputStream.toString()));
         }

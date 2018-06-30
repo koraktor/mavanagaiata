@@ -102,7 +102,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
     }
 
     @Test
-    public void testCreateGitHubLinks() throws Exception {
+    public void testCreateGitHubLinks() {
         this.mojo.initConfiguration();
         assertThat(this.mojo.createGitHubLinks, is(false));
 

@@ -16,26 +16,19 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Sebastian Staudt
  */
 public class MailMapTest {
 
-    GitRepository repo;
+    private GitRepository repo;
 
     @Before
     public void setup() {
@@ -126,12 +119,10 @@ public class MailMapTest {
         final MailMap mailMap = spy(new MailMap(repo));
         when(repo.getWorkTree()).thenReturn(new File("test"));
 
-        doAnswer(new Answer() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                mailMap.mailToMailMap = new HashMap<>(1);
-                mailMap.mailToMailMap.put("test", "test");
-                return null;
-            }
+        doAnswer(invocation -> {
+            mailMap.mailToMailMap = new HashMap<>(1);
+            mailMap.mailToMailMap.put("test", "test");
+            return null;
         }).when(mailMap).parseMailMap(eq(new File("test/.mailmap")));
 
         mailMap.parseMailMap();
@@ -165,9 +156,9 @@ public class MailMapTest {
         assertThat(mailMap.mailToNameMap.size(), is(1));
         assertThat(mailMap.mailToNameMap.get("realmail@example.com"), is(equalTo("Real Name")));
         assertThat(mailMap.mailToNameAndMailMap.size(), is(1));
-        assertThat(mailMap.mailToNameAndMailMap.get("oldmail@example.com"), is(equalTo((Map.Entry<String, String>) new AbstractMap.SimpleEntry<>("Real Name", "newmail@example.com"))));
+        assertThat(mailMap.mailToNameAndMailMap.get("oldmail@example.com"), is(equalTo(new AbstractMap.SimpleEntry<>("Real Name", "newmail@example.com"))));
         assertThat(mailMap.nameAndMailToNameAndMailMap.size(), is(1));
-        assertThat(mailMap.nameAndMailToNameAndMailMap.get(new AbstractMap.SimpleEntry<>("Fake Name", "oldmail@example.com")), is(equalTo((Map.Entry<String, String>) new AbstractMap.SimpleEntry<>("Real Name", "newmail@example.com"))));
+        assertThat(mailMap.nameAndMailToNameAndMailMap.get(new AbstractMap.SimpleEntry<>("Fake Name", "oldmail@example.com")), is(equalTo(new AbstractMap.SimpleEntry<>("Real Name", "newmail@example.com"))));
     }
 
 }

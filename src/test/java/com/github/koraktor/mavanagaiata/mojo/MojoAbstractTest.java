@@ -30,6 +30,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.objenesis.ObjenesisHelper.newInstance;
 
 public abstract class MojoAbstractTest<T extends AbstractGitMojo> {
 
@@ -72,7 +73,7 @@ public abstract class MojoAbstractTest<T extends AbstractGitMojo> {
         Class<T> mojoClass = ((Class<T>)((ParameterizedType) this.getClass()
             .getGenericSuperclass()).getActualTypeArguments()[0]);
         if (!Modifier.isAbstract(mojoClass.getModifiers())) {
-            this.mojo = mojoClass.newInstance();
+            this.mojo = mojoClass.getConstructor().newInstance();
         }
         this.mojo.dateFormat            = "MM/dd/yyyy hh:mm a Z";
         this.mojo.baseDir               = this.baseDir;
@@ -82,7 +83,7 @@ public abstract class MojoAbstractTest<T extends AbstractGitMojo> {
         this.mojo.project               = project;
     }
 
-    protected void assertProperty(Object value, String key) {
+    void assertProperty(Object value, String key) {
         for(String prefix : this.mojo.propertyPrefixes) {
             assertThat(this.projectProperties.get(prefix + "." + key), is(equalTo(value)));
         }

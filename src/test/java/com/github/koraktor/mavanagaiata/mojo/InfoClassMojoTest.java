@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.apache.maven.shared.filtering.MavenFileFilter;
-import org.apache.maven.shared.utils.io.FileUtils;
 
 import org.codehaus.plexus.interpolation.MapBasedValueSource;
 import org.junit.After;
@@ -31,7 +30,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyListOf;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -169,7 +168,7 @@ public class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
         mojo.run(repository);
 
         File targetFile = new File(mojo.outputDirectory, "com/github/koraktor/mavanagaita/GitInfo.java");
-        verify(mojo.fileFilter).copyFile(any(File.class), eq(targetFile), eq(true), anyListOf(FileUtils.FilterWrapper.class), eq("UTF-8"), eq(true));
+        verify(mojo.fileFilter).copyFile(any(File.class), eq(targetFile), eq(true), anyList(), eq("UTF-8"), eq(true));
     }
 
     @After
