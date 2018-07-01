@@ -45,7 +45,8 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     @Override
     public void setup() throws Exception {
         mojo = spy(new AbstractGitMojo() {
-            public void run(GitRepository repository) {}
+            public void run(GitRepository repository)
+                throws MavanagaiataMojoException {}
         });
 
         super.setup();
@@ -120,7 +121,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
             fail("No exception thrown.");
         } catch (MojoExecutionException e) {
             assertThat(e.getCause(), is(instanceOf(MavanagaiataMojoException.class)));
-            assertThat((MavanagaiataMojoException) e.getCause(), is(sameInstance(exception)));
+            assertThat(e.getCause(), is(sameInstance(exception)));
             assertThat(e.getMessage(), is(equalTo(exception.getMessage())));
         }
     }
@@ -138,7 +139,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
             fail("No exception thrown.");
         } catch (MojoFailureException e) {
             assertThat(e.getCause(), is(instanceOf(MavanagaiataMojoException.class)));
-            assertThat((MavanagaiataMojoException) e.getCause(), is(sameInstance(exception)));
+            assertThat(e.getCause(), is(sameInstance(exception)));
             assertThat(e.getMessage(), is(equalTo(exception.getMessage())));
         }
     }
@@ -178,7 +179,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
             fail("No exception thrown.");
         } catch (MavanagaiataMojoException e) {
             assertThat(e.getCause(), is(instanceOf(GitRepositoryException.class)));
-            assertThat((GitRepositoryException) e.getCause(), is(sameInstance(exception)));
+            assertThat(e.getCause(), is(sameInstance(exception)));
             assertThat(e.getMessage(), is(equalTo("Unable to initialize Git repository")));
         }
     }
