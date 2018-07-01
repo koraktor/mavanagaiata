@@ -25,7 +25,7 @@ You may also call some of the goals directly from the command-line:
 
     $ mvn ${project.groupId}:${project.artifactId}:changelog
 
-You can see a list of all available goals see [here](../plugin-info.html) or
-via the `help` goal:
+You can see a list of all available goals [here](../plugin-info.html) or via
+the `help` goal:
 
     $ mvn ${project.groupId}:${project.artifactId}:help
