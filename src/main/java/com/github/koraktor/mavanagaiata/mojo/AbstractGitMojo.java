@@ -41,12 +41,12 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * The working tree of the Git repository.
      * <p>
      * If there is only one project inside the Git repository this is probably
-     * <code>${project.basedir}</code> (default).
+     * {@code ${project.basedir}} (default).
      * <p>
-     * <strong>Note:</strong> The <code>GIT_DIR</code> can be found
-     * automatically even if this is not the real working tree but one of its
-     * subdirectories. But Mavanagaiata cannot determine the state of the
-     * working tree (e.g. for the dirty flag) if this is not set correctly.
+     * <strong>Note:</strong> The {@code GIT_DIR} can be found automatically
+     * even if this is not the real working tree but one of its subdirectories.
+     * But Mavanagaiata cannot determine the state of the working tree (e.g.
+     * for the dirty flag) if this is not set correctly.
      */
     @Parameter(property = "mavanagaiata.baseDir",
                defaultValue = "${project.basedir}")
@@ -56,8 +56,8 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * The flag to append to refs if there are changes in the index or working
      * tree
      * <p>
-     * Setting this to either <code>"false"</code> or <code>"null"</code> will
-     * disable flagging refs as dirty.
+     * Setting this to either {@code "false"} or {@code "null"} will disable
+     * flagging refs as dirty.
      *
      * @since 0.4.0
      */
@@ -69,7 +69,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * Specifies if the dirty flag should also be appended if there are
      * untracked files
      * <p>
-     * If <code>false</code> only modified that are already known to Git will
+     * If {@code false} only modified files that are already known to Git will
      * cause the dirty flag to be appended.
      *
      * @since 0.5.0
@@ -81,8 +81,8 @@ abstract class AbstractGitMojo extends AbstractMojo {
     /**
      * Specifies if a failed execution of the mojo will stop the build process
      * <p>
-     * If <code>true</code> a failure during mojo execution will not stop the
-     * build process.
+     * If {@code true} a failure during mojo execution will not stop the build
+     * process.
      *
      * @since 0.6.0
      */
@@ -91,11 +91,11 @@ abstract class AbstractGitMojo extends AbstractMojo {
     protected boolean failGracefully = false;
 
     /**
-     * The <code>GIT_DIR</code> path of the Git repository
+     * The {@code GIT_DIR} path of the Git repository
      * <p>
      * <strong>Warning:</strong> Do not set this when you don't have a good
-     * reason to do so. The <code>GIT_DIR</code> can be found automatically if
-     * your project resides somewhere in a usual Git repository.
+     * reason to do so. The {@code GIT_DIR} can be found automatically if your
+     * project resides somewhere in a usual Git repository.
      */
     @Parameter(property = "mavanagaiata.gitDir")
     protected File gitDir;
@@ -147,9 +147,9 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * @see #init
      * @see #run
      * @throws MojoExecutionException if the mojo execution fails and
-     *         <code>failGracefully</code> is <code>false</code>
+     *         {@code failGracefully} is {@code false}
      * @throws MojoFailureException if the mojo execution fails and
-     *         <code>failGracefully</code> is <code>true</code>
+     *         {@code failGracefully} is {@code true}
      */
     public final void execute()
             throws MojoExecutionException, MojoFailureException {
@@ -193,7 +193,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * This will initialize the JGit repository instance for further usage by
      * the mojo.
      *
-     * @return <code>false</code> if the execution should be skipped
+     * @return {@code false} if the execution should be skipped
      * @throws MavanagaiataMojoException if the repository cannot be initialized
      */
     protected GitRepository init() throws MavanagaiataMojoException {

@@ -24,7 +24,7 @@ class MavanagaiataMojoException extends Exception {
      * @param message The message used for the exception
      * @param cause The cause for this exception
      * @param args Additional arguments to interpolate into the message
-     * @return A <code>MavanagaiataMojoException</code> created from the given
+     * @return A {@code MavanagaiataMojoException} created from the given
      *         parameters
      */
     static MavanagaiataMojoException create(String message, Throwable cause, Object... args) {

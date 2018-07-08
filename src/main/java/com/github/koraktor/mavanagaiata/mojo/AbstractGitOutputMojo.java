@@ -19,11 +19,10 @@ import org.apache.maven.plugins.annotations.Parameter;
 import com.github.koraktor.mavanagaiata.git.GitRepository;
 
 /**
- * This abstract Mojo implements writing output to a <code>PrintStream</code>
+ * This abstract Mojo implements writing output to a {@code PrintStream}
  *
- * This is either <code>System.out</code> by default, but maybe another
- * <code>PrintStream</code> object wrapped around a file given by
- * <code>outputFile</code>.
+ * This is either {@code System.out} by default, but maybe another
+ * {@code PrintStream} object wrapped around a file given by {@code outputFile}.
  *
  * @author Sebastian Staudt
  * @see File
@@ -83,15 +82,15 @@ abstract class AbstractGitOutputMojo extends AbstractGitMojo {
     public abstract File getOutputFile();
 
     /**
-     * Initializes the <code>PrintStream</code> to use
+     * Initializes the {@code PrintStream} to use
      *
-     * This is <code>System.out</code> if no output file is given (default).
-     * Otherwise the parent directories of <code>outputFile</code> are created
-     * and a new <code>PrintStream</code> for that file is created.
+     * This is {@code System.out} if no output file is given (default).
+     * Otherwise the parent directories of {@code outputFile} are created and a
+     * new {@code PrintStream} for that file is created.
      *
      * @throws MavanagaiataMojoException if the file specified by
-     *         <code>outputFile</code> cannot be opened for writing or the
-     *         target directory cannot be created
+     *         {@code outputFile} cannot be opened for writing or the target
+     *         directory cannot be created
      */
     @Override
     protected final void run(GitRepository repository) throws MavanagaiataMojoException {

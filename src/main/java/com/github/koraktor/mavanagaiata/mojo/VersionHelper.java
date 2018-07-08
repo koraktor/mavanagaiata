@@ -19,7 +19,7 @@ class VersionHelper {
      * Returns the current version of Mavanagaiata
      *
      * This requires the presence of the generated Git info class. If it's not
-     * available <code>null</code> is returned.
+     * available {@code null} is returned.
      *
      * @return The current version
      */
