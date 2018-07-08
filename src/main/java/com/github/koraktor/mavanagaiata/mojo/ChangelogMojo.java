@@ -285,7 +285,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
 
         private Map<String, GitTag> tags;
 
-        ChangelogWalkAction(PrintStream printStream) throws GitRepositoryException {
+        ChangelogWalkAction(PrintStream printStream) {
             this.printStream = printStream;
         }
 

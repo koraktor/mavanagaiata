@@ -10,8 +10,6 @@ package com.github.koraktor.mavanagaiata.mojo;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -24,6 +22,8 @@ import com.github.koraktor.mavanagaiata.git.GitCommit;
 import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.MailMap;
+
+import static java.util.Comparator.comparing;
 
 /**
  * This goal allows to generate a list of contributors for the currently
@@ -38,24 +38,6 @@ import com.github.koraktor.mavanagaiata.git.MailMap;
       defaultPhase = LifecyclePhase.PROCESS_RESOURCES,
       threadSafe = true)
 public class ContributorsMojo extends AbstractGitOutputMojo {
-
-    protected final static Comparator<Contributor> COUNT_COMPARATOR = new Comparator<Contributor>() {
-        public int compare(Contributor contributor1, Contributor contributor2) {
-            return -contributor1.count.compareTo(contributor2.count);
-        }
-    };
-
-    protected final static Comparator<Contributor> DATE_COMPARATOR = new Comparator<Contributor>() {
-        public int compare(Contributor contributor1, Contributor contributor2) {
-            return contributor1.firstCommitDate.compareTo(contributor2.firstCommitDate);
-        }
-    };
-
-    protected final static Comparator<Contributor> NAME_COMPARATOR = new Comparator<Contributor>() {
-        public int compare(Contributor contributor1, Contributor contributor2) {
-            return contributor1.name.compareTo(contributor2.name);
-        }
-    };
 
     /**
      * The string to prepend to every contributor name
@@ -147,13 +129,13 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
             ArrayList<Contributor> contributors = new ArrayList<>(result.contributors.values());
             switch (sort) {
                 case "date":
-                    Collections.sort(contributors, DATE_COMPARATOR);
+                    contributors.sort(comparing(Contributor::getFirstCommitDate));
                     break;
                 case "name":
-                    Collections.sort(contributors, NAME_COMPARATOR);
+                    contributors.sort(comparing(Contributor::getName));
                     break;
                 default:
-                    Collections.sort(contributors, COUNT_COMPARATOR);
+                    contributors.sort(comparing(Contributor::getCount).reversed());
             }
 
             printStream.println(this.header);
@@ -199,7 +181,7 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
             this.contributors = new HashMap<>();
         }
 
-        protected void run() throws GitRepositoryException {
+        protected void run() {
             String emailAddress = this.currentCommit.getAuthorEmailAddress();
             Contributor contributor = this.contributors.get(emailAddress);
             if (contributor == null) {
@@ -239,6 +221,17 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
             }
         }
 
+        Integer getCount() {
+            return count;
+        }
+
+        Date getFirstCommitDate() {
+            return firstCommitDate;
+        }
+
+        String getName() {
+            return name;
+        }
     }
 
 }

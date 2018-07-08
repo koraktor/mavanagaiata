@@ -171,12 +171,7 @@ public class JGitRepository extends AbstractGitRepository {
                 return new GitTagDescription(this, this.getHeadCommit(), null, -1);
             }
 
-            TagCandidate bestCandidate = Collections.min(candidates, new Comparator<TagCandidate>() {
-                @Override
-                public int compare(TagCandidate tag1, TagCandidate tag2) {
-                    return Integer.compare(tag1.distance, tag2.distance);
-                }
-            });
+            TagCandidate bestCandidate = Collections.min(candidates, Comparator.comparingInt(tag1 -> tag1.distance));
 
             // We hit the maximum of candidates so there may be still be
             // commits that add up to the distance
