@@ -25,8 +25,10 @@ before_script:
 script:
   - mvn -Dsurefire.useFile=false jacoco:prepare-agent test jacoco:report
 after_script:
-  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./cc-test-reporter format-coverage -t jacoco target/site/jacoco/jacoco.xml; fi
-  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./cc-test-reporter upload-coverage; fi
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then cd src/main/java; fi
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ../../../cc-test-reporter format-coverage --add-prefix src/main/java -t jacoco ../../../target/site/jacoco/jacoco.xml; fi
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then cd ../../..; fi
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./cc-test-reporter upload-coverage --input src/main/java/coverage/codeclimate.json; fi
 
 notifications:
   webhooks:
