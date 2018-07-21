@@ -420,18 +420,18 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.9</version>
+                <version>3.0.0</version>
                 <reportSets>
                     <reportSet>
                         <reports>
                             <report>index</report>
-                            <report>cim</report>
+                            <report>ci-management</report>
                             <report>dependency-info</report>
-                            <report>issue-tracking</report>
-                            <report>license</report>
+                            <report>issue-management</report>
+                            <report>licenses</report>
                             <report>summary</report>
-                            <report>project-team</report>
-                            <report>mailing-list</report>
+                            <report>team</report>
+                            <report>mailing-lists</report>
                             <report>scm</report>
                         </reports>
                     </reportSet>
