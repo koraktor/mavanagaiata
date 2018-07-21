@@ -296,8 +296,8 @@
                         <additionalOption>-html5</additionalOption>
                     </additionalOptions>
                     <links>
-                        <link>https://docs.oracle.com/javase/8/docs/api/</link>
-                        <link>http://download.eclipse.org/jgit/site/${jgit.version}/apidocs/</link>
+                        <link>https://docs.oracle.com/javase/8/docs/api</link>
+                        <link>http://download.eclipse.org/jgit/site/${jgit.version}/apidocs</link>
                     </links>
                     <show>private</show>
                 </configuration>
