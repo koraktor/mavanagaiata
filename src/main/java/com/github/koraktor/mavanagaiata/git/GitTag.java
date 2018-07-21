@@ -41,6 +41,9 @@ public interface GitTag {
 
     /**
      * Load tag meta data
+     *
+     * @param repository The repository to load information from
+     * @throws GitRepositoryException if tags cannot be loaded
      */
     void load(GitRepository repository) throws GitRepositoryException;
 

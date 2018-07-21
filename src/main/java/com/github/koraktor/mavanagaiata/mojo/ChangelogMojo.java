@@ -232,6 +232,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
      * Otherwise the text will link to the compare view, listing all commits
      * that are in the current ref, but not in the last one.
      *
+     * @param printStream The stream the output should be printed to
      * @param lastRef The last tag or branch in the changelog
      * @param currentRef The current tag or branch in the changelog
      * @param isBranch Whether the link is points to a branch

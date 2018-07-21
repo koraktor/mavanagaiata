@@ -219,7 +219,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
     /**
      * Initializes a JGit Repository object for further reference
      *
-     * @see GitRepository
+     * @return The repository instance
      * @throws GitRepositoryException if retrieving information from the Git
      *         repository fails
      */
@@ -243,9 +243,8 @@ abstract class AbstractGitMojo extends AbstractMojo {
 
     /**
      * The actual implementation of the mojo
-     * <p>
-     * This is called internally by {@link #init}.
      *
+     * @param repository The repository instance to use
      * @throws MavanagaiataMojoException if there is an error during execution
      */
     protected abstract void run(GitRepository repository) throws MavanagaiataMojoException;

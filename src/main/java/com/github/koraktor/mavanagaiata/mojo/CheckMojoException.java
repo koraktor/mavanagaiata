@@ -58,6 +58,7 @@ class CheckMojoException extends MavanagaiataMojoException {
      * Creates a new exception for the given check failure type
      *
      * @param type The type of failure
+     * @param args The arguments to integrate into the error message
      */
     CheckMojoException(Type type, String... args) {
         super(getMessageForType(type, args), null);

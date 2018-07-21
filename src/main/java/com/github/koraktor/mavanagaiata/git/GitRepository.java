@@ -165,6 +165,8 @@ public interface GitRepository extends AutoCloseable {
      * {@code HEAD} commit
      *
      * @param action The action to execute for each commit found
+     * @param <T> The action’s type
+     * @return The action itself
      * @throws GitRepositoryException if an error occurs during walking through
      *         the commits
      */

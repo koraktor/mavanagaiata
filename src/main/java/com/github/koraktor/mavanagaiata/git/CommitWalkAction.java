@@ -35,6 +35,8 @@ public abstract class CommitWalkAction {
      * <p>
      * This can be used to load required data for the walk action, e.g. all
      * tags.
+     *
+     * @throws GitRepositoryException if an error occurs during the preparation
      */
     public void prepare() throws GitRepositoryException {}
 

@@ -117,9 +117,11 @@ abstract class AbstractGitOutputMojo extends AbstractGitMojo {
     }
 
     /**
-     * Creates a new print stream for the configured outputfile and encoding
+     * Creates a new print stream for the configured output file and encoding
      *
      * @return A new print stream
+     * @throws FileNotFoundException if the output file could not be found
+     * @throws UnsupportedEncodingException if the encoding is not supported
      */
     PrintStream createPrintStream()
             throws FileNotFoundException, UnsupportedEncodingException {
@@ -147,6 +149,8 @@ abstract class AbstractGitOutputMojo extends AbstractGitMojo {
      * Writes the (optional) footer and flushes the {@code PrintStream} after
      * calling the main mojo implementation
      *
+     * @param repository The repository the mojo is running in
+     * @param printStream The stream the output should be printed to
      * @see #writeOutput
      * @throws MavanagaiataMojoException if the output cannot be generated
      */
