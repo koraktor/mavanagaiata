@@ -2,7 +2,8 @@ Mavanagaiata
 ============
 
 [![Build Status](https://travis-ci.org/koraktor/mavanagaiata.svg?branch=master)](https://travis-ci.org/koraktor/mavanagaiata)
-[![Coverage Status](https://coveralls.io/repos/koraktor/mavanagaiata/badge.svg?branch=master&service=github)](https://coveralls.io/github/koraktor/mavanagaiata)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/48f1db9ad5dcfe3b99d1/test_coverage)](https://codeclimate.com/github/koraktor/mavanagaiata/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/48f1db9ad5dcfe3b99d1/maintainability)](https://codeclimate.com/github/koraktor/mavanagaiata/maintainability)
 [![Maven Release](https://img.shields.io/maven-central/v/com.github.koraktor/mavanagaiata.svg)](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.github.koraktor%22%20AND%20a%3A%22mavanagaiata%22)
 
 Mavanagaiata – \[maˈvanaˈɡaːjaˈta\] – is a Maven plugin providing information
