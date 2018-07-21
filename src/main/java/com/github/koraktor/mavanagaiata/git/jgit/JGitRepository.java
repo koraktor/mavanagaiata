@@ -39,6 +39,8 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 
+import static org.eclipse.jgit.lib.Constants.R_TAGS;
+
 /**
  * Wrapper around JGit's {@link Repository} object to represent a Git
  * repository
@@ -461,14 +463,12 @@ public class JGitRepository extends AbstractGitRepository {
      */
     protected Map<String, RevTag> getRawTags()
             throws GitRepositoryException {
-        RevWalk revWalk = this.getRevWalk();
-        Map<String, Ref> tagRefs = this.repository.getTags();
+        RevWalk revWalk = getRevWalk();
         Map<String, RevTag> tags = new HashMap<>();
-
         try {
-            for (Map.Entry<String, Ref> tag : tagRefs.entrySet()) {
+            for (Ref tag : repository.getRefDatabase().getRefsByPrefix(R_TAGS)) {
                 try {
-                    RevTag revTag = revWalk.lookupTag(tag.getValue().getObjectId());
+                    RevTag revTag = revWalk.lookupTag(tag.getObjectId());
                     RevObject object = revWalk.peel(revTag);
                     if (!(object instanceof RevCommit)) {
                         continue;

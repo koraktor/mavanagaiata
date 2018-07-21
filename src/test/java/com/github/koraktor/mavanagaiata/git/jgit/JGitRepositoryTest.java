@@ -10,9 +10,11 @@ package com.github.koraktor.mavanagaiata.git.jgit;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -42,6 +44,7 @@ import com.github.koraktor.mavanagaiata.git.GitTag;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 
 import static java.util.Collections.emptySet;
+import static org.eclipse.jgit.lib.Constants.R_TAGS;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -627,12 +630,10 @@ public class JGitRepositoryTest {
     public void testGetRawTags() throws Exception {
         RevWalk revWalk = mockRevWalk();
 
-        Map<String, Ref> tagRefs = new HashMap<>();
         Ref tagRef1 = mock(Ref.class);
         Ref tagRef2 = mock(Ref.class);
-        tagRefs.put("1.0.0", tagRef1);
-        tagRefs.put("2.0.0", tagRef2);
-        when(this.repo.getTags()).thenReturn(tagRefs);
+        List<Ref> tagRefs = Arrays.asList(tagRef1, tagRef2);
+        when(repo.getRefDatabase().getRefsByPrefix(R_TAGS)).thenReturn(tagRefs);
 
         RevTag tag1 = this.createTag();
         RevTag tag2 = this.createTag();
