@@ -361,6 +361,12 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.1</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/HelpMojo.*</exclude>
+                        <exclude>**/VersionHelper.*</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -436,10 +442,6 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.1</version>
                 <configuration>
-                    <excludes>
-                        <exclude>**/HelpMojo.*</exclude>
-                        <exclude>**/VersionHelper.*</exclude>
-                    </excludes>
                     <rules>
                         <element>CLASS</element>
                         <limits>
