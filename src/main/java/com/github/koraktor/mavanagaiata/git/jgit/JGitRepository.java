@@ -84,7 +84,7 @@ public class JGitRepository extends AbstractGitRepository {
     }
 
     void buildRepository(File workTree, File gitDir) throws GitRepositoryException {
-        FileRepositoryBuilder repositoryBuilder = getRepositoryBuiler();
+        FileRepositoryBuilder repositoryBuilder = getRepositoryBuilder();
 
         if (gitDir == null && workTree == null) {
             throw new GitRepositoryException("Neither worktree nor GIT_DIR is set.");
@@ -328,11 +328,8 @@ public class JGitRepository extends AbstractGitRepository {
      *
      * @return A new repository builder
      */
-    FileRepositoryBuilder getRepositoryBuiler() {
-        FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-        repositoryBuilder.readEnvironment();
-
-        return repositoryBuilder;
+    FileRepositoryBuilder getRepositoryBuilder() {
+        return new FileRepositoryBuilder().readEnvironment();
     }
 
     @Override

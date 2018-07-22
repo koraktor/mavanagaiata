@@ -89,7 +89,7 @@ public class JGitRepositoryTest {
         when(repoBuilder.getGitDir()).thenReturn(gitDir);
 
         JGitRepository repository = spy(new JGitRepository());
-        when(repository.getRepositoryBuiler()).thenReturn(repoBuilder);
+        when(repository.getRepositoryBuilder()).thenReturn(repoBuilder);
 
         repository.buildRepository(workTree, null);
 
@@ -110,7 +110,7 @@ public class JGitRepositoryTest {
         when(repoBuilder.getGitDir()).thenReturn(gitDir);
 
         JGitRepository repository = spy(new JGitRepository());
-        when(repository.getRepositoryBuiler()).thenReturn(repoBuilder);
+        when(repository.getRepositoryBuilder()).thenReturn(repoBuilder);
 
         repository.buildRepository(workTree, gitDir);
 
@@ -130,7 +130,7 @@ public class JGitRepositoryTest {
         when(repoBuilder.getGitDir().getParentFile()).thenReturn(workTree);
 
         JGitRepository repository = spy(new JGitRepository());
-        when(repository.getRepositoryBuiler()).thenReturn(repoBuilder);
+        when(repository.getRepositoryBuilder()).thenReturn(repoBuilder);
 
         repository.buildRepository(workTreeChild, null);
 
@@ -143,7 +143,7 @@ public class JGitRepositoryTest {
     public void testBuildRepositoryFailure() throws Exception {
         repository = spy(repository);
         FileRepositoryBuilder repositoryBuilder = mock(FileRepositoryBuilder.class);
-        when(repository.getRepositoryBuiler()).thenReturn(repositoryBuilder);
+        when(repository.getRepositoryBuilder()).thenReturn(repositoryBuilder);
 
         Throwable exception = mock(IOException.class);
         when(repositoryBuilder.build()).thenThrow(exception);
