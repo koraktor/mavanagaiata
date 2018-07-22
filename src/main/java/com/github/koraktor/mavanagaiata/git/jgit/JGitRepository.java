@@ -218,16 +218,14 @@ public class JGitRepository extends AbstractGitRepository {
                 }
             }
 
-            if (!commit.hasAny(allFlags)) {
-                if (tagCommits.containsKey(commit)) {
-                    RevTag tag = tagCommits.get(commit);
-                    RevFlag flag = revWalk.newFlag(tag.getTagName());
-                    candidates.add(new TagCandidate(tag, distance, flag));
-                    commit.add(flag);
-                    commit.carry(flag);
-                    revWalk.carry(flag);
-                    allFlags.add(flag);
-                }
+            if (!commit.hasAny(allFlags) && tagCommits.containsKey(commit)) {
+                RevTag tag = tagCommits.get(commit);
+                RevFlag flag = revWalk.newFlag(tag.getTagName());
+                candidates.add(new TagCandidate(tag, distance, flag));
+                commit.add(flag);
+                commit.carry(flag);
+                revWalk.carry(flag);
+                allFlags.add(flag);
             }
 
             // Only consider a maximum of 10 candidates
