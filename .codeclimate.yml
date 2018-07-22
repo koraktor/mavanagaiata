@@ -1,6 +1,11 @@
 engines:
   pmd:
     enabled: true
+    checks:
+      LocalVariableCouldBeFinal:
+        enabled: false
+      MethodArgumentCouldBeFinal:
+        enabled: false
     config:
       rules:
         - "java-basic"
