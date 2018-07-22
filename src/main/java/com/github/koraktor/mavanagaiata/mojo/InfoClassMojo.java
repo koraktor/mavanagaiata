@@ -51,6 +51,7 @@ import static org.apache.commons.io.FileUtils.forceDeleteOnExit;
       threadSafe = true)
 public class InfoClassMojo extends AbstractGitMojo {
 
+    public static final String BUILTIN_TEMPLATE_PATH = "TemplateGitInfoClass.java";
     /**
      * The name of the class to generate
      */
@@ -102,8 +103,7 @@ public class InfoClassMojo extends AbstractGitMojo {
      */
     InputStream getTemplateSource() throws FileNotFoundException {
         if (templateFile == null) {
-            String templatePath = "TemplateGitInfoClass.java";
-            return getClass().getResourceAsStream(templatePath);
+            return getClass().getResourceAsStream(BUILTIN_TEMPLATE_PATH);
         } else {
             return new FileInputStream(templateFile);
         }
@@ -120,6 +120,20 @@ public class InfoClassMojo extends AbstractGitMojo {
         addProperty("info-class.className", className);
         addProperty("info-class.packageName", packageName);
 
+        try {
+            File sourceFile = copyTemporaryTemplate();
+            writeSourceFile(repository, sourceFile);
+        } catch (GitRepositoryException e) {
+            throw MavanagaiataMojoException.create("Could not get all information from repository", e);
+        } catch (IOException | MavenFilteringException e) {
+            throw MavanagaiataMojoException.create("Could not create info class source", e);
+        }
+
+        project.addCompileSourceRoot(outputDirectory.getAbsolutePath());
+    }
+
+    private File copyTemporaryTemplate()
+            throws IOException, MavanagaiataMojoException {
         try (InputStream templateStream = getTemplateSource()) {
             File tempSourceDir = File.createTempFile("mavanagaita-info-class", null);
             if (!(tempSourceDir.delete() && tempSourceDir.mkdir())) {
@@ -135,41 +149,8 @@ public class InfoClassMojo extends AbstractGitMojo {
                 IOUtils.copy(templateStream, tempSourceFileStream);
             }
 
-            final MapBasedValueSource valueSource = getValueSource(repository);
-            FileUtils.FilterWrapper filterWrapper = new FileUtils.FilterWrapper() {
-                @Override
-                public Reader getReader(Reader fileReader) {
-                    RegexBasedInterpolator regexInterpolator = new RegexBasedInterpolator();
-                    regexInterpolator.addValueSource(valueSource);
-
-                    return new InterpolatorFilterReader(fileReader,  regexInterpolator);
-                }
-            };
-
-            List<FileUtils.FilterWrapper> filterWrappers = new ArrayList<>();
-            filterWrappers.add(filterWrapper);
-
-            File packageDirectory = new File(outputDirectory, packageName.replace('.', '/'));
-            File outputFile = new File(packageDirectory, sourceFileName);
-            boolean fileOk;
-            if (outputFile.exists()) {
-                fileOk = outputFile.delete();
-            } else {
-                fileOk = (packageDirectory.exists() || packageDirectory.mkdirs()) && outputFile.createNewFile();
-            }
-
-            if (!fileOk) {
-                throw MavanagaiataMojoException.create("Could not create class source: %s", null, outputFile.getAbsolutePath());
-            }
-
-            fileFilter.copyFile(tempSourceFile, outputFile, true, filterWrappers, encoding, true);
-        } catch (GitRepositoryException e) {
-            throw MavanagaiataMojoException.create("Could not get all information from repository", e);
-        } catch (IOException | MavenFilteringException e) {
-            throw MavanagaiataMojoException.create("Could not create info class source", e);
+            return tempSourceFile;
         }
-
-        project.addCompileSourceRoot(outputDirectory.getAbsolutePath());
     }
 
     MapBasedValueSource getValueSource(GitRepository repository)
@@ -208,4 +189,42 @@ public class InfoClassMojo extends AbstractGitMojo {
         return new MapBasedValueSource(values);
     }
 
+    private void writeSourceFile(GitRepository repository, File sourceFile)
+        throws GitRepositoryException, IOException,
+        MavanagaiataMojoException, MavenFilteringException {
+        File packageDirectory = new File(outputDirectory, packageName.replace('.', '/'));
+        File outputFile = new File(packageDirectory, sourceFile.getName());
+        boolean fileOk;
+        if (outputFile.exists()) {
+            fileOk = outputFile.delete();
+        } else {
+            fileOk = (packageDirectory.exists() || packageDirectory.mkdirs()) && outputFile.createNewFile();
+        }
+
+        if (!fileOk) {
+            throw MavanagaiataMojoException.create("Could not create class source: %s", null, outputFile.getAbsolutePath());
+        }
+
+        List<FileUtils.FilterWrapper> filterWrappers = new ArrayList<>();
+        filterWrappers.add(new ValueSourceFilter(repository));
+
+        fileFilter.copyFile(sourceFile, outputFile, true, filterWrappers, encoding, true);
+    }
+
+    private class ValueSourceFilter extends FileUtils.FilterWrapper {
+        private final MapBasedValueSource valueSource;
+
+        ValueSourceFilter(GitRepository repository)
+                throws GitRepositoryException {
+            valueSource = InfoClassMojo.this.getValueSource(repository);
+        }
+
+        @Override
+        public Reader getReader(Reader fileReader) {
+            RegexBasedInterpolator regexInterpolator = new RegexBasedInterpolator();
+            regexInterpolator.addValueSource(valueSource);
+
+            return new InterpolatorFilterReader(fileReader,  regexInterpolator);
+        }
+    }
 }
