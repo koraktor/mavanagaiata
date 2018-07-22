@@ -146,7 +146,6 @@ public class MailMapTest {
     @Test
     public void testParseFromFile() throws Exception {
         MailMap mailMap = new MailMap(repo);
-        mailMap.mailToMailMap.put("old@example.com", "Old");
         File mailMapFile = new File(this.getClass().getResource("/.mailmap").getFile());
 
         mailMap.parseMailMap(mailMapFile);

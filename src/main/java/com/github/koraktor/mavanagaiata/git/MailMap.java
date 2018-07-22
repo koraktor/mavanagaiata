@@ -211,11 +211,6 @@ public class MailMap {
      * @throws IOException if the {@code .mailmap} file cannot be read
      */
     void parseMailMap(File mailMap) throws IOException {
-        mailToMailMap.clear();
-        mailToNameMap.clear();
-        mailToNameAndMailMap.clear();
-        nameAndMailToNameAndMailMap.clear();
-
         try (BufferedReader mailMapReader = new BufferedReader(new FileReader(mailMap))) {
             String line;
             while ((line = mailMapReader.readLine()) != null) {
