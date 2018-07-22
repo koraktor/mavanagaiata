@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2017, Sebastian Staudt
+ * Copyright (c) 2011-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -24,6 +24,7 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.MailMap;
 
 import static java.util.Comparator.comparing;
+import static org.apache.commons.lang3.StringUtils.equalsAnyIgnoreCase;
 
 /**
  * This goal allows to generate a list of contributors for the currently
@@ -98,13 +99,8 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
         contributorPrefix = unescapeFormatNewlines(contributorPrefix);
         header            = unescapeFormatNewlines(header);
 
-        if (sort == null) {
+        if (!equalsAnyIgnoreCase(sort, "date", "name")) {
             sort = "count";
-        } else {
-            sort = sort.toLowerCase();
-            if (!sort.equals("date") && !sort.equals("name")) {
-                sort = "count";
-            }
         }
 
         super.initConfiguration();
@@ -175,19 +171,15 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
 
     class ContributorsWalkAction extends CommitWalkAction {
 
-        protected HashMap<String, Contributor> contributors;
-
-        public ContributorsWalkAction() {
-            this.contributors = new HashMap<>();
-        }
+        HashMap<String, Contributor> contributors = new HashMap<>();
 
         protected void run() {
-            String emailAddress = this.currentCommit.getAuthorEmailAddress();
-            Contributor contributor = this.contributors.get(emailAddress);
+            String emailAddress = currentCommit.getAuthorEmailAddress();
+            Contributor contributor = contributors.get(emailAddress);
             if (contributor == null) {
-                this.contributors.put(emailAddress, new Contributor(this.currentCommit));
+                contributors.put(emailAddress, new Contributor(currentCommit));
             } else {
-                contributor.addCommit(this.currentCommit);
+                contributor.addCommit(currentCommit);
             }
         }
     }
@@ -195,21 +187,19 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
     class Contributor {
 
         Integer count = 1;
-
         String emailAddress;
-
         Date firstCommitDate;
-
         String name;
 
-        public Contributor(GitCommit commit) {
-            this.emailAddress    = commit.getAuthorEmailAddress();
-            this.firstCommitDate = commit.getAuthorDate();
-            this.name            = commit.getAuthorName();
+        Contributor(GitCommit commit) {
+            firstCommitDate = commit.getAuthorDate();
 
             if (ContributorsMojo.this.mailMap.exists()) {
-                this.emailAddress = ContributorsMojo.this.mailMap.getCanonicalAuthorEmailAddress(commit);
-                this.name = ContributorsMojo.this.mailMap.getCanonicalAuthorName(commit);
+                emailAddress = ContributorsMojo.this.mailMap.getCanonicalAuthorEmailAddress(commit);
+                name = ContributorsMojo.this.mailMap.getCanonicalAuthorName(commit);
+            } else {
+                emailAddress = commit.getAuthorEmailAddress();
+                name = commit.getAuthorName();
             }
         }
 
