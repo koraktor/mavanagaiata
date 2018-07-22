@@ -244,8 +244,8 @@ public class JGitRepositoryTest {
         head.getParents()[0] = head_1;
         head_1.getParents()[0] = head_2;
         AbbreviatedObjectId abbrevId = head.abbreviate(7);
-        this.repository.headObject = mock(ObjectId.class);
-        this.repository.commitCache.put(this.repository.headObject, head);
+        repository.headObject = mock(ObjectId.class);
+        repository.headCommit = head;
 
         JGitRepository repo = spy(this.repository);
 
@@ -273,8 +273,8 @@ public class JGitRepositoryTest {
         head.getParents()[0] = head_1;
         head_1.getParents()[0] = head_2;
         AbbreviatedObjectId abbrevId = head.abbreviate(7);
-        this.repository.headObject = mock(ObjectId.class);
-        this.repository.commitCache.put(this.repository.headObject, head);
+        repository.headObject = mock(ObjectId.class);
+        repository.headCommit = head;
 
         JGitRepository repo = spy(this.repository);
 
@@ -311,8 +311,8 @@ public class JGitRepositoryTest {
         head_b1.getParents()[0] = head_b2;
 
         AbbreviatedObjectId abbrevId = head.abbreviate(7);
-        this.repository.headObject = mock(ObjectId.class);
-        this.repository.commitCache.put(this.repository.headObject, head);
+        repository.headObject = mock(ObjectId.class);
+        repository.headCommit = head;
 
         JGitRepository repo = spy(this.repository);
 
@@ -355,8 +355,8 @@ public class JGitRepositoryTest {
         head_b1.getParents()[0] = head_b2;
 
         AbbreviatedObjectId abbrevId = head.abbreviate(7);
-        this.repository.headObject = mock(ObjectId.class);
-        this.repository.commitCache.put(this.repository.headObject, head);
+        repository.headObject = mock(ObjectId.class);
+        repository.headCommit = head;
 
         JGitRepository repo = spy(this.repository);
 
@@ -393,8 +393,8 @@ public class JGitRepositoryTest {
         head.getParents()[0] = head_1;
         head_1.getParents()[0] = head_2;
         AbbreviatedObjectId abbrevId = head.abbreviate(7);
-        this.repository.headObject = mock(ObjectId.class);
-        this.repository.commitCache.put(this.repository.headObject, head);
+        repository.headObject = mock(ObjectId.class);
+        repository.headCommit = head;
 
         this.repository.revWalk = mock(RevWalk.class);
         when(this.repository.revWalk.next()).thenReturn(head, head_1, head_2, null);
@@ -456,33 +456,31 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testGetCommit() throws Exception {
+    public void testGetHeadRevCommit() throws Exception {
         ObjectId head = mock(ObjectId.class);
         RevCommit commit = mock(RevCommit.class);
         RevWalk revWalk = mockRevWalk();
         when(revWalk.parseCommit(head)).thenReturn(commit);
 
-        assertThat(this.repository.getCommit(head), is(commit));
-        assertThat(this.repository.commitCache.get(head), is(commit));
+        assertThat(repository.getHeadRevCommit(), is(commit));
+        assertThat(repository.headCommit, is(commit));
     }
 
     @Test
     public void testGetCommitCached() throws Exception {
-        ObjectId head = mock(ObjectId.class);
         RevCommit commit = mock(RevCommit.class);
-        repository.commitCache.put(head, commit);
-        repository.commitCache = spy(repository.commitCache);
+        repository.headCommit = commit;
 
-        assertThat(repository.getCommit(head), is(commit));
+        assertThat(repository.getHeadRevCommit(), is(commit));
 
-        verify(repository.commitCache, never()).put(any(ObjectId.class), any(RevCommit.class));
+        verify(repository.repository, never()).parseCommit(any(ObjectId.class));
     }
 
     @Test
     public void testGetHeadCommit() throws Exception {
         RevCommit head = this.createCommit();
-        this.repository.headObject = mock(ObjectId.class);
-        this.repository.commitCache.put(this.repository.headObject, head);
+        repository.headObject = mock(ObjectId.class);
+        repository.headCommit = head;
         JGitCommit headCommit = new JGitCommit(head);
 
         assertThat(this.repository.getHeadCommit(), is(equalTo(headCommit)));
@@ -606,9 +604,8 @@ public class JGitRepositoryTest {
 
         RevCommit head = this.createCommit();
         RevCommit head_1 = this.createCommit();
-        ObjectId headObjectId = mock(ObjectId.class);
-        this.repository.headObject = headObjectId;
-        this.repository.commitCache.put(headObjectId, head);
+        repository.headObject = mock(ObjectId.class);
+        repository.headCommit = head;
 
         when(revWalk.next()).thenReturn(head)
             .thenReturn(head_1)

@@ -51,11 +51,11 @@ public class JGitRepository extends AbstractGitRepository {
 
     private static final int MAX_DESCRIBE_CANDIDATES = 10;
 
-    protected Map<ObjectId, RevCommit> commitCache;
-
     boolean checked;
 
     public Repository repository;
+
+    RevCommit headCommit;
 
     protected ObjectId headObject;
 
@@ -64,9 +64,7 @@ public class JGitRepository extends AbstractGitRepository {
     /**
      * Creates a new empty instance
      */
-    JGitRepository() {
-        commitCache = new HashMap<>();
-    }
+    JGitRepository() {}
 
     /**
      * Creates a new instance for the given worktree and or Git directory
@@ -78,8 +76,6 @@ public class JGitRepository extends AbstractGitRepository {
      */
     public JGitRepository(File workTree, File gitDir)
             throws GitRepositoryException {
-        this();
-
         buildRepository(workTree, gitDir);
     }
 
@@ -152,7 +148,7 @@ public class JGitRepository extends AbstractGitRepository {
             }
         }
 
-        final RevCommit start = this.getCommit(this.getHeadObject());
+        final RevCommit start = getHeadRevCommit();
 
         // Check if the start commit is already tagged
         if (tagCommits.containsKey(start)) {
@@ -287,7 +283,7 @@ public class JGitRepository extends AbstractGitRepository {
 
     @Override
     public JGitCommit getHeadCommit() throws GitRepositoryException {
-        return new JGitCommit(this.getCommit(this.getHeadObject()));
+        return new JGitCommit(getHeadRevCommit());
     }
 
     /**
@@ -375,7 +371,7 @@ public class JGitRepository extends AbstractGitRepository {
         action.prepare();
 
         try (RevWalk revWalk = getRevWalk()) {
-            revWalk.markStart(this.getCommit(this.getHeadObject()));
+            revWalk.markStart(getHeadRevCommit());
 
             RevCommit commit;
             while ((commit = revWalk.next()) != null) {
@@ -389,27 +385,23 @@ public class JGitRepository extends AbstractGitRepository {
     }
 
     /**
-     * Returns a commit object for the given object ID
+     * Returns a commit object for {@code HEAD}
      *
-     * @param id The object ID of the commit
-     * @return The commit object for the given object ID
+     * @return The commit object for {@code HEAD}
      * @see RevCommit
      * @throws GitRepositoryException if the commit object cannot be retrieved
      */
-    protected RevCommit getCommit(ObjectId id) throws GitRepositoryException {
-        if (commitCache.containsKey(id)) {
-            return commitCache.get(id);
+    RevCommit getHeadRevCommit() throws GitRepositoryException {
+        if (headCommit != null) {
+            return headCommit;
         }
 
         try {
-            RevCommit commit = repository.parseCommit(id);
-            commitCache.put(id, commit);
-
-            return commit;
+            return headCommit = repository.parseCommit(getHeadObject());
         } catch (IOException e) {
             throw new GitRepositoryException(
-                    String.format("Commit \"%s\" could not be loaded.", id.getName()),
-                    e);
+                    String.format("Commit \"%s\" could not be loaded.",
+                        getHeadObject().getName()), e);
         }
     }
 
