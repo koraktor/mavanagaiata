@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2017, Sebastian Staudt
+ * Copyright (c) 2012-2018, Sebastian Staudt
  *               2015, Kay Hannay
  */
 
@@ -80,8 +80,6 @@ public class JGitRepository extends AbstractGitRepository {
     }
 
     void buildRepository(File workTree, File gitDir) throws GitRepositoryException {
-        FileRepositoryBuilder repositoryBuilder = getRepositoryBuilder();
-
         if (gitDir == null && workTree == null) {
             throw new GitRepositoryException("Neither worktree nor GIT_DIR is set.");
         } else {
@@ -93,21 +91,20 @@ public class JGitRepository extends AbstractGitRepository {
             }
         }
 
-        if (gitDir != null) {
-            repositoryBuilder.setGitDir(gitDir);
-            repositoryBuilder.setWorkTree(workTree);
-        } else {
-            repositoryBuilder.findGitDir(workTree);
-
-            if (repositoryBuilder.getGitDir() == null) {
+        FileRepositoryBuilder repositoryBuilder = getRepositoryBuilder();
+        if (gitDir == null) {
+            if (repositoryBuilder.findGitDir(workTree).getGitDir() == null) {
                 throw new GitRepositoryException(workTree + " is not inside a Git repository. Please specify the GIT_DIR separately.");
             }
 
             repositoryBuilder.setWorkTree(repositoryBuilder.getGitDir().getParentFile());
+        } else {
+            repositoryBuilder.setGitDir(gitDir);
+            repositoryBuilder.setWorkTree(workTree);
         }
 
         try {
-            this.repository = repositoryBuilder.build();
+            repository = repositoryBuilder.build();
         } catch (IOException e) {
             throw new GitRepositoryException("Could not initialize repository", e);
         }
@@ -115,9 +112,8 @@ public class JGitRepository extends AbstractGitRepository {
 
     @Override
     public void check() throws GitRepositoryException {
-        if (!this.repository.getObjectDatabase().exists()) {
-            File path = (this.repository.isBare()) ?
-                this.repository.getDirectory() : this.repository.getWorkTree();
+        if (!repository.getObjectDatabase().exists()) {
+            File path = repository.isBare() ? repository.getDirectory() : repository.getWorkTree();
             throw new GitRepositoryException(path.getAbsolutePath() + " is not a Git repository.");
         }
 
@@ -169,7 +165,7 @@ public class JGitRepository extends AbstractGitRepository {
                 return new GitTagDescription(this, this.getHeadCommit(), null, -1);
             }
 
-            TagCandidate bestCandidate = Collections.min(candidates, Comparator.comparingInt(tag1 -> tag1.distance));
+            TagCandidate bestCandidate = Collections.min(candidates, Comparator.comparingInt(TagCandidate::getDistance));
 
             // We hit the maximum of candidates so there may be still be
             // commits that add up to the distance
@@ -179,7 +175,7 @@ public class JGitRepository extends AbstractGitRepository {
 
             GitTag tag = new JGitTag(bestCandidate.tag);
 
-            return new GitTagDescription(this, this.getHeadCommit(), tag, bestCandidate.distance);
+            return new GitTagDescription(this, getHeadCommit(), tag, bestCandidate.getDistance());
         } catch (IOException e) {
             throw new GitRepositoryException("Could not describe current commit.", e);
         }
@@ -209,9 +205,7 @@ public class JGitRepository extends AbstractGitRepository {
         RevCommit commit;
         while ((commit = revWalk.next()) != null) {
             for (TagCandidate candidate : candidates) {
-                if (candidate.excludes(commit)) {
-                    candidate.distance ++;
-                }
+                candidate.incrementDistanceIfExcludes(commit);
             }
 
             if (!commit.hasAny(allFlags) && tagCommits.containsKey(commit)) {
@@ -253,8 +247,8 @@ public class JGitRepository extends AbstractGitRepository {
                 for (RevCommit parent : commit.getParents()) {
                     parent.add(RevFlag.SEEN);
                 }
-            } else if (candidate.excludes(commit)) {
-                candidate.distance ++;
+            } else {
+                candidate.incrementDistanceIfExcludes(commit);
             }
         }
     }
@@ -501,8 +495,14 @@ public class JGitRepository extends AbstractGitRepository {
             this.flag = flag;
         }
 
-        boolean excludes(RevCommit commit) {
-            return !commit.has(flag);
+        int getDistance() {
+            return distance;
+        }
+
+        void incrementDistanceIfExcludes(RevCommit commit) {
+            if (!commit.has(flag)) {
+                distance++;
+            }
         }
     }
 

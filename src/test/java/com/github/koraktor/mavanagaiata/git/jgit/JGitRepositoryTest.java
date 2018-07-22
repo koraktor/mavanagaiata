@@ -86,6 +86,7 @@ public class JGitRepositoryTest {
         when(gitDir.getParentFile()).thenReturn(workTree);
 
         FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class);
+        when(repoBuilder.findGitDir(any())).thenReturn(repoBuilder);
         when(repoBuilder.getGitDir()).thenReturn(gitDir);
 
         JGitRepository repository = spy(new JGitRepository());
