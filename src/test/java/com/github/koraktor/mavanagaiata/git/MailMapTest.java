@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2014-2017, Sebastian Staudt
+ * Copyright (c) 2014-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
@@ -16,6 +16,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.github.koraktor.mavanagaiata.git.MailMap.MAILMAP_FILE;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
@@ -123,7 +124,7 @@ public class MailMapTest {
             mailMap.mailToMailMap = new HashMap<>(1);
             mailMap.mailToMailMap.put("test", "test");
             return null;
-        }).when(mailMap).parseMailMap(eq(new File("test/.mailmap")));
+        }).when(mailMap).parseMailMap(eq(new File("test/" + MAILMAP_FILE)));
 
         mailMap.parseMailMap();
 
@@ -136,7 +137,7 @@ public class MailMapTest {
         when(repo.getWorkTree()).thenReturn(new File("test"));
 
         doThrow(new FileNotFoundException()).when(mailMap).
-                parseMailMap(eq(new File("test/.mailmap")));
+                parseMailMap(eq(new File("test/" + MAILMAP_FILE)));
 
         mailMap.parseMailMap();
 
@@ -146,7 +147,7 @@ public class MailMapTest {
     @Test
     public void testParseFromFile() throws Exception {
         MailMap mailMap = new MailMap(repo);
-        File mailMapFile = new File(this.getClass().getResource("/.mailmap").getFile());
+        File mailMapFile = new File(this.getClass().getResource("/" + MAILMAP_FILE).getFile());
 
         mailMap.parseMailMap(mailMapFile);
 

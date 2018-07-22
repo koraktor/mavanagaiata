@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2014, Sebastian Staudt
+ * Copyright (c) 2014-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
  */
 public class MailMap {
 
+    static final String MAILMAP_FILE = ".mailmap";
     private static final Pattern MAIL_TO_MAIL_PATTERN;
     private static final Pattern MAIL_TO_NAME_PATTERN;
     private static final Pattern MAIL_TO_NAME_AND_MAIL_PATTERN;
@@ -185,7 +186,7 @@ public class MailMap {
      *         read
      */
     void parseMailMap() throws GitRepositoryException {
-        File mailMap = new File(repository.getWorkTree(), ".mailmap");
+        File mailMap = new File(repository.getWorkTree(), MAILMAP_FILE);
 
         try {
             parseMailMap(mailMap);
