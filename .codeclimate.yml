@@ -2,9 +2,13 @@ engines:
   pmd:
     enabled: true
     checks:
+      AvoidFieldNameMatchingMethodName:
+        enabled: false
       LocalVariableCouldBeFinal:
         enabled: false
       MethodArgumentCouldBeFinal:
+        enabled: false
+      MissingBreakInSwitch:
         enabled: false
     config:
       rules:
