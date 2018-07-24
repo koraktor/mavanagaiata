@@ -154,13 +154,13 @@ public class JGitRepository extends AbstractGitRepository {
             revWalk.sort(RevSort.COMMIT_TIME_DESC);
 
             final RevFlagSet allFlags = new RevFlagSet();
-            final Collection<TagCandidate> candidates = findTagCandidates(revWalk, tagCommits, allFlags);
+            final Collection<JGitTagCandidate> candidates = findTagCandidates(revWalk, tagCommits, allFlags);
 
             if (candidates.isEmpty()) {
                 return new GitTagDescription(getAbbreviatedCommitId(getHeadCommit()), null, -1);
             }
 
-            TagCandidate bestCandidate = min(candidates, comparingInt(TagCandidate::getDistance));
+            JGitTagCandidate bestCandidate = min(candidates, comparingInt(JGitTagCandidate::getDistance));
 
             // We hit the maximum of candidates so there may be still be
             // commits that add up to the distance
@@ -168,7 +168,7 @@ public class JGitRepository extends AbstractGitRepository {
                 correctDistance(revWalk, bestCandidate, allFlags);
             }
 
-            return new GitTagDescription(getAbbreviatedCommitId(getHeadCommit()), bestCandidate.tag, bestCandidate.getDistance());
+            return new GitTagDescription(getAbbreviatedCommitId(getHeadCommit()), bestCandidate.getTag(), bestCandidate.getDistance());
         } catch (IOException | RevWalkException e) {
             throw new GitRepositoryException("Could not describe current commit.", e);
         }
@@ -189,10 +189,10 @@ public class JGitRepository extends AbstractGitRepository {
      * @return A collection of tag candidates
      * @throws RevWalkException if there’s an error during the rev walk
      */
-    private Collection<TagCandidate> findTagCandidates(RevWalk revWalk,
+    private Collection<JGitTagCandidate> findTagCandidates(RevWalk revWalk,
                                                            Map<String, GitTag> tagCommits, RevFlagSet allFlags)
                     throws RevWalkException {
-        final Collection<TagCandidate> candidates = new ArrayList<>();
+        final Collection<JGitTagCandidate> candidates = new ArrayList<>();
         int distance = 0;
         for (RevCommit commit : revWalk) {
             if (distance == 0) {
@@ -200,14 +200,14 @@ public class JGitRepository extends AbstractGitRepository {
                 continue;
             }
 
-            for (TagCandidate candidate : candidates) {
+            for (JGitTagCandidate candidate : candidates) {
                 candidate.incrementDistanceIfExcludes(commit);
             }
 
             if (!commit.hasAny(allFlags) && tagCommits.containsKey(commit.name())) {
-                GitTag tag = tagCommits.get(commit.name());
+                JGitTag tag = (JGitTag) tagCommits.get(commit.name());
                 RevFlag flag = revWalk.newFlag(tag.getName());
-                candidates.add(new TagCandidate(tag, distance, flag));
+                candidates.add(new JGitTagCandidate(tag, distance, flag));
                 commit.add(flag);
                 commit.carry(flag);
                 revWalk.carry(flag);
@@ -234,7 +234,7 @@ public class JGitRepository extends AbstractGitRepository {
      * @param allFlags All flags that have been set so far
      * @throws RevWalkException if there’s an error during the rev walk
      */
-    private void correctDistance(RevWalk revWalk, TagCandidate candidate, RevFlagSet allFlags)
+    private void correctDistance(RevWalk revWalk, JGitTagCandidate candidate, RevFlagSet allFlags)
             throws RevWalkException {
         for (RevCommit commit : revWalk) {
             if (commit.hasAll(allFlags)) {
@@ -449,31 +449,6 @@ public class JGitRepository extends AbstractGitRepository {
         }
 
         return this.revWalk;
-    }
-
-    /**
-     * This class represents a tag candidate which could be the latest tag in the branch.
-     */
-    private class TagCandidate {
-        private final GitTag tag;
-        private final RevFlag flag;
-        private int distance;
-
-        TagCandidate(GitTag tag, int distance, RevFlag flag) {
-            this.tag = tag;
-            this.distance = distance;
-            this.flag = flag;
-        }
-
-        int getDistance() {
-            return distance;
-        }
-
-        void incrementDistanceIfExcludes(RevCommit commit) {
-            if (!commit.has(flag)) {
-                distance++;
-            }
-        }
     }
 
 }
