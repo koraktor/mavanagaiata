@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2017, Sebastian Staudt
+ * Copyright (c) 2012-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git.jgit;
@@ -250,13 +250,9 @@ public class JGitRepositoryTest {
 
         JGitRepository repo = spy(this.repository);
 
-        Map<String, RevTag> rawTags = new HashMap<>();
-        RevTag rawTag = this.createTag("2.0.0", head.getName());
-        rawTags.put(head.getName(), rawTag);
-        doReturn(rawTags).when(repo).getRawTags();
-
-        Map<String, GitTag> tags = new HashMap<>();
-        tags.put(head.getName(), new JGitTag(rawTag));
+        Map<String, JGitTag> tags = new HashMap<>();
+        JGitTag tag = createTag("2.0.0", head.getName());
+        tags.put(head.getName(), tag);
         doReturn(tags).when(repo).getTags();
 
         when(this.repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
@@ -279,13 +275,9 @@ public class JGitRepositoryTest {
 
         JGitRepository repo = spy(this.repository);
 
-        Map<String, RevTag> rawTags = new HashMap<>();
-        RevTag rawTag = this.createTag("2.0.0", head_2.getName());
-        rawTags.put(head_2.getName(), rawTag);
-        doReturn(rawTags).when(repo).getRawTags();
-
-        Map<String, GitTag> tags = new HashMap<>();
-        tags.put(head_2.getName(), new JGitTag(rawTag));
+        Map<String, JGitTag> tags = new HashMap<>();
+        JGitTag tag = createTag("2.0.0", head.getName());
+        tags.put(head_2.getName(), tag);
         doReturn(tags).when(repo).getTags();
 
         repo.revWalk = mock(RevWalk.class);
@@ -317,16 +309,11 @@ public class JGitRepositoryTest {
 
         JGitRepository repo = spy(this.repository);
 
-        Map<String, RevTag> rawTags = new HashMap<>();
-        RevTag rawTagA1 = this.createTag("a1", head_a1.getName());
-        RevTag rawTagB2 = this.createTag("b2", head_b2.getName());
-        rawTags.put(head_a1.getName(), rawTagA1);
-        rawTags.put(head_b2.getName(), rawTagB2);
-        doReturn(rawTags).when(repo).getRawTags();
-
-        Map<String, GitTag> tags = new HashMap<>();
-        tags.put(head_a1.getName(), new JGitTag(rawTagA1));
-        tags.put(head_b2.getName(), new JGitTag(rawTagB2));
+        Map<String, JGitTag> tags = new HashMap<>();
+        JGitTag tagA1 = createTag("a1", head.getName());
+        JGitTag tagB2 = createTag("b2", head.getName());
+        tags.put(head_a1.getName(), tagA1);
+        tags.put(head_b2.getName(), tagB2);
         doReturn(tags).when(repo).getTags();
 
         repo.revWalk = mock(RevWalk.class);
@@ -361,16 +348,11 @@ public class JGitRepositoryTest {
 
         JGitRepository repo = spy(this.repository);
 
-        Map<String, RevTag> rawTags = new HashMap<>();
-        RevTag rawTagA2 = this.createTag("a2", head_a2.getName());
-        RevTag rawTagB1 = this.createTag("b1", head_b1.getName());
-        rawTags.put(head_a2.getName(), rawTagA2);
-        rawTags.put(head_b1.getName(), rawTagB1);
-        doReturn(rawTags).when(repo).getRawTags();
-
-        Map<String, GitTag> tags = new HashMap<>();
-        tags.put(head_a2.getName(), new JGitTag(rawTagA2));
-        tags.put(head_b1.getName(), new JGitTag(rawTagB1));
+        Map<String, JGitTag> tags = new HashMap<>();
+        JGitTag tagA1 = createTag("a2", head.getName());
+        JGitTag tagB2 = createTag("b1", head.getName());
+        tags.put(head_a2.getName(), tagA1);
+        tags.put(head_b1.getName(), tagB2);
         doReturn(tags).when(repo).getTags();
 
         repo.revWalk = mock(RevWalk.class);
@@ -538,22 +520,31 @@ public class JGitRepositoryTest {
 
     @Test
     public void testGetTags() throws Exception {
-        Map<String, RevTag> rawTags = new HashMap<>();
-        RevTag rawTag1 = this.createTag();
-        rawTags.put("1.0.0", rawTag1);
-        RevTag rawTag2 = this.createTag();
-        rawTags.put("2.0.0", rawTag2);
+        RevWalk revWalk = mockRevWalk();
 
-        JGitRepository repo = spy(this.repository);
-        doReturn(rawTags).when(repo).getRawTags();
+        Ref tagRef1 = mock(Ref.class);
+        Ref tagRef2 = mock(Ref.class);
+        List<Ref> tagRefs = Arrays.asList(tagRef1, tagRef2);
+        when(repo.getRefDatabase().getRefsByPrefix(R_TAGS)).thenReturn(tagRefs);
+
+        RevTag rawTag1 = createRawTag();
+        RevTag rawTag2 = createRawTag();
+        RevCommit commit1 = createCommit();
+        RevObject commit2 = createCommit();
+        when(tagRef1.getObjectId()).thenReturn(rawTag1);
+        when(revWalk.lookupTag(rawTag1)).thenReturn(rawTag1);
+        when(revWalk.peel(rawTag1)).thenReturn(commit1);
+        when(tagRef2.getObjectId()).thenReturn(rawTag2);
+        when(revWalk.lookupTag(rawTag2)).thenReturn(rawTag2);
+        when(revWalk.peel(rawTag2)).thenReturn(commit2);
 
         Map<String, GitTag> tags = new HashMap<>();
         JGitTag tag1 = new JGitTag(rawTag1);
-        tags.put("1.0.0", tag1);
+        tags.put(commit1.name(), tag1);
         JGitTag tag2 = new JGitTag(rawTag2);
-        tags.put("2.0.0", tag2);
+        tags.put(commit2.name(), tag2);
 
-        assertThat(repo.getTags(), is(equalTo(tags)));
+        assertThat(repository.getTags(), is(equalTo(tags)));
     }
 
     @Test
@@ -625,33 +616,6 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testGetRawTags() throws Exception {
-        RevWalk revWalk = mockRevWalk();
-
-        Ref tagRef1 = mock(Ref.class);
-        Ref tagRef2 = mock(Ref.class);
-        List<Ref> tagRefs = Arrays.asList(tagRef1, tagRef2);
-        when(repo.getRefDatabase().getRefsByPrefix(R_TAGS)).thenReturn(tagRefs);
-
-        RevTag tag1 = this.createTag();
-        RevTag tag2 = this.createTag();
-        RevCommit commit1 = this.createCommit();
-        RevObject commit2 = this.createCommit();
-        when(tagRef1.getObjectId()).thenReturn(tag1);
-        when(revWalk.lookupTag(tag1)).thenReturn(tag1);
-        when(revWalk.peel(tag1)).thenReturn(commit1);
-        when(tagRef2.getObjectId()).thenReturn(tag2);
-        when(revWalk.lookupTag(tag2)).thenReturn(tag2);
-        when(revWalk.peel(tag2)).thenReturn(commit2);
-
-        Map<String, RevTag> tags = new HashMap<>();
-        tags.put(commit1.getName(), tag1);
-        tags.put(commit2.getName(), tag2);
-
-        assertThat(this.repository.getRawTags(), is(equalTo(tags)));
-    }
-
-    @Test
     public void testGetWorktree() {
         assertThat(repository.getWorkTree(), is(equalTo(repo.getWorkTree())));
     }
@@ -695,12 +659,12 @@ public class JGitRepositoryTest {
         return RevCommit.parse(commitData.getBytes());
     }
 
-    private RevTag createTag() throws CorruptObjectException {
-        return this.createTag("name" + new Random().nextInt(),
+    private RevTag createRawTag() throws CorruptObjectException {
+        return createRawTag("name" + new Random().nextInt(),
                 String.format("%040x", new Random().nextLong()));
     }
 
-    private RevTag createTag(String name, String objectId) throws CorruptObjectException {
+    private RevTag createRawTag(String name, String objectId) throws CorruptObjectException {
         String tagData = String.format("object %s\n" +
             "type commit\n" +
             "tag %s\n" +
@@ -711,5 +675,9 @@ public class JGitRepositoryTest {
             new Date().getTime(),
             "Tag subject");
         return RevTag.parse(tagData.getBytes());
+    }
+
+    private JGitTag createTag(String name, String objectId) throws CorruptObjectException {
+        return new JGitTag(createRawTag(name, objectId));
     }
 }

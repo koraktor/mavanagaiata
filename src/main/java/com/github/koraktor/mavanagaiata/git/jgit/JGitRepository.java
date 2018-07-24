@@ -12,12 +12,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
@@ -39,6 +37,8 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 
+import static java.util.Collections.min;
+import static java.util.Comparator.comparingInt;
 import static org.eclipse.jgit.lib.Constants.R_TAGS;
 
 /**
@@ -137,20 +137,14 @@ public class JGitRepository extends AbstractGitRepository {
 
     @Override
     public GitTagDescription describe() throws GitRepositoryException {
-        final Map<RevCommit, RevTag> tagCommits = new HashMap<>();
-        for (RevTag tag : this.getRawTags().values()) {
-            if (tag.getObject() instanceof RevCommit) {
-                tagCommits.put((RevCommit) tag.getObject(), tag);
-            }
-        }
-
-        final RevCommit start = getHeadRevCommit();
+        Map<String, GitTag> tagCommits = getTags();
+        RevCommit start = getHeadRevCommit();
 
         // Check if the start commit is already tagged
-        if (tagCommits.containsKey(start)) {
-            GitTag tag = getTags().get(start.getId().getName());
+        if (tagCommits.containsKey(start.name())) {
+            GitTag tag = getTags().get(start.name());
 
-            return new GitTagDescription(this, getHeadCommit(), tag,0);
+            return new GitTagDescription(getAbbreviatedCommitId(getHeadCommit()), tag,0);
         }
 
         try (RevWalk revWalk = getRevWalk()) {
@@ -162,10 +156,10 @@ public class JGitRepository extends AbstractGitRepository {
             final Collection<TagCandidate> candidates = findTagCandidates(revWalk, tagCommits, allFlags);
 
             if (candidates.isEmpty()) {
-                return new GitTagDescription(this, this.getHeadCommit(), null, -1);
+                return new GitTagDescription(getAbbreviatedCommitId(getHeadCommit()), null, -1);
             }
 
-            TagCandidate bestCandidate = Collections.min(candidates, Comparator.comparingInt(TagCandidate::getDistance));
+            TagCandidate bestCandidate = min(candidates, comparingInt(TagCandidate::getDistance));
 
             // We hit the maximum of candidates so there may be still be
             // commits that add up to the distance
@@ -173,9 +167,7 @@ public class JGitRepository extends AbstractGitRepository {
                 correctDistance(revWalk, bestCandidate, allFlags);
             }
 
-            GitTag tag = new JGitTag(bestCandidate.tag);
-
-            return new GitTagDescription(this, getHeadCommit(), tag, bestCandidate.getDistance());
+            return new GitTagDescription(getAbbreviatedCommitId(getHeadCommit()), bestCandidate.tag, bestCandidate.getDistance());
         } catch (IOException e) {
             throw new GitRepositoryException("Could not describe current commit.", e);
         }
@@ -197,7 +189,7 @@ public class JGitRepository extends AbstractGitRepository {
      * @throws IOException if there’s an error during the rev walk
      */
     private Collection<TagCandidate> findTagCandidates(RevWalk revWalk,
-            Map<RevCommit,RevTag> tagCommits, RevFlagSet allFlags)
+            Map<String, GitTag> tagCommits, RevFlagSet allFlags)
                     throws IOException {
         final Collection<TagCandidate> candidates = new ArrayList<>();
         int distance = 1;
@@ -208,9 +200,9 @@ public class JGitRepository extends AbstractGitRepository {
                 candidate.incrementDistanceIfExcludes(commit);
             }
 
-            if (!commit.hasAny(allFlags) && tagCommits.containsKey(commit)) {
-                RevTag tag = tagCommits.get(commit);
-                RevFlag flag = revWalk.newFlag(tag.getTagName());
+            if (!commit.hasAny(allFlags) && tagCommits.containsKey(commit.name())) {
+                GitTag tag = tagCommits.get(commit.name());
+                RevFlag flag = revWalk.newFlag(tag.getName());
                 candidates.add(new TagCandidate(tag, distance, flag));
                 commit.add(flag);
                 commit.carry(flag);
@@ -325,8 +317,19 @@ public class JGitRepository extends AbstractGitRepository {
             throws GitRepositoryException {
         Map<String, GitTag> tags = new HashMap<>();
 
-        for (Map.Entry<String, RevTag> tag : this.getRawTags().entrySet()) {
-            tags.put(tag.getKey(), new JGitTag(tag.getValue()));
+        try (RevWalk revWalk = getRevWalk()){
+            for (Ref tag : repository.getRefDatabase().getRefsByPrefix(R_TAGS)) {
+                try {
+                    RevTag revTag = revWalk.lookupTag(tag.getObjectId());
+                    RevObject object = revWalk.peel(revTag);
+                    if (!(object instanceof RevCommit)) {
+                        continue;
+                    }
+                    tags.put(object.getName(), new JGitTag(revTag));
+                } catch (MissingObjectException ignored) {}
+            }
+        } catch (IOException e) {
+            throw new GitRepositoryException("The tags could not be resolved.", e);
         }
 
         return tags;
@@ -430,41 +433,6 @@ public class JGitRepository extends AbstractGitRepository {
     }
 
     /**
-     * Returns a map of raw JGit tags available in this repository
-     * <p>
-     * The keys of the map are the SHA IDs of the objects referenced by the
-     * tags. The map's values are the raw tags themselves.
-     * <p>
-     * <em>Note</em>: Only annotated tags referencing commit objects will be
-     * returned.
-     *
-     * @return A map of raw JGit tags in this repository
-     * @throws GitRepositoryException if an error occurs while determining the
-     *         tags in this repository
-     */
-    protected Map<String, RevTag> getRawTags()
-            throws GitRepositoryException {
-        RevWalk revWalk = getRevWalk();
-        Map<String, RevTag> tags = new HashMap<>();
-        try {
-            for (Ref tag : repository.getRefDatabase().getRefsByPrefix(R_TAGS)) {
-                try {
-                    RevTag revTag = revWalk.lookupTag(tag.getObjectId());
-                    RevObject object = revWalk.peel(revTag);
-                    if (!(object instanceof RevCommit)) {
-                        continue;
-                    }
-                    tags.put(object.getName(), revTag);
-                } catch (IncorrectObjectTypeException ignored) {}
-            }
-        } catch (IOException e) {
-            throw new GitRepositoryException("The tags could not be resolved.", e);
-        }
-
-        return tags;
-    }
-
-    /**
      * Gets a JGit {@code RevWalk} instance for this repository
      * <p>
      * Creates a new instance or resets an existing one.
@@ -485,11 +453,11 @@ public class JGitRepository extends AbstractGitRepository {
      * This class represents a tag candidate which could be the latest tag in the branch.
      */
     private class TagCandidate {
-        private final RevTag tag;
+        private final GitTag tag;
         private final RevFlag flag;
         private int distance;
 
-        TagCandidate(RevTag tag, int distance, RevFlag flag) {
+        TagCandidate(GitTag tag, int distance, RevFlag flag) {
             this.tag = tag;
             this.distance = distance;
             this.flag = flag;

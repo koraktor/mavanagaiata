@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2016, Sebastian Staudt
+ * Copyright (c) 2012-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
@@ -18,25 +18,17 @@ import static org.mockito.Mockito.when;
 
 public class GitTagDescriptionTest {
 
-    private GitCommit commit;
-
-    private GitRepository repository;
-
     private GitTag tag;
 
     @Before
-    public void setup() throws Exception {
-        this.commit = mock(GitCommit.class);
-        this.repository = mock(GitRepository.class);
-        when(this.repository.getAbbreviatedCommitId(this.commit))
-            .thenReturn("deadbeef");
-        this.tag = mock(GitTag.class);
-        when(this.tag.getName()).thenReturn("1.0.0");
+    public void setup() {
+        tag = mock(GitTag.class);
+        when(tag.getName()).thenReturn("1.0.0");
     }
 
     @Test
-    public void test() throws Exception {
-        GitTagDescription description = new GitTagDescription(this.repository, this.commit, this.tag, 3);
+    public void test() {
+        GitTagDescription description = new GitTagDescription("deadbeef", tag, 3);
 
         assertThat(description.getNextTagName(), is(equalTo("1.0.0")));
         assertThat(description.isTagged(), is(false));
@@ -44,8 +36,8 @@ public class GitTagDescriptionTest {
     }
 
     @Test
-    public void testNoTag() throws Exception {
-        GitTagDescription description = new GitTagDescription(this.repository, this.commit, null, -1);
+    public void testNoTag() {
+        GitTagDescription description = new GitTagDescription("deadbeef", null, -1);
 
         assertThat(description.getNextTagName(), is(equalTo("")));
         assertThat(description.isTagged(), is(false));
@@ -53,8 +45,8 @@ public class GitTagDescriptionTest {
     }
 
     @Test
-    public void testTagged() throws Exception {
-        GitTagDescription description = new GitTagDescription(this.repository, this.commit, this.tag, 0);
+    public void testTagged() {
+        GitTagDescription description = new GitTagDescription("deadbeef", tag, 0);
 
         assertThat(description.getNextTagName(), is(equalTo("1.0.0")));
         assertThat(description.isTagged(), is(true));

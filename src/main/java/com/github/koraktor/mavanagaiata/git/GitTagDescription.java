@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2017, Sebastian Staudt
+ * Copyright (c) 2012-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
@@ -24,16 +24,12 @@ public class GitTagDescription {
     /**
      * Create a new description for the given information
      *
-     * @param repository The repository which contains the commit
-     * @param commit The commit
+     * @param abbreviatedCommitId The abbreviated commit ID
      * @param nextTag The next tag reachable from the commit
      * @param distance The distance to the next tag
-     * @throws GitRepositoryException if the commit can not be resolved
      */
-    public GitTagDescription(GitRepository repository, GitCommit commit,
-                             GitTag nextTag, int distance)
-            throws GitRepositoryException {
-        this.abbreviatedCommitId = repository.getAbbreviatedCommitId(commit);
+    public GitTagDescription(String abbreviatedCommitId, GitTag nextTag, int distance) {
+        this.abbreviatedCommitId = abbreviatedCommitId;
         this.distance            = distance;
         this.nextTag             = nextTag;
     }
