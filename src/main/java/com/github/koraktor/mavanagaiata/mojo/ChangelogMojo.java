@@ -37,6 +37,8 @@ import com.github.koraktor.mavanagaiata.git.GitTag;
       threadSafe = true)
 public class ChangelogMojo extends AbstractGitOutputMojo {
 
+    private String baseUrl;
+
     /**
      * The format for the branch line
      *
@@ -205,6 +207,10 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
 
         if (gitHubUser == null || gitHubUser.isEmpty() || gitHubProject == null || gitHubProject.isEmpty()) {
             createGitHubLinks = false;
+        } else {
+            baseUrl = String.format("https://github.com/%s/%s/",
+                gitHubUser,
+                gitHubProject);
         }
 
         if (skipCommitsMatching != null && !skipCommitsMatching.isEmpty()) {
@@ -239,9 +245,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
      */
     protected void insertGitHubLink(PrintStream printStream, String lastRef,
                                     String currentRef, boolean isBranch) {
-        String url = String.format("https://github.com/%s/%s/",
-            this.gitHubUser,
-            this.gitHubProject);
+        String url = baseUrl;
         if(currentRef == null) {
             url += String.format("commits/%s", lastRef);
         } else {
