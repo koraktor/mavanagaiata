@@ -161,6 +161,14 @@ public interface GitRepository extends AutoCloseable {
     void setHeadRef(String headRef);
 
     /**
+     * Load tag meta data
+     *
+     * @param tag The tag to load information for
+     * @throws GitRepositoryException if tag metadata cannot be loaded
+     */
+    void loadTag(GitTag tag) throws GitRepositoryException;
+
+    /**
      * Runs the given action for all commits reachable from the current
      * {@code HEAD} commit
      *

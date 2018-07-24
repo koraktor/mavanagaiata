@@ -316,7 +316,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
                     }
                 }
 
-                currentTag.load(repository);
+                repository.loadTag(currentTag);
                 dateFormatter.setTimeZone(currentTag.getTimeZone());
                 String dateString = dateFormatter.format(currentTag.getDate());
 

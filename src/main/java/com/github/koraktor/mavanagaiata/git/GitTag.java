@@ -40,11 +40,8 @@ public interface GitTag {
     TimeZone getTimeZone();
 
     /**
-     * Load tag meta data
-     *
-     * @param repository The repository to load information from
-     * @throws GitRepositoryException if tags cannot be loaded
+     * @return {@code true}, if this tag’s metadata has been loaded
+     * @see GitRepository#loadTag
      */
-    void load(GitRepository repository) throws GitRepositoryException;
-
+    boolean isLoaded();
 }

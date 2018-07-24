@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.TimeZone;
 
 import org.mockito.InOrder;
 
@@ -591,6 +592,27 @@ public class JGitRepositoryTest {
         when(repo.resolve("HEAD")).thenReturn(ObjectId.zeroId());
 
         assertThat(repository.isOnUnbornBranch(), is(true));
+    }
+
+    @Test
+    public void testLoadTag() throws Exception {
+        RevTag rawTag = RevTag.parse(("object 4b825dc642cb6eb9a060e54bf8d69288fbee4904\n" +
+            "type commit\n" +
+            "tag 1.0.0\n" +
+            "tagger Sebastian Staudt <koraktor@gmail.com> 1275131880 +0200\n" +
+            "\n" +
+            "Version 1.0.0\n").getBytes());
+        Date tagDate = new Date(1275131880000L);
+
+        repository.revWalk = mock(RevWalk.class);
+        JGitTag tag = new JGitTag(rawTag);
+
+        repository.loadTag(tag);
+
+        assertThat(tag.getDate(), is(equalTo(tagDate)));
+        assertThat(tag.getTimeZone(), is(equalTo(TimeZone.getTimeZone("GMT+0200"))));
+
+        verify(repository.revWalk).parseBody(rawTag);
     }
 
     @Test

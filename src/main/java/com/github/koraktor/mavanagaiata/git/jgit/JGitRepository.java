@@ -365,6 +365,24 @@ public class JGitRepository extends AbstractGitRepository {
     }
 
     @Override
+    public void loadTag(GitTag tag) throws GitRepositoryException {
+        if (tag.isLoaded()) {
+            return;
+        }
+
+        assert revWalk != null;
+
+        try {
+            revWalk.parseBody(((JGitTag) tag).tag);
+            ((JGitTag) tag).taggerIdent = ((JGitTag) tag).tag.getTaggerIdent();
+        } catch (IOException e) {
+            throw new GitRepositoryException("Failed to load tag meta data.", e);
+        } finally {
+            ((JGitTag) tag).tag.disposeBody();
+        }
+    }
+
+    @Override
     public <T extends CommitWalkAction> T walkCommits(T action)
             throws GitRepositoryException {
         action.setRepository(this);

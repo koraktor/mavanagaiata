@@ -13,6 +13,7 @@ import java.util.TimeZone;
 
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.revwalk.RevTag;
+import org.eclipse.jgit.revwalk.RevWalk;
 
 import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
@@ -57,19 +58,8 @@ public class JGitTag implements GitTag {
     }
 
     @Override
-    public void load(GitRepository repository) throws GitRepositoryException {
-        if (taggerIdent != null) {
-            return;
-        }
-
-        try {
-            ((JGitRepository) repository).getRevWalk().parseBody(tag);
-        } catch (IOException e) {
-            throw new GitRepositoryException("Failed to load tag meta data.", e);
-        }
-
-        taggerIdent = tag.getTaggerIdent();
-        tag.disposeBody();
+    public boolean isLoaded() {
+        return taggerIdent != null;
     }
 
 }
