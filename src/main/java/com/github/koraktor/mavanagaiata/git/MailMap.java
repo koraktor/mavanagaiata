@@ -217,7 +217,7 @@ public class MailMap {
             while ((line = mailMapReader.readLine()) != null) {
                 line = line.trim();
 
-                if (line.isEmpty() || line.startsWith("#")) {
+                if (line.isEmpty() || line.charAt(0) == '#') {
                     continue;
                 }
 
