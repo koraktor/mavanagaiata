@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jgit.errors.MissingObjectException;
+import org.eclipse.jgit.errors.RevWalkException;
 import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
@@ -168,7 +169,7 @@ public class JGitRepository extends AbstractGitRepository {
             }
 
             return new GitTagDescription(getAbbreviatedCommitId(getHeadCommit()), bestCandidate.tag, bestCandidate.getDistance());
-        } catch (IOException e) {
+        } catch (IOException | RevWalkException e) {
             throw new GitRepositoryException("Could not describe current commit.", e);
         }
     }
@@ -186,16 +187,19 @@ public class JGitRepository extends AbstractGitRepository {
      * @param tagCommits Map of commits that are associated with a tag
      * @param allFlags All flags that have been set so far
      * @return A collection of tag candidates
-     * @throws IOException if there’s an error during the rev walk
+     * @throws RevWalkException if there’s an error during the rev walk
      */
     private Collection<TagCandidate> findTagCandidates(RevWalk revWalk,
-            Map<String, GitTag> tagCommits, RevFlagSet allFlags)
-                    throws IOException {
+                                                           Map<String, GitTag> tagCommits, RevFlagSet allFlags)
+                    throws RevWalkException {
         final Collection<TagCandidate> candidates = new ArrayList<>();
-        int distance = 1;
-        revWalk.next();
-        RevCommit commit;
-        while ((commit = revWalk.next()) != null) {
+        int distance = 0;
+        for (RevCommit commit : revWalk) {
+            if (distance == 0) {
+                distance = 1;
+                continue;
+            }
+
             for (TagCandidate candidate : candidates) {
                 candidate.incrementDistanceIfExcludes(commit);
             }
@@ -228,12 +232,11 @@ public class JGitRepository extends AbstractGitRepository {
      * @param revWalk Repository information
      * @param candidate Collection of tag candidates
      * @param allFlags All flags that have been set so far
-     * @throws IOException if there’s an error during the rev walk
+     * @throws RevWalkException if there’s an error during the rev walk
      */
     private void correctDistance(RevWalk revWalk, TagCandidate candidate, RevFlagSet allFlags)
-            throws IOException {
-        RevCommit commit;
-        while ((commit = revWalk.next()) != null) {
+            throws RevWalkException {
+        for (RevCommit commit : revWalk) {
             if (commit.hasAll(allFlags)) {
                 // The commit has all flags already, so we just mark the parents as seen.
                 for (RevCommit parent : commit.getParents()) {
@@ -370,13 +373,12 @@ public class JGitRepository extends AbstractGitRepository {
         try (RevWalk revWalk = getRevWalk()) {
             revWalk.markStart(getHeadRevCommit());
 
-            RevCommit commit;
-            while ((commit = revWalk.next()) != null) {
+            for (RevCommit commit : revWalk) {
                 action.execute(new JGitCommit(commit));
             }
 
             return action;
-        } catch (IOException e) {
+        } catch (IOException | RevWalkException e) {
             throw new GitRepositoryException("Could not walk commits.", e);
         }
     }

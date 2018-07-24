@@ -10,7 +10,6 @@ package com.github.koraktor.mavanagaiata.git.jgit;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,6 +42,7 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptySet;
 import static org.eclipse.jgit.lib.Constants.R_TAGS;
 import static org.hamcrest.core.Is.is;
@@ -281,7 +281,8 @@ public class JGitRepositoryTest {
         doReturn(tags).when(repo).getTags();
 
         repo.revWalk = mock(RevWalk.class);
-        when(repo.revWalk.next()).thenReturn(head, head_1, head_2, null);
+        when(repo.revWalk.iterator()).
+            thenReturn(asList(head, head_1, head_2).iterator());
         RevFlag seenFlag = RevFlag.UNINTERESTING;
         when(repo.revWalk.newFlag("2.0.0")).thenReturn(seenFlag);
 
@@ -317,7 +318,8 @@ public class JGitRepositoryTest {
         doReturn(tags).when(repo).getTags();
 
         repo.revWalk = mock(RevWalk.class);
-        when(repo.revWalk.next()).thenReturn(head, head_a1, head_b1, head_b2, null);
+        when(repo.revWalk.iterator()).
+            thenReturn(asList(head, head_a1, head_b1, head_b2).iterator());
         RevFlag seenFlag = RevFlag.UNINTERESTING;
         when(repo.revWalk.newFlag("a1")).thenReturn(seenFlag);
         when(repo.revWalk.newFlag("b2")).thenReturn(seenFlag);
@@ -356,7 +358,8 @@ public class JGitRepositoryTest {
         doReturn(tags).when(repo).getTags();
 
         repo.revWalk = mock(RevWalk.class);
-        when(repo.revWalk.next()).thenReturn(head, head_a1, head_b1, head_a2, head_b2, null);
+        when(repo.revWalk.iterator()).
+            thenReturn(asList(head, head_a1, head_b1, head_a2, head_b2).iterator());
         RevFlag seenFlag = RevFlag.UNINTERESTING;
         when(repo.revWalk.newFlag("a2")).thenReturn(seenFlag);
         when(repo.revWalk.newFlag("b1")).thenReturn(seenFlag);
@@ -379,8 +382,9 @@ public class JGitRepositoryTest {
         repository.headObject = mock(ObjectId.class);
         repository.headCommit = head;
 
-        this.repository.revWalk = mock(RevWalk.class);
-        when(this.repository.revWalk.next()).thenReturn(head, head_1, head_2, null);
+        repository.revWalk = mock(RevWalk.class);
+        when(repository.revWalk.iterator()).
+            thenReturn(asList(head, head_1, head_2).iterator());
 
         when(this.repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
 
@@ -524,7 +528,7 @@ public class JGitRepositoryTest {
 
         Ref tagRef1 = mock(Ref.class);
         Ref tagRef2 = mock(Ref.class);
-        List<Ref> tagRefs = Arrays.asList(tagRef1, tagRef2);
+        List<Ref> tagRefs = asList(tagRef1, tagRef2);
         when(repo.getRefDatabase().getRefsByPrefix(R_TAGS)).thenReturn(tagRefs);
 
         RevTag rawTag1 = createRawTag();
@@ -599,9 +603,8 @@ public class JGitRepositoryTest {
         repository.headObject = mock(ObjectId.class);
         repository.headCommit = head;
 
-        when(revWalk.next()).thenReturn(head)
-            .thenReturn(head_1)
-            .thenReturn(null);
+        when(revWalk.iterator()).
+            thenReturn(asList(head, head_1).iterator());
 
         this.repository.walkCommits(action);
 
