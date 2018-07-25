@@ -143,7 +143,7 @@ public class JGitRepository extends AbstractGitRepository {
 
         // Check if the start commit is already tagged
         if (tagCommits.containsKey(start.name())) {
-            GitTag tag = getTags().get(start.name());
+            GitTag tag = tagCommits.get(start.name());
 
             return new GitTagDescription(getAbbreviatedCommitId(getHeadCommit()), tag,0);
         }
