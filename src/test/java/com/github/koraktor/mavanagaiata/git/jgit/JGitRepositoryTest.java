@@ -649,7 +649,7 @@ public class JGitRepositoryTest {
         repository = spy(repository);
 
         IndexDiff indexDiff = mock(IndexDiff.class);
-        doReturn(indexDiff).when(repository).getIndexDiff();
+        doReturn(indexDiff).when(repository).createIndexDiff();
 
         return indexDiff;
     }

@@ -290,23 +290,6 @@ public class JGitRepository extends AbstractGitRepository {
     }
 
     /**
-     * Runs a diff operation for the repository and worktree
-     *
-     * @return A index diff for the for the current worktree state
-     * @throws GitRepositoryException if the index diff cannot be created
-     */
-    IndexDiff getIndexDiff() throws GitRepositoryException {
-        try {
-            IndexDiff indexDiff = createIndexDiff();
-            indexDiff.diff();
-
-            return indexDiff;
-        } catch (IOException e) {
-            throw new GitRepositoryException("Could not create repository diff.", e);
-        }
-    }
-
-    /**
      * Creates a new JGit {@code FileRepositoryBuilder} instance
      *
      * @return A new repository builder
@@ -349,14 +332,19 @@ public class JGitRepository extends AbstractGitRepository {
 
     @Override
     public boolean isDirty(boolean ignoreUntracked) throws GitRepositoryException {
-        IndexDiff indexDiff = getIndexDiff();
+        try {
+            IndexDiff indexDiff = createIndexDiff();
+            indexDiff.diff();
 
-        return !ignoreUntracked && !indexDiff.getUntracked().isEmpty() ||
+            return !ignoreUntracked && !indexDiff.getUntracked().isEmpty() ||
                 !(indexDiff.getAdded().isEmpty() && indexDiff.getChanged().isEmpty() &&
-                indexDiff.getRemoved().isEmpty() &&
-                indexDiff.getMissing().isEmpty() &&
-                indexDiff.getModified().isEmpty() &&
-                indexDiff.getConflicting().isEmpty());
+                    indexDiff.getRemoved().isEmpty() &&
+                    indexDiff.getMissing().isEmpty() &&
+                    indexDiff.getModified().isEmpty() &&
+                    indexDiff.getConflicting().isEmpty());
+        } catch (IOException e) {
+            throw new GitRepositoryException("Could not create repository diff.", e);
+        }
     }
 
     @Override
