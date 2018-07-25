@@ -40,27 +40,10 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
     private String baseUrl;
 
     /**
-     * The format for the branch line
-     *
-     * @since 0.7.0
+     * @since 0.9.0
      */
-    @Parameter(property = "mavanagaiata.changelog.branchFormat",
-               defaultValue = "Commits on branch \"%s\"\n")
-    protected String branchFormat;
-
-    /**
-     * Whether to create links to GitHub's compare view
-     */
-    @Parameter(property = "mavanagaiata.changelog.gitHubLinks",
-               defaultValue = "false")
-    protected boolean createGitHubLinks = false;
-
-    /**
-     * The string to prepend to every commit message
-     */
-    @Parameter(property = "mavanagaiata.changelog.commitPrefix",
-               defaultValue = " * ")
-    protected String commitPrefix;
+    @Parameter(property = "mavanagaiata.changelog.format")
+    protected ChangelogFormat format;
 
     /**
      * The project name for GitHub links
@@ -69,45 +52,10 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
     protected String gitHubProject;
 
     /**
-     * The format for the link to the history from the last tag to the current
-     * branch on GitHub
-     *
-     * @since 0.7.0
-     */
-    @Parameter(property = "mavanagaiata.changelog.gitHubBranchLinkFormat",
-               defaultValue = "\nSee Git history for changes in the \"%s\" branch since version %s at: %s")
-    protected String gitHubBranchLinkFormat;
-
-    /**
-     * The format for the link to the branch history on GitHub
-     *
-     * @since 0.7.0
-     */
-    @Parameter(property = "mavanagaiata.changelog.gitHubBranchOnlyLinkFormat",
-               defaultValue = "\nSee Git history for changes in the \"%s\" branch at: %s")
-    protected String gitHubBranchOnlyLinkFormat;
-
-    /**
-     * The format for the link to the tag history on GitHub
-     *
-     * @since 0.7.0
-     */
-    @Parameter(property = "mavanagaiata.changelog.gitHubTagLinkFormat",
-               defaultValue = "\nSee Git history for version %s at: %s")
-    protected String gitHubTagLinkFormat;
-
-    /**
      * The user name for GitHub links
      */
     @Parameter(property = "mavanagaiata.changelog.gitHubUser")
     protected String gitHubUser;
-
-    /**
-     * The header to print above the changelog
-     */
-    @Parameter(property = "mavanagaiata.changelog.header",
-               defaultValue = "Changelog\\n=========\\n")
-    protected String header;
 
     /**
      * The file to write the changelog to
@@ -136,15 +84,6 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
     protected boolean skipTagged;
 
     /**
-     * The format for a tag line
-     *
-     * @since 0.7.0
-     */
-    @Parameter(property = "mavanagaiata.changelog.tagFormat",
-               defaultValue = "\nVersion %s – %s\n")
-    protected String tagFormat;
-
-    /**
      * Whether to skip commits that match the given regular expression
      *
      * @since 0.8.0
@@ -166,11 +105,11 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
     protected void writeOutput(GitRepository repository, PrintStream printStream)
             throws MavanagaiataMojoException {
         try {
-            printStream.println(header);
+            printStream.println(format.header);
 
             ChangelogWalkAction result = repository.walkCommits(new ChangelogWalkAction(printStream));
 
-            if (createGitHubLinks) {
+            if (format.createLinks) {
                 if (result.getLatestTag() == null) {
                     insertGitHubLink(printStream, repository.getBranch(), null, true);
                 } else {
@@ -206,16 +145,14 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
     protected void initConfiguration() {
         super.initConfiguration();
 
-        branchFormat               = unescapeFormatNewlines(branchFormat);
-        commitPrefix               = unescapeFormatNewlines(commitPrefix);
-        gitHubBranchLinkFormat     = unescapeFormatNewlines(gitHubBranchLinkFormat);
-        gitHubBranchOnlyLinkFormat = unescapeFormatNewlines(gitHubBranchOnlyLinkFormat);
-        gitHubTagLinkFormat        = unescapeFormatNewlines(gitHubTagLinkFormat);
-        header                     = unescapeFormatNewlines(header);
-        tagFormat                  = unescapeFormatNewlines(tagFormat);
+        if (format == null) {
+            format = new ChangelogFormat();
+        }
+        format.prepare();
+
 
         if (gitHubUser == null || gitHubUser.isEmpty() || gitHubProject == null || gitHubProject.isEmpty()) {
-            createGitHubLinks = false;
+            format.createLinks = false;
         } else {
             baseUrl = String.format("https://github.com/%s/%s/",
                 gitHubUser,
@@ -264,13 +201,13 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
         String linkText;
         if (isBranch) {
             if (currentRef == null) {
-                linkText = String.format(this.gitHubBranchOnlyLinkFormat, lastRef, url);
+                linkText = String.format(format.branchOnlyLink, lastRef, url);
             } else {
-                linkText = String.format(this.gitHubBranchLinkFormat, currentRef, lastRef, url);
+                linkText = String.format(format.branchLink, currentRef, lastRef, url);
             }
         } else {
             String tagName = (currentRef == null) ? lastRef : currentRef;
-            linkText = String.format(this.gitHubTagLinkFormat, tagName, url);
+            linkText = String.format(format.tagLink, tagName, url);
         }
 
         printStream.println(linkText);
@@ -325,7 +262,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
             if (tags.containsKey(this.currentCommit.getId())) {
                 this.lastTag = this.currentTag;
                 this.currentTag = tags.get(this.currentCommit.getId());
-                if (createGitHubLinks && !firstCommit) {
+                if (format.createLinks && !firstCommit) {
                     if (lastTag == null) {
                         insertGitHubLink(printStream, currentTag, repository.getBranch());
                     } else {
@@ -337,7 +274,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
                 dateFormatter.setTimeZone(currentTag.getTimeZone());
                 String dateString = dateFormatter.format(currentTag.getDate());
 
-                String tagLine = String.format(tagFormat, this.currentTag.getName(), dateString);
+                String tagLine = String.format(format.tag, currentTag.getName(), dateString);
                 if (firstCommit && tagLine.charAt(0) == '\n') {
                     tagLine = tagLine.replaceFirst("\n", "");
                 }
@@ -348,10 +285,10 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
                     return;
                 }
             } else if (this.firstCommit) {
-                printStream.println(String.format(branchFormat, repository.getBranch()));
+                printStream.println(String.format(format.branch, repository.getBranch()));
             }
 
-            printStream.println(commitPrefix + currentCommit.getMessageSubject());
+            printStream.println(format.commitPrefix + currentCommit.getMessageSubject());
             this.firstCommit = false;
         }
 

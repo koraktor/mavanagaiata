@@ -154,16 +154,18 @@
                                     <goal>changelog</goal>
                                 </goals>
                                 <configuration>
-                                    <branchFormat>\n#### Commits on branch `%s`\n</branchFormat>
-                                    <createGitHubLinks>true</createGitHubLinks>
+                                    <format>
+                                        <branch>\n#### Commits on branch `%s`\n</branch>
+                                        <branchLink>\n[Git history for branch `%s` since version %s](%s)</branchLink>
+                                        <branchOnlyLink>\n[Git history for branch `%s`](%s)</branchOnlyLink>
+                                        <createLinks>true</createLinks>
+                                        <tag>\n#### Version %s – %s\n</tag>
+                                        <tagLink>\n[Git history for version %s](%s)</tagLink>
+                                    </format>
                                     <gitHubProject>${project.artifactId}</gitHubProject>
                                     <gitHubUser>koraktor</gitHubUser>
-                                    <gitHubBranchLinkFormat>\n[Git history for branch `%s` since version %s](%s)</gitHubBranchLinkFormat>
-                                    <gitHubBranchOnlyLinkFormat>\n[Git history for branch `%s`](%s)</gitHubBranchOnlyLinkFormat>
-                                    <gitHubTagLinkFormat>\n[Git history for version %s](%s)</gitHubTagLinkFormat>
                                     <outputFile>${project.build.directory}/generated-site/markdown/CHANGELOG.md</outputFile>
                                     <skipTagged>true</skipTagged>
-                                    <tagFormat>\n#### Version %s – %s\n</tagFormat>
                                 </configuration>
                             </execution>
                             <execution>
