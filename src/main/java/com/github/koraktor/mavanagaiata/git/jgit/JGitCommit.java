@@ -109,4 +109,8 @@ public class JGitCommit implements GitCommit {
         return this.commit.getId().hashCode();
     }
 
+    @Override
+    public boolean isMergeCommit() {
+        return commit.getParentCount() > 1;
+    }
 }

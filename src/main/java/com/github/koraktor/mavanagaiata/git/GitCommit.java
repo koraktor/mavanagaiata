@@ -97,4 +97,8 @@ public interface GitCommit {
      */
     String getMessageSubject();
 
+    /**
+     * @return {@code true} if this commit is a merge commit
+     */
+    boolean isMergeCommit();
 }

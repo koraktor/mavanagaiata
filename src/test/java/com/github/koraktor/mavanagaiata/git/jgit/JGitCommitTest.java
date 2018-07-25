@@ -10,6 +10,8 @@ package com.github.koraktor.mavanagaiata.git.jgit;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.apache.commons.lang3.builder.ToStringExclude;
+
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import org.junit.Test;
@@ -45,8 +47,24 @@ public class JGitCommitTest {
         assertThat(commit.getMessage(), is(equalTo("Commit subject\n\nFull message.")));
         assertThat(commit.getMessageSubject(), is(equalTo("Commit subject")));
         assertThat(commit.hashCode(), is(equalTo(rawCommit.getId().hashCode())));
+        assertThat(commit.isMergeCommit(), is(false));
         assertThat(commit, is(equalTo(commit2)));
         assertThat(commit.equals(authorDate), is(false));
+    }
+
+    @Test
+    public void testMergeCommit() {
+        RevCommit rawCommit = RevCommit.parse(("tree 4b825dc642cb6eb9a060e54bf8d69288fbee4904\n" +
+            "parent 06cee865ab7f006a58be39f1d46f01dcb1880105\n" +
+            "parent afb48c6be4278ba7f5e4197b80adbbb80c6df3a7\n" +
+            "author John Doe <john.doe@example.com> 1162580880 +0000\n" +
+            "committer Sebastian Staudt <koraktor@gmail.com> 1275131880 +0200\n" +
+            "\n" +
+            "Commit subject\n\nFull message.").getBytes());
+
+        JGitCommit commit = new JGitCommit(rawCommit);
+
+        assertThat(commit.isMergeCommit(), is(true));
     }
 
 }

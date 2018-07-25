@@ -118,6 +118,15 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
     protected File outputFile;
 
     /**
+     * Whether to skip merge commits’ messages
+     *
+     * @since 0.9.0
+     */
+    @Parameter(property = "mavanagaiata.changelog.skipMergeCommits",
+               defaultValue = "true")
+    protected boolean skipMergeCommits;
+
+    /**
      * Whether to skip tagged commits' messages
      * <br>
      * This is useful when usually tagging commits like "Version bump to X.Y.Z"
@@ -306,6 +315,10 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
 
         protected void run() throws GitRepositoryException {
             if (skipCommitsPattern != null && skipCommitsPattern.matcher(currentCommit.getMessage()).find()) {
+                return;
+            }
+
+            if (skipMergeCommits && currentCommit.isMergeCommit()) {
                 return;
             }
 
