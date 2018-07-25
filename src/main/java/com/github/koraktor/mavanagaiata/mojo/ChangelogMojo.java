@@ -130,18 +130,6 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
         return this.outputFile;
     }
 
-    /**
-     * Initializes this mojo
-     *
-     * @throws MavanagaiataMojoException if an error occurs while accessing the
-     *         Git repository or the changelog file
-     */
-    protected GitRepository init() throws MavanagaiataMojoException {
-        this.initConfiguration();
-
-        return super.init();
-    }
-
     protected void initConfiguration() {
         super.initConfiguration();
 

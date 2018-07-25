@@ -85,13 +85,6 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
                defaultValue = "count")
     protected String sort;
 
-    @Override
-    public GitRepository init() throws MavanagaiataMojoException {
-        this.initConfiguration();
-
-        return super.init();
-    }
-
     /**
      * Selects the attribute to use for sorting contributors
      */
