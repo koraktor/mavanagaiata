@@ -40,10 +40,26 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
     private String baseUrl;
 
     /**
+     * The format to use while generating the changelog
+     *
+     * @see #formatTemplate
      * @since 0.9.0
      */
     @Parameter(property = "mavanagaiata.changelog.format")
     protected ChangelogFormat format;
+
+    /**
+     * The formatting template to use while generating the changelog
+     * <p>
+     * This may be one of {@code DEFAULT} or {@code MARKDOWN}.
+     * <p>
+     * Individual attributes may be overridden using {@link #format}.
+     *
+     * @since 0.9.0
+     */
+    @Parameter(property = "mavanagaiata.changelog.formatTemplate",
+               defaultValue = "DEFAULT")
+    ChangelogFormat.Formats formatTemplate;
 
     /**
      * The project name for GitHub links
@@ -126,18 +142,17 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
      *
      * @return The output file for the generated changelog
      */
+    @Override
     public File getOutputFile() {
         return this.outputFile;
     }
 
+    @Override
     protected void initConfiguration() {
         super.initConfiguration();
 
-        if (format == null) {
-            format = new ChangelogFormat();
-        }
+        format = formatTemplate.getFormat().apply(format);
         format.prepare();
-
 
         if (gitHubUser == null || gitHubUser.isEmpty() || gitHubProject == null || gitHubProject.isEmpty()) {
             format.createLinks = false;

@@ -23,6 +23,7 @@ import com.github.koraktor.mavanagaiata.git.GitCommit;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 
 import static org.hamcrest.core.Is.*;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.*;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,6 +49,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         Locale.setDefault(Locale.ENGLISH);
 
         mojo.format = new ChangelogFormat();
+        mojo.formatTemplate = ChangelogFormat.Formats.DEFAULT;
         mojo.skipMergeCommits = false;
         mojo.skipTagged = false;
         mojo.skipCommitsMatching = null;
@@ -89,6 +91,8 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
 
     @Test
     public void testError() {
+        mojo.initConfiguration();
+
         super.testError("Unable to generate changelog from Git");
     }
 
@@ -120,18 +124,20 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
 
     @Test
     public void testCustomization() throws Exception {
-        mojo.dateFormat        = "dd.MM.yyyy";
-        mojo.format = new ChangelogFormat();
-        mojo.format.branch = "Branch \"%s\"\\n";
-        mojo.format.branchLink = "\\nGit history for \"%s\" since %s: %s";
-        mojo.format.commitPrefix = "- ";
-        mojo.format.createLinks = true;
-        mojo.format.header = "History\\n-------\\n";
-        mojo.format.tag = "\\nTag %s on %s\\n";
-        mojo.format.tagLink = "\\nGit history for %s: %s";
-        mojo.footer            = "\\nFooter";
-        mojo.gitHubProject     = "mavanagaiata";
-        mojo.gitHubUser        = "koraktor";
+        ChangelogDefaultFormat format = new ChangelogDefaultFormat();
+        format.branch = "Branch \"%s\"\\n";
+        format.branchLink = "\\nGit history for \"%s\" since %s: %s";
+        format.commitPrefix = "- ";
+        format.createLinks = true;
+        format.header = "History\\n-------\\n";
+        format.tag = "\\nTag %s on %s\\n";
+        format.tagLink = "\\nGit history for %s: %s";
+
+        mojo.dateFormat = "dd.MM.yyyy";
+        mojo.footer = "\\nFooter";
+        mojo.format = format;
+        mojo.gitHubProject = "mavanagaiata";
+        mojo.gitHubUser = "koraktor";
         mojo.initConfiguration();
         mojo.generateOutput(repository, printStream);
 
@@ -170,6 +176,22 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         mojo.initConfiguration();
 
         assertThat(mojo.format, is(instanceOf(ChangelogFormat.class)));
+    }
+
+    @Test
+    public void testInitConfigurationMarkdownFormat() {
+        mojo.formatTemplate = ChangelogFormat.Formats.MARKDOWN;
+
+        mojo.initConfiguration();
+
+        ChangelogMarkdownFormat markdownFormat = new ChangelogMarkdownFormat();
+        assertThat(mojo.format.branch, is(equalTo(markdownFormat.branch)));
+        assertThat(mojo.format.branchLink, is(equalTo(markdownFormat.branchLink)));
+        assertThat(mojo.format.branchOnlyLink, is(equalTo(markdownFormat.branchOnlyLink)));
+        assertThat(mojo.format.commitPrefix, is(equalTo(markdownFormat.commitPrefix)));
+        assertThat(mojo.format.header, is(equalTo(markdownFormat.header)));
+        assertThat(mojo.format.tag, is(equalTo(markdownFormat.tag)));
+        assertThat(mojo.format.tagLink, is(equalTo(markdownFormat.tagLink)));
     }
 
     @Test

@@ -17,7 +17,7 @@ public class ChangelogFormatTest {
 
     @Test
     public void testDefaultFormat() {
-        ChangelogFormat format = new ChangelogFormat();
+        ChangelogDefaultFormat format = new ChangelogDefaultFormat();
 
         assertThat(format.branch, is(equalTo("Commits on branch \"%s\"\n")));
         assertThat(format.branchLink, is(equalTo("\nSee Git history for changes in the \"%s\" branch since version %s at: %s")));
