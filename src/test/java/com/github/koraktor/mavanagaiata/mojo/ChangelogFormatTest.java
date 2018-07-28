@@ -7,26 +7,17 @@
 
 package com.github.koraktor.mavanagaiata.mojo;
 
+import java.io.PrintStream;
+import java.util.GregorianCalendar;
+
 import org.junit.Test;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.Is.*;
+import static org.hamcrest.core.IsEqual.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ChangelogFormatTest {
-
-    @Test
-    public void testDefaultFormat() {
-        ChangelogDefaultFormat format = new ChangelogDefaultFormat();
-
-        assertThat(format.branch, is(equalTo("Commits on branch \"%s\"\n")));
-        assertThat(format.branchLink, is(equalTo("\nSee Git history for changes in the \"%s\" branch since version %s at: %s")));
-        assertThat(format.branchOnlyLink, is(equalTo("\nSee Git history for changes in the \"%s\" branch at: %s")));
-        assertThat(format.commitPrefix, is(equalTo(" * ")));
-        assertThat(format.header, is(equalTo("Changelog\n=========\n")));
-        assertThat(format.tag, is(equalTo("\nVersion %s – %s\n")));
-        assertThat(format.tagLink, is(equalTo("\nSee Git history for version %s at: %s")));
-    }
 
     @Test
     public void testPrepare() {
@@ -34,20 +25,28 @@ public class ChangelogFormatTest {
         format.branch = "Test\\nnew line";
         format.branchLink = "Test\\nnew line";
         format.branchOnlyLink = "Test\\nnew line";
+        format.dateFormat = "MM/dd/yyyy";
         format.commitPrefix = "Test\\nnew line";
-        format.header = "Test\\nnew line";
+        format.header = "A\\nheader";
+        format.separator = "Test\\nnew line";
         format.tag = "Test\\nnew line";
         format.tagLink = "Test\\nnew line";
 
-        format.prepare();
+        PrintStream printStream = mock(PrintStream.class);
+        format.prepare(printStream);
 
         assertThat(format.branch, is(equalTo("Test\nnew line")));
         assertThat(format.branchLink, is(equalTo("Test\nnew line")));
         assertThat(format.branchOnlyLink, is(equalTo("Test\nnew line")));
+        assertThat(format.dateFormatter.format(new GregorianCalendar(2011, 3, 29).getTime()), is(equalTo("04/29/2011")));
         assertThat(format.commitPrefix, is(equalTo("Test\nnew line")));
-        assertThat(format.header, is(equalTo("Test\nnew line")));
+        assertThat(format.header, is(equalTo("A\nheader")));
+        assertThat(format.separator, is(equalTo("Test\nnew line")));
         assertThat(format.tag, is(equalTo("Test\nnew line")));
         assertThat(format.tagLink, is(equalTo("Test\nnew line")));
+
+        format.printHeader();
+        verify(printStream).println("A\nheader");
     }
 
 

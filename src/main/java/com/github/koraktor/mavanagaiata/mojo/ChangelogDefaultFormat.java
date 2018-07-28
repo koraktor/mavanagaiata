@@ -7,20 +7,25 @@
 
 package com.github.koraktor.mavanagaiata.mojo;
 
+import java.text.SimpleDateFormat;
+
+import org.eclipse.jgit.api.Git;
+
 /**
  * @author Sebastian Staudt
  */
 public class ChangelogDefaultFormat extends ChangelogFormat {
 
     public ChangelogDefaultFormat() {
-        branch = "Commits on branch \"%s\"\n";
-        branchLink = "\nSee Git history for changes in the \"%s\" branch since version %s at: %s";
-        branchOnlyLink = "\nSee Git history for changes in the \"%s\" branch at: %s";
+        branch = "Commits on branch \"%s\"";
+        branchLink = "See Git history for changes in the \"%s\" branch since version %s at: %s";
+        branchOnlyLink = "See Git history for changes in the \"%s\" branch at: %s";
         commitPrefix = " * ";
         createLinks = true;
-        header = "Changelog\n=========\n";
-        tag = "\nVersion %s – %s\n";
-        tagLink = "\nSee Git history for version %s at: %s";
+        header = "Changelog\n=========";
+        separator = "\n";
+        tag = "Version %s – %s";
+        tagLink = "See Git history for version %s at: %s";
     }
 
 }

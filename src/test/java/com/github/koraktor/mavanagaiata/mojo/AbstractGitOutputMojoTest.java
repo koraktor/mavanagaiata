@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2016, Sebastian Staudt
+ * Copyright (c) 2012-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -49,7 +49,7 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
         mojo.setOutputFile(null);
         mojo.run(repository);
 
-        assertThat(genericMojo().printStream, is(System.out));
+        assertThat(mojo.printStream, is(System.out));
     }
 
     @Test
@@ -132,36 +132,32 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
         } catch (Exception e) {
             assertThat(e, is(instanceOf(MavanagaiataMojoException.class)));
             assertThat(e.getMessage(), is(equalTo("Could not open output file \"/some/file\" for writing.")));
-            assertThat(e.getCause(), is((Throwable) fileNotFoundException));
+            assertThat(e.getCause(), is(fileNotFoundException));
         }
     }
 
     @Test
     public void testGenerateOutputWithFooter() throws MavanagaiataMojoException {
-        PrintStream printStream = mock(PrintStream.class);
+        mojo.footer = "Test footer";
+        mojo.printStream = mock(PrintStream.class);
+        mojo.generateOutput(repository);
 
-        this.mojo.footer = "Test footer";
-        this.mojo.generateOutput(repository, printStream);
-
-        verify(printStream).println("Test footer");
-        verify(printStream).flush();
+        verify(mojo.printStream).println("Test footer");
+        verify(mojo.printStream).flush();
     }
 
     @Test
     public void testGenerateOutputWithoutFooter() throws MavanagaiataMojoException {
-        PrintStream printStream = mock(PrintStream.class);
+        mojo.printStream = mock(PrintStream.class);
+        mojo.generateOutput(repository);
 
-        mojo.generateOutput(repository, printStream);
-
-        verify(printStream, never()).println();
-        verify(printStream).flush();
+        verify(mojo.printStream, never()).println();
+        verify(mojo.printStream).flush();
     }
 
     class GenericAbstractGitOutputMojo extends AbstractGitOutputMojo {
 
         File outputFile;
-
-        PrintStream printStream;
 
         public File getOutputFile() {
             return this.outputFile;
@@ -171,9 +167,7 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
             this.outputFile = outputFile;
         }
 
-        protected void writeOutput(GitRepository repository, PrintStream printStream) {
-            this.printStream = printStream;
-        }
+        protected void writeOutput(GitRepository repository) {}
 
     }
 

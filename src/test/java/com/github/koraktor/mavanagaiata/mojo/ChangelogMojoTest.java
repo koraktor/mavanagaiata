@@ -25,6 +25,7 @@ import com.github.koraktor.mavanagaiata.git.GitTag;
 import static org.hamcrest.core.Is.*;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.*;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -99,47 +100,48 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
     @Test
     public void testCreateGitHubLinks() {
         mojo.initConfiguration();
-        assertThat(mojo.format.createLinks, is(false));
+        assertThat(mojo.format.baseUrl, is(nullValue()));
 
         mojo.gitHubProject = "";
         mojo.initConfiguration();
-        assertThat(mojo.format.createLinks, is(false));
+        assertThat(mojo.format.baseUrl, is(nullValue()));
 
         mojo.gitHubProject = "mavanagaiata";
         mojo.initConfiguration();
-        assertThat(mojo.format.createLinks, is(false));
+        assertThat(mojo.format.baseUrl, is(nullValue()));
 
         mojo.gitHubUser = "";
         mojo.initConfiguration();
-        assertThat(mojo.format.createLinks, is(false));
+        assertThat(mojo.format.baseUrl, is(nullValue()));
 
         mojo.gitHubUser = "koraktor";
         mojo.initConfiguration();
-        assertThat(mojo.format.createLinks, is(false));
+        assertThat(mojo.format.baseUrl, is(equalTo("https://github.com/koraktor/mavanagaiata")));
 
-        mojo.format.createLinks = true;
+        mojo.format.createLinks = false;
         mojo.initConfiguration();
-        assertThat(mojo.format.createLinks, is(true));
+        assertThat(mojo.format.baseUrl, is(nullValue()));
     }
 
     @Test
     public void testCustomization() throws Exception {
         ChangelogDefaultFormat format = new ChangelogDefaultFormat();
-        format.branch = "Branch \"%s\"\\n";
-        format.branchLink = "\\nGit history for \"%s\" since %s: %s";
+        format.branch = "Branch \"%s\"";
+        format.branchLink = "Git history for \"%s\" since %s: %s";
         format.commitPrefix = "- ";
         format.createLinks = true;
-        format.header = "History\\n-------\\n";
-        format.tag = "\\nTag %s on %s\\n";
-        format.tagLink = "\\nGit history for %s: %s";
+        format.header = "History\\n-------";
+        format.separator = "\n";
+        format.tag = "Tag %s on %s";
+        format.tagLink = "Git history for %s: %s";
 
         mojo.dateFormat = "dd.MM.yyyy";
-        mojo.footer = "\\nFooter";
+        mojo.footer = "Footer";
         mojo.format = format;
         mojo.gitHubProject = "mavanagaiata";
         mojo.gitHubUser = "koraktor";
         mojo.initConfiguration();
-        mojo.generateOutput(repository, printStream);
+        mojo.generateOutput(repository);
 
         assertOutputLine("History");
         assertOutputLine("-------");
@@ -197,7 +199,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
     @Test
     public void testResult() throws Exception {
         mojo.initConfiguration();
-        mojo.generateOutput(repository, printStream);
+        mojo.generateOutput(repository);
 
         assertOutputLine("Changelog");
         assertOutputLine("=========");
@@ -218,6 +220,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         assertOutputLine(" * 3rd commit");
         assertOutputLine(" * 2nd commit");
         assertOutputLine(" * 1st commit");
+        assertOutputLine("");
         assertOutputLine("Footer");
         assertOutputLine(null);
     }
@@ -226,7 +229,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
     public void testSkipCommits() throws Exception {
         mojo.skipCommitsMatching = "\\[ci skip\\]";
         mojo.initConfiguration();
-        mojo.generateOutput(repository, printStream);
+        mojo.generateOutput(repository);
 
         assertOutputLine("Changelog");
         assertOutputLine("=========");
@@ -246,6 +249,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         assertOutputLine(" * 3rd commit");
         assertOutputLine(" * 2nd commit");
         assertOutputLine(" * 1st commit");
+        assertOutputLine("");
         assertOutputLine("Footer");
         assertOutputLine(null);
     }
@@ -255,7 +259,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         mockCommits = mockCommits.subList(2, mockCommits.size());
 
         mojo.initConfiguration();
-        mojo.generateOutput(repository, printStream);
+        mojo.generateOutput(repository);
 
         assertOutputLine("Changelog");
         assertOutputLine("=========");
@@ -271,6 +275,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         assertOutputLine(" * 3rd commit");
         assertOutputLine(" * 2nd commit");
         assertOutputLine(" * 1st commit");
+        assertOutputLine("");
         assertOutputLine("Footer");
         assertOutputLine(null);
     }
@@ -279,7 +284,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
     public void testSkipTagged() throws Exception {
         mojo.skipTagged = true;
         mojo.initConfiguration();
-        mojo.generateOutput(repository, printStream);
+        mojo.generateOutput(repository);
 
         assertOutputLine("Changelog");
         assertOutputLine("=========");
@@ -298,6 +303,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         assertOutputLine("");
         assertOutputLine(" * 2nd commit");
         assertOutputLine(" * 1st commit");
+        assertOutputLine("");
         assertOutputLine("Footer");
         assertOutputLine(null);
     }
@@ -308,7 +314,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
             .thenReturn(new HashMap<>());
 
         mojo.initConfiguration();
-        mojo.generateOutput(repository, printStream);
+        mojo.generateOutput(repository);
 
         assertOutputLine("Changelog");
         assertOutputLine("=========");
@@ -323,6 +329,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         assertOutputLine(" * 3rd commit");
         assertOutputLine(" * 2nd commit");
         assertOutputLine(" * 1st commit");
+        assertOutputLine("");
         assertOutputLine("Footer");
         assertOutputLine(null);
     }

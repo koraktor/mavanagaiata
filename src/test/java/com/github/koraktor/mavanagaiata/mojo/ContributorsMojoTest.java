@@ -97,7 +97,7 @@ public class ContributorsMojoTest extends GitOutputMojoAbstractTest<Contributors
         this.mojo.showEmail         = true;
         this.mojo.sort              = "count";
         this.mojo.initConfiguration();
-        mojo.generateOutput(repository, printStream);
+        mojo.generateOutput(repository);
 
         this.assertOutputLine("Authors");
         this.assertOutputLine("-------");
@@ -113,7 +113,7 @@ public class ContributorsMojoTest extends GitOutputMojoAbstractTest<Contributors
     public void testSortCount() throws Exception {
         this.mojo.sort = "count";
         this.mojo.initConfiguration();
-        mojo.generateOutput(repository, printStream);
+        mojo.generateOutput(repository);
 
         this.assertOutputLine("Contributors");
         this.assertOutputLine("============");
@@ -129,7 +129,7 @@ public class ContributorsMojoTest extends GitOutputMojoAbstractTest<Contributors
     public void testSortDate() throws Exception {
         this.mojo.sort = "date";
         this.mojo.initConfiguration();
-        mojo.generateOutput(repository, printStream);
+        mojo.generateOutput(repository);
 
         this.assertOutputLine("Contributors");
         this.assertOutputLine("============");
@@ -145,7 +145,7 @@ public class ContributorsMojoTest extends GitOutputMojoAbstractTest<Contributors
     public void testSortName() throws Exception {
         this.mojo.sort = "name";
         this.mojo.initConfiguration();
-        mojo.generateOutput(repository, printStream);
+        mojo.generateOutput(repository);
 
         this.assertOutputLine("Contributors");
         this.assertOutputLine("============");

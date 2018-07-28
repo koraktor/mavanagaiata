@@ -9,8 +9,6 @@
 package com.github.koraktor.mavanagaiata.mojo;
 
 import java.io.File;
-import java.io.PrintStream;
-import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -22,6 +20,8 @@ import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * This goal allows to generate a changelog of the currently checked out branch
@@ -118,20 +118,17 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
      *         repository fails
      */
     @Override
-    protected void writeOutput(GitRepository repository, PrintStream printStream)
+    protected void writeOutput(GitRepository repository)
             throws MavanagaiataMojoException {
         try {
-            printStream.println(format.header);
+            format.printHeader();
 
-            ChangelogWalkAction result = repository.walkCommits(new ChangelogWalkAction(printStream));
+            ChangelogWalkAction action = new ChangelogWalkAction();
+            action.currentRef = repository.getBranch();
+            action = repository.walkCommits(action);
 
-            if (format.createLinks) {
-                if (result.getLatestTag() == null) {
-                    insertGitHubLink(printStream, repository.getBranch(), null, true);
-                } else {
-                    insertGitHubLink(printStream, result.getLatestTag(), (GitTag) null);
-                }
-            }
+            format.printSeparator();
+            format.printCompareLink(action.currentRef, null, action.currentRef.equals(repository.getBranch()));
         } catch (GitRepositoryException e) {
             throw MavanagaiataMojoException.create("Unable to generate changelog from Git", e);
         }
@@ -152,68 +149,21 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
         super.initConfiguration();
 
         format = formatTemplate.getFormat().apply(format);
-        format.prepare();
+        if (format.dateFormat == null) {
+            format.dateFormat = dateFormat;
+        }
+        format.prepare(printStream);
 
-        if (gitHubUser == null || gitHubUser.isEmpty() || gitHubProject == null || gitHubProject.isEmpty()) {
-            format.createLinks = false;
-        } else {
-            baseUrl = String.format("https://github.com/%s/%s/",
+        if (format.createLinks && isNotBlank(gitHubUser) && isNotBlank(gitHubProject)) {
+            String baseUrl = String.format("https://github.com/%s/%s",
                 gitHubUser,
                 gitHubProject);
+            format.enableCreateLinks(baseUrl);
         }
 
         if (skipCommitsMatching != null && !skipCommitsMatching.isEmpty()) {
             skipCommitsPattern = Pattern.compile(skipCommitsMatching, Pattern.MULTILINE);
         }
-    }
-
-    protected void insertGitHubLink(PrintStream printStream, GitTag lastTag,
-                                    String branch) {
-        this.insertGitHubLink(printStream, lastTag.getName(), branch, true);
-    }
-
-    protected void insertGitHubLink(PrintStream printStream, GitTag lastTag,
-                                    GitTag currentTag) {
-        String tagName = (currentTag == null) ? null : currentTag.getName();
-        this.insertGitHubLink(printStream, lastTag.getName(), tagName, false);
-    }
-
-    /**
-     * Generates a link to the GitHub compare / commits view and inserts it
-     * into the changelog
-     * <p>
-     * If no current ref is provided, the generated text will link to the
-     * commits view, listing all commits of the latest tag or the whole branch.
-     * Otherwise the text will link to the compare view, listing all commits
-     * that are in the current ref, but not in the last one.
-     *
-     * @param printStream The stream the output should be printed to
-     * @param lastRef The last tag or branch in the changelog
-     * @param currentRef The current tag or branch in the changelog
-     * @param isBranch Whether the link is points to a branch
-     */
-    protected void insertGitHubLink(PrintStream printStream, String lastRef,
-                                    String currentRef, boolean isBranch) {
-        String url = baseUrl;
-        if(currentRef == null) {
-            url += String.format("commits/%s", lastRef);
-        } else {
-            url += String.format("compare/%s...%s", lastRef, currentRef);
-        }
-
-        String linkText;
-        if (isBranch) {
-            if (currentRef == null) {
-                linkText = String.format(format.branchOnlyLink, lastRef, url);
-            } else {
-                linkText = String.format(format.branchLink, currentRef, lastRef, url);
-            }
-        } else {
-            String tagName = (currentRef == null) ? lastRef : currentRef;
-            linkText = String.format(format.tagLink, tagName, url);
-        }
-
-        printStream.println(linkText);
     }
 
     /**
@@ -227,29 +177,16 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
 
     class ChangelogWalkAction extends CommitWalkAction {
 
-        private GitTag currentTag;
-
-        private SimpleDateFormat dateFormatter;
+        private String currentRef;
 
         private boolean firstCommit = true;
 
-        private GitTag lastTag;
-
-        private final PrintStream printStream;
+        private String lastRef;
 
         private Map<String, GitTag> tags;
 
-        ChangelogWalkAction(PrintStream printStream) {
-            this.printStream = printStream;
-        }
-
-        GitTag getLatestTag() {
-            return currentTag;
-        }
-
         @Override
         public void prepare() throws GitRepositoryException {
-            dateFormatter = new SimpleDateFormat(dateFormat);
             tags = repository.getTags();
         }
 
@@ -262,37 +199,31 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
                 return;
             }
 
-            if (tags.containsKey(this.currentCommit.getId())) {
-                this.lastTag = this.currentTag;
-                this.currentTag = tags.get(this.currentCommit.getId());
-                if (format.createLinks && !firstCommit) {
-                    if (lastTag == null) {
-                        insertGitHubLink(printStream, currentTag, repository.getBranch());
-                    } else {
-                        insertGitHubLink(printStream, currentTag, lastTag);
-                    }
+            boolean firstLine = firstCommit;
+            firstCommit = false;
+
+            if (tags.containsKey(currentCommit.getId())) {
+                lastRef = currentRef;
+                GitTag currentTag = tags.get(currentCommit.getId());
+                currentRef = currentTag.getName();
+
+                format.printSeparator();
+
+                if (!firstLine) {
+                    format.printCompareLink(currentRef, lastRef, lastRef.equals(repository.getBranch()));
                 }
 
                 repository.loadTag(currentTag);
-                dateFormatter.setTimeZone(currentTag.getTimeZone());
-                String dateString = dateFormatter.format(currentTag.getDate());
-
-                String tagLine = String.format(format.tag, currentTag.getName(), dateString);
-                if (firstCommit && tagLine.charAt(0) == '\n') {
-                    tagLine = tagLine.replaceFirst("\n", "");
-                }
-                printStream.println(tagLine);
+                format.printTag(currentTag);
 
                 if (skipTagged) {
-                    this.firstCommit = false;
                     return;
                 }
-            } else if (this.firstCommit) {
-                printStream.println(String.format(format.branch, repository.getBranch()));
+            } else if (firstLine) {
+                format.printBranch(repository.getBranch());
             }
 
-            printStream.println(format.commitPrefix + currentCommit.getMessageSubject());
-            this.firstCommit = false;
+            format.printCommit(currentCommit);
         }
 
     }

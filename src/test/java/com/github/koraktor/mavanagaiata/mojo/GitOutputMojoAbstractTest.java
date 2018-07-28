@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2016, Sebastian Staudt
+ * Copyright (c) 2012-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -15,8 +15,6 @@ import java.io.StringReader;
 
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.jgit.JGitRepository;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -34,18 +32,16 @@ abstract class GitOutputMojoAbstractTest<T extends AbstractGitOutputMojo> extend
 
     private ByteArrayOutputStream outputStream;
 
-    PrintStream printStream;
-
     private BufferedReader reader;
 
     @Override
     public void setup() throws Exception {
         super.setup();
 
-        mojo.footer = "Footer";
-
         outputStream = new ByteArrayOutputStream();
-        printStream = new PrintStream(outputStream);
+
+        mojo.footer = "Footer";
+        mojo.printStream = new PrintStream(outputStream);
     }
 
     void assertOutputLine(String line) throws IOException {
@@ -59,12 +55,10 @@ abstract class GitOutputMojoAbstractTest<T extends AbstractGitOutputMojo> extend
     @Override
     protected void testError(String errorMessage) {
         try {
-            repository = mock(JGitRepository.class, new Answer() {
-                public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                    throw new GitRepositoryException("");
-                }
+            repository = mock(JGitRepository.class, invocationOnMock -> {
+                throw new GitRepositoryException("");
             });
-            mojo.generateOutput(repository, printStream);
+            mojo.generateOutput(repository);
             fail("No exception thrown.");
         } catch(Exception e) {
             assertThat(e, is(instanceOf(MavanagaiataMojoException.class)));

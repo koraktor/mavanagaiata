@@ -108,7 +108,7 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
      *         repository fails
      */
     @Override
-    protected void writeOutput(GitRepository repository, PrintStream printStream)
+    protected void writeOutput(GitRepository repository)
             throws MavanagaiataMojoException {
         try {
             mailMap = repository.getMailMap();
