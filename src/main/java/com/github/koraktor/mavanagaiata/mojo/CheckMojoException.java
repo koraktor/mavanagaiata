@@ -23,6 +23,8 @@ class CheckMojoException extends MavanagaiataMojoException {
         UNTAGGED, UNCLEAN, WRONG_COMMIT_MSG, WRONG_BRANCH
     }
 
+    Type type;
+
     /**
      * Returns a message for the given type and (optional) arguments
      *
@@ -51,8 +53,6 @@ class CheckMojoException extends MavanagaiataMojoException {
 
         return String.format(message, (Object[]) args);
     }
-
-    Type type;
 
     /**
      * Creates a new exception for the given check failure type

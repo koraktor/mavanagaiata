@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugins.annotations.Component;
@@ -161,7 +162,6 @@ public class InfoClassMojo extends AbstractGitMojo {
         String shaId     = repository.getHeadCommit().getId();
         String describe  = description.toString();
         boolean isDirty  = repository.isDirty(dirtyIgnoreUntracked);
-        String branch    = repository.getBranch();
 
         if (isDirty && dirtyFlag != null) {
             abbrevId += dirtyFlag;
@@ -170,7 +170,7 @@ public class InfoClassMojo extends AbstractGitMojo {
         }
 
         HashMap<String, String> values = new HashMap<>();
-        values.put("BRANCH", branch);
+        values.put("BRANCH", repository.getBranch());
         values.put("CLASS_NAME", className);
         values.put("COMMIT_ABBREV", abbrevId);
         values.put("COMMIT_SHA", shaId);

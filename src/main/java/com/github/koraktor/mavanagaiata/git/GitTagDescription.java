@@ -15,7 +15,9 @@ package com.github.koraktor.mavanagaiata.git;
  */
 public class GitTagDescription {
 
-    private String abbreviatedCommitId;
+    private static final String DESCRIBE_FORMAT = "%s-%d-g%s";
+
+    private String abbrevCommitId;
 
     private int distance;
 
@@ -24,14 +26,14 @@ public class GitTagDescription {
     /**
      * Create a new description for the given information
      *
-     * @param abbreviatedCommitId The abbreviated commit ID
+     * @param abbrevCommitId The abbreviated commit ID
      * @param nextTag The next tag reachable from the commit
      * @param distance The distance to the next tag
      */
-    public GitTagDescription(String abbreviatedCommitId, GitTag nextTag, int distance) {
-        this.abbreviatedCommitId = abbreviatedCommitId;
-        this.distance            = distance;
-        this.nextTag             = nextTag;
+    public GitTagDescription(String abbrevCommitId, GitTag nextTag, int distance) {
+        this.abbrevCommitId = abbrevCommitId;
+        this.distance = distance;
+        this.nextTag = nextTag;
     }
 
     /**
@@ -40,7 +42,7 @@ public class GitTagDescription {
      * @return The name of the next tag
      */
     public String getNextTagName() {
-        return (this.nextTag == null) ? "" : this.nextTag.getName();
+        return (nextTag == null) ? "" : nextTag.getName();
     }
 
     /**
@@ -62,16 +64,18 @@ public class GitTagDescription {
      */
     @Override
     public String toString() {
-        if (this.nextTag == null) {
-            return this.abbreviatedCommitId;
-        } else if (this.distance == 0) {
-            return this.nextTag.getName();
-        } else {
-            return String.format("%s-%d-g%s",
-                this.nextTag.getName(),
-                this.distance,
-                this.abbreviatedCommitId);
+        if (nextTag == null) {
+            return abbrevCommitId;
         }
+
+        if (distance == 0) {
+            return nextTag.getName();
+        }
+
+        return String.format(DESCRIBE_FORMAT,
+            nextTag.getName(),
+            distance,
+            abbrevCommitId);
     }
 
 }

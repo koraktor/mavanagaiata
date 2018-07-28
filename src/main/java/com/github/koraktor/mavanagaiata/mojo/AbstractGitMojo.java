@@ -20,6 +20,8 @@ import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.jgit.JGitRepository;
 
+import static org.apache.commons.lang3.StringUtils.equalsAnyIgnoreCase;
+
 /**
  * This abstract Mojo implements initializing a JGit Repository and provides
  * this Repository instance to subclasses.
@@ -71,6 +73,9 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * <p>
      * If {@code false} only modified files that are already known to Git will
      * cause the dirty flag to be appended.
+     * <p>
+     * <strong>Warning:</strong> Do not enable this if builds should be
+     * reproducible.
      *
      * @since 0.5.0
      */
@@ -180,9 +185,9 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * @param value The value of the property
      */
     protected void addProperty(String name, String value) {
-        Properties properties = this.project.getProperties();
+        Properties properties = project.getProperties();
 
-        for(String prefix : this.propertyPrefixes) {
+        for (String prefix : propertyPrefixes) {
             properties.put(prefix + "." + name, value);
         }
     }
@@ -209,7 +214,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
 
             return repository;
         } catch (GitRepositoryException e) {
-            if (this.skipNoGit) {
+            if (skipNoGit) {
                 return null;
             }
             throw MavanagaiataMojoException.create("Unable to initialize Git repository", e);
@@ -235,9 +240,8 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * Prepares and validates user-supplied parameters
      */
     protected void prepareParameters() {
-        if (this.dirtyFlag.equals("false") ||
-                this.dirtyFlag.equals("null")) {
-            this.dirtyFlag = null;
+        if (equalsAnyIgnoreCase(dirtyFlag, "false", "null")) {
+            dirtyFlag = null;
         }
     }
 
