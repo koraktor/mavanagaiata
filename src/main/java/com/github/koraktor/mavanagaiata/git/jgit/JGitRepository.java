@@ -358,14 +358,15 @@ public class JGitRepository extends AbstractGitRepository {
         }
 
         assert revWalk != null;
+        JGitTag jgitTag = (JGitTag) tag;
 
         try {
-            revWalk.parseBody(((JGitTag) tag).tag);
-            ((JGitTag) tag).taggerIdent = ((JGitTag) tag).tag.getTaggerIdent();
+            revWalk.parseBody(jgitTag.tag);
+            jgitTag.taggerIdent = jgitTag.tag.getTaggerIdent();
         } catch (IOException e) {
             throw new GitRepositoryException("Failed to load tag meta data.", e);
         } finally {
-            ((JGitTag) tag).tag.disposeBody();
+            jgitTag.tag.disposeBody();
         }
     }
 
