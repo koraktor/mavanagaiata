@@ -308,10 +308,9 @@ public class JGitRepository extends AbstractGitRepository {
                 try {
                     RevTag revTag = revWalk.lookupTag(tag.getObjectId());
                     RevObject object = revWalk.peel(revTag);
-                    if (!(object instanceof RevCommit)) {
-                        continue;
+                    if (object instanceof RevCommit) {
+                        tags.put(object.getName(), new JGitTag(revTag));
                     }
-                    tags.put(object.getName(), new JGitTag(revTag));
                 } catch (MissingObjectException ignored) {}
             }
         } catch (IOException e) {
