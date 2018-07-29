@@ -419,13 +419,7 @@ public class JGitRepository extends AbstractGitRepository {
     protected ObjectId getHeadObject() throws GitRepositoryException {
         if (headObject == null) {
             try {
-                Ref head = repository.findRef(headRef);
-                if (head == null) {
-                    throw new GitRepositoryException(
-                            String.format("Ref \"%s\" is invalid.", headRef));
-                }
-
-                headObject = head.getObjectId();
+                headObject = repository.resolve(headRef);
             } catch (IOException e) {
                 throw new GitRepositoryException(
                     String.format("Ref \"%s\" could not be resolved.", headRef),
