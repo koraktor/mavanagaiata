@@ -7,16 +7,12 @@
 
 package com.github.koraktor.mavanagaiata.git.jgit;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.TimeZone;
 
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.revwalk.RevTag;
-import org.eclipse.jgit.revwalk.RevWalk;
 
-import com.github.koraktor.mavanagaiata.git.GitRepository;
-import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 
 /**

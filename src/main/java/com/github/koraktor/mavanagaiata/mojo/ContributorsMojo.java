@@ -8,7 +8,6 @@
 package com.github.koraktor.mavanagaiata.mojo;
 
 import java.io.File;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;

@@ -7,10 +7,6 @@
 
 package com.github.koraktor.mavanagaiata.mojo;
 
-import java.text.SimpleDateFormat;
-
-import org.eclipse.jgit.api.Git;
-
 /**
  * @author Sebastian Staudt
  */
