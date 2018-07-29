@@ -488,7 +488,7 @@ public class JGitRepositoryTest {
         Throwable exception = mock(IOException.class);
 
         repository.setHeadRef("broken");
-        when(repo.findRef("broken")).thenThrow(exception);
+        when(repo.resolve("broken")).thenThrow(exception);
 
         try {
             repository.getHeadObject();
@@ -501,15 +501,9 @@ public class JGitRepositoryTest {
 
     @Test
     public void testGetHeadObjectInvalidRef() throws Exception {
-        when(repo.findRef("HEAD")).thenReturn(null);
+        when(repo.resolve("HEAD")).thenReturn(null);
 
-        try {
-            repository.getHeadObject();
-            fail("No exception thrown.");
-        } catch (GitRepositoryException e) {
-            assertThat(e.getCause(), is(nullValue()));
-            assertThat(e.getMessage(), is(equalTo("Ref \"HEAD\" is invalid.")));
-        }
+        assertThat(repository.getHeadObject(), is(equalTo(ObjectId.zeroId())));
     }
 
     @Test
