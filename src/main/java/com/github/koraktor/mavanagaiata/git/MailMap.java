@@ -38,7 +38,7 @@ public class MailMap {
         NAME_AND_MAIL_TO_NAME_AND_MAIL_PATTERN = Pattern.compile("^(\\S.*?)\\s+<(\\S+)>\\s+(\\S.*?)\\s+<(\\S+)>$");
     }
 
-    boolean exists = false;
+    boolean exists;
 
     Map<String, String> mailToMailMap;
 

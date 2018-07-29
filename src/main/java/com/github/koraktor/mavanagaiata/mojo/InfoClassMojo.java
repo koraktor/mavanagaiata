@@ -52,7 +52,8 @@ import static org.apache.commons.io.FileUtils.forceDeleteOnExit;
       threadSafe = true)
 public class InfoClassMojo extends AbstractGitMojo {
 
-    public static final String BUILTIN_TEMPLATE_PATH = "TemplateGitInfoClass.java";
+    private static final String BUILTIN_TEMPLATE_PATH = "TemplateGitInfoClass.java";
+
     /**
      * The name of the class to generate
      */

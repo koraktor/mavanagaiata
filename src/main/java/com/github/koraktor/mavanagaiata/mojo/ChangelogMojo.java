@@ -37,8 +37,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
       threadSafe = true)
 public class ChangelogMojo extends AbstractGitOutputMojo {
 
-    private String baseUrl;
-
     /**
      * The format to use while generating the changelog
      *

@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2016, Sebastian Staudt
+ * Copyright (c) 2011-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -93,7 +93,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      */
     @Parameter(property = "mavanagaiata.failGracefully",
                defaultValue = "false")
-    protected boolean failGracefully = false;
+    protected boolean failGracefully;
 
     /**
      * The {@code GIT_DIR} path of the Git repository
@@ -119,7 +119,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      */
     @Parameter(property = "mavanagaiata.skip",
                defaultValue = "false")
-    protected boolean skip = false;
+    protected boolean skip;
 
     /**
      * Skip the plugin execution if not inside a Git repository
@@ -128,7 +128,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      */
     @Parameter(property = "mavanagaiata.skipNoGit",
                defaultValue = "false")
-    protected boolean skipNoGit = false;
+    protected boolean skipNoGit;
 
     /**
      * The Maven project
