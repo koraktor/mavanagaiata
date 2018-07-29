@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2016, Sebastian Staudt
+ * Copyright (c) 2012-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git.jgit;
@@ -34,9 +34,10 @@ public class JGitCommit implements GitCommit {
      * @param commit The commit object to wrap
      */
     public JGitCommit(RevCommit commit) {
-        this.author    = commit.getAuthorIdent();
-        this.commit    = commit;
-        this.committer = commit.getCommitterIdent();
+        this.commit = commit;
+
+        author    = commit.getAuthorIdent();
+        committer = commit.getCommitterIdent();
     }
 
     /**
@@ -56,39 +57,39 @@ public class JGitCommit implements GitCommit {
     }
 
     public Date getAuthorDate() {
-        return this.author.getWhen();
+        return author.getWhen();
     }
 
     public String getAuthorEmailAddress() {
-        return this.author.getEmailAddress();
+        return author.getEmailAddress();
     }
 
     public String getAuthorName() {
-        return this.author.getName();
+        return author.getName();
     }
 
     public TimeZone getAuthorTimeZone() {
-        return this.author.getTimeZone();
+        return author.getTimeZone();
     }
 
     public Date getCommitterDate() {
-        return this.committer.getWhen();
+        return committer.getWhen();
     }
 
     public String getCommitterEmailAddress() {
-        return this.committer.getEmailAddress();
+        return committer.getEmailAddress();
     }
 
     public String getCommitterName() {
-        return this.committer.getName();
+        return committer.getName();
     }
 
     public TimeZone getCommitterTimeZone() {
-        return this.committer.getTimeZone();
+        return committer.getTimeZone();
     }
 
     public String getId() {
-        return this.commit.getName();
+        return commit.getName();
     }
 
     public String getMessage() {
@@ -96,7 +97,7 @@ public class JGitCommit implements GitCommit {
     }
 
     public String getMessageSubject() {
-        return this.commit.getShortMessage();
+        return commit.getShortMessage();
     }
 
     /**
@@ -106,7 +107,7 @@ public class JGitCommit implements GitCommit {
      */
     @Override
     public int hashCode() {
-        return this.commit.getId().hashCode();
+        return commit.getId().hashCode();
     }
 
     @Override

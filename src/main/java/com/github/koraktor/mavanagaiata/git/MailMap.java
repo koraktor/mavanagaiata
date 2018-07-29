@@ -73,7 +73,7 @@ public class MailMap {
      * @see #parseMailMap
      */
     public boolean exists() {
-        return this.exists;
+        return exists;
     }
 
     /**
@@ -86,17 +86,17 @@ public class MailMap {
      *         initial email address
      */
     String getCanonicalMail(String name, String mail) {
-        if (this.mailToMailMap.containsKey(mail)) {
-            return this.mailToMailMap.get(mail);
+        if (mailToMailMap.containsKey(mail)) {
+            return mailToMailMap.get(mail);
         }
 
-        if (this.mailToNameAndMailMap.containsKey(mail)) {
-            return this.mailToNameAndMailMap.get(mail).getValue();
+        if (mailToNameAndMailMap.containsKey(mail)) {
+            return mailToNameAndMailMap.get(mail).getValue();
         }
 
         Map.Entry<String, String> nameAndMail = new AbstractMap.SimpleEntry<>(name, mail);
-        if (this.nameAndMailToNameAndMailMap.containsKey(nameAndMail)) {
-            return this.nameAndMailToNameAndMailMap.get(nameAndMail).getValue();
+        if (nameAndMailToNameAndMailMap.containsKey(nameAndMail)) {
+            return nameAndMailToNameAndMailMap.get(nameAndMail).getValue();
         }
 
         return mail;
@@ -110,17 +110,17 @@ public class MailMap {
      * @return The name matching a mapping in the mail map or the initial name
      */
     String getCanonicalName(String name, String mail) {
-        if (this.mailToNameMap.containsKey(mail)) {
-            return this.mailToNameMap.get(mail);
+        if (mailToNameMap.containsKey(mail)) {
+            return mailToNameMap.get(mail);
         }
 
-        if (this.mailToNameAndMailMap.containsKey(mail)) {
-            return this.mailToNameAndMailMap.get(mail).getKey();
+        if (mailToNameAndMailMap.containsKey(mail)) {
+            return mailToNameAndMailMap.get(mail).getKey();
         }
 
         Map.Entry<String, String> nameAndMail = new AbstractMap.SimpleEntry<>(name, mail);
-        if (this.nameAndMailToNameAndMailMap.containsKey(nameAndMail)) {
-            return this.nameAndMailToNameAndMailMap.get(nameAndMail).getKey();
+        if (nameAndMailToNameAndMailMap.containsKey(nameAndMail)) {
+            return nameAndMailToNameAndMailMap.get(nameAndMail).getKey();
         }
 
         return name;
@@ -135,7 +135,7 @@ public class MailMap {
      * @see #getCanonicalMail(String, String)
      */
     public String getCanonicalAuthorEmailAddress(GitCommit commit) {
-        return this.getCanonicalMail(commit.getAuthorName(), commit.getAuthorEmailAddress());
+        return getCanonicalMail(commit.getAuthorName(), commit.getAuthorEmailAddress());
     }
 
     /**
@@ -147,7 +147,7 @@ public class MailMap {
      * @see #getCanonicalName(String, String)
      */
     public String getCanonicalAuthorName(GitCommit commit) {
-        return this.getCanonicalName(commit.getAuthorName(), commit.getAuthorEmailAddress());
+        return getCanonicalName(commit.getAuthorName(), commit.getAuthorEmailAddress());
     }
 
     /**
@@ -159,7 +159,7 @@ public class MailMap {
      * @see #getCanonicalMail(String, String)
      */
     public String getCanonicalCommitterEmailAddress(GitCommit commit) {
-        return this.getCanonicalMail(commit.getCommitterName(), commit.getCommitterEmailAddress());
+        return getCanonicalMail(commit.getCommitterName(), commit.getCommitterEmailAddress());
     }
 
     /**
@@ -171,7 +171,7 @@ public class MailMap {
      * @see #getCanonicalName(String, String)
      */
     public String getCanonicalCommitterName(GitCommit commit) {
-        return this.getCanonicalName(commit.getCommitterName(), commit.getCommitterEmailAddress());
+        return getCanonicalName(commit.getCommitterName(), commit.getCommitterEmailAddress());
     }
 
     /**

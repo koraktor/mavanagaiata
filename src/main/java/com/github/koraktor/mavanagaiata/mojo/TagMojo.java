@@ -37,13 +37,13 @@ public class TagMojo extends AbstractGitMojo {
         try {
             GitTagDescription description = repository.describe();
             String describe = description.toString();
-            if (this.dirtyFlag != null &&
-                    repository.isDirty(this.dirtyIgnoreUntracked)) {
-                describe += this.dirtyFlag;
+            if (dirtyFlag != null &&
+                    repository.isDirty(dirtyIgnoreUntracked)) {
+                describe += dirtyFlag;
             }
 
-            this.addProperty("tag.describe", describe);
-            this.addProperty("tag.name", description.getNextTagName());
+            addProperty("tag.describe", describe);
+            addProperty("tag.name", description.getNextTagName());
         } catch(GitRepositoryException e) {
             throw MavanagaiataMojoException.create("Unable to read Git tag", e);
         }

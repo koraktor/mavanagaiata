@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2016, Sebastian Staudt
+ * Copyright (c) 2011-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -60,25 +60,25 @@ public class CommitMojo extends AbstractGitMojo {
             dateFormat.setTimeZone(commit.getCommitterTimeZone());
             String commitDate = dateFormat.format(commit.getCommitterDate());
 
-            if (repository.isDirty(this.dirtyIgnoreUntracked)) {
+            if (repository.isDirty(dirtyIgnoreUntracked)) {
                 isDirty = true;
 
-                if (this.dirtyFlag != null) {
-                    abbrevId += this.dirtyFlag;
-                    shaId    += this.dirtyFlag;
+                if (dirtyFlag != null) {
+                    abbrevId += dirtyFlag;
+                    shaId    += dirtyFlag;
                 }
             }
 
-            this.addProperty("commit.abbrev", abbrevId);
-            this.addProperty("commit.author.date", authorDate);
-            this.addProperty("commit.author.name", commit.getAuthorName());
-            this.addProperty("commit.author.email", commit.getAuthorEmailAddress());
-            this.addProperty("commit.committer.date", commitDate);
-            this.addProperty("commit.committer.name", commit.getCommitterName());
-            this.addProperty("commit.committer.email", commit.getCommitterEmailAddress());
-            this.addProperty("commit.id", shaId);
-            this.addProperty("commit.sha", shaId);
-            this.addProperty("commit.dirty", String.valueOf(isDirty));
+            addProperty("commit.abbrev", abbrevId);
+            addProperty("commit.author.date", authorDate);
+            addProperty("commit.author.name", commit.getAuthorName());
+            addProperty("commit.author.email", commit.getAuthorEmailAddress());
+            addProperty("commit.committer.date", commitDate);
+            addProperty("commit.committer.name", commit.getCommitterName());
+            addProperty("commit.committer.email", commit.getCommitterEmailAddress());
+            addProperty("commit.id", shaId);
+            addProperty("commit.sha", shaId);
+            addProperty("commit.dirty", String.valueOf(isDirty));
         } catch (GitRepositoryException e) {
             throw MavanagaiataMojoException.create("Unable to read Git commit information", e);
         }

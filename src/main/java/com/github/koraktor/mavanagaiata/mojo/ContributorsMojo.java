@@ -127,14 +127,14 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
                     contributors.sort(comparing(Contributor::getCount).reversed());
             }
 
-            printStream.println(this.header);
+            printStream.println(header);
 
             for (Contributor contributor : contributors) {
-                printStream.print(this.contributorPrefix + contributor.name);
-                if (this.showEmail) {
+                printStream.print(contributorPrefix + contributor.name);
+                if (showEmail) {
                     printStream.print(" (" + contributor.emailAddress + ")");
                 }
-                if (this.showCounts) {
+                if (showCounts) {
                     printStream.print(" (" + contributor.count + ")");
                 }
                 printStream.println();
@@ -150,7 +150,7 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
      * @return The output file for the generated contributors list
      */
     public File getOutputFile() {
-        return this.outputFile;
+        return outputFile;
     }
 
     /**
@@ -197,10 +197,10 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
         }
 
         void addCommit(GitCommit commit) {
-            this.count ++;
+            count ++;
 
-            if (commit.getAuthorDate().before(this.firstCommitDate)) {
-                this.firstCommitDate = commit.getAuthorDate();
+            if (commit.getAuthorDate().before(firstCommitDate)) {
+                firstCommitDate = commit.getAuthorDate();
             }
         }
 

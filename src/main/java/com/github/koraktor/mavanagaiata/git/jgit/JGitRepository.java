@@ -130,9 +130,9 @@ public class JGitRepository extends AbstractGitRepository {
      */
     @Override
     public void close() {
-        if (this.repository != null) {
-            this.repository.close();
-            this.repository = null;
+        if (repository != null) {
+            repository.close();
+            repository = null;
         }
     }
 
@@ -252,8 +252,8 @@ public class JGitRepository extends AbstractGitRepository {
     public String getAbbreviatedCommitId(GitCommit commit) throws GitRepositoryException {
         try {
             RevCommit rawCommit = ((JGitCommit) commit).commit;
-            return this.repository.getObjectDatabase().newReader()
-                    .abbreviate(rawCommit).name();
+            return repository.getObjectDatabase().newReader()
+                .abbreviate(rawCommit).name();
         } catch (IOException e) {
             throw new GitRepositoryException(
                 String.format("Commit \"%s\" could not be abbreviated.", commit.getId()),
@@ -264,7 +264,7 @@ public class JGitRepository extends AbstractGitRepository {
     @Override
     public String getBranch() throws GitRepositoryException {
         try {
-            return this.repository.getBranch();
+            return repository.getBranch();
         } catch (IOException e) {
             throw new GitRepositoryException("Current branch could not be read.", e);
         }
@@ -321,7 +321,7 @@ public class JGitRepository extends AbstractGitRepository {
     }
 
     public File getWorkTree() {
-        return this.repository.getWorkTree();
+        return repository.getWorkTree();
     }
 
     @Override
@@ -442,13 +442,13 @@ public class JGitRepository extends AbstractGitRepository {
      * @return A {@code RevWalk} instance for this repository
      */
     protected RevWalk getRevWalk() {
-        if (this.revWalk == null) {
-            this.revWalk = new RevWalk(this.repository);
+        if (revWalk == null) {
+            revWalk = new RevWalk(repository);
         } else {
             revWalk.reset();
         }
 
-        return this.revWalk;
+        return revWalk;
     }
 
 }

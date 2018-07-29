@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2016, Sebastian Staudt
+ * Copyright (c) 2012-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
@@ -20,7 +20,7 @@ public abstract class AbstractGitRepository implements GitRepository {
     protected MailMap mailMap;
 
     public String getAbbreviatedCommitId() throws GitRepositoryException {
-        return this.getAbbreviatedCommitId(this.getHeadCommit());
+        return getAbbreviatedCommitId(getHeadCommit());
     }
 
     public MailMap getMailMap() throws GitRepositoryException {
@@ -29,7 +29,7 @@ public abstract class AbstractGitRepository implements GitRepository {
             mailMap.parseMailMap();
         }
 
-        return this.mailMap;
+        return mailMap;
     }
 
     public void setHeadRef(String headRef) {

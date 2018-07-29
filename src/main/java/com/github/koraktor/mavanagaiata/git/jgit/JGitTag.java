@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2017, Sebastian Staudt
+ * Copyright (c) 2012-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git.jgit;
@@ -50,7 +50,7 @@ public class JGitTag implements GitTag {
     }
 
     public String getName() {
-        return this.tag.getTagName();
+        return tag.getTagName();
     }
 
     public TimeZone getTimeZone() {

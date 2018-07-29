@@ -54,7 +54,7 @@ public abstract class CommitWalkAction {
      * @param repository The repository for this action
      */
     public void setRepository(GitRepository repository) {
-        this.repository = repository;
+        repository = repository;
     }
 
 }

@@ -139,7 +139,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
      */
     @Override
     public File getOutputFile() {
-        return this.outputFile;
+        return outputFile;
     }
 
     @Override
