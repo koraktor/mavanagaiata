@@ -212,11 +212,10 @@ public class JGitRepository extends AbstractGitRepository {
                 commit.carry(flag);
                 revWalk.carry(flag);
                 allFlags.add(flag);
-            }
 
-            // Only consider a maximum of 10 candidates
-            if (candidates.size() == MAX_DESCRIBE_CANDIDATES) {
-                break;
+                if (candidates.size() == MAX_DESCRIBE_CANDIDATES) {
+                    break;
+                }
             }
 
             distance ++;
