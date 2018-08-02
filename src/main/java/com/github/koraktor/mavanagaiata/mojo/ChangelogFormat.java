@@ -71,10 +71,7 @@ public class ChangelogFormat {
      */
     String commitPrefix;
 
-    /**
-     * Whether to create links to GitHub's compare view
-     */
-    Boolean createLinks;
+    private Boolean createLinks = false;
 
     /**
      * The header to print above the changelog

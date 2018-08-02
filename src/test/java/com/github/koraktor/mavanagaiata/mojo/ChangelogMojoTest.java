@@ -51,6 +51,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
 
         mojo.format = new ChangelogFormat();
         mojo.formatTemplate = ChangelogFormat.Formats.DEFAULT;
+        mojo.linkTo = ChangelogMojo.LinkToBaseUrl.GITHUB;
         mojo.skipMergeCommits = false;
         mojo.skipTagged = false;
         mojo.skipCommitsMatching = null;
@@ -98,29 +99,25 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
     }
 
     @Test
-    public void testCreateGitHubLinks() {
+    public void testCreateLinks() {
         mojo.initConfiguration();
         assertThat(mojo.format.baseUrl, is(nullValue()));
 
-        mojo.gitHubProject = "";
+        mojo.linkToProject = "";
         mojo.initConfiguration();
         assertThat(mojo.format.baseUrl, is(nullValue()));
 
-        mojo.gitHubProject = "mavanagaiata";
+        mojo.linkToProject = "mavanagaiata";
         mojo.initConfiguration();
         assertThat(mojo.format.baseUrl, is(nullValue()));
 
-        mojo.gitHubUser = "";
+        mojo.linkToUser = "";
         mojo.initConfiguration();
         assertThat(mojo.format.baseUrl, is(nullValue()));
 
-        mojo.gitHubUser = "koraktor";
+        mojo.linkToUser = "koraktor";
         mojo.initConfiguration();
         assertThat(mojo.format.baseUrl, is(equalTo("https://github.com/koraktor/mavanagaiata")));
-
-        mojo.format.createLinks = false;
-        mojo.initConfiguration();
-        assertThat(mojo.format.baseUrl, is(nullValue()));
     }
 
     @Test
@@ -129,7 +126,6 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         format.branch = "Branch \"%s\"";
         format.branchLink = "Git history for \"%s\" since %s: %s";
         format.commitPrefix = "- ";
-        format.createLinks = true;
         format.header = "History\\n-------";
         format.separator = "\n";
         format.tag = "Tag %s on %s";
@@ -138,8 +134,8 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         mojo.dateFormat = "dd.MM.yyyy";
         mojo.footer = "Footer";
         mojo.format = format;
-        mojo.gitHubProject = "mavanagaiata";
-        mojo.gitHubUser = "koraktor";
+        mojo.linkToProject = "mavanagaiata";
+        mojo.linkToUser = "koraktor";
         mojo.initConfiguration();
         mojo.generateOutput(repository);
 
@@ -194,6 +190,38 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         assertThat(mojo.format.header, is(equalTo(markdownFormat.header)));
         assertThat(mojo.format.tag, is(equalTo(markdownFormat.tag)));
         assertThat(mojo.format.tagLink, is(equalTo(markdownFormat.tagLink)));
+    }
+
+    @Test
+    public void testLinksCustom() {
+        mojo.linkToUser = "koraktor";
+        mojo.linkToProject = "mavanagaiata";
+        mojo.linkToBaseUrl = "https://git.example.com/%s/%s";
+
+        mojo.initConfiguration();
+
+        assertThat(mojo.format.baseUrl, is(equalTo("https://git.example.com/koraktor/mavanagaiata")));
+    }
+
+    @Test
+    public void testLinksGitHub() {
+        mojo.linkToUser = "koraktor";
+        mojo.linkToProject = "mavanagaiata";
+
+        mojo.initConfiguration();
+
+        assertThat(mojo.format.baseUrl, is(equalTo("https://github.com/koraktor/mavanagaiata")));
+    }
+
+    @Test
+    public void testLinksGitLab() {
+        mojo.linkTo = ChangelogMojo.LinkToBaseUrl.GITLAB;
+        mojo.linkToUser = "koraktor";
+        mojo.linkToProject = "mavanagaiata";
+
+        mojo.initConfiguration();
+
+        assertThat(mojo.format.baseUrl, is(equalTo("https://gitlab.com/koraktor/mavanagaiata")));
     }
 
     @Test

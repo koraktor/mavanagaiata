@@ -17,7 +17,6 @@ public class ChangelogDefaultFormat extends ChangelogFormat {
         branchLink = "See Git history for changes in the \"%s\" branch since version %s at: %s";
         branchOnlyLink = "See Git history for changes in the \"%s\" branch at: %s";
         commitPrefix = " * ";
-        createLinks = true;
         header = "Changelog\n=========";
         separator = "\n";
         tag = "Version %s – %s";

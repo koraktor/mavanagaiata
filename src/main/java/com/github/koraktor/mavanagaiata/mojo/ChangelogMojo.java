@@ -38,6 +38,20 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class ChangelogMojo extends AbstractGitOutputMojo {
 
     /**
+     * Pre-defined base URLs used for links
+     */
+    enum LinkToBaseUrl {
+        GITHUB("https://github.com/%s/%s"),
+        GITLAB("https://gitlab.com/%s/%s");
+
+        private final String baseUrl;
+
+        LinkToBaseUrl(String baseUrl) {
+            this.baseUrl = baseUrl;
+        }
+    }
+
+    /**
      * The format to use while generating the changelog
      *
      * @see #formatTemplate
@@ -61,15 +75,39 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
 
     /**
      * The project name for GitHub links
+     *
+     * @since 0.9.0
      */
-    @Parameter(property = "mavanagaiata.changelog.gitHubProject")
-    protected String gitHubProject;
+    @Parameter(property = "mavanagaiata.changelog.linkToProject")
+    protected String linkToProject;
 
     /**
      * The user name for GitHub links
+     *
+     * @since 0.9.0
      */
-    @Parameter(property = "mavanagaiata.changelog.gitHubUser")
-    protected String gitHubUser;
+    @Parameter(property = "mavanagaiata.changelog.linkToUser")
+    protected String linkToUser;
+
+    /**
+     * Used to select the service to create links to
+     * <p>
+     * {@code GITHUB} and {@code GITLAB} are available.
+     *
+     * @since 0.9.0
+     */
+    @Parameter(property = "mavanagaiata.changelog.linkTo",
+               defaultValue = "GITHUB")
+    protected LinkToBaseUrl linkTo;
+
+    /**
+     * Can be used to override the pre-defined URLs from {@link #linkTo} with
+     * a customized URL
+     *
+     * @since 0.9.0
+     */
+    @Parameter(property = "mavanagaiata.changelog.linkToBaseUrl")
+    protected String linkToBaseUrl;
 
     /**
      * The file to write the changelog to
@@ -152,11 +190,9 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
         }
         format.prepare(printStream);
 
-        if (format.createLinks && isNotBlank(gitHubUser) && isNotBlank(gitHubProject)) {
-            String baseUrl = String.format("https://github.com/%s/%s",
-                gitHubUser,
-                gitHubProject);
-            format.enableCreateLinks(baseUrl);
+        if (isNotBlank(linkToUser) && isNotBlank(linkToProject)) {
+            String baseUrl = isNotBlank(linkToBaseUrl) ? linkToBaseUrl : linkTo.baseUrl;
+            format.enableCreateLinks(String.format(baseUrl, linkToUser, linkToProject));
         }
 
         if (skipCommitsMatching != null && !skipCommitsMatching.isEmpty()) {
