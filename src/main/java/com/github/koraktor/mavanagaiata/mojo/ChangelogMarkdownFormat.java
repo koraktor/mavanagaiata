@@ -16,6 +16,7 @@ public class ChangelogMarkdownFormat extends ChangelogDefaultFormat {
         branch = "\n#### Commits on branch `%s`\n";
         branchLink = "\n[Git history for branch `%s` since version %s](%s)";
         branchOnlyLink = "\n[Git history for branch `%s`](%s)";
+        escapeHtml = true;
         tag = "\n#### Version %s – %s\n";
         tagLink = "[Git history for branch `%s`](%s)";
     }

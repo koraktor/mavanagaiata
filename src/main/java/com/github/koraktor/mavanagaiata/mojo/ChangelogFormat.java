@@ -15,6 +15,7 @@ import com.github.koraktor.mavanagaiata.git.GitCommit;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 
 import static com.github.koraktor.mavanagaiata.mojo.AbstractGitOutputMojo.unescapeFormatNewlines;
+import static org.apache.commons.text.StringEscapeUtils.escapeHtml4;
 
 /**
  * Base class for formatting changelog output
@@ -72,6 +73,11 @@ public class ChangelogFormat {
     String commitPrefix;
 
     private Boolean createLinks = false;
+
+    /**
+     * Whether to escape HTML
+     */
+    boolean escapeHtml;
 
     /**
      * The header to print above the changelog
@@ -167,7 +173,11 @@ public class ChangelogFormat {
      * @param currentCommit The commit to print
      */
     void printCommit(GitCommit currentCommit) {
-        printStream.println(commitPrefix + currentCommit.getMessageSubject());
+        String commitMessage = escapeHtml ?
+            escapeHtml4(currentCommit.getMessageSubject()) :
+            currentCommit.getMessageSubject();
+
+        printStream.println(commitPrefix + commitMessage);
     }
 
     /**
