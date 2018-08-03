@@ -155,8 +155,8 @@
                                 </goals>
                                 <configuration>
                                     <formatTemplate>MARKDOWN</formatTemplate>
-                                    <gitHubProject>${project.artifactId}</gitHubProject>
-                                    <gitHubUser>koraktor</gitHubUser>
+                                    <linkToProject>${project.artifactId}</linkToProject>
+                                    <linkToUser>koraktor</linkToUser>
                                     <outputFile>${project.build.directory}/generated-site/markdown/CHANGELOG.md</outputFile>
                                     <skipTagged>true</skipTagged>
                                 </configuration>
