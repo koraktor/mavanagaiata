@@ -139,7 +139,7 @@ public class ChangelogFormat {
     /**
      * Prepare the format strings for use
      */
-    void prepare(PrintStream printStream) {
+    void prepare() {
         branch = unescapeFormatNewlines(branch);
         branchLink = unescapeFormatNewlines(branchLink);
         branchOnlyLink = unescapeFormatNewlines(branchOnlyLink);
@@ -150,7 +150,6 @@ public class ChangelogFormat {
         tagLink = unescapeFormatNewlines(tagLink);
 
         dateFormatter = new SimpleDateFormat(dateFormat);
-        this.printStream = printStream;
     }
 
     /**
@@ -237,4 +236,7 @@ public class ChangelogFormat {
         printStream.println(String.format(tag, currentTag.getName(), date) + separator);
     }
 
+    void setPrintStream(PrintStream printStream) {
+        this.printStream = printStream;
+    }
 }

@@ -32,8 +32,7 @@ public class ChangelogFormatTest {
         format.tag = "Test\\nnew line";
         format.tagLink = "Test\\nnew line";
 
-        PrintStream printStream = mock(PrintStream.class);
-        format.prepare(printStream);
+        format.prepare();
 
         assertThat(format.branch, is(equalTo("Test\nnew line")));
         assertThat(format.branchLink, is(equalTo("Test\nnew line")));
@@ -44,11 +43,5 @@ public class ChangelogFormatTest {
         assertThat(format.separator, is(equalTo("Test\nnew line")));
         assertThat(format.tag, is(equalTo("Test\nnew line")));
         assertThat(format.tagLink, is(equalTo("Test\nnew line")));
-
-        format.printHeader();
-        verify(printStream).println("A\nheader");
     }
-
-
-
 }

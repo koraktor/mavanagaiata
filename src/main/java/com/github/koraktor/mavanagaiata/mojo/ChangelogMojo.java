@@ -157,6 +157,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
     protected void writeOutput(GitRepository repository)
             throws MavanagaiataMojoException {
         try {
+            format.setPrintStream(printStream);
             format.printHeader();
 
             ChangelogWalkAction action = new ChangelogWalkAction();
@@ -188,7 +189,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
         if (format.dateFormat == null) {
             format.dateFormat = dateFormat;
         }
-        format.prepare(printStream);
+        format.prepare();
 
         if (isNotBlank(linkToUser) && isNotBlank(linkToProject)) {
             String baseUrl = isNotBlank(linkToBaseUrl) ? linkToBaseUrl : linkTo.baseUrl;
