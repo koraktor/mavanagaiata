@@ -13,31 +13,31 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static com.github.koraktor.mavanagaiata.git.MailMap.MAILMAP_FILE;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
  * @author Sebastian Staudt
  */
-public class MailMapTest {
+class MailMapTest {
 
-    private GitRepository repo;
+    private static GitRepository repo;
 
-    @Before
-    public void setup() {
+    @BeforeAll
+    static void setup() {
         repo = mock(GitRepository.class);
     }
 
     @Test
-    public void testGetCanonicalMail() {
+    void testGetCanonicalMail() {
         MailMap mailMap = new MailMap(repo);
         mailMap.mailToMailMap = new HashMap<>(1);
         mailMap.mailToMailMap.put("oldmail@example.com", "newmail@example.com");
@@ -65,7 +65,7 @@ public class MailMapTest {
     }
 
     @Test
-    public void testGetCanonicalName() {
+    void testGetCanonicalName() {
         MailMap mailMap = new MailMap(repo);
         mailMap.mailToNameMap = new HashMap<>(1);
         mailMap.mailToNameMap.put("mail1@example.com", "Test 1");
@@ -93,7 +93,7 @@ public class MailMapTest {
     }
 
     @Test
-    public void testNewInstance() {
+    void testNewInstance() {
         MailMap mailMap = new MailMap(repo);
 
         assertThat(mailMap.exists, is(false));
@@ -105,7 +105,7 @@ public class MailMapTest {
     }
 
     @Test
-    public void testExists() {
+    void testExists() {
         MailMap mailMap = new MailMap(repo);
 
         assertThat(mailMap.exists(), is(false));
@@ -116,7 +116,7 @@ public class MailMapTest {
     }
 
     @Test
-    public void testParseFromRepository() throws Exception {
+    void testParseFromRepository() throws Exception {
         final MailMap mailMap = spy(new MailMap(repo));
         when(repo.getWorkTree()).thenReturn(new File("test"));
 
@@ -132,7 +132,7 @@ public class MailMapTest {
     }
 
     @Test
-    public void testParseFromRepositoryWithoutMailmap() throws Exception {
+    void testParseFromRepositoryWithoutMailmap() throws Exception {
         MailMap mailMap = spy(new MailMap(repo));
         when(repo.getWorkTree()).thenReturn(new File("test"));
 
@@ -145,7 +145,7 @@ public class MailMapTest {
     }
 
     @Test
-    public void testParseFromFile() throws Exception {
+    void testParseFromFile() throws Exception {
         MailMap mailMap = new MailMap(repo);
         File mailMapFile = new File(this.getClass().getResource("/" + MAILMAP_FILE).getFile());
 

@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2016, Sebastian Staudt
+ * Copyright (c) 2011-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -13,8 +13,8 @@ import java.util.Properties;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
@@ -27,9 +27,8 @@ import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.core.IsSame.sameInstance;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
@@ -39,9 +38,9 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
+class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
 
-    @Before
+    @BeforeEach
     @Override
     public void setup() throws Exception {
         mojo = spy(new AbstractGitMojo() {
@@ -53,53 +52,41 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     }
 
     @Test
-    public void testErrors() {
+    void testErrors() {
         this.mojo.baseDir = null;
-        try {
-            this.mojo.initRepository();
-            fail("No exception thrown");
-        } catch(Exception e) {
-            assertThat(e, is(instanceOf(GitRepositoryException.class)));
-            assertThat(e.getMessage(), is(equalTo("Neither worktree nor GIT_DIR is set.")));
-        }
+
+        assertThrows(GitRepositoryException.class,
+            mojo::initRepository,
+            "Neither worktree nor GIT_DIR is set.");
 
         String home = System.getenv().get("HOME");
         if (home == null) {
             home = System.getenv().get("HOMEDRIVE") + System.getenv("HOMEPATH");
         }
         this.mojo.baseDir = new File(home).getAbsoluteFile();
-        try {
-            this.mojo.initRepository();
-            fail("No exception thrown");
-        } catch(Exception e) {
-            assertThat(e, is(instanceOf(GitRepositoryException.class)));
-            assertThat(e.getMessage(), is(equalTo(this.mojo.baseDir + " is not inside a Git repository. Please specify the GIT_DIR separately.")));
-        }
+
+        assertThrows(GitRepositoryException.class,
+            mojo::initRepository,
+            mojo.baseDir + " is not inside a Git repository. Please specify the GIT_DIR separately.");
 
         this.mojo.baseDir = mock(File.class);
         when(this.mojo.baseDir.exists()).thenReturn(false);
-        try {
-            this.mojo.initRepository();
-            fail("No exception thrown");
-        } catch(Exception e) {
-            assertThat(e, is(instanceOf(GitRepositoryException.class)));
-            assertThat(e.getMessage(), is(equalTo("The worktree " + this.mojo.baseDir + " does not exist")));
-        }
+
+        assertThrows(GitRepositoryException.class,
+            mojo::initRepository,
+            "The worktree " + mojo.baseDir + " does not exist");
 
         this.mojo.baseDir = null;
         this.mojo.gitDir  = mock(File.class);
         when(this.mojo.gitDir.exists()).thenReturn(false);
-        try {
-            this.mojo.initRepository();
-            fail("No exception thrown");
-        } catch(Exception e) {
-            assertThat(e, is(instanceOf(GitRepositoryException.class)));
-            assertThat(e.getMessage(), is(equalTo("The GIT_DIR " + this.mojo.gitDir + " does not exist")));
-        }
+
+        assertThrows(GitRepositoryException.class,
+            mojo::initRepository,
+            "The GIT_DIR " + mojo.gitDir + " does not exist");
     }
 
     @Test
-    public void testExecute() throws Exception {
+    void testExecute() throws Exception {
         doReturn(repository).when(mojo).initRepository();
 
         this.mojo.execute();
@@ -111,7 +98,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     }
 
     @Test
-    public void testExecuteFail() throws Exception {
+    void testExecuteFail() throws Exception {
         MavanagaiataMojoException exception = MavanagaiataMojoException.create("", null);
         doThrow(exception).when(mojo).run(repository);
         doReturn(repository).when(mojo).initRepository();
@@ -127,7 +114,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     }
 
     @Test
-    public void testExecuteFailGracefully() throws Exception {
+    void testExecuteFailGracefully() throws Exception {
         this.mojo.failGracefully = true;
 
         MavanagaiataMojoException exception = MavanagaiataMojoException.create("", null);
@@ -145,7 +132,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     }
 
     @Test
-    public void testExecuteInitFail() throws Exception {
+    void testExecuteInitFail() throws Exception {
         doReturn(null).when(mojo).init();
 
         this.mojo.execute();
@@ -154,7 +141,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     }
 
     @Test
-    public void testExecuteSkip() throws Exception {
+    void testExecuteSkip() throws Exception {
         this.mojo.skip = true;
         this.mojo.execute();
 
@@ -163,14 +150,14 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     }
 
     @Test
-    public void testInit() throws Exception {
+    void testInit() throws Exception {
         doReturn(repository).when(this.mojo).initRepository();
 
         assertThat(mojo.init(), is(notNullValue()));
     }
 
     @Test
-    public void testInitError() throws Exception {
+    void testInitError() throws Exception {
         GitRepositoryException exception = new GitRepositoryException("");
         doThrow(exception).when(this.mojo).initRepository();
 
@@ -185,7 +172,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     }
 
     @Test
-    public void testInitErrorSkipNoGit() throws Exception {
+    void testInitErrorSkipNoGit() throws Exception {
         this.mojo.skipNoGit = true;
 
         doThrow(new GitRepositoryException("")).when(this.mojo).initRepository();
@@ -194,7 +181,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     }
 
     @Test
-    public void testInitRepository() throws Exception {
+    void testInitRepository() throws Exception {
         File baseDir = File.createTempFile("mavanagaiata-tests-baseDir", null);
         baseDir.delete();
         baseDir.mkdirs();
@@ -217,7 +204,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     }
 
     @Test
-    public void testSkip() throws Exception {
+    void testSkip() throws Exception {
         mojo.skip = true;
 
         mojo.execute();
@@ -226,7 +213,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     }
 
     @Test
-    public void testSkipNoGit() throws Exception{
+    void testSkipNoGit() throws Exception{
         this.mojo.skipNoGit = true;
         this.mojo.gitDir  = mock(File.class);
         when(this.mojo.gitDir.exists()).thenReturn(false);
@@ -235,7 +222,7 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     }
 
     @Test
-    public void testAddProperty() {
+    void testAddProperty() {
         Properties properties = this.mojo.project.getProperties();
 
         this.mojo.addProperty("name", "value");
@@ -246,8 +233,8 @@ public class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         this.mojo.addProperty("prefixed", "value");
 
         this.assertProperty("value", "prefixed");
-        assertNull(properties.get("mavanagaiata.prefixed"));
-        assertNull(properties.get("mvngit.prefixed"));
+        assertThat(properties.get("mavanagaiata.prefixed"), is(nullValue()));
+        assertThat(properties.get("mvngit.prefixed"), is(nullValue()));
     }
 
 }

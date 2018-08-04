@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2016, Sebastian Staudt
+ * Copyright (c) 2011-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -10,17 +10,17 @@ package com.github.koraktor.mavanagaiata.mojo;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitCommit;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class CommitMojoTest extends MojoAbstractTest<CommitMojo> {
+class CommitMojoTest extends MojoAbstractTest<CommitMojo> {
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception{
         super.setup();
 
@@ -40,12 +40,12 @@ public class CommitMojoTest extends MojoAbstractTest<CommitMojo> {
     }
 
     @Test
-    public void testError() {
+    void testError() {
         super.testError("Unable to read Git commit information");
     }
 
     @Test
-    public void testCustomDateFormat() throws MavanagaiataMojoException {
+    void testCustomDateFormat() throws MavanagaiataMojoException {
         this.mojo.dateFormat = "dd.MM.yyyy";
         mojo.run(repository);
 
@@ -54,7 +54,7 @@ public class CommitMojoTest extends MojoAbstractTest<CommitMojo> {
     }
 
     @Test
-    public void testCustomDirtyFlag() throws Exception {
+    void testCustomDirtyFlag() throws Exception {
         when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
         this.mojo.dirtyFlag = "*";
@@ -68,7 +68,7 @@ public class CommitMojoTest extends MojoAbstractTest<CommitMojo> {
     }
 
     @Test
-    public void testDirtyWorktree() throws Exception {
+    void testDirtyWorktree() throws Exception {
         when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
         mojo.run(repository);
@@ -82,7 +82,7 @@ public class CommitMojoTest extends MojoAbstractTest<CommitMojo> {
     }
 
     @Test
-    public void testDisabledDirtyFlag() throws Exception {
+    void testDisabledDirtyFlag() throws Exception {
         when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
         this.mojo.dirtyFlag = "null";
@@ -98,7 +98,7 @@ public class CommitMojoTest extends MojoAbstractTest<CommitMojo> {
     }
 
     @Test
-    public void testResult() throws MavanagaiataMojoException {
+    void testResult() throws MavanagaiataMojoException {
         mojo.run(repository);
 
         this.assertProperty("deadbeef", "commit.abbrev");

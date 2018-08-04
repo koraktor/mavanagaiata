@@ -33,46 +33,32 @@ import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptySet;
-import static org.eclipse.jgit.lib.Constants.R_TAGS;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static java.util.Arrays.*;
+import static java.util.Collections.*;
+import static org.eclipse.jgit.lib.Constants.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.core.Is.*;
+import static org.hamcrest.core.IsEqual.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-public class JGitRepositoryTest {
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
+class JGitRepositoryTest {
 
     private Repository repo;
 
     private JGitRepository repository;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         repository = new JGitRepository();
         repository.setHeadRef("HEAD");
         repository.repository = repo = mock(Repository.class, RETURNS_DEEP_STUBS);
@@ -142,7 +128,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testBuildRepositoryFailure() throws Exception {
+    void testBuildRepositoryFailure() throws Exception {
         repository = spy(repository);
         FileRepositoryBuilder repositoryBuilder = mock(FileRepositoryBuilder.class);
         when(repository.getRepositoryBuilder()).thenReturn(repositoryBuilder);
@@ -162,7 +148,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testCheckFails() throws GitRepositoryException {
+    void testCheckFails() {
         File gitDir = mock(File.class);
         when(gitDir.getAbsolutePath()).thenReturn("/some/repo/.git");
 
@@ -170,14 +156,13 @@ public class JGitRepositoryTest {
         when(this.repo.getDirectory()).thenReturn(gitDir);
         when(this.repo.isBare()).thenReturn(true);
 
-        this.exception.expect(GitRepositoryException.class);
-        this.exception.expectMessage("/some/repo/.git is not a Git repository.");
-
-        this.repository.check();
+        assertThrows(GitRepositoryException.class,
+            repository::check,
+            "/some/repo/.git is not a Git repository.");
     }
 
     @Test
-    public void testCheckFailsWithWorktree() throws GitRepositoryException {
+    void testCheckFailsWithWorktree() {
         File workTree = mock(File.class);
         when(workTree.getAbsolutePath()).thenReturn("/some/repo");
 
@@ -185,21 +170,20 @@ public class JGitRepositoryTest {
         when(this.repo.getWorkTree()).thenReturn(workTree);
         when(this.repo.isBare()).thenReturn(false);
 
-        this.exception.expect(GitRepositoryException.class);
-        this.exception.expectMessage("/some/repo is not a Git repository.");
-
-        this.repository.check();
+        assertThrows(GitRepositoryException.class,
+            repository::check,
+            "/some/repo is not a Git repository.");
     }
 
     @Test
-    public void testCheckSucceeds() throws GitRepositoryException {
+    void testCheckSucceeds() throws GitRepositoryException {
         when(this.repo.getObjectDatabase().exists()).thenReturn(true);
 
         this.repository.check();
     }
 
     @Test
-    public void testClean() throws Exception {
+    void testClean() throws Exception {
         IndexDiff indexDiff = this.mockIndexDiff();
         when(indexDiff.getAdded()).thenReturn(emptySet());
         when(indexDiff.getChanged()).thenReturn(emptySet());
@@ -213,7 +197,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testCleanIgnoreUntracked() throws Exception {
+    void testCleanIgnoreUntracked() throws Exception {
         IndexDiff indexDiff = this.mockIndexDiff();
         when(indexDiff.getAdded()).thenReturn(emptySet());
         when(indexDiff.getChanged()).thenReturn(emptySet());
@@ -226,20 +210,20 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testClose() {
+    void testClose() {
         this.repository.close();
 
         verify(this.repo).close();
     }
 
     @Test
-    public void testCloseNullRepository() {
+    void testCloseNullRepository() {
         this.repository.repository = null;
         this.repository.close();
     }
 
     @Test
-    public void testDescribeExactTagged() throws Exception {
+    void testDescribeExactTagged() throws Exception {
         RevCommit head = this.createCommit();
         RevCommit head_1 = this.createCommit();
         RevCommit head_2 = this.createCommit();
@@ -264,7 +248,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testDescribeTagged() throws Exception {
+    void testDescribeTagged() throws Exception {
         RevCommit head = this.createCommit();
         RevCommit head_1 = this.createCommit();
         RevCommit head_2 = this.createCommit();
@@ -295,7 +279,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testDescribeTwoTags() throws Exception {
+    void testDescribeTwoTags() throws Exception {
         RevCommit head = this.createCommit(2);
         RevCommit head_a1 = this.createCommit();
         RevCommit head_b1 = this.createCommit();
@@ -333,7 +317,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testDescribeTwoBranches() throws Exception {
+    void testDescribeTwoBranches() throws Exception {
         RevCommit head = this.createCommit(2);
         RevCommit head_a1 = this.createCommit();
         RevCommit head_a2 = this.createCommit();
@@ -373,7 +357,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testDescribeUntagged() throws Exception {
+    void testDescribeUntagged() throws Exception {
         RevCommit head = this.createCommit();
         RevCommit head_1 = this.createCommit();
         RevCommit head_2 = this.createCommit();
@@ -395,7 +379,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testGetAbbreviatedCommitId() throws Exception {
+    void testGetAbbreviatedCommitId() throws Exception {
         RevCommit rawCommit = this.createCommit();
         AbbreviatedObjectId abbrevId = rawCommit.abbreviate(7);
         JGitCommit commit = new JGitCommit(rawCommit);
@@ -406,7 +390,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testGetAbbreviatedCommitIdFailure() throws Exception {
+    void testGetAbbreviatedCommitIdFailure() throws Exception {
         RevCommit rawCommit = createCommit();
         JGitCommit commit = new JGitCommit(rawCommit);
 
@@ -423,14 +407,14 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testGetBranch() throws Exception {
+    void testGetBranch() throws Exception {
         when(this.repo.getBranch()).thenReturn("master");
 
         assertThat(this.repository.getBranch(), is(equalTo("master")));
     }
 
     @Test
-    public void testGetBranchFailure() throws Exception {
+    void testGetBranchFailure() throws Exception {
         FileNotFoundException exception = new FileNotFoundException();
         when(repo.getBranch()).thenThrow(exception);
 
@@ -444,7 +428,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testGetHeadRevCommit() throws Exception {
+    void testGetHeadRevCommit() throws Exception {
         ObjectId head = mock(ObjectId.class);
         RevCommit commit = mock(RevCommit.class);
         RevWalk revWalk = mockRevWalk();
@@ -455,7 +439,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testGetCommitCached() throws Exception {
+    void testGetCommitCached() throws Exception {
         RevCommit commit = mock(RevCommit.class);
         repository.headCommit = commit;
 
@@ -465,7 +449,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testGetHeadCommit() throws Exception {
+    void testGetHeadCommit() throws Exception {
         RevCommit head = this.createCommit();
         repository.headObject = mock(ObjectId.class);
         repository.headCommit = head;
@@ -475,7 +459,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testGetHeadObject() throws Exception {
+    void testGetHeadObject() throws Exception {
         ObjectId head = mock(ObjectId.class);
         when(repo.resolve("HEAD")).thenReturn(head);
 
@@ -484,7 +468,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testGetHeadObjectFailure() throws Exception {
+    void testGetHeadObjectFailure() throws Exception {
         Throwable exception = mock(IOException.class);
 
         repository.setHeadRef("broken");
@@ -500,14 +484,14 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testGetHeadObjectInvalidRef() throws Exception {
+    void testGetHeadObjectInvalidRef() throws Exception {
         when(repo.resolve("HEAD")).thenReturn(null);
 
         assertThat(repository.getHeadObject(), is(equalTo(ObjectId.zeroId())));
     }
 
     @Test
-    public void testGetHeadObjectCached() throws Exception {
+    void testGetHeadObjectCached() throws Exception {
         this.repository.setHeadRef("HEAD");
         ObjectId head = mock(ObjectId.class);
         this.repository.headObject = head;
@@ -518,7 +502,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testGetTags() throws Exception {
+    void testGetTags() throws Exception {
         RevWalk revWalk = mockRevWalk();
 
         Ref tagRef1 = mock(Ref.class);
@@ -547,7 +531,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testIsDirty() throws Exception {
+    void testIsDirty() throws Exception {
         IndexDiff indexDiff = this.mockIndexDiff();
         HashSet<String> untracked = new HashSet<>();
         untracked.add("somefile");
@@ -557,7 +541,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testIsDirtyFailure() throws Exception {
+    void testIsDirtyFailure() throws Exception {
         Throwable exception = new IOException();
         repository = spy(repository);
         doThrow(exception).when(repository).createIndexDiff();
@@ -572,7 +556,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testIsDirtyIgnoreUntracked() throws Exception {
+    void testIsDirtyIgnoreUntracked() throws Exception {
         IndexDiff indexDiff = this.mockIndexDiff();
         HashSet<String> added = new HashSet<>();
         added.add("somefile");
@@ -582,14 +566,14 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testIsOnUnbornBranch() throws Exception {
+    void testIsOnUnbornBranch() throws Exception {
         when(repo.resolve("HEAD")).thenReturn(ObjectId.zeroId());
 
         assertThat(repository.isOnUnbornBranch(), is(true));
     }
 
     @Test
-    public void testLoadTag() throws Exception {
+    void testLoadTag() throws Exception {
         RevTag rawTag = RevTag.parse(("object 4b825dc642cb6eb9a060e54bf8d69288fbee4904\n" +
             "type commit\n" +
             "tag 1.0.0\n" +
@@ -610,7 +594,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testWalkCommits() throws Exception {
+    void testWalkCommits() throws Exception {
         CommitWalkAction action = mock(CommitWalkAction.class);
         RevWalk revWalk = mockRevWalk();
 
@@ -635,7 +619,7 @@ public class JGitRepositoryTest {
     }
 
     @Test
-    public void testGetWorktree() {
+    void testGetWorktree() {
         assertThat(repository.getWorkTree(), is(equalTo(repo.getWorkTree())));
     }
 

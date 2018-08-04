@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2016, Sebastian Staudt
+ * Copyright (c) 2011-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -14,40 +14,31 @@ import java.util.Properties;
 
 import org.apache.maven.project.MavenProject;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.jgit.JGitRepository;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.objenesis.ObjenesisHelper.newInstance;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.core.Is.*;
+import static org.hamcrest.core.IsEqual.*;
+import static org.hamcrest.core.IsInstanceOf.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public abstract class MojoAbstractTest<T extends AbstractGitMojo> {
 
-    protected File baseDir;
-
     protected T mojo;
 
-    protected Properties projectProperties;
+    private Properties projectProperties;
 
     protected GitRepository repository;
 
     protected void testError(String errorMessage) {
         try {
-            repository = mock(JGitRepository.class, new Answer() {
-                public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                    throw new GitRepositoryException("");
-                }
+            repository = mock(JGitRepository.class, invocationOnMock -> {
+                throw new GitRepositoryException("");
             });
             this.mojo.run(repository);
             fail("No exception thrown.");
@@ -58,10 +49,10 @@ public abstract class MojoAbstractTest<T extends AbstractGitMojo> {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
-        this.baseDir = mock(File.class);
-        when(this.baseDir.exists()).thenReturn(true);
+        File baseDir = mock(File.class);
+        when(baseDir.exists()).thenReturn(true);
 
         MavenProject project   = mock(MavenProject.class);
         this.projectProperties = new Properties();
@@ -76,7 +67,7 @@ public abstract class MojoAbstractTest<T extends AbstractGitMojo> {
             this.mojo = mojoClass.getConstructor().newInstance();
         }
         this.mojo.dateFormat            = "MM/dd/yyyy hh:mm a Z";
-        this.mojo.baseDir               = this.baseDir;
+        this.mojo.baseDir               = baseDir;
         this.mojo.dirtyFlag             = "-dirty";
         this.mojo.dirtyIgnoreUntracked  = false;
         this.mojo.head                  = "HEAD";

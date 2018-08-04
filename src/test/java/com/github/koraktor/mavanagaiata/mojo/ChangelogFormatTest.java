@@ -16,25 +16,25 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitCommit;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.*;
 import static org.hamcrest.core.IsEqual.*;
-import static org.junit.Assert.*;
 
-public class ChangelogFormatTest {
+class ChangelogFormatTest {
 
     private ChangelogFormat format;
     private ByteArrayOutputStream outputStream;
     private BufferedReader reader;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         outputStream = new ByteArrayOutputStream();
 
         format = new ChangelogFormat();
@@ -59,7 +59,7 @@ public class ChangelogFormatTest {
     }
 
     @Test
-    public void testPrepare() {
+    void testPrepare() {
         assertThat(format.branch, is(equalTo("Branch\n%s")));
         assertThat(format.branchLink, is(equalTo("Compare branch\n%s\n%s\n%s")));
         assertThat(format.branchOnlyLink, is(equalTo("Compare branch only\n%s\n%s")));
@@ -72,7 +72,7 @@ public class ChangelogFormatTest {
     }
 
     @Test
-    public void testPrintBranch() throws IOException {
+    void testPrintBranch() throws IOException {
         format.printBranch("master");
 
         assertOutputLine("");
@@ -85,7 +85,7 @@ public class ChangelogFormatTest {
     }
 
     @Test
-    public void testPrintHeader() throws IOException {
+    void testPrintHeader() throws IOException {
         format.printHeader();
 
         assertOutputLine("A");
@@ -94,7 +94,7 @@ public class ChangelogFormatTest {
     }
 
     @Test
-    public void testPrintTag() throws IOException {
+    void testPrintTag() throws IOException {
         GitTag tag = new GitTag() {
             @Override
             public Date getDate() {
@@ -127,7 +127,7 @@ public class ChangelogFormatTest {
     }
 
     @Test
-    public void testPrintCommit() throws IOException {
+    void testPrintCommit() throws IOException {
         format.printCommit(commit());
 
         assertOutputLine("");
@@ -136,7 +136,7 @@ public class ChangelogFormatTest {
     }
 
     @Test
-    public void testPrintCommitEscapeHtml() throws IOException {
+    void testPrintCommitEscapeHtml() throws IOException {
         format.escapeHtml = true;
         format.printCommit(commit());
 
@@ -146,7 +146,7 @@ public class ChangelogFormatTest {
     }
 
     @Test
-    public void testPrintCompareLink() throws IOException {
+    void testPrintCompareLink() throws IOException {
         format.printCompareLink("2.0.0", "master", true);
         format.printCompareLink("1.0.0", "2.0.0", false);
         format.printCompareLink("1.0.0", null, false);
@@ -177,7 +177,7 @@ public class ChangelogFormatTest {
     }
 
     @Test
-    public void testPrintSeparator() throws IOException {
+    void testPrintSeparator() throws IOException {
         format.separator = "---";
         format.printSeparator();
 
@@ -185,8 +185,8 @@ public class ChangelogFormatTest {
         assertOutputLine(null);
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         reader = null;
     }
 

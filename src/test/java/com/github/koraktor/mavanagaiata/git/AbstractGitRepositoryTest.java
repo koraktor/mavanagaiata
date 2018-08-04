@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2016, Sebastian Staudt
+ * Copyright (c) 2012-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
@@ -10,19 +10,19 @@ package com.github.koraktor.mavanagaiata.git;
 import java.io.File;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 /**
  * @author Sebastian Staudt
  */
-public class AbstractGitRepositoryTest {
+class AbstractGitRepositoryTest {
 
     private static GitCommit headCommit = mock(GitCommit.class);
 
@@ -84,14 +84,14 @@ public class AbstractGitRepositoryTest {
     }
 
     @Test
-    public void testGetAbbreviatedHead() throws Exception {
+    void testGetAbbreviatedHead() throws Exception {
         GitRepository repo = new GenericGitRepository();
 
         assertThat(repo.getAbbreviatedCommitId(), is(equalTo("deadbeef")));
     }
 
     @Test
-    public void testGetMailMap() throws Exception {
+    void testGetMailMap() throws Exception {
         GitRepository repo = new GenericGitRepository();
         MailMap mailMap = repo.getMailMap();
 
@@ -103,7 +103,7 @@ public class AbstractGitRepositoryTest {
     }
 
     @Test
-    public void testGetMailMapAlreadyParsed() {
+    void testGetMailMapAlreadyParsed() {
         AbstractGitRepository repo = new GenericGitRepository();
         repo.mailMap = mock(MailMap.class);
 
@@ -111,7 +111,7 @@ public class AbstractGitRepositoryTest {
     }
 
     @Test
-    public void testSetHeadRef() {
+    void testSetHeadRef() {
         AbstractGitRepository repo = new GenericGitRepository();
         repo.setHeadRef("HEAD");
 

@@ -2,26 +2,23 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012, Sebastian Staudt
+ * Copyright (c) 2012-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.*;
+import static org.mockito.Mockito.*;
 
 /**
  *
  *
  * @author Sebastian Staudt
  */
-public class CommitWalkActionTest {
+class CommitWalkActionTest {
 
     class GenericCommitWalkAction extends CommitWalkAction {
 
@@ -30,7 +27,7 @@ public class CommitWalkActionTest {
     }
 
     @Test
-    public void testExecute() throws Exception {
+    void testExecute() throws Exception {
         CommitWalkAction action = spy(new GenericCommitWalkAction());
         GitCommit commit = mock(GitCommit.class);
 

@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2017, Sebastian Staudt
+ * Copyright (c) 2012-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -17,9 +17,9 @@ import java.util.GregorianCalendar;
 import org.apache.maven.shared.filtering.MavenFileFilter;
 
 import org.codehaus.plexus.interpolation.MapBasedValueSource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
@@ -27,8 +27,8 @@ import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
@@ -40,11 +40,11 @@ import static org.mockito.Mockito.when;
 /**
  * @author Sebastian Staudt
  */
-public class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
+class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
 
     private Date timestamp;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception{
         super.setup();
 
@@ -74,36 +74,28 @@ public class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
     }
 
     @Test
-    public void testFailureCreateSource() throws Exception {
+    void testFailureCreateSource() throws Exception {
         Throwable exception = new FileNotFoundException();
         mojo = spy(mojo);
         when(mojo.getTemplateSource()).thenThrow(exception);
 
-        try {
-            mojo.run(repository);
-            fail("No exception thrown.");
-        } catch (MavanagaiataMojoException e) {
-            assertThat(e.getCause(), is(exception));
-            assertThat(e.getMessage(), is(equalTo("Could not create info class source")));
-        }
+        assertThrows(MavanagaiataMojoException.class,
+            () -> mojo.run(repository),
+            "Could not create info class source");
     }
 
     @Test
-    public void testFailureRepository() throws Exception {
+    void testFailureRepository() throws Exception {
         Throwable exception = new GitRepositoryException("");
         when(repository.describe()).thenThrow(exception);
 
-        try {
-            mojo.run(repository);
-            fail("No exception thrown.");
-        } catch (MavanagaiataMojoException e) {
-            assertThat(e.getCause(), is(exception));
-            assertThat(e.getMessage(), is(equalTo("Could not get all information from repository")));
-        }
+        assertThrows(MavanagaiataMojoException.class,
+            () -> mojo.run(repository),
+            "Could not get all information from repository");
     }
 
     @Test
-    public void testGetValueSource() throws Exception {
+    void testGetValueSource() throws Exception {
         MapBasedValueSource valueSource = mojo.getValueSource(repository);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(mojo.dateFormat);
@@ -121,7 +113,7 @@ public class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
     }
 
     @Test
-    public void testGetValueSourceDirty() throws Exception {
+    void testGetValueSourceDirty() throws Exception {
         when(repository.isDirty(mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
         mojo.prepareParameters();
@@ -142,7 +134,7 @@ public class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
     }
 
     @Test
-    public void testGetValueSourceDisabledDirtyFlag() throws Exception {
+    void testGetValueSourceDisabledDirtyFlag() throws Exception {
         when(repository.isDirty(mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
         mojo.dirtyFlag = "null";
@@ -164,15 +156,15 @@ public class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
     }
 
     @Test
-    public void testResult() throws Exception {
+    void testResult() throws Exception {
         mojo.run(repository);
 
         File targetFile = new File(mojo.outputDirectory, "com/github/koraktor/mavanagaita/GitInfo.java");
         verify(mojo.fileFilter).copyFile(any(File.class), eq(targetFile), eq(true), anyList(), eq("UTF-8"), eq(true));
     }
 
-    @After
-    public void teardown() {
+    @AfterEach
+    void teardown() {
         mojo.outputDirectory.delete();
     }
 }

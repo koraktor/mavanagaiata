@@ -11,8 +11,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitRepository;
 
@@ -20,8 +20,8 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -30,13 +30,13 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> {
+class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> {
 
     private GenericAbstractGitOutputMojo genericMojo() {
         return (GenericAbstractGitOutputMojo) mojo;
     }
 
-    @Before
+    @BeforeEach
     @Override
     public void setup() {
         mojo = new GenericAbstractGitOutputMojo();
@@ -45,7 +45,7 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
     }
 
     @Test
-    public void testInitStdout() throws Exception {
+    void testInitStdout() throws Exception {
         mojo.setOutputFile(null);
         mojo.run(repository);
 
@@ -53,7 +53,7 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
     }
 
     @Test
-    public void testInitOutputFile() throws Exception {
+    void testInitOutputFile() throws Exception {
         File outputFile = mock(File.class);
         File parentFile = mock(File.class);
         when(parentFile.exists()).thenReturn(true);
@@ -71,7 +71,7 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
     }
 
     @Test
-    public void testInitOutputFileCreateDirectories() throws Exception {
+    void testInitOutputFileCreateDirectories() throws Exception {
         File outputFile = mock(File.class);
         File parentFile = mock(File.class);
         when(parentFile.exists()).thenReturn(false);
@@ -89,7 +89,7 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
     }
 
     @Test
-    public void testInitOutputFileCreateDirectoriesFailed() throws Exception {
+    void testInitOutputFileCreateDirectoriesFailed() throws Exception {
         File outputFile = mock(File.class);
         File parentFile = mock(File.class);
         when(parentFile.exists()).thenReturn(false);
@@ -113,7 +113,7 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
     }
 
     @Test
-    public void testInitOutputFileException() throws Exception {
+    void testInitOutputFileException() throws Exception {
         FileNotFoundException fileNotFoundException = mock(FileNotFoundException.class);
         File outputFile = mock(File.class);
         when(outputFile.getAbsolutePath()).thenReturn("/some/file");
@@ -137,7 +137,7 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
     }
 
     @Test
-    public void testGenerateOutputWithFooter() throws MavanagaiataMojoException {
+    void testGenerateOutputWithFooter() throws MavanagaiataMojoException {
         mojo.footer = "Test footer";
         mojo.printStream = mock(PrintStream.class);
         mojo.generateOutput(repository);
@@ -147,7 +147,7 @@ public class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutpu
     }
 
     @Test
-    public void testGenerateOutputWithoutFooter() throws MavanagaiataMojoException {
+    void testGenerateOutputWithoutFooter() throws MavanagaiataMojoException {
         mojo.printStream = mock(PrintStream.class);
         mojo.generateOutput(repository);
 

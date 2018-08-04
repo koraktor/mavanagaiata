@@ -2,15 +2,15 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2017, Sebastian Staudt
+ * Copyright (c) 2011-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
 
 import java.util.Date;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitCommit;
 import org.mockito.invocation.InvocationOnMock;
@@ -18,15 +18,15 @@ import org.mockito.stubbing.Answer;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ContributorsMojoTest extends GitOutputMojoAbstractTest<ContributorsMojo> {
+class ContributorsMojoTest extends GitOutputMojoAbstractTest<ContributorsMojo> {
 
-    @Before
+    @BeforeEach
     @Override
     public void setup() throws Exception {
         super.setup();
@@ -62,12 +62,12 @@ public class ContributorsMojoTest extends GitOutputMojoAbstractTest<Contributors
     }
 
     @Test
-    public void testError() {
+    void testError() {
         super.testError("Unable to read contributors from Git");
     }
 
     @Test
-    public void testInitConfiguration() {
+    void testInitConfiguration() {
         this.mojo.sort = null;
         this.mojo.initConfiguration();
         assertThat(this.mojo.sort, is(equalTo("count")));
@@ -90,7 +90,7 @@ public class ContributorsMojoTest extends GitOutputMojoAbstractTest<Contributors
     }
 
     @Test
-    public void testCustomization() throws Exception {
+    void testCustomization() throws Exception {
         this.mojo.contributorPrefix = "- ";
         this.mojo.header            = "Authors\\n-------\\n";
         this.mojo.showCounts        = false;
@@ -110,7 +110,7 @@ public class ContributorsMojoTest extends GitOutputMojoAbstractTest<Contributors
     }
 
     @Test
-    public void testSortCount() throws Exception {
+    void testSortCount() throws Exception {
         this.mojo.sort = "count";
         this.mojo.initConfiguration();
         mojo.generateOutput(repository);
@@ -126,7 +126,7 @@ public class ContributorsMojoTest extends GitOutputMojoAbstractTest<Contributors
     }
 
     @Test
-    public void testSortDate() throws Exception {
+    void testSortDate() throws Exception {
         this.mojo.sort = "date";
         this.mojo.initConfiguration();
         mojo.generateOutput(repository);
@@ -142,7 +142,7 @@ public class ContributorsMojoTest extends GitOutputMojoAbstractTest<Contributors
     }
 
     @Test
-    public void testSortName() throws Exception {
+    void testSortName() throws Exception {
         this.mojo.sort = "name";
         this.mojo.initConfiguration();
         mojo.generateOutput(repository);

@@ -7,27 +7,27 @@
 
 package com.github.koraktor.mavanagaiata.git;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class GitTagDescriptionTest {
+class GitTagDescriptionTest {
 
-    private GitTag tag;
+    private static GitTag tag;
 
-    @Before
-    public void setup() {
+    @BeforeAll
+    static void setup() {
         tag = mock(GitTag.class);
         when(tag.getName()).thenReturn("1.0.0");
     }
 
     @Test
-    public void test() {
+    void test() {
         GitTagDescription description = new GitTagDescription("deadbeef", tag, 3);
 
         assertThat(description.getNextTagName(), is(equalTo("1.0.0")));
@@ -36,7 +36,7 @@ public class GitTagDescriptionTest {
     }
 
     @Test
-    public void testNoTag() {
+    void testNoTag() {
         GitTagDescription description = new GitTagDescription("deadbeef", null, -1);
 
         assertThat(description.getNextTagName(), is(equalTo("")));
@@ -45,7 +45,7 @@ public class GitTagDescriptionTest {
     }
 
     @Test
-    public void testTagged() {
+    void testTagged() {
         GitTagDescription description = new GitTagDescription("deadbeef", tag, 0);
 
         assertThat(description.getNextTagName(), is(equalTo("1.0.0")));

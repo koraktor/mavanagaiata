@@ -16,21 +16,21 @@ import java.util.TimeZone;
 
 import org.mockito.stubbing.Answer;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitCommit;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.*;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.*;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
+class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
 
     private List<GitCommit> mockCommits;
 
@@ -42,7 +42,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
         return commit;
     }
 
-    @Before
+    @BeforeEach
     @Override
     public void setup() throws Exception {
         super.setup();
@@ -92,14 +92,14 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
     }
 
     @Test
-    public void testError() {
+    void testError() {
         mojo.initConfiguration();
 
         super.testError("Unable to generate changelog from Git");
     }
 
     @Test
-    public void testCreateLinks() {
+    void testCreateLinks() {
         mojo.initConfiguration();
         assertThat(mojo.format.baseUrl, is(nullValue()));
 
@@ -121,7 +121,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
     }
 
     @Test
-    public void testCustomization() throws Exception {
+    void testCustomization() throws Exception {
         ChangelogDefaultFormat format = new ChangelogDefaultFormat();
         format.branch = "Branch \"%s\"";
         format.branchLink = "Git history for \"%s\" since %s: %s";
@@ -170,14 +170,14 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
     }
 
     @Test
-    public void testInitConfiguration() {
+    void testInitConfiguration() {
         mojo.initConfiguration();
 
         assertThat(mojo.format, is(instanceOf(ChangelogFormat.class)));
     }
 
     @Test
-    public void testInitConfigurationMarkdownFormat() {
+    void testInitConfigurationMarkdownFormat() {
         mojo.formatTemplate = ChangelogFormat.Formats.MARKDOWN;
 
         mojo.initConfiguration();
@@ -193,7 +193,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
     }
 
     @Test
-    public void testLinksCustom() {
+    void testLinksCustom() {
         mojo.linkToUser = "koraktor";
         mojo.linkToProject = "mavanagaiata";
         mojo.linkToBaseUrl = "https://git.example.com/%s/%s";
@@ -204,7 +204,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
     }
 
     @Test
-    public void testLinksGitHub() {
+    void testLinksGitHub() {
         mojo.linkToUser = "koraktor";
         mojo.linkToProject = "mavanagaiata";
 
@@ -214,7 +214,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
     }
 
     @Test
-    public void testLinksGitLab() {
+    void testLinksGitLab() {
         mojo.linkTo = ChangelogMojo.LinkToBaseUrl.GITLAB;
         mojo.linkToUser = "koraktor";
         mojo.linkToProject = "mavanagaiata";
@@ -225,7 +225,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
     }
 
     @Test
-    public void testResult() throws Exception {
+    void testResult() throws Exception {
         mojo.initConfiguration();
         mojo.generateOutput(repository);
 
@@ -254,7 +254,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
     }
 
     @Test
-    public void testSkipCommits() throws Exception {
+    void testSkipCommits() throws Exception {
         mojo.skipCommitsMatching = "\\[ci skip\\]";
         mojo.initConfiguration();
         mojo.generateOutput(repository);
@@ -283,7 +283,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
     }
 
     @Test
-    public void testStartTagged() throws Exception {
+    void testStartTagged() throws Exception {
         mockCommits = mockCommits.subList(2, mockCommits.size());
 
         mojo.initConfiguration();
@@ -309,7 +309,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
     }
 
     @Test
-    public void testSkipTagged() throws Exception {
+    void testSkipTagged() throws Exception {
         mojo.skipTagged = true;
         mojo.initConfiguration();
         mojo.generateOutput(repository);
@@ -337,7 +337,7 @@ public class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> 
     }
 
     @Test
-    public void testUntaggedProject() throws Exception {
+    void testUntaggedProject() throws Exception {
         when(repository.getTags())
             .thenReturn(new HashMap<>());
 

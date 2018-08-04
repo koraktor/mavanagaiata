@@ -2,22 +2,22 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2016-2017, Sebastian Staudt
+ * Copyright (c) 2016-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
 
 import org.apache.maven.plugin.logging.Log;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,10 +25,10 @@ import static org.mockito.Mockito.when;
 /**
  * @author Sebastian Staudt
  */
-public class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
+class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
 
     @Test
-    public void testChangedHead() throws MavanagaiataMojoException {
+    void testChangedHead() throws MavanagaiataMojoException {
         Log log = mock(Log.class);
         mojo.setLog(log);
         mojo.head = "branch";
@@ -42,7 +42,7 @@ public class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
     }
 
     @Test
-    public void testCheckBranchFailed() throws Exception {
+    void testCheckBranchFailed() throws Exception {
         mojo.checkBranch = "production";
 
         when(repository.getBranch()).thenReturn("master");
@@ -57,7 +57,7 @@ public class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
     }
 
     @Test
-    public void testCheckBranchSuccess() throws Exception {
+    void testCheckBranchSuccess() throws Exception {
         mojo.checkBranch = "production";
 
         when(repository.getBranch()).thenReturn("production");
@@ -66,7 +66,7 @@ public class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
     }
 
     @Test
-    public void testCheckCleanFailed() throws Exception {
+    void testCheckCleanFailed() throws Exception {
         mojo.checkClean = true;
 
         when(repository.isDirty(false)).thenReturn(true);
@@ -81,7 +81,7 @@ public class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
     }
 
     @Test
-    public void testCheckCleanSuccess() throws Exception {
+    void testCheckCleanSuccess() throws Exception {
         mojo.checkClean = true;
 
         when(repository.isDirty(false)).thenReturn(false);
@@ -90,7 +90,7 @@ public class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
     }
 
     @Test
-    public void testCheckCommitMessageFailed() throws Exception {
+    void testCheckCommitMessageFailed() throws Exception {
         mojo.checkCommitMessage = "Release";
         mojo.initConfiguration();
 
@@ -106,7 +106,7 @@ public class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
     }
 
     @Test
-    public void testCheckCommitMessageSuccess() throws Exception {
+    void testCheckCommitMessageSuccess() throws Exception {
         mojo.checkCommitMessage = "Release";
         mojo.initConfiguration();
 
@@ -116,7 +116,7 @@ public class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
     }
 
     @Test
-    public void testCheckTagFailed() throws Exception {
+    void testCheckTagFailed() throws Exception {
         mojo.checkTag = true;
 
         when(repository.describe().isTagged()).thenReturn(false);
@@ -131,7 +131,7 @@ public class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
     }
 
     @Test
-    public void testCheckTagSuccess() throws Exception {
+    void testCheckTagSuccess() throws Exception {
         mojo.checkTag = true;
 
         when(repository.describe().isTagged()).thenReturn(true);
@@ -140,7 +140,7 @@ public class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
     }
 
     @Test
-    public void testCheckTagSuccessUnclean() throws Exception {
+    void testCheckTagSuccessUnclean() throws Exception {
         Log log = mock(Log.class);
         mojo.setLog(log);
         mojo.checkTag = true;
@@ -155,7 +155,7 @@ public class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
     }
 
     @Test
-    public void testGenericFailure() throws Exception {
+    void testGenericFailure() throws Exception {
         Throwable exception = new GitRepositoryException("");
         when(repository.describe()).thenThrow(exception);
         mojo.checkTag = true;
@@ -171,7 +171,7 @@ public class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
     }
 
     @Test
-    public void testInitWithCommitMessagePattern() {
+    void testInitWithCommitMessagePattern() {
         mojo.checkCommitMessage = "Commit message";
         mojo.initConfiguration();
 

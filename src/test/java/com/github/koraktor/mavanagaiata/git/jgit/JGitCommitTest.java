@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012, Sebastian Staudt
+ * Copyright (c) 2012-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git.jgit;
@@ -10,20 +10,18 @@ package com.github.koraktor.mavanagaiata.git.jgit;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.apache.commons.lang3.builder.ToStringExclude;
-
 import org.eclipse.jgit.revwalk.RevCommit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-public class JGitCommitTest {
+class JGitCommitTest {
 
     @Test
-    public void test() {
+    void test() {
         RevCommit rawCommit = RevCommit.parse(("tree 4b825dc642cb6eb9a060e54bf8d69288fbee4904\n" +
                 "author John Doe <john.doe@example.com> 1162580880 +0000\n" +
                 "committer Sebastian Staudt <koraktor@gmail.com> 1275131880 +0200\n" +
@@ -53,7 +51,7 @@ public class JGitCommitTest {
     }
 
     @Test
-    public void testMergeCommit() {
+    void testMergeCommit() {
         RevCommit rawCommit = RevCommit.parse(("tree 4b825dc642cb6eb9a060e54bf8d69288fbee4904\n" +
             "parent 06cee865ab7f006a58be39f1d46f01dcb1880105\n" +
             "parent afb48c6be4278ba7f5e4197b80adbbb80c6df3a7\n" +

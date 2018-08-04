@@ -2,22 +2,22 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2016, Sebastian Staudt
+ * Copyright (c) 2011-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class TagMojoTest extends MojoAbstractTest<TagMojo> {
+class TagMojoTest extends MojoAbstractTest<TagMojo> {
 
-    @Before
+    @BeforeEach
     @Override
     public void setup() throws Exception {
         super.setup();
@@ -29,12 +29,12 @@ public class TagMojoTest extends MojoAbstractTest<TagMojo> {
     }
 
     @Test
-    public void testError() {
+    void testError() {
         super.testError("Unable to read Git tag");
     }
 
     @Test
-    public void testResult() throws Exception {
+    void testResult() throws Exception {
         mojo.run(repository);
 
         assertProperty("2.0.0-2-gdeadbeef", "tag.describe");
@@ -42,7 +42,7 @@ public class TagMojoTest extends MojoAbstractTest<TagMojo> {
     }
 
     @Test
-    public void testCustomDirtyFlag() throws Exception {
+    void testCustomDirtyFlag() throws Exception {
         when(repository.isDirty(mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
         mojo.dirtyFlag = "*";
@@ -53,7 +53,7 @@ public class TagMojoTest extends MojoAbstractTest<TagMojo> {
     }
 
     @Test
-    public void testDirty() throws Exception {
+    void testDirty() throws Exception {
         when(repository.isDirty(mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
         mojo.run(repository);
@@ -63,7 +63,7 @@ public class TagMojoTest extends MojoAbstractTest<TagMojo> {
     }
 
     @Test
-    public void testDisabledDirtyFlag() throws Exception {
+    void testDisabledDirtyFlag() throws Exception {
         when(repository.isDirty(mojo.dirtyIgnoreUntracked)).thenReturn(true);
 
         mojo.dirtyFlag = "null";
