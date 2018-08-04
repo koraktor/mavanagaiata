@@ -80,7 +80,7 @@ public class JGitRepository extends AbstractGitRepository {
         buildRepository(workTree, gitDir);
     }
 
-    void buildRepository(File workTree, File gitDir) throws GitRepositoryException {
+    final void buildRepository(File workTree, File gitDir) throws GitRepositoryException {
         if (gitDir == null && workTree == null) {
             throw new GitRepositoryException("Neither worktree nor GIT_DIR is set.");
         } else {
