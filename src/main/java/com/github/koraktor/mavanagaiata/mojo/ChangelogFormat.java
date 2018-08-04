@@ -84,7 +84,7 @@ public class ChangelogFormat {
      */
     String header;
 
-    private PrintStream printStream;
+    PrintStream printStream;
 
     /**
      * THe separator to print between different sections of the changelog
@@ -244,9 +244,5 @@ public class ChangelogFormat {
         String date = dateFormatter.format(currentTag.getDate());
 
         printStream.println(String.format(tag, currentTag.getName(), date) + separator);
-    }
-
-    void setPrintStream(PrintStream printStream) {
-        this.printStream = printStream;
     }
 }

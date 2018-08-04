@@ -157,7 +157,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
     protected void writeOutput(GitRepository repository)
             throws MavanagaiataMojoException {
         try {
-            format.setPrintStream(printStream);
+            format.printStream = printStream;
             format.printHeader();
 
             ChangelogWalkAction action = new ChangelogWalkAction();
