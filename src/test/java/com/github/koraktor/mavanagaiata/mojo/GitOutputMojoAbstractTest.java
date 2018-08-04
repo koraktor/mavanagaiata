@@ -20,7 +20,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -54,16 +54,13 @@ abstract class GitOutputMojoAbstractTest<T extends AbstractGitOutputMojo> extend
 
     @Override
     protected void testError(String errorMessage) {
-        try {
-            repository = mock(JGitRepository.class, invocationOnMock -> {
-                throw new GitRepositoryException("");
-            });
-            mojo.generateOutput(repository);
-            fail("No exception thrown.");
-        } catch(Exception e) {
-            assertThat(e, is(instanceOf(MavanagaiataMojoException.class)));
-            assertThat(e.getMessage(), is(equalTo(errorMessage)));
-            assertThat(e.getCause(), is(instanceOf(GitRepositoryException.class)));
-        }
+        repository = mock(JGitRepository.class, invocationOnMock -> {
+            throw new GitRepositoryException("");
+        });
+
+        MavanagaiataMojoException e = assertThrows(MavanagaiataMojoException.class,
+            () -> mojo.generateOutput(repository));
+        assertThat(e.getMessage(), is(equalTo(errorMessage)));
+        assertThat(e.getCause(), is(instanceOf(GitRepositoryException.class)));
     }
 }

@@ -21,7 +21,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -103,13 +103,10 @@ class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> 
         mojo.encoding = "someencoding";
         mojo.setOutputFile(outputFile);
 
-        try {
-            mojo.run(repository);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(MavanagaiataMojoException.class)));
-            assertThat(e.getMessage(), is(equalTo("Could not create directory \"/some\" for output file.")));
-            assertThat(e.getCause(), is(nullValue()));
-        }
+        MavanagaiataMojoException e = assertThrows(MavanagaiataMojoException.class,
+            () -> mojo.run(repository));
+        assertThat(e.getMessage(), is(equalTo("Could not create directory \"/some\" for output file.")));
+        assertThat(e.getCause(), is(nullValue()));
     }
 
     @Test
@@ -126,14 +123,10 @@ class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> 
         this.mojo.encoding = "someencoding";
         this.mojo.setOutputFile(outputFile);
 
-        try {
-            mojo.run(repository);
-            fail("No exception thrown.");
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(MavanagaiataMojoException.class)));
-            assertThat(e.getMessage(), is(equalTo("Could not open output file \"/some/file\" for writing.")));
-            assertThat(e.getCause(), is(fileNotFoundException));
-        }
+        MavanagaiataMojoException e = assertThrows(MavanagaiataMojoException.class,
+            () -> mojo.run(repository));
+        assertThat(e.getMessage(), is(equalTo("Could not open output file \"/some/file\" for writing.")));
+        assertThat(e.getCause(), is(fileNotFoundException));
     }
 
     @Test

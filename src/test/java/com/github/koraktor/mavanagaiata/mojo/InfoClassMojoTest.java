@@ -79,9 +79,9 @@ class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
         mojo = spy(mojo);
         when(mojo.getTemplateSource()).thenThrow(exception);
 
-        assertThrows(MavanagaiataMojoException.class,
-            () -> mojo.run(repository),
-            "Could not create info class source");
+        MavanagaiataMojoException e = assertThrows(MavanagaiataMojoException.class,
+            () -> mojo.run(repository));
+        assertThat(e.getMessage(), is(equalTo("Could not create info class source")));
     }
 
     @Test
@@ -89,9 +89,9 @@ class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
         Throwable exception = new GitRepositoryException("");
         when(repository.describe()).thenThrow(exception);
 
-        assertThrows(MavanagaiataMojoException.class,
-            () -> mojo.run(repository),
-            "Could not get all information from repository");
+        MavanagaiataMojoException e = assertThrows(MavanagaiataMojoException.class,
+            () -> mojo.run(repository));
+        assertThat(e.getMessage(), is(equalTo("Could not get all information from repository")));
     }
 
     @Test

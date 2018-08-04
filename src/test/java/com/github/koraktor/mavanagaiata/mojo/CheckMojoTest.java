@@ -17,7 +17,7 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,13 +47,10 @@ class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
 
         when(repository.getBranch()).thenReturn("master");
 
-        try {
-            mojo.run(repository);
-            fail("No exception thrown.");
-        } catch (CheckMojoException e) {
-            assertThat(e.type, is(CheckMojoException.Type.WRONG_BRANCH));
-            assertThat(e.isGraceful(), is(true));
-        }
+        CheckMojoException e = assertThrows(CheckMojoException.class,
+            () -> mojo.run(repository));
+        assertThat(e.type, is(CheckMojoException.Type.WRONG_BRANCH));
+        assertThat(e.isGraceful(), is(true));
     }
 
     @Test
@@ -71,13 +68,10 @@ class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
 
         when(repository.isDirty(false)).thenReturn(true);
 
-        try {
-            mojo.run(repository);
-            fail("No exception thrown.");
-        } catch (CheckMojoException e) {
-            assertThat(e.type, is(CheckMojoException.Type.UNCLEAN));
-            assertThat(e.isGraceful(), is(true));
-        }
+        CheckMojoException e = assertThrows(CheckMojoException.class,
+            () -> mojo.run(repository));
+        assertThat(e.type, is(CheckMojoException.Type.UNCLEAN));
+        assertThat(e.isGraceful(), is(true));
     }
 
     @Test
@@ -96,13 +90,10 @@ class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
 
         when(repository.getHeadCommit().getMessage()).thenReturn("Fix some bugs");
 
-        try {
-            mojo.run(repository);
-            fail("No exception thrown.");
-        } catch (CheckMojoException e) {
-            assertThat(e.type, is(CheckMojoException.Type.WRONG_COMMIT_MSG));
-            assertThat(e.isGraceful(), is(true));
-        }
+        CheckMojoException e = assertThrows(CheckMojoException.class,
+            () -> mojo.run(repository));
+        assertThat(e.type, is(CheckMojoException.Type.WRONG_COMMIT_MSG));
+        assertThat(e.isGraceful(), is(true));
     }
 
     @Test
@@ -121,13 +112,10 @@ class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
 
         when(repository.describe().isTagged()).thenReturn(false);
 
-        try {
-            mojo.run(repository);
-            fail("No exception thrown.");
-        } catch (CheckMojoException e) {
-            assertThat(e.type, is(CheckMojoException.Type.UNTAGGED));
-            assertThat(e.isGraceful(), is(true));
-        }
+        CheckMojoException e = assertThrows(CheckMojoException.class,
+            () -> mojo.run(repository));
+        assertThat(e.type, is(CheckMojoException.Type.UNTAGGED));
+        assertThat(e.isGraceful(), is(true));
     }
 
     @Test
@@ -160,14 +148,11 @@ class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
         when(repository.describe()).thenThrow(exception);
         mojo.checkTag = true;
 
-        try {
-            mojo.run(repository);
-            fail("No exception thrown.");
-        } catch (MavanagaiataMojoException e) {
-            assertThat(e.getCause(), is(exception));
-            assertThat(e.getMessage(), is(equalTo("Error while checking repository.")));
-            assertThat(e.isGraceful(), is(false));
-        }
+        MavanagaiataMojoException e = assertThrows(MavanagaiataMojoException.class,
+            () -> mojo.run(repository));
+        assertThat(e.getCause(), is(exception));
+        assertThat(e.getMessage(), is(equalTo("Error while checking repository.")));
+        assertThat(e.isGraceful(), is(false));
     }
 
     @Test

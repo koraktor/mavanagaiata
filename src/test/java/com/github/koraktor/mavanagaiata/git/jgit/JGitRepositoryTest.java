@@ -65,7 +65,7 @@ class JGitRepositoryTest {
     }
 
     @Test
-    public void createWithWorkTree() throws Exception {
+    void testCreateWithWorkTree() throws Exception {
         File workTree = mock(File.class);
         when(workTree.exists()).thenReturn(true);
 
@@ -87,7 +87,7 @@ class JGitRepositoryTest {
     }
 
     @Test
-    public void createWithWorkTreeAndGitDir() throws Exception {
+    void testCreateWithWorkTreeAndGitDir() throws Exception {
         File workTree = mock(File.class);
         when(workTree.exists()).thenReturn(true);
 
@@ -108,7 +108,7 @@ class JGitRepositoryTest {
     }
 
     @Test
-    public void createWithWorkTreeChild() throws Exception {
+    void testCreateWithWorkTreeChild() throws Exception {
         File workTree = mock(File.class);
 
         File workTreeChild = mock(File.class);
@@ -136,15 +136,13 @@ class JGitRepositoryTest {
         Throwable exception = mock(IOException.class);
         when(repositoryBuilder.build()).thenThrow(exception);
 
-        try {
-            File gitDir = mock(File.class);
-            when(gitDir.exists()).thenReturn(true);
-            repository.buildRepository(null, gitDir);
-            fail("No exception thrown.");
-        } catch (GitRepositoryException e) {
-            assertThat(e.getCause(), is(exception));
-            assertThat(e.getMessage(), is(equalTo("Could not initialize repository")));
-        }
+        File gitDir = mock(File.class);
+        when(gitDir.exists()).thenReturn(true);
+
+        GitRepositoryException e = assertThrows(GitRepositoryException.class,
+            () -> repository.buildRepository(null, gitDir));
+        assertThat(e.getCause(), is(exception));
+        assertThat(e.getMessage(), is(equalTo("Could not initialize repository")));
     }
 
     @Test
@@ -156,9 +154,9 @@ class JGitRepositoryTest {
         when(this.repo.getDirectory()).thenReturn(gitDir);
         when(this.repo.isBare()).thenReturn(true);
 
-        assertThrows(GitRepositoryException.class,
-            repository::check,
-            "/some/repo/.git is not a Git repository.");
+        GitRepositoryException e = assertThrows(GitRepositoryException.class,
+            repository::check);
+        assertThat(e.getMessage(), is(equalTo("/some/repo/.git is not a Git repository.")));
     }
 
     @Test
@@ -170,9 +168,9 @@ class JGitRepositoryTest {
         when(this.repo.getWorkTree()).thenReturn(workTree);
         when(this.repo.isBare()).thenReturn(false);
 
-        assertThrows(GitRepositoryException.class,
-            repository::check,
-            "/some/repo is not a Git repository.");
+        GitRepositoryException e = assertThrows(GitRepositoryException.class,
+            repository::check);
+        assertThat(e.getMessage(), is(equalTo("/some/repo is not a Git repository.")));
     }
 
     @Test
@@ -397,13 +395,10 @@ class JGitRepositoryTest {
         Throwable exception = mock(IOException.class);
         when(this.repo.getObjectDatabase().newReader().abbreviate(rawCommit)).thenThrow(exception);
 
-        try {
-            repository.getAbbreviatedCommitId(commit);
-            fail("No exception thrown.");
-        } catch (GitRepositoryException e) {
-            assertThat(e.getCause(), is(exception));
-            assertThat(e.getMessage(), is(equalTo("Commit \"" + commit.getId() + "\" could not be abbreviated.")));
-        }
+        GitRepositoryException e = assertThrows(GitRepositoryException.class,
+            () -> repository.getAbbreviatedCommitId(commit));
+        assertThat(e.getCause(), is(exception));
+        assertThat(e.getMessage(), is(equalTo("Commit \"" + commit.getId() + "\" could not be abbreviated.")));
     }
 
     @Test
@@ -418,13 +413,10 @@ class JGitRepositoryTest {
         FileNotFoundException exception = new FileNotFoundException();
         when(repo.getBranch()).thenThrow(exception);
 
-        try {
-            repository.getBranch();
-            fail("No exception thrown.");
-        } catch (GitRepositoryException e) {
-            assertThat(e.getCause(), is(exception));
-            assertThat(e.getMessage(), is(equalTo("Current branch could not be read.")));
-        }
+        GitRepositoryException e = assertThrows(GitRepositoryException.class,
+            repository::getBranch);
+        assertThat(e.getCause(), is(exception));
+        assertThat(e.getMessage(), is(equalTo("Current branch could not be read.")));
     }
 
     @Test
@@ -474,13 +466,10 @@ class JGitRepositoryTest {
         repository.setHeadRef("broken");
         when(repo.resolve("broken")).thenThrow(exception);
 
-        try {
-            repository.getHeadObject();
-            fail("No exception thrown.");
-        } catch (GitRepositoryException e) {
-            assertThat(e.getCause(), is(exception));
-            assertThat(e.getMessage(), is(equalTo("Ref \"broken\" could not be resolved.")));
-        }
+        GitRepositoryException e = assertThrows(GitRepositoryException.class,
+            repository::getHeadObject);
+        assertThat(e.getCause(), is(exception));
+        assertThat(e.getMessage(), is(equalTo("Ref \"broken\" could not be resolved.")));
     }
 
     @Test
@@ -546,13 +535,10 @@ class JGitRepositoryTest {
         repository = spy(repository);
         doThrow(exception).when(repository).createIndexDiff();
 
-        try {
-            repository.isDirty(false);
-            fail("No exception thrown.");
-        } catch (GitRepositoryException e) {
-            assertThat(e.getCause(), is(exception));
-            assertThat(e.getMessage(), is(equalTo("Could not create repository diff.")));
-        }
+        GitRepositoryException e = assertThrows(GitRepositoryException.class,
+            () -> repository.isDirty(false));
+        assertThat(e.getCause(), is(exception));
+        assertThat(e.getMessage(), is(equalTo("Could not create repository diff.")));
     }
 
     @Test

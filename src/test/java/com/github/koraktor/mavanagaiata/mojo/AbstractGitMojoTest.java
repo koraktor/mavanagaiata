@@ -55,9 +55,9 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     void testErrors() {
         this.mojo.baseDir = null;
 
-        assertThrows(GitRepositoryException.class,
-            mojo::initRepository,
-            "Neither worktree nor GIT_DIR is set.");
+        GitRepositoryException e =assertThrows(GitRepositoryException.class,
+            mojo::initRepository);
+        assertThat(e.getMessage(), is(equalTo("Neither worktree nor GIT_DIR is set.")));
 
         String home = System.getenv().get("HOME");
         if (home == null) {
@@ -65,24 +65,24 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         }
         this.mojo.baseDir = new File(home).getAbsoluteFile();
 
-        assertThrows(GitRepositoryException.class,
-            mojo::initRepository,
-            mojo.baseDir + " is not inside a Git repository. Please specify the GIT_DIR separately.");
+        e = assertThrows(GitRepositoryException.class,
+            mojo::initRepository);
+        assertThat(e.getMessage(), is(equalTo(mojo.baseDir + " is not inside a Git repository. Please specify the GIT_DIR separately.")));
 
         this.mojo.baseDir = mock(File.class);
         when(this.mojo.baseDir.exists()).thenReturn(false);
 
-        assertThrows(GitRepositoryException.class,
-            mojo::initRepository,
-            "The worktree " + mojo.baseDir + " does not exist");
+        e = assertThrows(GitRepositoryException.class,
+            mojo::initRepository);
+        assertThat(e.getMessage(), is(equalTo("The worktree " + mojo.baseDir + " does not exist")));
 
         this.mojo.baseDir = null;
         this.mojo.gitDir  = mock(File.class);
         when(this.mojo.gitDir.exists()).thenReturn(false);
 
-        assertThrows(GitRepositoryException.class,
-            mojo::initRepository,
-            "The GIT_DIR " + mojo.gitDir + " does not exist");
+        e = assertThrows(GitRepositoryException.class,
+            mojo::initRepository);
+        assertThat(e.getMessage(), is(equalTo("The GIT_DIR " + mojo.gitDir + " does not exist")));
     }
 
     @Test
@@ -103,14 +103,10 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         doThrow(exception).when(mojo).run(repository);
         doReturn(repository).when(mojo).initRepository();
 
-        try {
-            this.mojo.execute();
-            fail("No exception thrown.");
-        } catch (MojoExecutionException e) {
-            assertThat(e.getCause(), is(instanceOf(MavanagaiataMojoException.class)));
-            assertThat(e.getCause(), is(sameInstance(exception)));
-            assertThat(e.getMessage(), is(equalTo(exception.getMessage())));
-        }
+        MojoExecutionException e = assertThrows(MojoExecutionException.class,
+            mojo::execute);
+        assertThat(e.getCause(), is(sameInstance(exception)));
+        assertThat(e.getMessage(), is(equalTo(exception.getMessage())));
     }
 
     @Test
@@ -121,14 +117,10 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         doThrow(exception).when(mojo).run(repository);
         doReturn(repository).when(this.mojo).initRepository();
 
-        try {
-            this.mojo.execute();
-            fail("No exception thrown.");
-        } catch (MojoFailureException e) {
-            assertThat(e.getCause(), is(instanceOf(MavanagaiataMojoException.class)));
-            assertThat(e.getCause(), is(sameInstance(exception)));
-            assertThat(e.getMessage(), is(equalTo(exception.getMessage())));
-        }
+        MojoFailureException e = assertThrows(MojoFailureException.class,
+            mojo::execute);
+        assertThat(e.getCause(), is(sameInstance(exception)));
+        assertThat(e.getMessage(), is(equalTo(exception.getMessage())));
     }
 
     @Test
@@ -161,14 +153,10 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         GitRepositoryException exception = new GitRepositoryException("");
         doThrow(exception).when(this.mojo).initRepository();
 
-        try {
-            this.mojo.init();
-            fail("No exception thrown.");
-        } catch (MavanagaiataMojoException e) {
-            assertThat(e.getCause(), is(instanceOf(GitRepositoryException.class)));
-            assertThat(e.getCause(), is(sameInstance(exception)));
-            assertThat(e.getMessage(), is(equalTo("Unable to initialize Git repository")));
-        }
+        MavanagaiataMojoException e = assertThrows(MavanagaiataMojoException.class,
+            mojo::init);
+        assertThat(e.getCause(), is(sameInstance(exception)));
+        assertThat(e.getMessage(), is(equalTo("Unable to initialize Git repository")));
     }
 
     @Test

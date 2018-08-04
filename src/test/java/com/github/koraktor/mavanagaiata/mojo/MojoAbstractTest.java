@@ -36,17 +36,14 @@ public abstract class MojoAbstractTest<T extends AbstractGitMojo> {
     protected GitRepository repository;
 
     protected void testError(String errorMessage) {
-        try {
-            repository = mock(JGitRepository.class, invocationOnMock -> {
-                throw new GitRepositoryException("");
-            });
-            this.mojo.run(repository);
-            fail("No exception thrown.");
-        } catch(Exception e) {
-            assertThat(e, is(instanceOf(MavanagaiataMojoException.class)));
-            assertThat(e.getMessage(), is(equalTo(errorMessage)));
-            assertThat(e.getCause(), is(instanceOf(GitRepositoryException.class)));
-        }
+        repository = mock(JGitRepository.class, invocationOnMock -> {
+            throw new GitRepositoryException("");
+        });
+
+        MavanagaiataMojoException e = assertThrows(MavanagaiataMojoException.class,
+            () -> mojo.run(repository));
+        assertThat(e.getMessage(), is(equalTo(errorMessage)));
+        assertThat(e.getCause(), is(instanceOf(GitRepositoryException.class)));
     }
 
     @BeforeEach
