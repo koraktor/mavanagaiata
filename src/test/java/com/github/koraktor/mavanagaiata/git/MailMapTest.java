@@ -105,17 +105,6 @@ class MailMapTest {
     }
 
     @Test
-    void testExists() {
-        MailMap mailMap = new MailMap(repo);
-
-        assertThat(mailMap.exists(), is(false));
-
-        mailMap.exists = true;
-
-        assertThat(mailMap.exists(), is(true));
-    }
-
-    @Test
     void testParseFromRepository() throws Exception {
         final MailMap mailMap = spy(new MailMap(repo));
         when(repo.getWorkTree()).thenReturn(new File("test"));
