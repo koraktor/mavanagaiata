@@ -20,7 +20,7 @@ import com.github.koraktor.mavanagaiata.git.GitTag;
  *
  * @author Sebastian Staudt
  */
-public class JGitTag implements GitTag {
+class JGitTag implements GitTag {
 
     protected RevTag tag;
 

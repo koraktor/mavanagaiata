@@ -20,7 +20,7 @@ import com.github.koraktor.mavanagaiata.git.GitCommit;
  *
  * @author Sebastian Staudt
  */
-public class JGitCommit implements GitCommit {
+class JGitCommit implements GitCommit {
 
     protected PersonIdent author;
 
