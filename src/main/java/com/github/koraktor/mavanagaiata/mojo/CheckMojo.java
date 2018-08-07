@@ -83,39 +83,88 @@ public class CheckMojo extends AbstractGitMojo {
     @Override
     protected void run(GitRepository repository)
             throws MavanagaiataMojoException {
+        if (!head.equals(GitRepository.DEFAULT_HEAD)) {
+            getLog().warn("Your configuration specifies `" + head +
+                "` (instead of `" + GitRepository.DEFAULT_HEAD + "`) " +
+                "as the current commit. The results of these checks " +
+                "might not match the actual repository state.");
+        }
+
         try {
-            if (!head.equals(GitRepository.DEFAULT_HEAD)) {
-                getLog().warn("Your configuration specifies `" + head +
-                        "` (instead of `" + GitRepository.DEFAULT_HEAD + "`) " +
-                        "as the current commit. The results of these checks " +
-                        "might not match the actual repository state.");
-            }
-
-            if (checkBranch != null && !repository.getBranch().equals(checkBranch)) {
-                throw new CheckMojoException(CheckMojoException.Type.WRONG_BRANCH, repository.getBranch(), checkBranch);
-            }
-
-            if (checkClean && repository.isDirty(dirtyIgnoreUntracked)) {
-                throw new CheckMojoException(CheckMojoException.Type.UNCLEAN);
-            }
-
-            if (checkTag) {
-                if (!repository.describe().isTagged()) {
-                    throw new CheckMojoException(CheckMojoException.Type.UNTAGGED);
-                }
-
-                if (!checkClean && repository.isDirty(dirtyIgnoreUntracked)) {
-                    getLog().warn("The current commit (`" + head +
-                            "`) is tagged, but the worktree is unclean. This " +
-                            "is probably undesirable.");
-                }
-            }
-
-            if (commitMessagePattern != null && !commitMessagePattern.matcher(repository.getHeadCommit().getMessage()).find()) {
-                throw new CheckMojoException(CheckMojoException.Type.WRONG_COMMIT_MSG, checkCommitMessage);
-            }
+            checkBranch(repository);
+            checkCommitMessage(repository);
+            checkClean(repository);
+            checkTag(repository);
         } catch (GitRepositoryException e) {
             throw new MavanagaiataMojoException("Error while checking repository.", e);
+        }
+    }
+
+    /**
+     * Checks if the branch matches the configured name
+     *
+     * @param repository The repository instance to check
+     * @see #checkBranch
+     * @throws CheckMojoException if the branch does not match
+     * @throws GitRepositoryException if the current branch cannot be retrieved
+     */
+    private void checkBranch(GitRepository repository)
+            throws CheckMojoException, GitRepositoryException {
+        if (checkBranch != null && !repository.getBranch().equals(checkBranch)) {
+            throw new CheckMojoException(CheckMojoException.Type.WRONG_BRANCH, repository.getBranch(), checkBranch);
+        }
+    }
+
+    /**
+     * Checks if the worktree is in a clean state
+     *
+     * @param repository The repository instance to check
+     * @see #checkClean
+     * @throws CheckMojoException if the worktree is not clean
+     * @throws GitRepositoryException if the worktree state cannot be retrieved
+     */
+    private void checkClean(GitRepository repository)
+            throws CheckMojoException, GitRepositoryException{
+        if (checkClean && repository.isDirty(dirtyIgnoreUntracked)) {
+            throw new CheckMojoException(CheckMojoException.Type.UNCLEAN);
+        }
+    }
+
+    /**
+     * Checks if commit message matches the configured pattern
+     *
+     * @param repository The repository instance to check
+     * @see #checkCommitMessage
+     * @throws CheckMojoException if the commit message does not match
+     * @throws GitRepositoryException if the current commit cannot be retrieved
+     */
+    private void checkCommitMessage(GitRepository repository)
+            throws GitRepositoryException, CheckMojoException {
+        if (commitMessagePattern != null && !commitMessagePattern.matcher(repository.getHeadCommit().getMessage()).find()) {
+            throw new CheckMojoException(CheckMojoException.Type.WRONG_COMMIT_MSG, checkCommitMessage);
+        }
+    }
+
+    /**
+     * Checks if the the current {@code HEAD} is tagged
+     *
+     * @param repository The repository instance to check
+     * @see #checkTag
+     * @throws CheckMojoException if {@code HEAD} is not tagged
+     * @throws GitRepositoryException if the commit cannot be described
+     */
+    private void checkTag(GitRepository repository)
+            throws GitRepositoryException, CheckMojoException {
+        if (checkTag) {
+            if (!repository.describe().isTagged()) {
+                throw new CheckMojoException(CheckMojoException.Type.UNTAGGED);
+            }
+
+            if (!checkClean && repository.isDirty(dirtyIgnoreUntracked)) {
+                getLog().warn("The current commit (`" + head +
+                    "`) is tagged, but the worktree is unclean. This " +
+                    "is probably undesirable.");
+            }
         }
     }
 
