@@ -15,9 +15,11 @@ about the Git repository of your project.
 
 ## Dependencies
 
- * Apache Commons IO 2.5
- * JGit 4.8.0
- * Maven Filtering 1.1
+ * Apache Commons IO 2.6
+ * Apache Commons Lang 3.7
+ * Apache Commons Text 1.4
+ * JGit 5.0.2
+ * Maven Filtering 3.1.1
 
 ## Installation
 
