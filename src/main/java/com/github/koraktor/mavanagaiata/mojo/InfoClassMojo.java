@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2017, Sebastian Staudt
+ * Copyright (c) 2012-2018, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +36,7 @@ import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 
+import static java.util.Collections.singletonList;
 import static org.apache.commons.io.FileUtils.forceDeleteOnExit;
 
 /**
@@ -205,9 +205,7 @@ public class InfoClassMojo extends AbstractGitMojo {
             throw MavanagaiataMojoException.create("Could not create class source: %s", null, outputFile.getAbsolutePath());
         }
 
-        List<FileUtils.FilterWrapper> filterWrappers = new ArrayList<>();
-        filterWrappers.add(new ValueSourceFilter(repository));
-
+        List<FileUtils.FilterWrapper> filterWrappers = singletonList(new ValueSourceFilter(repository));
         fileFilter.copyFile(sourceFile, outputFile, true, filterWrappers, encoding, true);
     }
 
