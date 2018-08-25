@@ -7,10 +7,15 @@
 
 package com.github.koraktor.mavanagaiata.mojo;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.when;
 
+/**
+ * @author Sebastian Staudt
+ */
+@DisplayName("BranchMojo")
 class BranchMojoTest extends MojoAbstractTest<BranchMojo> {
 
     @Test

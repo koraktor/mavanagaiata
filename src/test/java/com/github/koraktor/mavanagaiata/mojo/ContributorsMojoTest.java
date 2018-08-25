@@ -10,6 +10,7 @@ package com.github.koraktor.mavanagaiata.mojo;
 import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitCommit;
@@ -24,6 +25,10 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * @author Sebastian Staudt
+ */
+@DisplayName("ContributorsMojo")
 class ContributorsMojoTest extends GitOutputMojoAbstractTest<ContributorsMojo> {
 
     @BeforeEach

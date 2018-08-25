@@ -12,12 +12,14 @@ import java.util.TimeZone;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@DisplayName("JGitCommit")
 class JGitCommitTest {
 
     @Test

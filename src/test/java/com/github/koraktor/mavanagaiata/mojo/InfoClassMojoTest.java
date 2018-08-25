@@ -19,6 +19,7 @@ import org.apache.maven.shared.filtering.MavenFileFilter;
 import org.codehaus.plexus.interpolation.MapBasedValueSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
@@ -40,6 +41,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Sebastian Staudt
  */
+@DisplayName("InfoClassMojo")
 class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
 
     private Date timestamp;

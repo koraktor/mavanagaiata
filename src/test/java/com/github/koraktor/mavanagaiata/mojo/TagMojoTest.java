@@ -8,6 +8,7 @@
 package com.github.koraktor.mavanagaiata.mojo;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
@@ -15,6 +16,10 @@ import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * @author Sebastian Staudt
+ */
+@DisplayName("TagMojo")
 class TagMojoTest extends MojoAbstractTest<TagMojo> {
 
     @BeforeEach

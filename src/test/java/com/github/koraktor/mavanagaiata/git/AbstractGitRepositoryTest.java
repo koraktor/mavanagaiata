@@ -10,6 +10,7 @@ package com.github.koraktor.mavanagaiata.git;
 import java.io.File;
 import java.util.Map;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 /**
  * @author Sebastian Staudt
  */
+@DisplayName("AbstractGitRepository")
 class AbstractGitRepositoryTest {
 
     private static GitCommit headCommit = mock(GitCommit.class);

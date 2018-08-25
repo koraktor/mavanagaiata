@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitCommit;
@@ -18,6 +19,10 @@ import com.github.koraktor.mavanagaiata.git.GitCommit;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * @author Sebastian Staudt
+ */
+@DisplayName("CommitMojo")
 class CommitMojoTest extends MojoAbstractTest<CommitMojo> {
 
     @BeforeEach

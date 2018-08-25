@@ -7,6 +7,7 @@
 
 package com.github.koraktor.mavanagaiata.git;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -14,10 +15,9 @@ import static org.hamcrest.core.Is.*;
 import static org.mockito.Mockito.*;
 
 /**
- *
- *
  * @author Sebastian Staudt
  */
+@DisplayName("CommitWalkAction")
 class CommitWalkActionTest {
 
     class GenericCommitWalkAction extends CommitWalkAction {

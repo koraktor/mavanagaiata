@@ -18,6 +18,7 @@ import java.util.TimeZone;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitCommit;
@@ -27,6 +28,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.*;
 import static org.hamcrest.core.IsEqual.*;
 
+/**
+ * @author Sebastian Staudt
+ */
+@DisplayName("ChangelogFormat")
 class ChangelogFormatTest {
 
     private ChangelogFormat format;

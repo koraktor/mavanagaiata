@@ -9,6 +9,7 @@ package com.github.koraktor.mavanagaiata.mojo;
 
 import org.apache.maven.plugin.logging.Log;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitRepository;
@@ -25,6 +26,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Sebastian Staudt
  */
+@DisplayName("CheckMojo")
 class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
 
     @Test

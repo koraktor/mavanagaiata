@@ -27,6 +27,9 @@ import static org.hamcrest.core.IsInstanceOf.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * @author Sebastian Staudt
+ */
 public abstract class MojoAbstractTest<T extends AbstractGitMojo> {
 
     protected T mojo;

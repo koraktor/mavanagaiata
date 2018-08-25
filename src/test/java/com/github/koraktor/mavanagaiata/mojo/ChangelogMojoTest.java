@@ -17,6 +17,7 @@ import java.util.TimeZone;
 import org.mockito.stubbing.Answer;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitCommit;
@@ -30,6 +31,10 @@ import static org.hamcrest.core.IsNull.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+/**
+ * @author Sebastian Staudt
+ */
+@DisplayName("ChangelogMojo")
 class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
 
     private List<GitCommit> mockCommits;

@@ -9,12 +9,14 @@ package com.github.koraktor.mavanagaiata.git.jgit;
 
 import org.eclipse.jgit.revwalk.RevTag;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.core.Is.*;
 import static org.hamcrest.core.IsEqual.*;
 
+@DisplayName("JGitTag")
 class JGitTagTest {
 
     @Test

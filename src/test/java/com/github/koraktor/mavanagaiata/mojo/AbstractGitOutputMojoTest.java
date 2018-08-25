@@ -12,13 +12,13 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitRepository;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,6 +30,10 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/**
+ * @author Sebastian Staudt
+ */
+@DisplayName("AbstractGitOutputMojo")
 class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> {
 
     private GenericAbstractGitOutputMojo genericMojo() {

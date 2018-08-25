@@ -8,6 +8,7 @@
 package com.github.koraktor.mavanagaiata.git;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -16,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@DisplayName("GitTagDescription")
 class GitTagDescriptionTest {
 
     private static GitTag tag;

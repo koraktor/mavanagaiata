@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.github.koraktor.mavanagaiata.git.MailMap.MAILMAP_FILE;
@@ -27,6 +28,7 @@ import static org.mockito.Mockito.*;
 /**
  * @author Sebastian Staudt
  */
+@DisplayName("MailMap")
 class MailMapTest {
 
     private static GitRepository repo;
