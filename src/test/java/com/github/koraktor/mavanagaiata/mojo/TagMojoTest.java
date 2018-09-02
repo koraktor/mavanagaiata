@@ -33,11 +33,13 @@ class TagMojoTest extends MojoAbstractTest<TagMojo> {
         when(repository.describe()).thenReturn(description);
     }
 
+    @DisplayName("should handle errors")
     @Test
     void testError() {
         super.testError("Unable to read Git tag");
     }
 
+    @DisplayName("should provide properties for tag and description")
     @Test
     void testResult() throws Exception {
         mojo.run(repository);
@@ -46,6 +48,7 @@ class TagMojoTest extends MojoAbstractTest<TagMojo> {
         assertProperty("2.0.0", "tag.name");
     }
 
+    @DisplayName("should add custom dirty flags to the description")
     @Test
     void testCustomDirtyFlag() throws Exception {
         when(repository.isDirty(mojo.dirtyIgnoreUntracked)).thenReturn(true);
@@ -57,6 +60,7 @@ class TagMojoTest extends MojoAbstractTest<TagMojo> {
         assertProperty("2.0.0", "tag.name");
     }
 
+    @DisplayName("should add a flag to the description if the worktree is dirty")
     @Test
     void testDirty() throws Exception {
         when(repository.isDirty(mojo.dirtyIgnoreUntracked)).thenReturn(true);
@@ -67,6 +71,7 @@ class TagMojoTest extends MojoAbstractTest<TagMojo> {
         assertProperty("2.0.0", "tag.name");
     }
 
+    @DisplayName("should not add a flag to the description if configured")
     @Test
     void testDisabledDirtyFlag() throws Exception {
         when(repository.isDirty(mojo.dirtyIgnoreUntracked)).thenReturn(true);

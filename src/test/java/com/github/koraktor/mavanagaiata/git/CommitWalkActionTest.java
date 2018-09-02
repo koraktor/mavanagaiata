@@ -26,6 +26,7 @@ class CommitWalkActionTest {
 
     }
 
+    @DisplayName("should track the current commit while executing")
     @Test
     void testExecute() throws Exception {
         CommitWalkAction action = spy(new GenericCommitWalkAction());

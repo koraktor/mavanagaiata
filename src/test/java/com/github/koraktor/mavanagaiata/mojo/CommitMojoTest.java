@@ -44,11 +44,13 @@ class CommitMojoTest extends MojoAbstractTest<CommitMojo> {
         when(this.repository.getHeadCommit()).thenReturn(commit);
     }
 
+    @DisplayName("should throw a specific error message")
     @Test
     void testError() {
         super.testError("Unable to read Git commit information");
     }
 
+    @DisplayName("should handle custom date formats")
     @Test
     void testCustomDateFormat() throws MavanagaiataMojoException {
         this.mojo.dateFormat = "dd.MM.yyyy";
@@ -58,6 +60,7 @@ class CommitMojoTest extends MojoAbstractTest<CommitMojo> {
         this.assertProperty("29.05.2010", "commit.committer.date");
     }
 
+    @DisplayName("should use custom dirty flags")
     @Test
     void testCustomDirtyFlag() throws Exception {
         when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
@@ -72,6 +75,7 @@ class CommitMojoTest extends MojoAbstractTest<CommitMojo> {
         this.assertProperty(headId, "commit.sha");
     }
 
+    @DisplayName("should be able to check if the worktree is dirty")
     @Test
     void testDirtyWorktree() throws Exception {
         when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
@@ -86,6 +90,7 @@ class CommitMojoTest extends MojoAbstractTest<CommitMojo> {
         this.assertProperty("true", "commit.dirty");
     }
 
+    @DisplayName("should not add a dirty flag if it’s null")
     @Test
     void testDisabledDirtyFlag() throws Exception {
         when(this.repository.isDirty(this.mojo.dirtyIgnoreUntracked)).thenReturn(true);
@@ -102,6 +107,7 @@ class CommitMojoTest extends MojoAbstractTest<CommitMojo> {
         this.assertProperty("true", "commit.dirty");
     }
 
+    @DisplayName("should obtain information for the current HEAD commit")
     @Test
     void testResult() throws MavanagaiataMojoException {
         mojo.run(repository);

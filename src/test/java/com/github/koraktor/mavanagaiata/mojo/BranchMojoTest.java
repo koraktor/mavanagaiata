@@ -18,11 +18,13 @@ import static org.mockito.Mockito.when;
 @DisplayName("BranchMojo")
 class BranchMojoTest extends MojoAbstractTest<BranchMojo> {
 
+    @DisplayName("should handle errors")
     @Test
     void testError() {
         super.testError("Unable to read Git branch");
     }
 
+    @DisplayName("should get the current branch")
     @Test
     void testResult() throws Exception {
         when(repository.getBranch()).thenReturn("master");

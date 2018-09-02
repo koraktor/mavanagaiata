@@ -55,6 +55,7 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         super.setup();
     }
 
+    @DisplayName("should handle different errors while accessing the repository")
     @Test
     void testErrors() {
         this.mojo.baseDir = null;
@@ -89,6 +90,7 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         assertThat(e.getMessage(), is(equalTo("The GIT_DIR " + mojo.gitDir + " does not exist")));
     }
 
+    @DisplayName("should provide a basic workflow for mojos")
     @Test
     void testExecute() throws Exception {
         doReturn(repository).when(mojo).initRepository();
@@ -101,6 +103,7 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         inOrder.verify(mojo).run(repository);
     }
 
+    @DisplayName("should handle errors thrown inside mojos")
     @Test
     void testExecuteFail() throws Exception {
         MavanagaiataMojoException exception = MavanagaiataMojoException.create("", null);
@@ -113,6 +116,7 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         assertThat(e.getMessage(), is(equalTo(exception.getMessage())));
     }
 
+    @DisplayName("should handle errors gracefully thrown inside mojos")
     @Test
     void testExecuteFailGracefully() throws Exception {
         this.mojo.failGracefully = true;
@@ -127,6 +131,7 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         assertThat(e.getMessage(), is(equalTo(exception.getMessage())));
     }
 
+    @DisplayName("should not run when no repository has been initialized")
     @Test
     void testExecuteInitFail() throws Exception {
         doReturn(null).when(mojo).init();
@@ -136,6 +141,7 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         verify(mojo, never()).run(repository);
     }
 
+    @DisplayName("should be able to be skipped")
     @Test
     void testExecuteSkip() throws Exception {
         this.mojo.skip = true;
@@ -145,6 +151,7 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         verify(mojo, never()).run(repository);
     }
 
+    @DisplayName("should initialize the repository")
     @Test
     void testInit() throws Exception {
         doReturn(repository).when(this.mojo).initRepository();
@@ -152,6 +159,7 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         assertThat(mojo.init(), is(notNullValue()));
     }
 
+    @DisplayName("should handle errors while initializing")
     @Test
     void testInitError() throws Exception {
         GitRepositoryException exception = new GitRepositoryException("");
@@ -163,6 +171,7 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         assertThat(e.getMessage(), is(equalTo("Unable to initialize Git repository")));
     }
 
+    @DisplayName("should ignore errors when skipNoGit is set")
     @Test
     void testInitErrorSkipNoGit() throws Exception {
         this.mojo.skipNoGit = true;
@@ -172,6 +181,7 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         assertThat(mojo.init(), is(nullValue()));
     }
 
+    @DisplayName("should ignore errors when skipNoGit is set")
     @Test
     void testInitRepository() throws Exception {
         File baseDir = File.createTempFile("mavanagaiata-tests-baseDir", null);
@@ -195,6 +205,7 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         assertThat(repository.isChecked(), is(true));
     }
 
+    @DisplayName("should ignore non-existant repositories when skipNoGit is set")
     @Test
     void testSkipNoGit() throws Exception{
         this.mojo.skipNoGit = true;
@@ -204,6 +215,7 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         assertThat(mojo.init(), is(nullValue()));
     }
 
+    @DisplayName("should provide a generic way to add prefixed properties")
     @Test
     void testAddProperty() {
         Properties properties = this.mojo.project.getProperties();

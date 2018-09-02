@@ -29,6 +29,7 @@ import static org.mockito.Mockito.when;
 @DisplayName("CheckMojo")
 class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
 
+    @DisplayName("should warn when HEAD has been configured")
     @Test
     void testChangedHead() throws MavanagaiataMojoException {
         Log log = mock(Log.class);
@@ -43,6 +44,7 @@ class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
                 "the actual repository state.");
     }
 
+    @DisplayName("should fail when the branch does not match")
     @Test
     void testCheckBranchFailed() throws Exception {
         mojo.checkBranch = "production";
@@ -55,6 +57,7 @@ class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
         assertThat(e.isGraceful(), is(true));
     }
 
+    @DisplayName("should continue when the branch does match")
     @Test
     void testCheckBranchSuccess() throws Exception {
         mojo.checkBranch = "production";
@@ -64,6 +67,7 @@ class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
         mojo.run(repository);
     }
 
+    @DisplayName("should fail when the worktree is dirty")
     @Test
     void testCheckCleanFailed() throws Exception {
         mojo.checkClean = true;
@@ -76,6 +80,7 @@ class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
         assertThat(e.isGraceful(), is(true));
     }
 
+    @DisplayName("should continue when the worktree is clean")
     @Test
     void testCheckCleanSuccess() throws Exception {
         mojo.checkClean = true;
@@ -85,6 +90,7 @@ class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
         mojo.run(repository);
     }
 
+    @DisplayName("should fail when the HEAD commit message does not match")
     @Test
     void testCheckCommitMessageFailed() throws Exception {
         mojo.checkCommitMessage = "Release";
@@ -98,6 +104,7 @@ class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
         assertThat(e.isGraceful(), is(true));
     }
 
+    @DisplayName("should continue when the HEAD commit message matches")
     @Test
     void testCheckCommitMessageSuccess() throws Exception {
         mojo.checkCommitMessage = "Release";
@@ -108,6 +115,7 @@ class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
         mojo.run(repository);
     }
 
+    @DisplayName("should fail when HEAD is not tagged")
     @Test
     void testCheckTagFailed() throws Exception {
         mojo.checkTag = true;
@@ -120,6 +128,7 @@ class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
         assertThat(e.isGraceful(), is(true));
     }
 
+    @DisplayName("should continue when HEAD is tagged")
     @Test
     void testCheckTagSuccess() throws Exception {
         mojo.checkTag = true;
@@ -129,6 +138,7 @@ class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
         mojo.run(repository);
     }
 
+    @DisplayName("should warn when HEAD is tagged, but the worktree is dirty")
     @Test
     void testCheckTagSuccessUnclean() throws Exception {
         Log log = mock(Log.class);
@@ -144,6 +154,7 @@ class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
                 "the worktree is unclean. This is probably undesirable.");
     }
 
+    @DisplayName("should handle errors")
     @Test
     void testGenericFailure() throws Exception {
         Throwable exception = new GitRepositoryException("");
@@ -157,6 +168,7 @@ class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
         assertThat(e.isGraceful(), is(false));
     }
 
+    @DisplayName("should create a regular expression pattern for the commit message")
     @Test
     void testInitWithCommitMessagePattern() {
         mojo.checkCommitMessage = "Commit message";

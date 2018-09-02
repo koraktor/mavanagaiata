@@ -63,6 +63,7 @@ class ChangelogFormatTest {
         return new GregorianCalendar(2011, 3, 29).getTime();
     }
 
+    @DisplayName("should prepare escaped newlines and the date format")
     @Test
     void testPrepare() {
         assertThat(format.branch, is(equalTo("Branch\n%s")));
@@ -76,6 +77,7 @@ class ChangelogFormatTest {
         assertThat(format.tagLink, is(equalTo("Compare tag\n%s\n%s")));
     }
 
+    @DisplayName("should print the branch with the given format")
     @Test
     void testPrintBranch() throws IOException {
         format.printBranch("master");
@@ -89,6 +91,7 @@ class ChangelogFormatTest {
         assertOutputLine(null);
     }
 
+    @DisplayName("should print a file header with the given format")
     @Test
     void testPrintHeader() throws IOException {
         format.printHeader();
@@ -98,6 +101,7 @@ class ChangelogFormatTest {
         assertOutputLine(null);
     }
 
+    @DisplayName("should print a tag with the given format")
     @Test
     void testPrintTag() throws IOException {
         GitTag tag = new GitTag() {
@@ -131,6 +135,7 @@ class ChangelogFormatTest {
         assertOutputLine(null);
     }
 
+    @DisplayName("should print a commit with the given format")
     @Test
     void testPrintCommit() throws IOException {
         format.printCommit(commit());
@@ -140,6 +145,7 @@ class ChangelogFormatTest {
         assertOutputLine(null);
     }
 
+    @DisplayName("should print a commit with the given format optionally escaping HTML code")
     @Test
     void testPrintCommitEscapeHtml() throws IOException {
         format.escapeHtml = true;
@@ -150,6 +156,7 @@ class ChangelogFormatTest {
         assertOutputLine(null);
     }
 
+    @DisplayName("should be able to print compare links for the configured URL")
     @Test
     void testPrintCompareLink() throws IOException {
         format.printCompareLink("2.0.0", "master", true);
@@ -181,6 +188,7 @@ class ChangelogFormatTest {
         assertOutputLine(null);
     }
 
+    @DisplayName("should print a separator with the given format")
     @Test
     void testPrintSeparator() throws IOException {
         format.separator = "---";

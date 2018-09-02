@@ -38,6 +38,7 @@ class MailMapTest {
         repo = mock(GitRepository.class);
     }
 
+    @DisplayName("should be able to get a contributor’s canonical email address")
     @Test
     void testGetCanonicalMail() {
         MailMap mailMap = new MailMap(repo);
@@ -66,6 +67,7 @@ class MailMapTest {
         assertThat(mailMap.getCanonicalCommitterName(commit2), is(equalTo("Unknown")));
     }
 
+    @DisplayName("should be able to get a contributor’s canonical name")
     @Test
     void testGetCanonicalName() {
         MailMap mailMap = new MailMap(repo);
@@ -94,6 +96,7 @@ class MailMapTest {
         assertThat(mailMap.getCanonicalCommitterName(commit2), is(equalTo("Unknown")));
     }
 
+    @DisplayName("should be created empty")
     @Test
     void testNewInstance() {
         MailMap mailMap = new MailMap(repo);
@@ -106,6 +109,7 @@ class MailMapTest {
         assertThat(mailMap.repository, is(repo));
     }
 
+    @DisplayName("should to find the .mailmap file in the worktree")
     @Test
     void testParseFromRepository() throws Exception {
         final MailMap mailMap = spy(new MailMap(repo));
@@ -122,6 +126,7 @@ class MailMapTest {
         assertThat(mailMap.exists(), is(true));
     }
 
+    @DisplayName("should handle a missing .mailmap file")
     @Test
     void testParseFromRepositoryWithoutMailmap() throws Exception {
         MailMap mailMap = spy(new MailMap(repo));
@@ -135,6 +140,7 @@ class MailMapTest {
         assertThat(mailMap.exists(), is(false));
     }
 
+    @DisplayName("should be able to parse a .mailmap file")
     @Test
     void testParseFromFile() throws Exception {
         MailMap mailMap = new MailMap(repo);

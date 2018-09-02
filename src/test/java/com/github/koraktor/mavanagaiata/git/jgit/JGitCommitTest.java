@@ -22,6 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @DisplayName("JGitCommit")
 class JGitCommitTest {
 
+    @DisplayName("can be created from JGit’s RevCommit objects")
     @Test
     void test() {
         RevCommit rawCommit = RevCommit.parse(("tree 4b825dc642cb6eb9a060e54bf8d69288fbee4904\n" +
@@ -52,6 +53,7 @@ class JGitCommitTest {
         assertThat(commit.equals(authorDate), is(false));
     }
 
+    @DisplayName("should recognize merge commits")
     @Test
     void testMergeCommit() {
         RevCommit rawCommit = RevCommit.parse(("tree 4b825dc642cb6eb9a060e54bf8d69288fbee4904\n" +

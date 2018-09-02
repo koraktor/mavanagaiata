@@ -66,6 +66,7 @@ class JGitRepositoryTest {
         repository.repository = repo = mock(Repository.class, RETURNS_DEEP_STUBS);
     }
 
+    @DisplayName("should be able to create based on a worktree")
     @Test
     void testCreateWithWorkTree() throws Exception {
         File workTree = mock(File.class);
@@ -88,6 +89,7 @@ class JGitRepositoryTest {
         inOrder.verify(repoBuilder).setWorkTree(workTree);
     }
 
+    @DisplayName("should be able to create based on a worktree and explicit GIT_DIR")
     @Test
     void testCreateWithWorkTreeAndGitDir() throws Exception {
         File workTree = mock(File.class);
@@ -109,6 +111,7 @@ class JGitRepositoryTest {
         inOrder.verify(repoBuilder).setWorkTree(workTree);
     }
 
+    @DisplayName("should be able to create based on a subdirectory of a worktree")
     @Test
     void testCreateWithWorkTreeChild() throws Exception {
         File workTree = mock(File.class);
@@ -129,6 +132,7 @@ class JGitRepositoryTest {
         inOrder.verify(repoBuilder).setWorkTree(workTree);
     }
 
+    @DisplayName("should throw a specific error when unable to initialize")
     @Test
     void testBuildRepositoryFailure() throws Exception {
         repository = spy(repository);
@@ -147,6 +151,7 @@ class JGitRepositoryTest {
         assertThat(e.getMessage(), is(equalTo("Could not initialize repository")));
     }
 
+    @DisplayName("should check for a correct Git repository and fail")
     @Test
     void testCheckFails() {
         File gitDir = mock(File.class);
@@ -161,6 +166,7 @@ class JGitRepositoryTest {
         assertThat(e.getMessage(), is(equalTo("/some/repo/.git is not a Git repository.")));
     }
 
+    @DisplayName("should check for a correct Git repository of a worktree and fail")
     @Test
     void testCheckFailsWithWorktree() {
         File workTree = mock(File.class);
@@ -175,6 +181,7 @@ class JGitRepositoryTest {
         assertThat(e.getMessage(), is(equalTo("/some/repo is not a Git repository.")));
     }
 
+    @DisplayName("should check for a correct Git repository and succeed")
     @Test
     void testCheckSucceeds() throws GitRepositoryException {
         when(this.repo.getObjectDatabase().exists()).thenReturn(true);
@@ -182,6 +189,7 @@ class JGitRepositoryTest {
         this.repository.check();
     }
 
+    @DisplayName("should be able to check if the worktree is in a clean state")
     @Test
     void testClean() throws Exception {
         IndexDiff indexDiff = this.mockIndexDiff();
@@ -196,6 +204,7 @@ class JGitRepositoryTest {
         assertThat(this.repository.isDirty(false), is(false));
     }
 
+    @DisplayName("should be able to check if the worktree is in a clean state ignoring untracked filed")
     @Test
     void testCleanIgnoreUntracked() throws Exception {
         IndexDiff indexDiff = this.mockIndexDiff();
@@ -209,6 +218,7 @@ class JGitRepositoryTest {
         assertThat(this.repository.isDirty(true), is(false));
     }
 
+    @DisplayName("should close the underlying JGit repository")
     @Test
     void testClose() {
         this.repository.close();
@@ -216,12 +226,14 @@ class JGitRepositoryTest {
         verify(this.repo).close();
     }
 
+    @DisplayName("should not fail when closing a non-existing repository")
     @Test
     void testCloseNullRepository() {
         this.repository.repository = null;
         this.repository.close();
     }
 
+    @DisplayName("should be able to describe a tagged commit")
     @Test
     void testDescribeExactTagged() throws Exception {
         RevCommit head = this.createCommit();
@@ -247,6 +259,7 @@ class JGitRepositoryTest {
         assertThat(description.toString(), is(equalTo("2.0.0")));
     }
 
+    @DisplayName("should be able to describe a commit")
     @Test
     void testDescribeTagged() throws Exception {
         RevCommit head = this.createCommit();
@@ -278,8 +291,9 @@ class JGitRepositoryTest {
         assertThat(description.toString(), is(equalTo("2.0.0-2-g" + abbrevId.name())));
     }
 
+    @DisplayName("should be able to describe a merge commit where the nearest tag is in the first parent branch")
     @Test
-    void testDescribeTwoTags() throws Exception {
+    void testDescribeMergeCommitFirstBranch() throws Exception {
         RevCommit head = this.createCommit(2);
         RevCommit head_a1 = this.createCommit();
         RevCommit head_b1 = this.createCommit();
@@ -316,8 +330,9 @@ class JGitRepositoryTest {
         assertThat(description.toString(), is(equalTo("a1-3-g" + abbrevId.name())));
     }
 
+    @DisplayName("should be able to describe a merge commit where the nearest tag is in the second parent branch")
     @Test
-    void testDescribeTwoBranches() throws Exception {
+    void testDescribeMergeCommitSecondBranch() throws Exception {
         RevCommit head = this.createCommit(2);
         RevCommit head_a1 = this.createCommit();
         RevCommit head_a2 = this.createCommit();
@@ -356,6 +371,7 @@ class JGitRepositoryTest {
         assertThat(description.toString(), is(equalTo("b1-3-g" + abbrevId.name())));
     }
 
+    @DisplayName("should be able to describe a commit in an untagged branch")
     @Test
     void testDescribeUntagged() throws Exception {
         RevCommit head = this.createCommit();
@@ -378,6 +394,7 @@ class JGitRepositoryTest {
         assertThat(description.toString(), is(equalTo(abbrevId.name())));
     }
 
+    @DisplayName("should be able to abbreviate the ID of a commit")
     @Test
     void testGetAbbreviatedCommitId() throws Exception {
         RevCommit rawCommit = this.createCommit();
@@ -389,6 +406,7 @@ class JGitRepositoryTest {
         assertThat(this.repository.getAbbreviatedCommitId(commit), is(equalTo(rawCommit.getName().substring(0, 7))));
     }
 
+    @DisplayName("should handle errors during commit abbreviation")
     @Test
     void testGetAbbreviatedCommitIdFailure() throws Exception {
         RevCommit rawCommit = createCommit();
@@ -403,6 +421,7 @@ class JGitRepositoryTest {
         assertThat(e.getMessage(), is(equalTo("Commit \"" + commit.getId() + "\" could not be abbreviated.")));
     }
 
+    @DisplayName("should be able to get the current branch of a repository")
     @Test
     void testGetBranch() throws Exception {
         when(this.repo.getBranch()).thenReturn("master");
@@ -410,6 +429,7 @@ class JGitRepositoryTest {
         assertThat(this.repository.getBranch(), is(equalTo("master")));
     }
 
+    @DisplayName("should handle errors during getting the branch")
     @Test
     void testGetBranchFailure() throws Exception {
         FileNotFoundException exception = new FileNotFoundException();
@@ -421,6 +441,7 @@ class JGitRepositoryTest {
         assertThat(e.getMessage(), is(equalTo("Current branch could not be read.")));
     }
 
+    @DisplayName("should be able to get the RevCommit object of current HEAD commit")
     @Test
     void testGetHeadRevCommit() throws Exception {
         ObjectId head = mock(ObjectId.class);
@@ -432,6 +453,7 @@ class JGitRepositoryTest {
         assertThat(repository.headCommit, is(commit));
     }
 
+    @DisplayName("should cache the current HEAD commit")
     @Test
     void testGetCommitCached() throws Exception {
         RevCommit commit = mock(RevCommit.class);
@@ -442,6 +464,7 @@ class JGitRepositoryTest {
         verify(repository.repository, never()).parseCommit(any(ObjectId.class));
     }
 
+    @DisplayName("should be able to get the current HEAD commit")
     @Test
     void testGetHeadCommit() throws Exception {
         RevCommit head = this.createCommit();
@@ -452,6 +475,7 @@ class JGitRepositoryTest {
         assertThat(this.repository.getHeadCommit(), is(equalTo(headCommit)));
     }
 
+    @DisplayName("should be able to get the current HEAD’s ID")
     @Test
     void testGetHeadObject() throws Exception {
         ObjectId head = mock(ObjectId.class);
@@ -461,6 +485,7 @@ class JGitRepositoryTest {
         assertThat(repository.headObject, is(head));
     }
 
+    @DisplayName("should handle errors while getting the current HEAD’s ID")
     @Test
     void testGetHeadObjectFailure() throws Exception {
         Throwable exception = mock(IOException.class);
@@ -474,6 +499,7 @@ class JGitRepositoryTest {
         assertThat(e.getMessage(), is(equalTo("Ref \"broken\" could not be resolved.")));
     }
 
+    @DisplayName("should return the zero ID if the HEAD is unknown")
     @Test
     void testGetHeadObjectInvalidRef() throws Exception {
         when(repo.resolve("HEAD")).thenReturn(null);
@@ -481,6 +507,7 @@ class JGitRepositoryTest {
         assertThat(repository.getHeadObject(), is(equalTo(ObjectId.zeroId())));
     }
 
+    @DisplayName("should cache the HEAD’s ID")
     @Test
     void testGetHeadObjectCached() throws Exception {
         this.repository.setHeadRef("HEAD");
@@ -492,6 +519,7 @@ class JGitRepositoryTest {
         verify(this.repo, never()).resolve(any(String.class));
     }
 
+    @DisplayName("should be able to get the tags")
     @Test
     void testGetTags() throws Exception {
         RevWalk revWalk = mockRevWalk();
@@ -521,6 +549,7 @@ class JGitRepositoryTest {
         assertThat(repository.getTags(), is(equalTo(tags)));
     }
 
+    @DisplayName("should be able to check if the worktree is dirty")
     @Test
     void testIsDirty() throws Exception {
         IndexDiff indexDiff = this.mockIndexDiff();
@@ -531,6 +560,7 @@ class JGitRepositoryTest {
         assertThat(this.repository.isDirty(false), is(true));
     }
 
+    @DisplayName("should handle errors while checking if the worktree is dirty")
     @Test
     void testIsDirtyFailure() throws Exception {
         Throwable exception = new IOException();
@@ -543,6 +573,7 @@ class JGitRepositoryTest {
         assertThat(e.getMessage(), is(equalTo("Could not create repository diff.")));
     }
 
+    @DisplayName("should be able to check if the worktree dirty ignoring untracked files")
     @Test
     void testIsDirtyIgnoreUntracked() throws Exception {
         IndexDiff indexDiff = this.mockIndexDiff();
@@ -553,6 +584,7 @@ class JGitRepositoryTest {
         assertThat(this.repository.isDirty(true), is(true));
     }
 
+    @DisplayName("should know if HEAD is on an unborn branch")
     @Test
     void testIsOnUnbornBranch() throws Exception {
         when(repo.resolve("HEAD")).thenReturn(ObjectId.zeroId());
@@ -560,6 +592,7 @@ class JGitRepositoryTest {
         assertThat(repository.isOnUnbornBranch(), is(true));
     }
 
+    @DisplayName("should be able to read information from a tag")
     @Test
     void testLoadTag() throws Exception {
         RevTag rawTag = RevTag.parse(("object 4b825dc642cb6eb9a060e54bf8d69288fbee4904\n" +
@@ -581,6 +614,7 @@ class JGitRepositoryTest {
         verify(repository.revWalk).parseBody(rawTag);
     }
 
+    @DisplayName("should allow walking the HEAD’s history with a CommitWalkAction")
     @Test
     void testWalkCommits() throws Exception {
         CommitWalkAction action = mock(CommitWalkAction.class);
@@ -606,6 +640,7 @@ class JGitRepositoryTest {
         inOrder.verifyNoMoreInteractions();
     }
 
+    @DisplayName("should allow getting the worktree")
     @Test
     void testGetWorktree() {
         assertThat(repository.getWorkTree(), is(equalTo(repo.getWorkTree())));

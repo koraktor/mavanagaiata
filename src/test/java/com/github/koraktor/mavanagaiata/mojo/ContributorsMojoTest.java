@@ -66,11 +66,13 @@ class ContributorsMojoTest extends GitOutputMojoAbstractTest<ContributorsMojo> {
         }).when(this.repository).walkCommits(any(ContributorsMojo.ContributorsWalkAction.class));
     }
 
+    @DisplayName("should handle errors")
     @Test
     void testError() {
         super.testError("Unable to read contributors from Git");
     }
 
+    @DisplayName("should allow configuration of the sort order")
     @Test
     void testInitConfiguration() {
         this.mojo.sort = null;
@@ -94,6 +96,7 @@ class ContributorsMojoTest extends GitOutputMojoAbstractTest<ContributorsMojo> {
         assertThat(this.mojo.sort, is(equalTo("count")));
     }
 
+    @DisplayName("should allow configuration of the sort order")
     @Test
     void testCustomization() throws Exception {
         this.mojo.contributorPrefix = "- ";
@@ -114,6 +117,7 @@ class ContributorsMojoTest extends GitOutputMojoAbstractTest<ContributorsMojo> {
         this.assertOutputLine(null);
     }
 
+    @DisplayName("should be able to sort by count")
     @Test
     void testSortCount() throws Exception {
         this.mojo.sort = "count";
@@ -130,6 +134,7 @@ class ContributorsMojoTest extends GitOutputMojoAbstractTest<ContributorsMojo> {
         this.assertOutputLine(null);
     }
 
+    @DisplayName("should be able to sort by date")
     @Test
     void testSortDate() throws Exception {
         this.mojo.sort = "date";
@@ -146,6 +151,7 @@ class ContributorsMojoTest extends GitOutputMojoAbstractTest<ContributorsMojo> {
         this.assertOutputLine(null);
     }
 
+    @DisplayName("should be able to sort by name")
     @Test
     void testSortName() throws Exception {
         this.mojo.sort = "name";

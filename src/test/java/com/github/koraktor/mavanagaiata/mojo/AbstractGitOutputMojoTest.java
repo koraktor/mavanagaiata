@@ -48,6 +48,7 @@ class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> 
         mojo.footer = "";
     }
 
+    @DisplayName("should use standard out when no file is given")
     @Test
     void testInitStdout() throws Exception {
         mojo.setOutputFile(null);
@@ -56,6 +57,7 @@ class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> 
         assertThat(mojo.printStream, is(System.out));
     }
 
+    @DisplayName("should create a print stream for the output file")
     @Test
     void testInitOutputFile() throws Exception {
         File outputFile = mock(File.class);
@@ -74,6 +76,7 @@ class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> 
         assertThat(genericMojo().printStream, is(printStream));
     }
 
+    @DisplayName("should create output directories if necessary")
     @Test
     void testInitOutputFileCreateDirectories() throws Exception {
         File outputFile = mock(File.class);
@@ -92,6 +95,7 @@ class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> 
         assertThat(((GenericAbstractGitOutputMojo) mojo).printStream, is(printStream));
     }
 
+    @DisplayName("should throw the correct exception when the output directory cannot be created")
     @Test
     void testInitOutputFileCreateDirectoriesFailed() throws Exception {
         File outputFile = mock(File.class);
@@ -113,6 +117,7 @@ class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> 
         assertThat(e.getCause(), is(nullValue()));
     }
 
+    @DisplayName("should throw the correct exception when the output file cannot be written")
     @Test
     void testInitOutputFileException() throws Exception {
         FileNotFoundException fileNotFoundException = mock(FileNotFoundException.class);
@@ -133,6 +138,7 @@ class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> 
         assertThat(e.getCause(), is(fileNotFoundException));
     }
 
+    @DisplayName("should print a footer when configured")
     @Test
     void testGenerateOutputWithFooter() throws MavanagaiataMojoException {
         mojo.footer = "Test footer";
@@ -143,6 +149,7 @@ class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> 
         verify(mojo.printStream).flush();
     }
 
+    @DisplayName("should add a newline at the end if no footer is configured")
     @Test
     void testGenerateOutputWithoutFooter() throws MavanagaiataMojoException {
         mojo.printStream = mock(PrintStream.class);

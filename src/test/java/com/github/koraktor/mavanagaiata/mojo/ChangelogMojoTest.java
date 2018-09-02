@@ -96,6 +96,7 @@ class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
         }).when(repository).walkCommits(any(ChangelogMojo.ChangelogWalkAction.class));
     }
 
+    @DisplayName("should handle errors while generating the changelog")
     @Test
     void testError() {
         mojo.initConfiguration();
@@ -103,6 +104,7 @@ class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
         super.testError("Unable to generate changelog from Git");
     }
 
+    @DisplayName("should configure the URL of the changelog format")
     @Test
     void testCreateLinks() {
         mojo.initConfiguration();
@@ -125,6 +127,7 @@ class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
         assertThat(mojo.format.baseUrl, is(equalTo("https://github.com/koraktor/mavanagaiata")));
     }
 
+    @DisplayName("should configure the changelog format")
     @Test
     void testCustomization() throws Exception {
         ChangelogDefaultFormat format = new ChangelogDefaultFormat();
@@ -174,6 +177,7 @@ class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
         assertOutputLine(null);
     }
 
+    @DisplayName("should have a default changelog format")
     @Test
     void testInitConfiguration() {
         mojo.initConfiguration();
@@ -181,6 +185,7 @@ class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
         assertThat(mojo.format, is(instanceOf(ChangelogFormat.class)));
     }
 
+    @DisplayName("should have provide a Markdown changelog format")
     @Test
     void testInitConfigurationMarkdownFormat() {
         mojo.formatTemplate = ChangelogFormat.Formats.MARKDOWN;
@@ -197,6 +202,7 @@ class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
         assertThat(mojo.format.tagLink, is(equalTo(markdownFormat.tagLink)));
     }
 
+    @DisplayName("should allow custom changelog URLs")
     @Test
     void testLinksCustom() {
         mojo.linkToUser = "koraktor";
@@ -208,6 +214,7 @@ class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
         assertThat(mojo.format.baseUrl, is(equalTo("https://git.example.com/koraktor/mavanagaiata")));
     }
 
+    @DisplayName("should default to GitHub URLs")
     @Test
     void testLinksGitHub() {
         mojo.linkToUser = "koraktor";
@@ -218,6 +225,7 @@ class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
         assertThat(mojo.format.baseUrl, is(equalTo("https://github.com/koraktor/mavanagaiata")));
     }
 
+    @DisplayName("should provide GitLab URLs")
     @Test
     void testLinksGitLab() {
         mojo.linkTo = ChangelogMojo.LinkToBaseUrl.GITLAB;
@@ -229,6 +237,7 @@ class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
         assertThat(mojo.format.baseUrl, is(equalTo("https://gitlab.com/koraktor/mavanagaiata")));
     }
 
+    @DisplayName("should be able to generate a changelog")
     @Test
     void testResult() throws Exception {
         mojo.initConfiguration();
@@ -258,6 +267,7 @@ class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
         assertOutputLine(null);
     }
 
+    @DisplayName("should be able to generate a changelog skipping commits matching a pattern")
     @Test
     void testSkipCommits() throws Exception {
         mojo.skipCommitsMatching = "\\[ci skip\\]";
@@ -287,6 +297,7 @@ class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
         assertOutputLine(null);
     }
 
+    @DisplayName("should be able to generate a changelog when the first commit is tagged")
     @Test
     void testStartTagged() throws Exception {
         mockCommits = mockCommits.subList(2, mockCommits.size());
@@ -313,6 +324,7 @@ class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
         assertOutputLine(null);
     }
 
+    @DisplayName("should be able to generate a changelog skipping all tagged commits")
     @Test
     void testSkipTagged() throws Exception {
         mojo.skipTagged = true;
@@ -341,6 +353,7 @@ class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
         assertOutputLine(null);
     }
 
+    @DisplayName("should be able to generate a changelog when there are no tags")
     @Test
     void testUntaggedProject() throws Exception {
         when(repository.getTags())

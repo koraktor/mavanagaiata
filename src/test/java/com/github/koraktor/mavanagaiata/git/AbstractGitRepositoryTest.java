@@ -85,6 +85,7 @@ class AbstractGitRepositoryTest {
 
     }
 
+    @DisplayName("should be able to abbreviate the HEAD commit")
     @Test
     void testGetAbbreviatedHead() throws Exception {
         GitRepository repo = new GenericGitRepository();
@@ -92,6 +93,7 @@ class AbstractGitRepositoryTest {
         assertThat(repo.getAbbreviatedCommitId(), is(equalTo("deadbeef")));
     }
 
+    @DisplayName("should be able to get the mailmap")
     @Test
     void testGetMailMap() throws Exception {
         GitRepository repo = new GenericGitRepository();
@@ -104,6 +106,7 @@ class AbstractGitRepositoryTest {
         assertThat(mailMap.nameAndMailToNameAndMailMap, is(notNullValue()));
     }
 
+    @DisplayName("should cache the mailmap")
     @Test
     void testGetMailMapAlreadyParsed() {
         AbstractGitRepository repo = new GenericGitRepository();

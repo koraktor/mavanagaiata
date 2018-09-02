@@ -19,6 +19,7 @@ import static org.hamcrest.core.IsEqual.*;
 @DisplayName("JGitTag")
 class JGitTagTest {
 
+    @DisplayName("can be created from JGit’s RevTag objects")
     @Test
     void testNewInstance() throws Exception {
         RevTag rawTag = RevTag.parse(("object 4b825dc642cb6eb9a060e54bf8d69288fbee4904\n" +

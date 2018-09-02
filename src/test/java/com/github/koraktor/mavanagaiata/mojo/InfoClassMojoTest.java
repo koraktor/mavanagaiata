@@ -75,6 +75,7 @@ class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
         timestamp = calendar.getTime();
     }
 
+    @DisplayName("should handle errors while creating the source file")
     @Test
     void testFailureCreateSource() throws Exception {
         Throwable exception = new FileNotFoundException();
@@ -86,6 +87,7 @@ class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
         assertThat(e.getMessage(), is(equalTo("Could not create info class source")));
     }
 
+    @DisplayName("should handle errors while reading the repository")
     @Test
     void testFailureRepository() throws Exception {
         Throwable exception = new GitRepositoryException("");
@@ -96,6 +98,7 @@ class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
         assertThat(e.getMessage(), is(equalTo("Could not get all information from repository")));
     }
 
+    @DisplayName("should provide a MapBasedValueSource with all information")
     @Test
     void testGetValueSource() throws Exception {
         MapBasedValueSource valueSource = mojo.getValueSource(repository);
@@ -114,6 +117,7 @@ class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
         assertThat(valueSource.getValue("VERSION").toString(), is(equalTo("1.2.3")));
     }
 
+    @DisplayName("should handle dirty worktrees")
     @Test
     void testGetValueSourceDirty() throws Exception {
         when(repository.isDirty(mojo.dirtyIgnoreUntracked)).thenReturn(true);
@@ -135,6 +139,7 @@ class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
         assertThat(valueSource.getValue("VERSION").toString(), is(equalTo("1.2.3")));
     }
 
+    @DisplayName("should handle ignore dirty worktrees if configured")
     @Test
     void testGetValueSourceDisabledDirtyFlag() throws Exception {
         when(repository.isDirty(mojo.dirtyIgnoreUntracked)).thenReturn(true);
@@ -157,6 +162,7 @@ class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
         assertThat(valueSource.getValue("VERSION").toString(), is(equalTo("1.2.3")));
     }
 
+    @DisplayName("should copy the generated file into the target directory")
     @Test
     void testResult() throws Exception {
         mojo.run(repository);

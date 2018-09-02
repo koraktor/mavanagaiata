@@ -28,6 +28,7 @@ class GitTagDescriptionTest {
         when(tag.getName()).thenReturn("1.0.0");
     }
 
+    @DisplayName("should print a correct description")
     @Test
     void test() {
         GitTagDescription description = new GitTagDescription("deadbeef", tag, 3);
@@ -37,6 +38,7 @@ class GitTagDescriptionTest {
         assertThat(description.toString(), is(equalTo("1.0.0-3-gdeadbeef")));
     }
 
+    @DisplayName("should print a correct description without a previous tag")
     @Test
     void testNoTag() {
         GitTagDescription description = new GitTagDescription("deadbeef", null, -1);
@@ -46,6 +48,7 @@ class GitTagDescriptionTest {
         assertThat(description.toString(), is(equalTo("deadbeef")));
     }
 
+    @DisplayName("should print a correct description if the commit is tagged")
     @Test
     void testTagged() {
         GitTagDescription description = new GitTagDescription("deadbeef", tag, 0);
