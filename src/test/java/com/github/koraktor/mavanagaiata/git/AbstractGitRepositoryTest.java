@@ -111,12 +111,4 @@ class AbstractGitRepositoryTest {
 
         verifyNoMoreInteractions(repo.mailMap);
     }
-
-    @Test
-    void testSetHeadRef() {
-        AbstractGitRepository repo = new GenericGitRepository();
-        repo.setHeadRef("HEAD");
-
-        assertThat(repo.headRef, is(equalTo("HEAD")));
-    }
 }

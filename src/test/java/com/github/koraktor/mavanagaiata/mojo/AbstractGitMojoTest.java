@@ -24,7 +24,6 @@ import org.mockito.InOrder;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.core.IsSame.sameInstance;
@@ -194,15 +193,6 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
         assertThat(repository.getHeadRef(), is(equalTo("HEAD")));
         assertThat(repository.getWorkTree(), is(baseDir));
         assertThat(repository.isChecked(), is(true));
-    }
-
-    @Test
-    void testSkip() throws Exception {
-        mojo.skip = true;
-
-        mojo.execute();
-
-        verify(mojo, never()).init();
     }
 
     @Test
