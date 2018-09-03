@@ -4,7 +4,7 @@ Mavanagaiata
 [![Build Status](https://travis-ci.org/koraktor/mavanagaiata.svg?branch=master)](https://travis-ci.org/koraktor/mavanagaiata)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/48f1db9ad5dcfe3b99d1/test_coverage)](https://codeclimate.com/github/koraktor/mavanagaiata/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/48f1db9ad5dcfe3b99d1/maintainability)](https://codeclimate.com/github/koraktor/mavanagaiata/maintainability)
-[![Maven Release](https://img.shields.io/maven-central/v/com.github.koraktor/mavanagaiata.svg)](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.github.koraktor%22%20AND%20a%3A%22mavanagaiata%22)
+[![Maven Release](https://img.shields.io/maven-central/v/com.github.koraktor/mavanagaiata.svg)](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.github.koraktor%22%20AND%20a%3A%22mavanagaiata%22)
 
 Mavanagaiata – \[maˈvanaˈɡaːjaˈta\] – is a Maven plugin providing information
 about the Git repository of your project.
@@ -119,7 +119,7 @@ included LICENSE file.
 * [Mavanagaiata home](https://koraktor.de/mavanagaiata)
 * [GitHub project page][1]
 * [Gitter chat](https://gitter.im/koraktor/mavanagaiata)
-* [Google group](http://groups.google.com/group/mavanagaiata)
+* [Google group](https://groups.google.com/group/mavanagaiata)
 * [Open Hub profile](https://www.openhub.net/p/mavanagaiata)
 
  [1]: https://github.com/koraktor/mavanagaiata
