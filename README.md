@@ -9,33 +9,10 @@ Mavanagaiata
 Mavanagaiata – \[maˈvanaˈɡaːjaˈta\] – is a Maven plugin providing information
 about the Git repository of your project.
 
-## Requirements
-
- * Maven 3.0.5 or newer
-
-## Dependencies
-
- * Apache Commons IO 2.6
- * Apache Commons Lang 3.7
- * Apache Commons Text 1.4
- * JGit 5.0.3
- * Maven Filtering 3.1.1
-
-## Installation
+## Usage & Installation
 
 Mavanagaiata is available from the Central Repository and will be automatically
-installed by Maven once you add it as a plugin to your project. If you want to
-have the newest features available in the development code or you want to hack
-on the code you are free to clone the Git repository and install it manually.
-You can do so using the following commands:
-
-```bash
-$ git clone git://github.com/koraktor/mavanagaiata.git
-$ cd mavanagaiata
-$ mvn install
-```
-
-## Usage
+installed by Maven once you add it as a plugin to your project.
 
 To use the Mavanagaiata plugin in your Maven project you will have to include
 the plugin in your POM and add the configuration suitable for your needs:
@@ -53,6 +30,8 @@ the plugin in your POM and add the configuration suitable for your needs:
                         <id>load-git-branch</id>
                         <goals>
                             <goal>branch</goal>
+                            <goal>commit</goal>
+                            <goal>tag</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -65,10 +44,43 @@ the plugin in your POM and add the configuration suitable for your needs:
 ```
 
 For more information on the existing goals and their configuration can be found
-in the [Plugin Documentation][3].
+in the [Plugin Documentation][plugin].
 
-A more complete usage example can be found in Mavanagaiata’s own [`pom.xml`][4].
-Yes, Mavanagaiata is used to build Mavanagaiata.
+A more complete usage example can be found in Mavanagaiata’s own
+[`pom.xml`][pom]. Yes, Mavanagaiata is used to build Mavanagaiata.
+
+## Requirements
+
+ * Maven 3.0.5 or newer
+
+## Dependencies
+
+ * Apache Commons IO 2.6
+ * Apache Commons Lang 3.7
+ * Apache Commons Text 1.4
+ * JGit 5.0.3
+ * Maven Filtering 3.1.1
+ 
+## Contribute
+
+Mavanagaiata is an open-source project. Therefore you are free to help
+improving it. There are several ways of contributing to Mavanagaiata’s
+development:
+
+* Build projects using it and spread the word.
+* Report problems and request features using the [issue tracker][issues].
+* Write patches yourself to fix bugs and implement new functionality.
+* Create a Mavanagaiata fork on [GitHub][github] and start hacking. Extra
+  points for using GitHub’s pull requests and feature branches.
+
+If you want to hack on the code you are free to clone the Git repository. You
+can do so using the following commands:
+
+```bash
+$ git clone git://github.com/koraktor/mavanagaiata.git
+$ cd mavanagaiata
+$ mvn install
+```
 
 ## About the name
 
@@ -85,18 +97,6 @@ In Java code you would write this as:
 ("mvn" + "git").replaceAll("(.)", "$1a")
 => "mavanagaiata"
 ```
-
-## Contribute
-
-Mavanagaiata is an open-source project. Therefore you are free to help
-improving it. There are several ways of contributing to Mavanagaiata’s
-development:
-
-* Build projects using it and spread the word.
-* Report problems and request features using the [issue tracker][2].
-* Write patches yourself to fix bugs and implement new functionality.
-* Create a Mavanagaiata fork on [GitHub][1] and start hacking. Extra points for
-  using GitHub’s pull requests and feature branches.
 
 ## License
 
@@ -117,12 +117,12 @@ included LICENSE file.
 ## See Also
 
 * [Mavanagaiata home](https://koraktor.de/mavanagaiata)
-* [GitHub project page][1]
+* [GitHub project page][github]
 * [Gitter chat](https://gitter.im/koraktor/mavanagaiata)
 * [Google group](https://groups.google.com/group/mavanagaiata)
 * [Open Hub profile](https://www.openhub.net/p/mavanagaiata)
 
- [1]: https://github.com/koraktor/mavanagaiata
- [2]: https://github.com/koraktor/mavanagaiata/issues
- [3]: http://koraktor.de/mavanagaiata/plugin-info.html
- [4]: https://github.com/koraktor/mavanagaiata/blob/master/pom.xml
+ [github]: https://github.com/koraktor/mavanagaiata
+ [issues]: https://github.com/koraktor/mavanagaiata/issues
+ [plugin]: https://koraktor.de/mavanagaiata/plugin-info.html
+ [pom]: https://github.com/koraktor/mavanagaiata/blob/master/pom.xml
