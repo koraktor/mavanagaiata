@@ -1,7 +1,7 @@
 Usage
 =====
 
-### Add the plugin to your project
+<h3>Add the plugin to your project</h3>
 
 Adding the plugin to your POM will allow you to use its goals in your build:
 
@@ -19,13 +19,13 @@ Adding the plugin to your POM will allow you to use its goals in your build:
         </plugins>
     </build>
 
-### Command-line usage
+<h3>Command-line usage</h3>
 
 You may also call some of the goals directly from the command-line:
 
     $ mvn ${project.groupId}:${project.artifactId}:changelog
 
-You can see a list of all available goals [here](../plugin-info.html) or via
+You can see a list of all available goals [here](./plugin-info.html) or via
 the `help` goal:
 
     $ mvn ${project.groupId}:${project.artifactId}:help
