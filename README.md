@@ -18,7 +18,7 @@ about the Git repository of your project.
  * Apache Commons IO 2.6
  * Apache Commons Lang 3.7
  * Apache Commons Text 1.4
- * JGit 5.0.2
+ * JGit 5.0.3
  * Maven Filtering 3.1.1
 
 ## Installation
