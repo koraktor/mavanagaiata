@@ -135,7 +135,7 @@
                                     <goal>check</goal>
                                 </goals>
                                 <configuration>
-                                    <requireTagged>true</requireTagged>
+                                    <checkTag>true</checkTag>
                                 </configuration>
                             </execution>
                             <execution>
