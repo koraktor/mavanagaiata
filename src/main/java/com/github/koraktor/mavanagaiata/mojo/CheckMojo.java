@@ -60,7 +60,7 @@ public class CheckMojo extends AbstractGitMojo {
     /**
      * Check whether the current commit is tagged
      */
-    @Parameter(property = "mavanagaiata.requireTag",
+    @Parameter(property = "mavanagaiata.checkTag",
                defaultValue = "false")
     boolean checkTag;
 
