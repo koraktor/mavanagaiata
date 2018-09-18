@@ -122,6 +122,8 @@ public class ChangelogFormat {
                 orElse(original.commitPrefix);
             createLinks = Optional.ofNullable(format.createLinks).
                 orElse(original.createLinks);
+            escapeHtml = Optional.ofNullable(format.escapeHtml).
+                orElse(original.escapeHtml);
             header = Optional.ofNullable(format.header).
                 orElse(original.header);
             separator = Optional.ofNullable(format.separator).
