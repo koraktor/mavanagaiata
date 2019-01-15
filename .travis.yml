@@ -11,7 +11,7 @@ jdk:
   - openjdk-ea
 matrix:
   allow_failures:
-    - jdk: oraclejdk-ea
+    - jdk: openjdk-ea
   fast_finish: true
 
 cache:
