@@ -111,7 +111,7 @@
     </contributors>
 
     <properties>
-        <jgit.version>5.2.0.201812061821-r</jgit.version>
+        <jgit.version>5.2.1.201812262042-r</jgit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
