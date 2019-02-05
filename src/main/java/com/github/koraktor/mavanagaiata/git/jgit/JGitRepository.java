@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2018, Sebastian Staudt
+ * Copyright (c) 2012-2019, Sebastian Staudt
  *               2015, Kay Hannay
  */
 
@@ -38,9 +38,10 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 
-import static java.util.Collections.min;
-import static java.util.Comparator.comparingInt;
-import static org.eclipse.jgit.lib.Constants.R_TAGS;
+import static java.util.Collections.*;
+import static java.util.Comparator.*;
+import static org.apache.commons.io.FileUtils.*;
+import static org.eclipse.jgit.lib.Constants.*;
 
 /**
  * Wrapper around JGit's {@link Repository} object to represent a Git
@@ -94,11 +95,37 @@ public class JGitRepository extends AbstractGitRepository {
 
         FileRepositoryBuilder repositoryBuilder = getRepositoryBuilder();
         if (gitDir == null) {
-            if (repositoryBuilder.findGitDir(workTree).getGitDir() == null) {
+            File foundGitDir = repositoryBuilder.findGitDir(workTree).getGitDir();
+            if (foundGitDir == null) {
                 throw new GitRepositoryException(workTree + " is not inside a Git repository. Please specify the GIT_DIR separately.");
             }
 
-            repositoryBuilder.setWorkTree(repositoryBuilder.getGitDir().getParentFile());
+            try {
+                if (!directoryContains(workTree, foundGitDir)) {
+                    if (directoryContains(foundGitDir.getParentFile(), workTree)) {
+                        repositoryBuilder.setGitDir(foundGitDir);
+                        repositoryBuilder.setWorkTree(foundGitDir.getParentFile());
+                    } else {
+                        File commonDir = new File(foundGitDir, "commondir");
+                        String realGitDirPath = readFileToString(commonDir, "UTF-8").trim();
+
+                        File realGitDir = new File(foundGitDir, realGitDirPath);
+                        if (!realGitDir.exists()) {
+                            realGitDir = new File(realGitDirPath);
+                        }
+
+                        if (realGitDir.exists()) {
+                            repositoryBuilder.setGitDir(realGitDir);
+                            repositoryBuilder.setWorkTree(workTree);
+                        }
+                    }
+                } else {
+                    repositoryBuilder.setGitDir(foundGitDir);
+                    repositoryBuilder.setWorkTree(workTree);
+                }
+            } catch (IOException e) {
+                throw new GitRepositoryException("Failure while resolving GIT_DIR.", e);
+            }
         } else {
             repositoryBuilder.setGitDir(gitDir);
             repositoryBuilder.setWorkTree(workTree);

@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2018, Sebastian Staudt
+ * Copyright (c) 2012-2019, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git.jgit;
@@ -10,6 +10,7 @@ package com.github.koraktor.mavanagaiata.git.jgit;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TimeZone;
+
+import org.apache.commons.io.FileUtils;
 
 import org.mockito.InOrder;
 
@@ -69,11 +72,15 @@ class JGitRepositoryTest {
     @DisplayName("should be able to create based on a worktree")
     @Test
     void testCreateWithWorkTree() throws Exception {
-        File workTree = mock(File.class);
-        when(workTree.exists()).thenReturn(true);
+        File workTree = File.createTempFile("workTree", null);
+        if (workTree.delete() && workTree.mkdir()) {
+            workTree.deleteOnExit();
+        }
 
-        File gitDir = mock(File.class);
-        when(gitDir.getParentFile()).thenReturn(workTree);
+        File gitDir = new File(workTree, ".git");
+        if (gitDir.mkdir()) {
+            gitDir.deleteOnExit();
+        }
 
         FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class);
         when(repoBuilder.findGitDir(any())).thenReturn(repoBuilder);
@@ -114,13 +121,24 @@ class JGitRepositoryTest {
     @DisplayName("should be able to create based on a subdirectory of a worktree")
     @Test
     void testCreateWithWorkTreeChild() throws Exception {
-        File workTree = mock(File.class);
+        File workTree = File.createTempFile("workTree", null);
+        if (workTree.delete() && workTree.mkdir()) {
+            workTree.deleteOnExit();
+        }
 
-        File workTreeChild = mock(File.class);
-        when(workTreeChild.exists()).thenReturn(true);
+        File workTreeChild = new File(workTree, "child");
+        if (workTreeChild.mkdir()) {
+            workTreeChild.deleteOnExit();
+        }
+
+        File gitDir = new File(workTree, ".git");
+        if (gitDir.mkdir()) {
+            gitDir.deleteOnExit();
+        }
 
         FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class, RETURNS_DEEP_STUBS);
-        when(repoBuilder.getGitDir().getParentFile()).thenReturn(workTree);
+        when(repoBuilder.findGitDir(any())).thenReturn(repoBuilder);
+        when(repoBuilder.getGitDir()).thenReturn(gitDir);
 
         JGitRepository repository = spy(new JGitRepository());
         when(repository.getRepositoryBuilder()).thenReturn(repoBuilder);
@@ -129,6 +147,40 @@ class JGitRepositoryTest {
 
         InOrder inOrder = inOrder(repoBuilder);
         inOrder.verify(repoBuilder).findGitDir(workTreeChild);
+        inOrder.verify(repoBuilder).setWorkTree(workTree);
+    }
+
+    @DisplayName("should be able to create based on a linked worktree")
+    @Test
+    void testCreateWithLinkedWorktree() throws Exception {
+        File realGitDir = File.createTempFile(".git", null);
+        if (realGitDir.delete() && realGitDir.mkdir()) {
+            realGitDir.deleteOnExit();
+        }
+
+        File gitDir = new File(realGitDir, ".git/worktrees/test");
+        if (gitDir.mkdir()) {
+            gitDir.deleteOnExit();
+        }
+
+        File workTree = File.createTempFile("workTree", null);
+        if (workTree.delete() && workTree.mkdir()) {
+            workTree.deleteOnExit();
+        }
+
+        FileUtils.writeStringToFile(new File(gitDir, "commondir"), realGitDir.getAbsolutePath(), Charset.forName("UTF-8"));
+
+        FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class, RETURNS_DEEP_STUBS);
+        when(repoBuilder.findGitDir(any())).thenReturn(repoBuilder);
+        when(repoBuilder.getGitDir()).thenReturn(gitDir);
+
+        JGitRepository repository = spy(new JGitRepository());
+        when(repository.getRepositoryBuilder()).thenReturn(repoBuilder);
+
+        repository.buildRepository(workTree, null);
+
+        InOrder inOrder = inOrder(repoBuilder);
+        inOrder.verify(repoBuilder).setGitDir(realGitDir);
         inOrder.verify(repoBuilder).setWorkTree(workTree);
     }
 
