@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"com.github.koraktor.mavanagaiata.git"},{"l":"com.github.koraktor.mavanagaiata.git.jgit"},{"l":"com.github.koraktor.mavanagaiata.mojo"}]
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.github.koraktor.mavanagaiata.git"},{"l":"com.github.koraktor.mavanagaiata.git.jgit"},{"l":"com.github.koraktor.mavanagaiata.mojo"}]
