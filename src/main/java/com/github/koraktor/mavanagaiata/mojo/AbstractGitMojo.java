@@ -233,9 +233,8 @@ abstract class AbstractGitMojo extends AbstractMojo {
      *         repository fails
      */
     protected GitRepository initRepository() throws GitRepositoryException {
-        GitRepository repository = new JGitRepository(baseDir, gitDir);
+        GitRepository repository = new JGitRepository(baseDir, gitDir, head);
         repository.check();
-        repository.setHeadRef(head);
 
         return repository;
     }

@@ -168,6 +168,7 @@ class JGitRepositoryTest {
             workTree.deleteOnExit();
         }
 
+        FileUtils.writeStringToFile(new File(gitDir, "HEAD"), "ref: refs/heads/test", Charset.forName("UTF-8"));
         FileUtils.writeStringToFile(new File(gitDir, "commondir"), realGitDir.getAbsolutePath(), Charset.forName("UTF-8"));
 
         FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class, RETURNS_DEEP_STUBS);
@@ -175,9 +176,12 @@ class JGitRepositoryTest {
         when(repoBuilder.getGitDir()).thenReturn(gitDir);
 
         JGitRepository repository = spy(new JGitRepository());
+        repository.setHeadRef("HEAD");
         when(repository.getRepositoryBuilder()).thenReturn(repoBuilder);
 
         repository.buildRepository(workTree, null);
+
+        assertThat(repository.getHeadRef(), is(equalTo("refs/heads/test")));
 
         InOrder inOrder = inOrder(repoBuilder);
         inOrder.verify(repoBuilder).setGitDir(realGitDir);

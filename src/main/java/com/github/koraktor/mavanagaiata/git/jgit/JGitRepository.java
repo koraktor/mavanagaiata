@@ -10,6 +10,7 @@ package com.github.koraktor.mavanagaiata.git.jgit;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -73,11 +74,14 @@ public class JGitRepository extends AbstractGitRepository {
      *
      * @param workTree The worktree of the repository or {@code null}
      * @param gitDir The GIT_DIR of the repository or {@code null}
+     * @param headRef The ref to use as {@code HEAD}
      * @throws GitRepositoryException if the parameters do not match a Git
      *         repository
      */
-    public JGitRepository(File workTree, File gitDir)
+    public JGitRepository(File workTree, File gitDir, String headRef)
             throws GitRepositoryException {
+        this.headRef = headRef;
+
         buildRepository(workTree, gitDir);
     }
 
@@ -115,6 +119,12 @@ public class JGitRepository extends AbstractGitRepository {
                         }
 
                         if (realGitDir.exists()) {
+                            if (headRef.equals("HEAD")) {
+                                File headFile = new File(foundGitDir, "HEAD");
+                                String rawHead = readFileToString(headFile, Charset.forName("UTF-8"));
+                                headRef = rawHead.trim().replaceFirst("ref: ", "");
+                            }
+
                             repositoryBuilder.setGitDir(realGitDir);
                             repositoryBuilder.setWorkTree(workTree);
                         }
