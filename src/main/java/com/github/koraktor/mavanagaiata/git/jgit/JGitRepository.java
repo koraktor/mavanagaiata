@@ -126,6 +126,7 @@ public class JGitRepository extends AbstractGitRepository {
                             }
 
                             repositoryBuilder.setGitDir(realGitDir);
+                            repositoryBuilder.setIndexFile(new File(foundGitDir, "index"));
                             repositoryBuilder.setWorkTree(workTree);
                         }
                     }
