@@ -190,6 +190,10 @@ abstract class AbstractGitMojo extends AbstractMojo {
         for (String prefix : propertyPrefixes) {
             properties.put(prefix + "." + name, value);
         }
+
+        if (getLog().isDebugEnabled()) {
+            getLog().debug(String.format("Added property %s: %s", name, value));
+        }
     }
 
     /**
