@@ -213,11 +213,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
     class ChangelogWalkAction extends CommitWalkAction {
 
         private String currentRef;
-
         private boolean firstCommit = true;
-
-        private String lastRef;
-
         private Map<String, GitTag> tags;
 
         @Override
@@ -238,7 +234,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
             firstCommit = false;
 
             if (tags.containsKey(currentCommit.getId())) {
-                lastRef = currentRef;
+                String lastRef = currentRef;
                 GitTag currentTag = tags.get(currentCommit.getId());
                 currentRef = currentTag.getName();
 
