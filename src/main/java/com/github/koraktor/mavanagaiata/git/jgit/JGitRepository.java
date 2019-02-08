@@ -301,8 +301,8 @@ public class JGitRepository extends AbstractGitRepository {
     @Override
     public String getBranch() throws GitRepositoryException {
         try {
-            Ref ref = repository.getRefDatabase().exactRef(headRef);
-            return ref == null ? null : Repository.shortenRefName(ref.getName());
+            Ref ref = repository.getRefDatabase().getRef(headRef);
+            return ref == null ? null : Repository.shortenRefName(ref.getTarget().getName());
         } catch (IOException e) {
             throw new GitRepositoryException("Current branch could not be read.", e);
         }
