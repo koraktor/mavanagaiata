@@ -9,6 +9,7 @@ package com.github.koraktor.mavanagaiata.mojo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
@@ -17,6 +18,8 @@ import java.util.Date;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import com.github.koraktor.mavanagaiata.git.GitRepository;
+
+import static java.nio.file.Files.*;
 
 /**
  * This abstract Mojo implements writing output to a {@code PrintStream}
@@ -101,11 +104,13 @@ abstract class AbstractGitOutputMojo extends AbstractGitMojo {
             generateOutput(repository);
         } else {
             File parentDirectory = getOutputFile().getParentFile();
-            if (parentDirectory.isFile() ||
-                    (!parentDirectory.exists() && !parentDirectory.mkdirs())) {
+
+            try {
+                createDirectories(parentDirectory.toPath());
+            } catch (IOException e) {
                 throw MavanagaiataMojoException.create("Could not create directory \"%s\" for output file.",
-                        null,
-                        parentDirectory.getAbsolutePath());
+                    e,
+                    parentDirectory.getAbsolutePath());
             }
 
             try (PrintStream filePrintStream = createPrintStream()) {

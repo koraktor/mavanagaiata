@@ -36,6 +36,7 @@ import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 
+import static java.nio.file.Files.*;
 import static java.util.Collections.singletonList;
 import static org.apache.commons.io.FileUtils.forceDeleteOnExit;
 
@@ -136,9 +137,11 @@ public class InfoClassMojo extends AbstractGitMojo {
     private File copyTemporaryTemplate()
             throws IOException, MavanagaiataMojoException {
         try (InputStream templateStream = getTemplateSource()) {
-            File tempSourceDir = File.createTempFile("mavanagaita-info-class", null);
-            if (!(tempSourceDir.delete() && tempSourceDir.mkdir())) {
-                throw MavanagaiataMojoException.create("Could not create temporary directory %s", null, tempSourceDir.getAbsolutePath());
+            File tempSourceDir;
+            try {
+                tempSourceDir = createTempDirectory("mavanagaita-info-class").toFile();
+            } catch (IOException e) {
+                throw MavanagaiataMojoException.create("Could not create temporary directory", e);
             }
             forceDeleteOnExit(tempSourceDir);
             String sourceFileName = className + ".java";
@@ -190,19 +193,17 @@ public class InfoClassMojo extends AbstractGitMojo {
     }
 
     private void writeSourceFile(GitRepository repository, File sourceFile)
-        throws GitRepositoryException, IOException,
-        MavanagaiataMojoException, MavenFilteringException {
+            throws GitRepositoryException, MavanagaiataMojoException,
+                   MavenFilteringException {
         File packageDirectory = new File(outputDirectory, packageName.replace('.', '/'));
         File outputFile = new File(packageDirectory, sourceFile.getName());
-        boolean fileOk;
-        if (outputFile.exists()) {
-            fileOk = outputFile.delete();
-        } else {
-            fileOk = (packageDirectory.exists() || packageDirectory.mkdirs()) && outputFile.createNewFile();
-        }
 
-        if (!fileOk) {
-            throw MavanagaiataMojoException.create("Could not create class source: %s", null, outputFile.getAbsolutePath());
+        try {
+            deleteIfExists(outputFile.toPath());
+            createDirectories(packageDirectory.toPath());
+            createFile(outputFile.toPath());
+        } catch (IOException e) {
+            throw MavanagaiataMojoException.create("Could not create class source: %s", e, outputFile.getAbsolutePath());
         }
 
         List<FileUtils.FilterWrapper> filterWrappers = singletonList(new ValueSourceFilter(repository));
