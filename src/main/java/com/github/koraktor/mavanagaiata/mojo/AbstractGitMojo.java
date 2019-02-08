@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2018, Sebastian Staudt
+ * Copyright (c) 2011-2019, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -52,7 +52,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      */
     @Parameter(property = "mavanagaiata.baseDir",
                defaultValue = "${project.basedir}")
-    protected File baseDir;
+    File baseDir;
 
     /**
      * The flag to append to refs if there are changes in the index or working
@@ -65,7 +65,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      */
     @Parameter(property = "mavanagaiata.dirtyFlag",
                defaultValue = "-dirty")
-    protected String dirtyFlag;
+    String dirtyFlag;
 
     /**
      * Specifies if the dirty flag should also be appended if there are
@@ -81,7 +81,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      */
     @Parameter(property = "mavanagaiata.dirtyIgnoreUntracked",
                defaultValue = "false")
-    protected boolean dirtyIgnoreUntracked;
+    boolean dirtyIgnoreUntracked;
 
     /**
      * Specifies if a failed execution of the mojo will stop the build process
@@ -93,7 +93,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      */
     @Parameter(property = "mavanagaiata.failGracefully",
                defaultValue = "false")
-    protected boolean failGracefully;
+    boolean failGracefully;
 
     /**
      * The {@code GIT_DIR} path of the Git repository
@@ -103,14 +103,14 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * project resides somewhere in a usual Git repository.
      */
     @Parameter(property = "mavanagaiata.gitDir")
-    protected File gitDir;
+    File gitDir;
 
     /**
      * The commit or ref to use as starting point for operations
      */
     @Parameter(property = "mavanagaiata.head",
                defaultValue = GitRepository.DEFAULT_HEAD)
-    protected String head;
+    String head;
 
     /**
      * Skip the plugin execution
@@ -119,7 +119,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      */
     @Parameter(property = "mavanagaiata.skip",
                defaultValue = "false")
-    protected boolean skip;
+    boolean skip;
 
     /**
      * Skip the plugin execution if not inside a Git repository
@@ -128,7 +128,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      */
     @Parameter(property = "mavanagaiata.skipNoGit",
                defaultValue = "false")
-    protected boolean skipNoGit;
+    boolean skipNoGit;
 
     /**
      * The Maven project
@@ -141,7 +141,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      */
     @Parameter(property = "mavanagaiata.propertyPrefixes",
                 defaultValue = "mavanagaiata,mvngit")
-    protected String[] propertyPrefixes = { "mavanagaiata", "mvngit" };
+    String[] propertyPrefixes = { "mavanagaiata", "mvngit" };
 
     /**
      * Generic execution sequence for a Mavanagaiata mojo
@@ -184,7 +184,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * @param name The property name
      * @param value The value of the property
      */
-    protected void addProperty(String name, String value) {
+    void addProperty(String name, String value) {
         Properties properties = project.getProperties();
 
         for (String prefix : propertyPrefixes) {
@@ -232,7 +232,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * @throws GitRepositoryException if retrieving information from the Git
      *         repository fails
      */
-    protected GitRepository initRepository() throws GitRepositoryException {
+    GitRepository initRepository() throws GitRepositoryException {
         GitRepository repository = new JGitRepository(baseDir, gitDir, head);
         repository.check();
 
@@ -242,7 +242,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
     /**
      * Prepares and validates user-supplied parameters
      */
-    protected void prepareParameters() {
+    void prepareParameters() {
         if (equalsAnyIgnoreCase(dirtyFlag, "false", "null")) {
             dirtyFlag = null;
         }

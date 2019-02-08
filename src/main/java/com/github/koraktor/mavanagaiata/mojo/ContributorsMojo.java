@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2018, Sebastian Staudt
+ * Copyright (c) 2011-2019, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -44,36 +44,36 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
      */
     @Parameter(property = "mavanagaiata.contributors.contributorPrefix",
                defaultValue = " * ")
-    protected String contributorPrefix;
+    String contributorPrefix;
 
     /**
      * The header to print above the changelog
      */
     @Parameter(property = "mavanagaiata.contributors.header",
                defaultValue = "Contributors\n============\n")
-    protected String header;
+    String header;
 
-    protected MailMap mailMap;
+    private MailMap mailMap;
 
     /**
      * The file to write the contributors list to
      */
     @Parameter(property = "mavanagaiata.contributors.outputFile")
-    protected File outputFile;
+    File outputFile;
 
     /**
      * Whether the number of contributions should be listed
      */
     @Parameter(property = "mavanagaiata.contributors.showCounts",
                defaultValue = "true")
-    protected boolean showCounts;
+    boolean showCounts;
 
     /**
      * Whether the email addresses of contributors should be listed
      */
     @Parameter(property = "mavanagaiata.contributors.showEmail",
                defaultValue = "false")
-    protected boolean showEmail;
+    boolean showEmail;
 
     /**
      * The method used to sort contributors
@@ -82,11 +82,12 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
      */
     @Parameter(property = "mavanagaiata.contributors.sort",
                defaultValue = "count")
-    protected String sort;
+    String sort;
 
     /**
      * Selects the attribute to use for sorting contributors
      */
+    @Override
     protected void initConfiguration() {
         contributorPrefix = unescapeFormatNewlines(contributorPrefix);
         header            = unescapeFormatNewlines(header);

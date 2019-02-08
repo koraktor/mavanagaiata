@@ -20,6 +20,7 @@ import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.errors.RevWalkException;
 import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -54,15 +55,11 @@ public class JGitRepository extends AbstractGitRepository {
 
     private static final int MAX_DESCRIBE_CANDIDATES = 10;
 
-    boolean checked;
-
-    public Repository repository;
-
+    private boolean checked;
+    Repository repository;
     RevCommit headCommit;
-
-    protected ObjectId headObject;
-
-    protected RevWalk revWalk;
+    ObjectId headObject;
+    RevWalk revWalk;
 
     /**
      * Creates a new empty instance
@@ -229,7 +226,7 @@ public class JGitRepository extends AbstractGitRepository {
      */
     private Collection<JGitTagCandidate> findTagCandidates(RevWalk revWalk,
                                                            Map<String, GitTag> tagCommits, RevFlagSet allFlags)
-                    throws RevWalkException {
+            throws RevWalkException {
         final Collection<JGitTagCandidate> candidates = new ArrayList<>();
         int distance = 0;
         for (RevCommit commit : revWalk) {
@@ -287,10 +284,8 @@ public class JGitRepository extends AbstractGitRepository {
 
     @Override
     public String getAbbreviatedCommitId(GitCommit commit) throws GitRepositoryException {
-        try {
-            RevCommit rawCommit = ((JGitCommit) commit).commit;
-            return repository.getObjectDatabase().newReader()
-                .abbreviate(rawCommit).name();
+        try (ObjectReader objectReader = repository.getObjectDatabase().newReader()) {
+            return objectReader.abbreviate(((JGitCommit) commit).commit).name();
         } catch (IOException e) {
             throw new GitRepositoryException(
                 String.format("Commit \"%s\" could not be abbreviated.", commit.getId()),
@@ -440,7 +435,8 @@ public class JGitRepository extends AbstractGitRepository {
         }
 
         try {
-            return headCommit = repository.parseCommit(getHeadObject());
+            headCommit = repository.parseCommit(getHeadObject());
+            return headCommit;
         } catch (IOException e) {
             throw new GitRepositoryException(
                     String.format("Commit \"%s\" could not be loaded.",
@@ -454,7 +450,7 @@ public class JGitRepository extends AbstractGitRepository {
      * @return The currently selected {@code HEAD} object
      * @throws GitRepositoryException if the ref cannot be resolved
      */
-    protected ObjectId getHeadObject() throws GitRepositoryException {
+    ObjectId getHeadObject() throws GitRepositoryException {
         if (headObject == null) {
             try {
                 headObject = repository.resolve(headRef);
@@ -479,7 +475,7 @@ public class JGitRepository extends AbstractGitRepository {
      *
      * @return A {@code RevWalk} instance for this repository
      */
-    protected RevWalk getRevWalk() {
+    RevWalk getRevWalk() {
         if (revWalk == null) {
             revWalk = new RevWalk(repository);
         } else {

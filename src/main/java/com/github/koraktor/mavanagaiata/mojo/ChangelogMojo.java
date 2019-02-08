@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2018, Sebastian Staudt
+ * Copyright (c) 2011-2019, Sebastian Staudt
  *               2016, Jeff Kreska
  */
 
@@ -87,7 +87,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
      * @since 0.9.0
      */
     @Parameter(property = "mavanagaiata.changelog.linkToUser")
-    protected String linkToUser;
+    String linkToUser;
 
     /**
      * Used to select the service to create links to
@@ -98,7 +98,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
      */
     @Parameter(property = "mavanagaiata.changelog.linkTo",
                defaultValue = "GITHUB")
-    protected LinkToBaseUrl linkTo;
+    LinkToBaseUrl linkTo;
 
     /**
      * Can be used to override the pre-defined URLs from {@link #linkTo} with
@@ -107,7 +107,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
      * @since 0.9.0
      */
     @Parameter(property = "mavanagaiata.changelog.linkToBaseUrl")
-    protected String linkToBaseUrl;
+    String linkToBaseUrl;
 
     /**
      * The file to write the changelog to
