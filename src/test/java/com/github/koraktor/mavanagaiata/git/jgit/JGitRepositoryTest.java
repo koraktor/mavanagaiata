@@ -169,7 +169,7 @@ class JGitRepositoryTest {
             workTree.deleteOnExit();
         }
 
-        FileUtils.writeStringToFile(new File(gitDir, HEAD), REF_LINK_PREFIX + "refs/heads/test", Charset.forName("UTF-8"));
+        FileUtils.writeStringToFile(new File(gitDir, HEAD), REF_LINK_PREFIX + R_HEADS + "test", Charset.forName("UTF-8"));
         FileUtils.writeStringToFile(new File(gitDir, COMMONDIR_FILE), realGitDir.getAbsolutePath(), Charset.forName("UTF-8"));
         FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class, RETURNS_DEEP_STUBS);
         when(repoBuilder.findGitDir(any())).thenReturn(repoBuilder);
@@ -181,7 +181,7 @@ class JGitRepositoryTest {
 
         repository.buildRepository(workTree, null);
 
-        assertThat(repository.getHeadRef(), is(equalTo("refs/heads/test")));
+        assertThat(repository.getHeadRef(), is(equalTo(R_HEADS + "test")));
 
         InOrder inOrder = inOrder(repoBuilder);
         inOrder.verify(repoBuilder).setGitDir(realGitDir);
@@ -483,7 +483,7 @@ class JGitRepositoryTest {
         Ref head = mock(Ref.class);
         Ref master = mock(Ref.class);
         when(head.getTarget()).thenReturn(master);
-        when(master.getName()).thenReturn("refs/heads/master");
+        when(master.getName()).thenReturn(R_HEADS + "master");
         when(repo.getRefDatabase().getRef(HEAD)).thenReturn(head);
 
         assertThat(repository.getBranch(), is(equalTo("master")));
