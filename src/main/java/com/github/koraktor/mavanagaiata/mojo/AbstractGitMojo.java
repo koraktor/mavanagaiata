@@ -21,6 +21,7 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.jgit.JGitRepository;
 
 import static org.apache.commons.lang3.StringUtils.equalsAnyIgnoreCase;
+import static org.eclipse.jgit.lib.Constants.*;
 
 /**
  * This abstract Mojo implements initializing a JGit Repository and provides
@@ -109,7 +110,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * The commit or ref to use as starting point for operations
      */
     @Parameter(property = "mavanagaiata.head",
-               defaultValue = GitRepository.DEFAULT_HEAD)
+               defaultValue = HEAD)
     String head;
 
     /**

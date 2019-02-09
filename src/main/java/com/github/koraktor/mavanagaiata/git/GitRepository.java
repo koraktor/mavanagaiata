@@ -19,11 +19,6 @@ import java.util.Map;
 public interface GitRepository extends AutoCloseable {
 
     /**
-     * The default head ref
-     */
-    String DEFAULT_HEAD = "HEAD";
-
-    /**
      * Checks whether the Git repository is accessible.
      *
      * @throws GitRepositoryException if the repository is not accessible.

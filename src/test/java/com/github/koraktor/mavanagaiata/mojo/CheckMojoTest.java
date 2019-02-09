@@ -12,16 +12,14 @@ import org.apache.maven.plugin.logging.Log;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.eclipse.jgit.lib.Constants.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.core.Is.*;
+import static org.hamcrest.core.IsEqual.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Sebastian Staudt
@@ -39,9 +37,9 @@ class CheckMojoTest extends MojoAbstractTest<CheckMojo> {
         mojo.run(repository);
 
         verify(log).warn("Your configuration specifies `branch` " +
-                "(instead of `" + GitRepository.DEFAULT_HEAD + "`) as the " +
-                "current commit. The results of these checks might not match " +
-                "the actual repository state.");
+                "(instead of `" + HEAD + "`) as the current commit. The " +
+                "results of these checks might not match the actual repository " +
+                "state.");
     }
 
     @DisplayName("should fail when the branch does not match")

@@ -116,8 +116,8 @@ public class JGitRepository extends AbstractGitRepository {
                         }
 
                         if (realGitDir.exists()) {
-                            if (headRef.equals("HEAD")) {
-                                File headFile = new File(foundGitDir, "HEAD");
+                            if (headRef.equals(HEAD)) {
+                                File headFile = new File(foundGitDir, HEAD);
                                 String rawHead = readFileToString(headFile, Charset.forName("UTF-8"));
                                 headRef = rawHead.trim().replaceFirst("ref: ", "");
                             }

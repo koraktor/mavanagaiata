@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2016-2018, Sebastian Staudt
+ * Copyright (c) 2016-2019, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -15,6 +15,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
+
+import static org.eclipse.jgit.lib.Constants.*;
 
 /**
  * This goal checks various aspects of a Git repository to ensure it is in a
@@ -83,11 +85,11 @@ public class CheckMojo extends AbstractGitMojo {
     @Override
     protected void run(GitRepository repository)
             throws MavanagaiataMojoException {
-        if (!head.equals(GitRepository.DEFAULT_HEAD)) {
+        if (!head.equals(HEAD)) {
             getLog().warn("Your configuration specifies `" + head +
-                "` (instead of `" + GitRepository.DEFAULT_HEAD + "`) " +
-                "as the current commit. The results of these checks " +
-                "might not match the actual repository state.");
+                "` (instead of `" + HEAD + "`) as the current commit. The " +
+                "results of these checks might not match the actual repository " +
+                "state.");
         }
 
         try {
