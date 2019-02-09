@@ -23,17 +23,15 @@ import com.github.koraktor.mavanagaiata.git.GitCommit;
 class JGitCommit implements GitCommit {
 
     protected PersonIdent author;
-
     protected RevCommit commit;
-
-    protected PersonIdent committer;
+    private PersonIdent committer;
 
     /**
      * Creates a new instance from a JGit commit object
      *
      * @param commit The commit object to wrap
      */
-    public JGitCommit(RevCommit commit) {
+    JGitCommit(RevCommit commit) {
         this.commit = commit;
 
         author    = commit.getAuthorIdent();

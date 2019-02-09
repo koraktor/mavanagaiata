@@ -23,7 +23,7 @@ class CheckMojoException extends MavanagaiataMojoException {
         UNTAGGED, UNCLEAN, WRONG_COMMIT_MSG, WRONG_BRANCH
     }
 
-    Type type;
+    final Type type;
 
     /**
      * Returns a message for the given type and (optional) arguments

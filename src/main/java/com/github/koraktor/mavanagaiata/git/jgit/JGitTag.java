@@ -24,14 +24,14 @@ class JGitTag implements GitTag {
 
     protected RevTag tag;
 
-    protected PersonIdent taggerIdent;
+    PersonIdent taggerIdent;
 
     /**
      * Creates a new instance from a JGit tag object
      *
      * @param tag The tag object to wrap
      */
-    public JGitTag(RevTag tag) {
+    JGitTag(RevTag tag) {
         this.tag = tag;
     }
 
@@ -39,6 +39,11 @@ class JGitTag implements GitTag {
     public boolean equals(Object object) {
         return object instanceof JGitTag &&
                 tag.equals(((JGitTag) object).tag);
+    }
+
+    @Override
+    public int hashCode() {
+        return tag.hashCode();
     }
 
     public Date getDate() {

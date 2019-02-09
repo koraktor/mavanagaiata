@@ -16,8 +16,7 @@ package com.github.koraktor.mavanagaiata.git;
 public abstract class AbstractGitRepository implements GitRepository {
 
     protected String headRef;
-
-    protected MailMap mailMap;
+    MailMap mailMap;
 
     public String getAbbreviatedCommitId() throws GitRepositoryException {
         return getAbbreviatedCommitId(getHeadCommit());

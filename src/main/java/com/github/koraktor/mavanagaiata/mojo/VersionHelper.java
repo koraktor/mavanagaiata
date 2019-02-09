@@ -13,7 +13,7 @@ package com.github.koraktor.mavanagaiata.mojo;
  *
  * @author Sebastian Staudt
  */
-abstract class VersionHelper {
+interface VersionHelper {
 
     /**
      * Returns the current version of Mavanagaiata
