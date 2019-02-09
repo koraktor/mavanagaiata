@@ -20,6 +20,7 @@ import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.jgit.JGitRepository;
 
+import static org.eclipse.jgit.lib.Constants.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.core.Is.*;
 import static org.hamcrest.core.IsEqual.*;
@@ -70,7 +71,7 @@ public abstract class MojoAbstractTest<T extends AbstractGitMojo> {
         this.mojo.baseDir               = baseDir;
         this.mojo.dirtyFlag             = "-dirty";
         this.mojo.dirtyIgnoreUntracked  = false;
-        this.mojo.head                  = "HEAD";
+        this.mojo.head                  = HEAD;
         this.mojo.project               = project;
     }
 

@@ -7,11 +7,15 @@
 
 package com.github.koraktor.mavanagaiata.mojo;
 
+import org.codehaus.plexus.util.FileUtils;
+
 import java.io.File;
 import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+
+import org.mockito.InOrder;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,24 +23,15 @@ import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
-import org.codehaus.plexus.util.FileUtils;
-import org.mockito.InOrder;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.core.IsSame.sameInstance;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.eclipse.jgit.lib.Constants.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.core.Is.*;
+import static org.hamcrest.core.IsEqual.*;
+import static org.hamcrest.core.IsNull.*;
+import static org.hamcrest.core.IsSame.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Sebastian Staudt
@@ -196,11 +191,11 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
 
         this.mojo.baseDir = baseDir;
         this.mojo.gitDir = gitDir;
-        this.mojo.head = "HEAD";
+        this.mojo.head = HEAD;
 
         GitRepository repository = mojo.initRepository();
 
-        assertThat(repository.getHeadRef(), is(equalTo("HEAD")));
+        assertThat(repository.getHeadRef(), is(equalTo(HEAD)));
         assertThat(repository.getWorkTree(), is(baseDir));
         assertThat(repository.isChecked(), is(true));
     }

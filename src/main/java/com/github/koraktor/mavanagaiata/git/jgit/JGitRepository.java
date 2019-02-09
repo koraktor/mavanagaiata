@@ -54,6 +54,9 @@ import static org.eclipse.jgit.lib.Constants.*;
 public class JGitRepository extends AbstractGitRepository {
 
     private static final int MAX_DESCRIBE_CANDIDATES = 10;
+    static final String COMMONDIR_FILE = "commondir";
+    private static final String INDEX_FILE = "index";
+    static final String REF_LINK_PREFIX = "ref: ";
 
     private boolean checked;
     Repository repository;
@@ -107,7 +110,7 @@ public class JGitRepository extends AbstractGitRepository {
                         repositoryBuilder.setGitDir(foundGitDir);
                         repositoryBuilder.setWorkTree(foundGitDir.getParentFile());
                     } else {
-                        File commonDir = new File(foundGitDir, "commondir");
+                        File commonDir = new File(foundGitDir, COMMONDIR_FILE);
                         String realGitDirPath = readFileToString(commonDir, "UTF-8").trim();
 
                         File realGitDir = new File(foundGitDir, realGitDirPath);
@@ -119,11 +122,11 @@ public class JGitRepository extends AbstractGitRepository {
                             if (headRef.equals(HEAD)) {
                                 File headFile = new File(foundGitDir, HEAD);
                                 String rawHead = readFileToString(headFile, Charset.forName("UTF-8"));
-                                headRef = rawHead.trim().replaceFirst("ref: ", "");
+                                headRef = rawHead.trim().replaceFirst(REF_LINK_PREFIX, "");
                             }
 
                             repositoryBuilder.setGitDir(realGitDir);
-                            repositoryBuilder.setIndexFile(new File(foundGitDir, "index"));
+                            repositoryBuilder.setIndexFile(new File(foundGitDir, INDEX_FILE));
                             repositoryBuilder.setWorkTree(workTree);
                         }
                     }

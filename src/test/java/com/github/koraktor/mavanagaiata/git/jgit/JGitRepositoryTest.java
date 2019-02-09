@@ -45,6 +45,7 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 
+import static com.github.koraktor.mavanagaiata.git.jgit.JGitRepository.*;
 import static java.util.Arrays.*;
 import static java.util.Collections.*;
 import static org.eclipse.jgit.lib.Constants.*;
@@ -65,7 +66,7 @@ class JGitRepositoryTest {
     @BeforeEach
     void setup() {
         repository = new JGitRepository();
-        repository.setHeadRef("HEAD");
+        repository.setHeadRef(HEAD);
         repository.repository = repo = mock(Repository.class, RETURNS_DEEP_STUBS);
     }
 
@@ -77,7 +78,7 @@ class JGitRepositoryTest {
             workTree.deleteOnExit();
         }
 
-        File gitDir = new File(workTree, ".git");
+        File gitDir = new File(workTree, DOT_GIT);
         if (gitDir.mkdir()) {
             gitDir.deleteOnExit();
         }
@@ -131,7 +132,7 @@ class JGitRepositoryTest {
             workTreeChild.deleteOnExit();
         }
 
-        File gitDir = new File(workTree, ".git");
+        File gitDir = new File(workTree, DOT_GIT);
         if (gitDir.mkdir()) {
             gitDir.deleteOnExit();
         }
@@ -153,12 +154,12 @@ class JGitRepositoryTest {
     @DisplayName("should be able to create based on a linked worktree")
     @Test
     void testCreateWithLinkedWorktree() throws Exception {
-        File realGitDir = File.createTempFile(".git", null);
+        File realGitDir = File.createTempFile(DOT_GIT, null);
         if (realGitDir.delete() && realGitDir.mkdir()) {
             realGitDir.deleteOnExit();
         }
 
-        File gitDir = new File(realGitDir, ".git/worktrees/test");
+        File gitDir = new File(realGitDir, DOT_GIT + "/worktrees/test");
         if (gitDir.mkdir()) {
             gitDir.deleteOnExit();
         }
@@ -168,15 +169,14 @@ class JGitRepositoryTest {
             workTree.deleteOnExit();
         }
 
-        FileUtils.writeStringToFile(new File(gitDir, "HEAD"), "ref: refs/heads/test", Charset.forName("UTF-8"));
-        FileUtils.writeStringToFile(new File(gitDir, "commondir"), realGitDir.getAbsolutePath(), Charset.forName("UTF-8"));
-
+        FileUtils.writeStringToFile(new File(gitDir, HEAD), REF_LINK_PREFIX + "refs/heads/test", Charset.forName("UTF-8"));
+        FileUtils.writeStringToFile(new File(gitDir, COMMONDIR_FILE), realGitDir.getAbsolutePath(), Charset.forName("UTF-8"));
         FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class, RETURNS_DEEP_STUBS);
         when(repoBuilder.findGitDir(any())).thenReturn(repoBuilder);
         when(repoBuilder.getGitDir()).thenReturn(gitDir);
 
         JGitRepository repository = spy(new JGitRepository());
-        repository.setHeadRef("HEAD");
+        repository.setHeadRef(HEAD);
         when(repository.getRepositoryBuilder()).thenReturn(repoBuilder);
 
         repository.buildRepository(workTree, null);
@@ -211,7 +211,7 @@ class JGitRepositoryTest {
     @Test
     void testCheckFails() {
         File gitDir = mock(File.class);
-        when(gitDir.getAbsolutePath()).thenReturn("/some/repo/.git");
+        when(gitDir.getAbsolutePath()).thenReturn("/some/repo/" + DOT_GIT);
 
         when(this.repo.getObjectDatabase().exists()).thenReturn(false);
         when(this.repo.getDirectory()).thenReturn(gitDir);
@@ -484,7 +484,7 @@ class JGitRepositoryTest {
         Ref master = mock(Ref.class);
         when(head.getTarget()).thenReturn(master);
         when(master.getName()).thenReturn("refs/heads/master");
-        when(repo.getRefDatabase().getRef("HEAD")).thenReturn(head);
+        when(repo.getRefDatabase().getRef(HEAD)).thenReturn(head);
 
         assertThat(repository.getBranch(), is(equalTo("master")));
     }
@@ -493,7 +493,7 @@ class JGitRepositoryTest {
     @Test
     void testGetBranchFailure() throws Exception {
         FileNotFoundException exception = new FileNotFoundException();
-        when(repo.getRefDatabase().getRef("HEAD")).thenThrow(exception);
+        when(repo.getRefDatabase().getRef(HEAD)).thenThrow(exception);
 
         GitRepositoryException e = assertThrows(GitRepositoryException.class,
             repository::getBranch);
@@ -539,7 +539,7 @@ class JGitRepositoryTest {
     @Test
     void testGetHeadObject() throws Exception {
         ObjectId head = mock(ObjectId.class);
-        when(repo.resolve("HEAD")).thenReturn(head);
+        when(repo.resolve(HEAD)).thenReturn(head);
 
         assertThat(repository.getHeadObject(), is(head));
         assertThat(repository.headObject, is(head));
@@ -562,7 +562,7 @@ class JGitRepositoryTest {
     @DisplayName("should return the zero ID if the HEAD is unknown")
     @Test
     void testGetHeadObjectInvalidRef() throws Exception {
-        when(repo.resolve("HEAD")).thenReturn(null);
+        when(repo.resolve(HEAD)).thenReturn(null);
 
         assertThat(repository.getHeadObject(), is(equalTo(ObjectId.zeroId())));
     }
@@ -570,7 +570,7 @@ class JGitRepositoryTest {
     @DisplayName("should cache the HEAD’s ID")
     @Test
     void testGetHeadObjectCached() throws Exception {
-        this.repository.setHeadRef("HEAD");
+        this.repository.setHeadRef(HEAD);
         ObjectId head = mock(ObjectId.class);
         this.repository.headObject = head;
 
@@ -647,7 +647,7 @@ class JGitRepositoryTest {
     @DisplayName("should know if HEAD is on an unborn branch")
     @Test
     void testIsOnUnbornBranch() throws Exception {
-        when(repo.resolve("HEAD")).thenReturn(ObjectId.zeroId());
+        when(repo.resolve(HEAD)).thenReturn(ObjectId.zeroId());
 
         assertThat(repository.isOnUnbornBranch(), is(true));
     }
