@@ -168,6 +168,7 @@
                                     <goal>contributors</goal>
                                 </goals>
                                 <configuration>
+                                    <escapeMarkdown>true</escapeMarkdown>
                                     <outputFile>${project.build.directory}/generated-site/markdown/CONTRIBUTORS.md</outputFile>
                                 </configuration>
                             </execution>
