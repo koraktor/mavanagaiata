@@ -47,7 +47,7 @@ import static org.apache.commons.io.FileUtils.forceDeleteOnExit;
  * @author Sebastian Staudt
  * @since 0.5.0
  */
-@Mojo(name ="info-class",
+@Mojo(name = "info-class",
       defaultPhase = LifecyclePhase.GENERATE_SOURCES,
       threadSafe = true)
 public class InfoClassMojo extends AbstractGitMojo {

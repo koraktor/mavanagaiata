@@ -32,7 +32,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
  * @author Sebastian Staudt
  * @since 0.2.0
  */
-@Mojo(name ="changelog",
+@Mojo(name = "changelog",
       defaultPhase = LifecyclePhase.PROCESS_RESOURCES,
       threadSafe = true)
 public class ChangelogMojo extends AbstractGitOutputMojo {

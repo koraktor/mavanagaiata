@@ -33,7 +33,7 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
  * @author Sebastian Staudt
  * @since 0.1.0
  */
-@Mojo(name ="commit",
+@Mojo(name = "commit",
       defaultPhase = LifecyclePhase.INITIALIZE,
       threadSafe = true)
 public class CommitMojo extends AbstractGitMojo {

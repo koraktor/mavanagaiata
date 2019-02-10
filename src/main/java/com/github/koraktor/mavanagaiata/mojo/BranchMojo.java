@@ -20,7 +20,7 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
  * @author Sebastian Staudt
  * @since 0.1.0
  */
-@Mojo(name ="branch",
+@Mojo(name = "branch",
       defaultPhase = LifecyclePhase.INITIALIZE,
       threadSafe = true)
 public class BranchMojo extends AbstractGitMojo {

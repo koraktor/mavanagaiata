@@ -38,7 +38,7 @@ import static org.apache.commons.text.StringEscapeUtils.*;
  * @author Sebastian Staudt
  * @since 0.2.0
  */
-@Mojo(name ="contributors",
+@Mojo(name = "contributors",
       defaultPhase = LifecyclePhase.PROCESS_RESOURCES,
       threadSafe = true)
 public class ContributorsMojo extends AbstractGitOutputMojo {

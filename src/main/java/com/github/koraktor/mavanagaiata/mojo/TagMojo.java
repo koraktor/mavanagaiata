@@ -21,7 +21,7 @@ import com.github.koraktor.mavanagaiata.git.GitTagDescription;
  * @author Sebastian Staudt
  * @since 0.1.0
  */
-@Mojo(name ="tag",
+@Mojo(name = "tag",
       defaultPhase = LifecyclePhase.INITIALIZE,
       threadSafe = true)
 public class TagMojo extends AbstractGitMojo {
