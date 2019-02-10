@@ -48,9 +48,9 @@
         <mailingList>
             <name>Google Group</name>
             <archive>https://groups.google.com/d/forum/mavanagaiata</archive>
-            <post>mavanagaiata@googlegroups.com</post>
-            <subscribe>mavanagaiata+subscribe@googlegroups.com</subscribe>
-            <unsubscribe>mavanagaiata+unsubscribe@googlegroups.com</unsubscribe>
+            <post>mailto:mavanagaiata@googlegroups.com</post>
+            <subscribe>mailto:mavanagaiata+subscribe@googlegroups.com</subscribe>
+            <unsubscribe>mailto:mavanagaiata+unsubscribe@googlegroups.com</unsubscribe>
         </mailingList>
     </mailingLists>
 
