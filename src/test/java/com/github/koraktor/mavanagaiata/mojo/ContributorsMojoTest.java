@@ -2,28 +2,27 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2018, Sebastian Staudt
+ * Copyright (c) 2011-2019, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
 
 import java.util.Date;
 
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitCommit;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.core.Is.*;
+import static org.hamcrest.core.IsEqual.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Sebastian Staudt
@@ -53,6 +52,8 @@ class ContributorsMojoTest extends GitOutputMojoAbstractTest<ContributorsMojo> {
                 walkAction.execute(this.mockCommit("Joe Average", "joe.average@example.com"));
                 walkAction.execute(this.mockCommit("Sebastian Staudt", "koraktor@gmail.com"));
                 walkAction.execute(this.mockCommit("Sebastian Staudt", "koraktor@gmail.com"));
+                walkAction.execute(this.mockCommit("Markdown [Breaker]", "markdown.breaker@example.com"));
+                walkAction.execute(this.mockCommit("HTML <Breaker>", "html.breaker@example.com"));
                 return walkAction;
             }
 
@@ -113,6 +114,8 @@ class ContributorsMojoTest extends GitOutputMojoAbstractTest<ContributorsMojo> {
         this.assertOutputLine("- Sebastian Staudt (koraktor@gmail.com)");
         this.assertOutputLine("- Joe Average (joe.average@example.com)");
         this.assertOutputLine("- John Doe (john.doe@example.com)");
+        this.assertOutputLine("- Markdown [Breaker] (markdown.breaker@example.com)");
+        this.assertOutputLine("- HTML <Breaker> (html.breaker@example.com)");
         this.assertOutputLine("Footer");
         this.assertOutputLine(null);
     }
@@ -130,6 +133,8 @@ class ContributorsMojoTest extends GitOutputMojoAbstractTest<ContributorsMojo> {
         this.assertOutputLine(" * Sebastian Staudt (3)");
         this.assertOutputLine(" * Joe Average (2)");
         this.assertOutputLine(" * John Doe (1)");
+        this.assertOutputLine(" * Markdown [Breaker] (1)");
+        this.assertOutputLine(" * HTML <Breaker> (1)");
         this.assertOutputLine("Footer");
         this.assertOutputLine(null);
     }
@@ -147,6 +152,8 @@ class ContributorsMojoTest extends GitOutputMojoAbstractTest<ContributorsMojo> {
         this.assertOutputLine(" * Sebastian Staudt (3)");
         this.assertOutputLine(" * John Doe (1)");
         this.assertOutputLine(" * Joe Average (2)");
+        this.assertOutputLine(" * Markdown [Breaker] (1)");
+        this.assertOutputLine(" * HTML <Breaker> (1)");
         this.assertOutputLine("Footer");
         this.assertOutputLine(null);
     }
@@ -161,11 +168,70 @@ class ContributorsMojoTest extends GitOutputMojoAbstractTest<ContributorsMojo> {
         this.assertOutputLine("Contributors");
         this.assertOutputLine("============");
         this.assertOutputLine("");
+        this.assertOutputLine(" * HTML <Breaker> (1)");
         this.assertOutputLine(" * Joe Average (2)");
         this.assertOutputLine(" * John Doe (1)");
+        this.assertOutputLine(" * Markdown [Breaker] (1)");
         this.assertOutputLine(" * Sebastian Staudt (3)");
         this.assertOutputLine("Footer");
         this.assertOutputLine(null);
     }
 
+    @DisplayName("should be able to escape HTML tags")
+    @Test
+    void testEscapeHtml() throws Exception {
+        mojo.escapeHtml = true;
+        mojo.initConfiguration();
+        mojo.generateOutput(repository);
+
+        assertOutputLine("Contributors");
+        assertOutputLine("============");
+        assertOutputLine("");
+        assertOutputLine(" * Sebastian Staudt (3)");
+        assertOutputLine(" * Joe Average (2)");
+        assertOutputLine(" * John Doe (1)");
+        assertOutputLine(" * Markdown [Breaker] (1)");
+        assertOutputLine(" * HTML &lt;Breaker&gt; (1)");
+        assertOutputLine("Footer");
+        assertOutputLine(null);
+    }
+
+    @DisplayName("should be able to escape Markdown links")
+    @Test
+    void testEscapeMarkdown() throws Exception {
+        mojo.escapeMarkdown = true;
+        mojo.initConfiguration();
+        mojo.generateOutput(repository);
+
+        assertOutputLine("Contributors");
+        assertOutputLine("============");
+        assertOutputLine("");
+        assertOutputLine(" * Sebastian Staudt (3)");
+        assertOutputLine(" * Joe Average (2)");
+        assertOutputLine(" * John Doe (1)");
+        assertOutputLine(" * Markdown \\[Breaker\\] (1)");
+        assertOutputLine(" * HTML <Breaker> (1)");
+        assertOutputLine("Footer");
+        assertOutputLine(null);
+    }
+
+    @DisplayName("should be able to escape both HTML tags and Markdown links")
+    @Test
+    void testEscapeHtmlAndMarkdown() throws Exception {
+        mojo.escapeHtml = true;
+        mojo.escapeMarkdown = true;
+        mojo.initConfiguration();
+        mojo.generateOutput(repository);
+
+        assertOutputLine("Contributors");
+        assertOutputLine("============");
+        assertOutputLine("");
+        assertOutputLine(" * Sebastian Staudt (3)");
+        assertOutputLine(" * Joe Average (2)");
+        assertOutputLine(" * John Doe (1)");
+        assertOutputLine(" * Markdown \\[Breaker\\] (1)");
+        assertOutputLine(" * HTML &lt;Breaker&gt; (1)");
+        assertOutputLine("Footer");
+        assertOutputLine(null);
+    }
 }

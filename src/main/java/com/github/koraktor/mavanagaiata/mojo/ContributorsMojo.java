@@ -11,7 +11,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.commons.text.translate.CharSequenceTranslator;
+import org.apache.commons.text.translate.LookupTranslator;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -22,8 +25,9 @@ import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.MailMap;
 
-import static java.util.Comparator.comparing;
-import static org.apache.commons.lang3.StringUtils.equalsAnyIgnoreCase;
+import static java.util.Comparator.*;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.text.StringEscapeUtils.*;
 
 /**
  * This goal allows to generate a list of contributors for the currently
@@ -39,12 +43,28 @@ import static org.apache.commons.lang3.StringUtils.equalsAnyIgnoreCase;
       threadSafe = true)
 public class ContributorsMojo extends AbstractGitOutputMojo {
 
+    private static final Map<CharSequence, CharSequence> MARKDOWN_TRANSLATION_MAP = new HashMap<>();
+    static {
+        MARKDOWN_TRANSLATION_MAP.put("[", "\\[");
+        MARKDOWN_TRANSLATION_MAP.put("]", "\\]");
+    }
+
+    private static final CharSequenceTranslator MARKDOWN_TRANSLATOR = new LookupTranslator(MARKDOWN_TRANSLATION_MAP);
+
     /**
      * The string to prepend to every contributor name
      */
     @Parameter(property = "mavanagaiata.contributors.contributorPrefix",
                defaultValue = " * ")
     String contributorPrefix;
+
+    @Parameter(property = "mavanagaiata.contributors.escapeHtml",
+               defaultValue = "false")
+    boolean escapeHtml;
+
+    @Parameter(property = "mavanagaiata.contributors.escapeMarkdown",
+               defaultValue = "false")
+    boolean escapeMarkdown;
 
     /**
      * The header to print above the changelog
@@ -130,7 +150,7 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
             printStream.println(header);
 
             for (Contributor contributor : contributors) {
-                printStream.print(contributorPrefix + contributor.name);
+                printStream.print(contributorPrefix + escapeName(contributor.name));
                 if (showEmail) {
                     printStream.print(" (" + contributor.emailAddress + ")");
                 }
@@ -142,6 +162,27 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
         } catch (GitRepositoryException e) {
             throw MavanagaiataMojoException.create("Unable to read contributors from Git", e);
         }
+    }
+
+    /**
+     * Returns an escaped form of the contributor name
+     * <p>
+     * Depending on the {@link #escapeHtml} and {@link #escapeMarkdown} fields
+     * this methods escapes HTML tags and/or Markdown link brackets.
+     *
+     * @param name The name of the contributor
+     * @return An escaped form of the contributor
+     */
+    private String escapeName(String name) {
+        if (escapeHtml) {
+            name = escapeHtml4(name);
+        }
+
+        if (escapeMarkdown) {
+            name = MARKDOWN_TRANSLATOR.translate(name);
+        }
+
+        return name;
     }
 
     /**
