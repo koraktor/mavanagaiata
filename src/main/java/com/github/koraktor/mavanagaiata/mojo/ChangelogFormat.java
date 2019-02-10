@@ -41,7 +41,7 @@ public class ChangelogFormat {
         }
 
         ChangelogFormat getFormat() {
-            return format;
+            return new ChangelogFormat().apply(format);
         }
     }
 
@@ -77,7 +77,7 @@ public class ChangelogFormat {
     /**
      * Whether to escape HTML
      */
-    boolean escapeHtml;
+    Boolean escapeHtml = false;
 
     /**
      * The header to print above the changelog
@@ -109,30 +109,28 @@ public class ChangelogFormat {
      * @return A new format with applied settings
      */
     ChangelogFormat apply(ChangelogFormat format) {
-        ChangelogFormat original = this;
+        branch = Optional.ofNullable(format.branch).
+            orElse(branch);
+        branchLink = Optional.ofNullable(format.branchLink).
+            orElse(branchLink);
+        branchOnlyLink = Optional.ofNullable(format.branchOnlyLink).
+            orElse(branchOnlyLink);
+        commitPrefix = Optional.ofNullable(format.commitPrefix).
+            orElse(commitPrefix);
+        createLinks = Optional.ofNullable(format.createLinks).
+            orElse(createLinks);
+        escapeHtml = Optional.ofNullable(format.escapeHtml).
+            orElse(escapeHtml);
+        header = Optional.ofNullable(format.header).
+            orElse(header);
+        separator = Optional.ofNullable(format.separator).
+            orElse(separator);
+        tag = Optional.ofNullable(format.tag).
+            orElse(tag);
+        tagLink = Optional.ofNullable(format.tagLink).
+            orElse(tagLink);
 
-        return new ChangelogFormat() {{
-            branch = Optional.ofNullable(format.branch).
-                orElse(original.branch);
-            branchLink = Optional.ofNullable(format.branchLink).
-                orElse(original.branchLink);
-            branchOnlyLink = Optional.ofNullable(format.branchOnlyLink).
-                orElse(original.branchOnlyLink);
-            commitPrefix = Optional.ofNullable(format.commitPrefix).
-                orElse(original.commitPrefix);
-            createLinks = Optional.ofNullable(format.createLinks).
-                orElse(original.createLinks);
-            escapeHtml = Optional.ofNullable(format.escapeHtml).
-                orElse(original.escapeHtml);
-            header = Optional.ofNullable(format.header).
-                orElse(original.header);
-            separator = Optional.ofNullable(format.separator).
-                orElse(original.separator);
-            tag = Optional.ofNullable(format.tag).
-                orElse(original.tag);
-            tagLink = Optional.ofNullable(format.tagLink).
-                orElse(original.tagLink);
-        }};
+        return this;
     }
 
     /**
