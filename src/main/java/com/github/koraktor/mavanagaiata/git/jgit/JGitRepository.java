@@ -173,6 +173,10 @@ public class JGitRepository extends AbstractGitRepository {
             repository.close();
             repository = null;
         }
+
+        if (revWalk != null) {
+            revWalk.close();
+        }
     }
 
     @Override
@@ -187,7 +191,8 @@ public class JGitRepository extends AbstractGitRepository {
             return new GitTagDescription(getAbbreviatedCommitId(getHeadCommit()), tag,0);
         }
 
-        try (RevWalk revWalk = getRevWalk()) {
+        prepareRevWalk();
+        try {
             revWalk.markStart(start);
             revWalk.setRetainBody(false);
             revWalk.sort(RevSort.COMMIT_TIME_DESC);
@@ -340,7 +345,8 @@ public class JGitRepository extends AbstractGitRepository {
             throws GitRepositoryException {
         Map<String, GitTag> tags = new HashMap<>();
 
-        try (RevWalk revWalk = getRevWalk()){
+        prepareRevWalk();
+        try {
             for (Ref tag : repository.getRefDatabase().getRefsByPrefix(R_TAGS)) {
                 try {
                     RevTag revTag = revWalk.lookupTag(tag.getObjectId());
@@ -413,7 +419,8 @@ public class JGitRepository extends AbstractGitRepository {
         action.setRepository(this);
         action.prepare();
 
-        try (RevWalk revWalk = getRevWalk()) {
+        prepareRevWalk();
+        try {
             revWalk.markStart(getHeadRevCommit());
 
             for (RevCommit commit : revWalk) {
@@ -473,20 +480,16 @@ public class JGitRepository extends AbstractGitRepository {
     }
 
     /**
-     * Gets a JGit {@code RevWalk} instance for this repository
+     * Prepares a JGit {@code RevWalk} instance for this repository
      * <p>
      * Creates a new instance or resets an existing one.
-     *
-     * @return A {@code RevWalk} instance for this repository
      */
-    RevWalk getRevWalk() {
+    void prepareRevWalk() {
         if (revWalk == null) {
             revWalk = new RevWalk(repository);
         } else {
             revWalk.reset();
         }
-
-        return revWalk;
     }
 
 }

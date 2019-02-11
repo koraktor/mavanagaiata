@@ -276,12 +276,15 @@ class JGitRepositoryTest {
         assertThat(this.repository.isDirty(true), is(false));
     }
 
-    @DisplayName("should close the underlying JGit repository")
+    @DisplayName("should close the underlying JGit repository and RevWalk")
     @Test
     void testClose() {
+        repository.revWalk = mock(RevWalk.class);
+
         this.repository.close();
 
         verify(this.repo).close();
+        verify(repository.revWalk).close();
     }
 
     @DisplayName("should not fail when closing a non-existing repository")
@@ -731,7 +734,10 @@ class JGitRepositoryTest {
         repository = spy(repository);
 
         RevWalk revWalk = mock(RevWalk.class);
-        doReturn(revWalk).when(repository).getRevWalk();
+        doAnswer(invocation -> {
+            repository.revWalk = revWalk;
+            return null;
+        }).when(repository).prepareRevWalk();
 
         return revWalk;
     }
