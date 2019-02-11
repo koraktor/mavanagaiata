@@ -79,7 +79,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
      * @since 0.9.0
      */
     @Parameter(property = "mavanagaiata.changelog.linkToProject")
-    protected String linkToProject;
+    String linkToProject;
 
     /**
      * The user name for GitHub links
@@ -124,7 +124,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
      */
     @Parameter(property = "mavanagaiata.changelog.skipMergeCommits",
                defaultValue = "true")
-    protected boolean skipMergeCommits;
+    boolean skipMergeCommits;
 
     /**
      * Whether to skip tagged commits' messages
@@ -133,7 +133,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
      */
     @Parameter(property = "mavanagaiata.changelog.skipTagged",
                defaultValue = "false")
-    protected boolean skipTagged;
+    boolean skipTagged;
 
     /**
      * Whether to skip commits that match the given regular expression
@@ -141,9 +141,9 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
      * @since 0.8.0
      */
     @Parameter(property = "mavanagaiata.changelog.skipCommitsMatching")
-    protected String skipCommitsMatching;
+    String skipCommitsMatching;
 
-    protected Pattern skipCommitsPattern;
+    private Pattern skipCommitsPattern;
 
     /**
      * Walks through the history of the currently checked out branch of the
