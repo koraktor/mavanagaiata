@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.errors.RevWalkException;
 import org.eclipse.jgit.lib.IndexDiff;
@@ -347,7 +348,7 @@ public class JGitRepository extends AbstractGitRepository {
                     if (object instanceof RevCommit) {
                         tags.put(object.getName(), new JGitTag(revTag));
                     }
-                } catch (MissingObjectException ignored) {}
+                } catch (IncorrectObjectTypeException | MissingObjectException ignored) {}
             }
         } catch (IOException e) {
             throw new GitRepositoryException("The tags could not be resolved.", e);

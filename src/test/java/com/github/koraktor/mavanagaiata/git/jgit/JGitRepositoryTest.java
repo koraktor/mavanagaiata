@@ -24,6 +24,8 @@ import org.apache.commons.io.FileUtils;
 import org.mockito.InOrder;
 
 import org.eclipse.jgit.errors.CorruptObjectException;
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.AbbreviatedObjectId;
 import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.lib.ObjectId;
@@ -586,11 +588,15 @@ class JGitRepositoryTest {
 
         Ref tagRef1 = mock(Ref.class);
         Ref tagRef2 = mock(Ref.class);
-        List<Ref> tagRefs = asList(tagRef1, tagRef2);
+        Ref tagRef3 = mock(Ref.class);
+        Ref tagRef4 = mock(Ref.class);
+        List<Ref> tagRefs = asList(tagRef1, tagRef2, tagRef3, tagRef4);
         when(repo.getRefDatabase().getRefsByPrefix(R_TAGS)).thenReturn(tagRefs);
 
         RevTag rawTag1 = createRawTag();
         RevTag rawTag2 = createRawTag();
+        RevTag rawTag3 = createRawTag();
+        RevTag rawTag4 = createRawTag();
         RevCommit commit1 = createCommit();
         RevObject commit2 = createCommit();
         when(tagRef1.getObjectId()).thenReturn(rawTag1);
@@ -599,6 +605,12 @@ class JGitRepositoryTest {
         when(tagRef2.getObjectId()).thenReturn(rawTag2);
         when(revWalk.lookupTag(rawTag2)).thenReturn(rawTag2);
         when(revWalk.peel(rawTag2)).thenReturn(commit2);
+        when(tagRef3.getObjectId()).thenReturn(rawTag3);
+        when(revWalk.lookupTag(rawTag3)).thenReturn(rawTag3);
+        when(revWalk.peel(rawTag3)).thenThrow(new MissingObjectException(rawTag3, OBJ_TAG));
+        when(tagRef3.getObjectId()).thenReturn(rawTag4);
+        when(revWalk.lookupTag(rawTag4)).thenReturn(rawTag4);
+        when(revWalk.peel(rawTag4)).thenThrow(new IncorrectObjectTypeException(rawTag4, OBJ_TAG));
 
         Map<String, GitTag> tags = new HashMap<>();
         JGitTag tag1 = new JGitTag(rawTag1);
