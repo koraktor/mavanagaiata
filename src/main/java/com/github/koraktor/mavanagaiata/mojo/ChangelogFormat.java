@@ -72,12 +72,12 @@ public class ChangelogFormat {
      */
     String commitPrefix;
 
-    private Boolean createLinks = false;
+    Boolean createLinks;
 
     /**
      * Whether to escape HTML
      */
-    Boolean escapeHtml = false;
+    Boolean escapeHtml;
 
     /**
      * The header to print above the changelog
@@ -150,6 +150,8 @@ public class ChangelogFormat {
         branchLink = unescapeFormatNewlines(branchLink);
         branchOnlyLink = unescapeFormatNewlines(branchOnlyLink);
         commitPrefix = unescapeFormatNewlines(commitPrefix);
+        createLinks = Optional.ofNullable(createLinks).orElse(false);
+        escapeHtml = Optional.ofNullable(escapeHtml).orElse(false);
         header = unescapeFormatNewlines(header);
         separator = unescapeFormatNewlines(separator);
         tag = unescapeFormatNewlines(tag);
