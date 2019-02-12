@@ -63,7 +63,6 @@ public class JGitRepository extends AbstractGitRepository {
     Repository repository;
     RevCommit headCommit;
     ObjectId headObject;
-    RevWalk revWalk;
 
     /**
      * Creates a new empty instance
@@ -173,10 +172,6 @@ public class JGitRepository extends AbstractGitRepository {
             repository.close();
             repository = null;
         }
-
-        if (revWalk != null) {
-            revWalk.close();
-        }
     }
 
     @Override
@@ -191,8 +186,7 @@ public class JGitRepository extends AbstractGitRepository {
             return new GitTagDescription(getAbbreviatedCommitId(getHeadCommit()), tag,0);
         }
 
-        prepareRevWalk();
-        try {
+        try (RevWalk revWalk = getRevWalk()) {
             revWalk.markStart(start);
             revWalk.setRetainBody(false);
             revWalk.sort(RevSort.COMMIT_TIME_DESC);
@@ -345,8 +339,7 @@ public class JGitRepository extends AbstractGitRepository {
             throws GitRepositoryException {
         Map<String, GitTag> tags = new HashMap<>();
 
-        prepareRevWalk();
-        try {
+        try (RevWalk revWalk = getRevWalk()) {
             for (Ref tag : repository.getRefDatabase().getRefsByPrefix(R_TAGS)) {
                 try {
                     RevTag revTag = revWalk.lookupTag(tag.getObjectId());
@@ -400,10 +393,9 @@ public class JGitRepository extends AbstractGitRepository {
             return;
         }
 
-        assert revWalk != null;
         JGitTag jgitTag = (JGitTag) tag;
 
-        try {
+        try (RevWalk revWalk = getRevWalk()) {
             revWalk.parseBody(jgitTag.tag);
             jgitTag.taggerIdent = jgitTag.tag.getTaggerIdent();
         } catch (IOException e) {
@@ -419,8 +411,7 @@ public class JGitRepository extends AbstractGitRepository {
         action.setRepository(this);
         action.prepare();
 
-        prepareRevWalk();
-        try {
+        try (RevWalk revWalk = getRevWalk()) {
             revWalk.markStart(getHeadRevCommit());
 
             for (RevCommit commit : revWalk) {
@@ -480,16 +471,10 @@ public class JGitRepository extends AbstractGitRepository {
     }
 
     /**
-     * Prepares a JGit {@code RevWalk} instance for this repository
-     * <p>
-     * Creates a new instance or resets an existing one.
+     * @return A new JGit {@code RevWalk} instance for this repository
      */
-    void prepareRevWalk() {
-        if (revWalk == null) {
-            revWalk = new RevWalk(repository);
-        } else {
-            revWalk.reset();
-        }
+    RevWalk getRevWalk() {
+        return new RevWalk(repository);
     }
 
 }

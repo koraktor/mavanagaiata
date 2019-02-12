@@ -279,12 +279,9 @@ class JGitRepositoryTest {
     @DisplayName("should close the underlying JGit repository and RevWalk")
     @Test
     void testClose() {
-        repository.revWalk = mock(RevWalk.class);
-
         this.repository.close();
 
         verify(this.repo).close();
-        verify(repository.revWalk).close();
     }
 
     @DisplayName("should not fail when closing a non-existing repository")
@@ -332,22 +329,20 @@ class JGitRepositoryTest {
         repository.headObject = mock(ObjectId.class);
         repository.headCommit = head;
 
-        JGitRepository repo = spy(this.repository);
+        RevWalk revWalk = mockRevWalk();
+        when(revWalk.iterator()).
+            thenReturn(asList(head, head_1, head_2).iterator());
+        RevFlag seenFlag = RevFlag.UNINTERESTING;
+        when(revWalk.newFlag("2.0.0")).thenReturn(seenFlag);
 
         Map<String, JGitTag> tags = new HashMap<>();
         JGitTag tag = createTag("2.0.0", head.getName());
         tags.put(head_2.getName(), tag);
-        doReturn(tags).when(repo).getTags();
+        doReturn(tags).when(repository).getTags();
 
-        repo.revWalk = mock(RevWalk.class);
-        when(repo.revWalk.iterator()).
-            thenReturn(asList(head, head_1, head_2).iterator());
-        RevFlag seenFlag = RevFlag.UNINTERESTING;
-        when(repo.revWalk.newFlag("2.0.0")).thenReturn(seenFlag);
+        when(repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
 
-        when(this.repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
-
-        GitTagDescription description = repo.describe();
+        GitTagDescription description = repository.describe();
         assertThat(description.getNextTagName(), is(equalTo("2.0.0")));
         assertThat(description.toString(), is(equalTo("2.0.0-2-g" + abbrevId.name())));
     }
@@ -368,25 +363,23 @@ class JGitRepositoryTest {
         repository.headObject = mock(ObjectId.class);
         repository.headCommit = head;
 
-        JGitRepository repo = spy(this.repository);
+        RevWalk revWalk = mockRevWalk();
+        when(revWalk.iterator()).
+            thenReturn(asList(head, head_a1, head_b1, head_b2).iterator());
+        RevFlag seenFlag = RevFlag.UNINTERESTING;
+        when(revWalk.newFlag("a1")).thenReturn(seenFlag);
+        when(revWalk.newFlag("b2")).thenReturn(seenFlag);
 
         Map<String, JGitTag> tags = new HashMap<>();
         JGitTag tagA1 = createTag("a1", head.getName());
         JGitTag tagB2 = createTag("b2", head.getName());
         tags.put(head_a1.getName(), tagA1);
         tags.put(head_b2.getName(), tagB2);
-        doReturn(tags).when(repo).getTags();
+        doReturn(tags).when(repository).getTags();
 
-        repo.revWalk = mock(RevWalk.class);
-        when(repo.revWalk.iterator()).
-            thenReturn(asList(head, head_a1, head_b1, head_b2).iterator());
-        RevFlag seenFlag = RevFlag.UNINTERESTING;
-        when(repo.revWalk.newFlag("a1")).thenReturn(seenFlag);
-        when(repo.revWalk.newFlag("b2")).thenReturn(seenFlag);
+        when(repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
 
-        when(this.repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
-
-        GitTagDescription description = repo.describe();
+        GitTagDescription description = repository.describe();
         assertThat(description.getNextTagName(), is(equalTo("a1")));
         assertThat(description.toString(), is(equalTo("a1-3-g" + abbrevId.name())));
     }
@@ -409,25 +402,23 @@ class JGitRepositoryTest {
         repository.headObject = mock(ObjectId.class);
         repository.headCommit = head;
 
-        JGitRepository repo = spy(this.repository);
+        RevWalk revWalk = mockRevWalk();
+        when(revWalk.iterator()).
+            thenReturn(asList(head, head_a1, head_b1, head_a2, head_b2).iterator());
+        RevFlag seenFlag = RevFlag.UNINTERESTING;
+        when(revWalk.newFlag("a2")).thenReturn(seenFlag);
+        when(revWalk.newFlag("b1")).thenReturn(seenFlag);
 
         Map<String, JGitTag> tags = new HashMap<>();
         JGitTag tagA1 = createTag("a2", head.getName());
         JGitTag tagB2 = createTag("b1", head.getName());
         tags.put(head_a2.getName(), tagA1);
         tags.put(head_b1.getName(), tagB2);
-        doReturn(tags).when(repo).getTags();
+        doReturn(tags).when(repository).getTags();
 
-        repo.revWalk = mock(RevWalk.class);
-        when(repo.revWalk.iterator()).
-            thenReturn(asList(head, head_a1, head_b1, head_a2, head_b2).iterator());
-        RevFlag seenFlag = RevFlag.UNINTERESTING;
-        when(repo.revWalk.newFlag("a2")).thenReturn(seenFlag);
-        when(repo.revWalk.newFlag("b1")).thenReturn(seenFlag);
+        when(repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
 
-        when(this.repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
-
-        GitTagDescription description = repo.describe();
+        GitTagDescription description = repository.describe();
         assertThat(description.getNextTagName(), is(equalTo("b1")));
         assertThat(description.toString(), is(equalTo("b1-3-g" + abbrevId.name())));
     }
@@ -444,8 +435,8 @@ class JGitRepositoryTest {
         repository.headObject = mock(ObjectId.class);
         repository.headCommit = head;
 
-        repository.revWalk = mock(RevWalk.class);
-        when(repository.revWalk.iterator()).
+        RevWalk revWalk = mockRevWalk();
+        when(revWalk.iterator()).
             thenReturn(asList(head, head_1, head_2).iterator());
 
         when(this.repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
@@ -678,7 +669,7 @@ class JGitRepositoryTest {
             "Version 1.0.0\n").getBytes());
         Date tagDate = new Date(1275131880000L);
 
-        repository.revWalk = mock(RevWalk.class);
+        RevWalk revWalk = mockRevWalk();
         JGitTag tag = new JGitTag(rawTag);
 
         repository.loadTag(tag);
@@ -686,7 +677,7 @@ class JGitRepositoryTest {
         assertThat(tag.getDate(), is(equalTo(tagDate)));
         assertThat(tag.getTimeZone(), is(equalTo(TimeZone.getTimeZone("GMT+0200"))));
 
-        verify(repository.revWalk).parseBody(rawTag);
+        verify(revWalk).parseBody(rawTag);
     }
 
     @DisplayName("should allow walking the HEAD’s history with a CommitWalkAction")
@@ -734,10 +725,7 @@ class JGitRepositoryTest {
         repository = spy(repository);
 
         RevWalk revWalk = mock(RevWalk.class);
-        doAnswer(invocation -> {
-            repository.revWalk = revWalk;
-            return null;
-        }).when(repository).prepareRevWalk();
+        doReturn(revWalk).when(repository).getRevWalk();
 
         return revWalk;
     }
