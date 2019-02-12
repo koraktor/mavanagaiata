@@ -56,7 +56,7 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.core.Is.*;
 import static org.hamcrest.core.IsEqual.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @DisplayName("JGitRepository")
@@ -336,7 +336,7 @@ class JGitRepositoryTest {
 
         RevWalk revWalk = mockRevWalk();
         when(revWalk.iterator()).
-            thenReturn(asList(head, head_1, head_2).iterator());
+            thenReturn(asList(head_1, head_2).iterator());
         RevFlag seenFlag = RevFlag.UNINTERESTING;
         when(revWalk.newFlag("2.0.0")).thenReturn(seenFlag);
 
@@ -350,6 +350,8 @@ class JGitRepositoryTest {
         GitTagDescription description = repository.describe();
         assertThat(description.getNextTagName(), is(equalTo("2.0.0")));
         assertThat(description.toString(), is(equalTo("2.0.0-2-g" + abbrevId.name())));
+
+        verify(revWalk).markStart(singletonList(head_1));
     }
 
     @DisplayName("should be able to describe a merge commit where the nearest tag is in the first parent branch")
@@ -370,7 +372,7 @@ class JGitRepositoryTest {
 
         RevWalk revWalk = mockRevWalk();
         when(revWalk.iterator()).
-            thenReturn(asList(head, head_a1, head_b1, head_b2).iterator());
+            thenReturn(asList(head_a1, head_b1, head_b2).iterator());
         RevFlag seenFlag = RevFlag.UNINTERESTING;
         when(revWalk.newFlag("a1")).thenReturn(seenFlag);
         when(revWalk.newFlag("b2")).thenReturn(seenFlag);
@@ -387,6 +389,8 @@ class JGitRepositoryTest {
         GitTagDescription description = repository.describe();
         assertThat(description.getNextTagName(), is(equalTo("a1")));
         assertThat(description.toString(), is(equalTo("a1-3-g" + abbrevId.name())));
+
+        verify(revWalk).markStart(asList(head_a1, head_b1));
     }
 
     @DisplayName("should be able to describe a merge commit where the nearest tag is in the second parent branch")
@@ -409,7 +413,7 @@ class JGitRepositoryTest {
 
         RevWalk revWalk = mockRevWalk();
         when(revWalk.iterator()).
-            thenReturn(asList(head, head_a1, head_b1, head_a2, head_b2).iterator());
+            thenReturn(asList(head_a1, head_b1, head_a2, head_b2).iterator());
         RevFlag seenFlag = RevFlag.UNINTERESTING;
         when(revWalk.newFlag("a2")).thenReturn(seenFlag);
         when(revWalk.newFlag("b1")).thenReturn(seenFlag);
@@ -426,6 +430,8 @@ class JGitRepositoryTest {
         GitTagDescription description = repository.describe();
         assertThat(description.getNextTagName(), is(equalTo("b1")));
         assertThat(description.toString(), is(equalTo("b1-3-g" + abbrevId.name())));
+
+        verify(revWalk).markStart(asList(head_a1, head_b1));
     }
 
     @DisplayName("should be able to describe a commit in an untagged branch")

@@ -11,6 +11,7 @@ package com.github.koraktor.mavanagaiata.git.jgit;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -192,7 +193,7 @@ public class JGitRepository extends AbstractGitRepository {
         }
 
         try (RevWalk revWalk = getRevWalk()) {
-            revWalk.markStart(start);
+            revWalk.markStart(Arrays.asList(start.getParents()));
             revWalk.setRetainBody(false);
             revWalk.sort(RevSort.COMMIT_TIME_DESC);
 
@@ -236,13 +237,8 @@ public class JGitRepository extends AbstractGitRepository {
                                                            Map<String, GitTag> tagCommits, RevFlagSet allFlags)
             throws RevWalkException {
         final Collection<JGitTagCandidate> candidates = new ArrayList<>();
-        int distance = 0;
+        int distance = 1;
         for (RevCommit commit : revWalk) {
-            if (distance == 0) {
-                distance = 1;
-                continue;
-            }
-
             for (JGitTagCandidate candidate : candidates) {
                 candidate.incrementDistanceIfExcludes(commit);
             }
