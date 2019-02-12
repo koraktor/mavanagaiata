@@ -101,48 +101,7 @@ public class JGitRepository extends AbstractGitRepository {
 
         FileRepositoryBuilder repositoryBuilder = getRepositoryBuilder();
         if (gitDir == null) {
-            File foundGitDir = repositoryBuilder.findGitDir(workTree).getGitDir();
-            if (foundGitDir == null) {
-                throw new GitRepositoryException(workTree + " is not inside a Git repository. Please specify the GIT_DIR separately.");
-            }
-
-            try {
-                if (!directoryContains(workTree, foundGitDir)) {
-                    if (directoryContains(foundGitDir.getParentFile(), workTree)) {
-                        repositoryBuilder.setGitDir(foundGitDir);
-                        repositoryBuilder.setWorkTree(foundGitDir.getParentFile());
-                    } else {
-                        File commonDir = new File(foundGitDir, COMMONDIR_FILE);
-                        String realGitDirPath = readFileToString(commonDir, UTF_8).trim();
-
-                        File realGitDir = new File(foundGitDir, realGitDirPath);
-                        if (!realGitDir.exists()) {
-                            realGitDir = new File(realGitDirPath);
-                        }
-
-                        File originalGitDirFile = new File(foundGitDir, GITDIR_FILE);
-                        String originalGitDirPath = readFileToString(originalGitDirFile, UTF_8).trim();
-                        File originalGitDir = new File(originalGitDirPath);
-
-                        if (originalGitDir.exists() && realGitDir.exists()) {
-                            if (headRef.equals(HEAD)) {
-                                File headFile = new File(foundGitDir, HEAD);
-                                String rawHead = readFileToString(headFile, UTF_8);
-                                headRef = rawHead.trim().replaceFirst(REF_LINK_PREFIX, "");
-                            }
-
-                            repositoryBuilder.setGitDir(realGitDir);
-                            repositoryBuilder.setIndexFile(new File(foundGitDir, INDEX_FILE));
-                            repositoryBuilder.setWorkTree(originalGitDir.getParentFile());
-                        }
-                    }
-                } else {
-                    repositoryBuilder.setGitDir(foundGitDir);
-                    repositoryBuilder.setWorkTree(workTree);
-                }
-            } catch (IOException e) {
-                throw new GitRepositoryException("Failure while resolving GIT_DIR.", e);
-            }
+            resolveGitDir(workTree, repositoryBuilder);
         } else {
             repositoryBuilder.setGitDir(gitDir);
             repositoryBuilder.setWorkTree(workTree);
@@ -480,4 +439,52 @@ public class JGitRepository extends AbstractGitRepository {
         return new RevWalk(repository);
     }
 
+    private void resolveGitDir(File workTree, FileRepositoryBuilder repositoryBuilder) throws GitRepositoryException {
+        File foundGitDir = repositoryBuilder.findGitDir(workTree).getGitDir();
+        if (foundGitDir == null) {
+            throw new GitRepositoryException(workTree + " is not inside a Git repository. Please specify the GIT_DIR separately.");
+        }
+
+        try {
+            if (directoryContains(workTree, foundGitDir)) {
+                repositoryBuilder.setGitDir(foundGitDir);
+                repositoryBuilder.setWorkTree(workTree);
+            } else {
+                resolveLinkedWorkTree(workTree, foundGitDir, repositoryBuilder);
+            }
+        } catch (IOException e) {
+            throw new GitRepositoryException("Failure while resolving GIT_DIR.", e);
+        }
+    }
+
+    private void resolveLinkedWorkTree(File workTree, File foundGitDir, FileRepositoryBuilder repositoryBuilder) throws IOException {
+        if (directoryContains(foundGitDir.getParentFile(), workTree)) {
+            repositoryBuilder.setGitDir(foundGitDir);
+            repositoryBuilder.setWorkTree(foundGitDir.getParentFile());
+        } else {
+            File commonDir = new File(foundGitDir, COMMONDIR_FILE);
+            String realGitDirPath = readFileToString(commonDir, UTF_8).trim();
+
+            File realGitDir = new File(foundGitDir, realGitDirPath);
+            if (!realGitDir.exists()) {
+                realGitDir = new File(realGitDirPath);
+            }
+
+            File originalGitDirFile = new File(foundGitDir, GITDIR_FILE);
+            String originalGitDirPath = readFileToString(originalGitDirFile, UTF_8).trim();
+            File originalGitDir = new File(originalGitDirPath);
+
+            if (originalGitDir.exists() && realGitDir.exists()) {
+                if (headRef.equals(HEAD)) {
+                    File headFile = new File(foundGitDir, HEAD);
+                    String rawHead = readFileToString(headFile, UTF_8);
+                    headRef = rawHead.trim().replaceFirst(REF_LINK_PREFIX, "");
+                }
+
+                repositoryBuilder.setGitDir(realGitDir);
+                repositoryBuilder.setIndexFile(new File(foundGitDir, INDEX_FILE));
+                repositoryBuilder.setWorkTree(originalGitDir.getParentFile());
+            }
+        }
+    }
 }
