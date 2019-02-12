@@ -348,7 +348,9 @@ public class JGitRepository extends AbstractGitRepository {
                     if (object instanceof RevCommit) {
                         tags.put(object.getName(), new JGitTag(revTag));
                     }
-                } catch (IncorrectObjectTypeException | MissingObjectException ignored) {}
+                } catch (IncorrectObjectTypeException | MissingObjectException ignored) {
+                    // Ignore lightweight tags or tags on missing objects
+                }
             }
         } catch (IOException e) {
             throw new GitRepositoryException("The tags could not be resolved.", e);
