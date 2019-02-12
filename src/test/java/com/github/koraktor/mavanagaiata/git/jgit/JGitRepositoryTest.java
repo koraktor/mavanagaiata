@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -171,8 +172,12 @@ class JGitRepositoryTest {
             workTree.deleteOnExit();
         }
 
+        File originalGitDir = new File(workTree, DOT_GIT);
+        Files.createFile(originalGitDir.toPath());
+
         FileUtils.writeStringToFile(new File(gitDir, HEAD), REF_LINK_PREFIX + R_HEADS + "test", Charset.forName("UTF-8"));
         FileUtils.writeStringToFile(new File(gitDir, COMMONDIR_FILE), realGitDir.getAbsolutePath(), Charset.forName("UTF-8"));
+        FileUtils.writeStringToFile(new File(gitDir, GITDIR_FILE), originalGitDir.getAbsolutePath(), Charset.forName("UTF-8"));
         FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class, RETURNS_DEEP_STUBS);
         when(repoBuilder.findGitDir(any())).thenReturn(repoBuilder);
         when(repoBuilder.getGitDir()).thenReturn(gitDir);
