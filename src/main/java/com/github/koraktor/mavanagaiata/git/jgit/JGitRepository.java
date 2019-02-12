@@ -10,7 +10,6 @@ package com.github.koraktor.mavanagaiata.git.jgit;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,6 +40,7 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 
+import static java.nio.charset.StandardCharsets.*;
 import static java.util.Collections.*;
 import static java.util.Comparator.*;
 import static org.apache.commons.io.FileUtils.*;
@@ -112,7 +112,7 @@ public class JGitRepository extends AbstractGitRepository {
                         repositoryBuilder.setWorkTree(foundGitDir.getParentFile());
                     } else {
                         File commonDir = new File(foundGitDir, COMMONDIR_FILE);
-                        String realGitDirPath = readFileToString(commonDir, "UTF-8").trim();
+                        String realGitDirPath = readFileToString(commonDir, UTF_8).trim();
 
                         File realGitDir = new File(foundGitDir, realGitDirPath);
                         if (!realGitDir.exists()) {
@@ -120,13 +120,13 @@ public class JGitRepository extends AbstractGitRepository {
                         }
 
                         File originalGitDirFile = new File(foundGitDir, GITDIR_FILE);
-                        String originalGitDirPath = readFileToString(originalGitDirFile, "UTF-8").trim();
+                        String originalGitDirPath = readFileToString(originalGitDirFile, UTF_8).trim();
                         File originalGitDir = new File(originalGitDirPath);
 
                         if (originalGitDir.exists() && realGitDir.exists()) {
                             if (headRef.equals(HEAD)) {
                                 File headFile = new File(foundGitDir, HEAD);
-                                String rawHead = readFileToString(headFile, Charset.forName("UTF-8"));
+                                String rawHead = readFileToString(headFile, UTF_8);
                                 headRef = rawHead.trim().replaceFirst(REF_LINK_PREFIX, "");
                             }
 
