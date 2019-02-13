@@ -21,7 +21,7 @@ import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.*;
 
 /**
  * This goal allows to generate a changelog of the currently checked out branch
@@ -160,9 +160,9 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
             format.printStream = printStream;
             format.printHeader();
 
-            ChangelogWalkAction action = new ChangelogWalkAction();
+            ChangelogWalkAction action = new ChangelogWalkAction(repository);
             action.currentRef = repository.getBranch();
-            action = repository.walkCommits(action);
+            repository.walkCommits(action);
 
             format.printSeparator();
             format.printCompareLink(action.currentRef, null, action.currentRef.equals(repository.getBranch()));
@@ -214,10 +214,11 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
 
         private String currentRef;
         private boolean firstCommit = true;
+        private GitRepository repository;
         private Map<String, GitTag> tags;
 
-        @Override
-        public void prepare() throws GitRepositoryException {
+        ChangelogWalkAction(GitRepository repository) throws GitRepositoryException {
+            this.repository = repository;
             tags = repository.getTags();
         }
 

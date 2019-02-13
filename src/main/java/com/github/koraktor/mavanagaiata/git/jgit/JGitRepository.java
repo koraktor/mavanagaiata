@@ -368,19 +368,14 @@ public class JGitRepository extends AbstractGitRepository {
     }
 
     @Override
-    public <T extends CommitWalkAction> T walkCommits(T action)
+    public void walkCommits(CommitWalkAction action)
             throws GitRepositoryException {
-        action.setRepository(this);
-        action.prepare();
-
         try (RevWalk revWalk = getRevWalk()) {
             revWalk.markStart(getHeadRevCommit());
 
             for (RevCommit commit : revWalk) {
                 action.execute(new JGitCommit(commit));
             }
-
-            return action;
         } catch (IOException | RevWalkException e) {
             throw new GitRepositoryException("Could not walk commits.", e);
         }

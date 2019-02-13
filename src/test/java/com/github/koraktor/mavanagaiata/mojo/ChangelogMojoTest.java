@@ -87,8 +87,6 @@ class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
         when(repository.getTags()).thenReturn(tags);
         doAnswer((Answer<ChangelogMojo.ChangelogWalkAction>) invocation -> {
             ChangelogMojo.ChangelogWalkAction walkAction = ((ChangelogMojo.ChangelogWalkAction) invocation.getArguments()[0]);
-            walkAction.setRepository(repository);
-            walkAction.prepare();
             for (GitCommit commit : ChangelogMojoTest.this.mockCommits) {
                 walkAction.execute(commit);
             }

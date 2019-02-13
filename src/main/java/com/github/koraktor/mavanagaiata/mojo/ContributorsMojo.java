@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.text.translate.CharSequenceTranslator;
@@ -133,9 +134,10 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
         try {
             mailMap = repository.getMailMap();
 
-            ContributorsWalkAction result = repository.walkCommits(new ContributorsWalkAction());
+            ContributorsWalkAction action = new ContributorsWalkAction();
+            repository.walkCommits(action);
 
-            ArrayList<Contributor> contributors = new ArrayList<>(result.contributors.values());
+            List<Contributor> contributors = action.getContributors();
             switch (sort) {
                 case "date":
                     contributors.sort(comparing(Contributor::getFirstCommitDate));
@@ -206,6 +208,10 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
     class ContributorsWalkAction extends CommitWalkAction {
 
         HashMap<String, Contributor> contributors = new HashMap<>();
+
+        List<Contributor> getContributors() {
+            return new ArrayList<>(contributors.values());
+        }
 
         protected void run() {
             String emailAddress = currentCommit.getAuthorEmailAddress();
