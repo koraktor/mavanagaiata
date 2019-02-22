@@ -24,6 +24,7 @@ import org.apache.commons.io.FileUtils;
 
 import org.mockito.InOrder;
 
+import org.eclipse.jgit.api.DescribeCommand;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
@@ -33,7 +34,6 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevFlag;
 import org.eclipse.jgit.revwalk.RevObject;
 import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -299,162 +299,57 @@ class JGitRepositoryTest {
     @DisplayName("should be able to describe a tagged commit")
     @Test
     void testDescribeExactTagged() throws Exception {
-        RevCommit head = this.createCommit();
-        RevCommit head_1 = this.createCommit();
-        RevCommit head_2 = this.createCommit();
-        head.getParents()[0] = head_1;
-        head_1.getParents()[0] = head_2;
-        AbbreviatedObjectId abbrevId = head.abbreviate(7);
+        DescribeCommand describeCommand = mock(DescribeCommand.class);
+        when(describeCommand.call()).thenReturn("2.0.0");
+
+        repository = spy(repository);
         repository.headObject = mock(ObjectId.class);
-        repository.headCommit = head;
+        doReturn(describeCommand).when(repository).getDescribeCommand();
 
-        JGitRepository repo = spy(this.repository);
-
-        Map<String, JGitTag> tags = new HashMap<>();
-        JGitTag tag = createTag("2.0.0", head.getName());
-        tags.put(head.getName(), tag);
-        doReturn(tags).when(repo).getTags();
-
-        when(this.repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
-
-        GitTagDescription description = repo.describe();
+        GitTagDescription description = repository.describe();
         assertThat(description.getNextTagName(), is(equalTo("2.0.0")));
         assertThat(description.toString(), is(equalTo("2.0.0")));
+
+        verify(describeCommand).setTarget(repository.headObject);
     }
 
     @DisplayName("should be able to describe a commit")
     @Test
     void testDescribeTagged() throws Exception {
-        RevCommit head = this.createCommit();
-        RevCommit head_1 = this.createCommit();
-        RevCommit head_2 = this.createCommit();
-        head.getParents()[0] = head_1;
-        head_1.getParents()[0] = head_2;
-        AbbreviatedObjectId abbrevId = head.abbreviate(7);
+        DescribeCommand describeCommand = mock(DescribeCommand.class);
+        when(describeCommand.call()).thenReturn("2.0.0-2-gdeadbeef");
+
+        repository = spy(repository);
         repository.headObject = mock(ObjectId.class);
-        repository.headCommit = head;
-
-        RevWalk revWalk = mockRevWalk();
-        when(revWalk.iterator()).
-            thenReturn(asList(head_1, head_2).iterator());
-        RevFlag seenFlag = RevFlag.UNINTERESTING;
-        when(revWalk.newFlag("2.0.0")).thenReturn(seenFlag);
-
-        Map<String, JGitTag> tags = new HashMap<>();
-        JGitTag tag = createTag("2.0.0", head.getName());
-        tags.put(head_2.getName(), tag);
-        doReturn(tags).when(repository).getTags();
-
-        when(repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
+        doReturn(describeCommand).when(repository).getDescribeCommand();
 
         GitTagDescription description = repository.describe();
         assertThat(description.getNextTagName(), is(equalTo("2.0.0")));
-        assertThat(description.toString(), is(equalTo("2.0.0-2-g" + abbrevId.name())));
+        assertThat(description.toString(), is(equalTo("2.0.0-2-gdeadbeef")));
 
-        verify(revWalk).markStart(singletonList(head_1));
-    }
-
-    @DisplayName("should be able to describe a merge commit where the nearest tag is in the first parent branch")
-    @Test
-    void testDescribeMergeCommitFirstBranch() throws Exception {
-        RevCommit head = this.createCommit(2);
-        RevCommit head_a1 = this.createCommit();
-        RevCommit head_b1 = this.createCommit();
-        RevCommit head_b2 = this.createCommit();
-
-        head.getParents()[0] = head_a1;
-        head.getParents()[1] = head_b1;
-        head_b1.getParents()[0] = head_b2;
-
-        AbbreviatedObjectId abbrevId = head.abbreviate(7);
-        repository.headObject = mock(ObjectId.class);
-        repository.headCommit = head;
-
-        RevWalk revWalk = mockRevWalk();
-        when(revWalk.iterator()).
-            thenReturn(asList(head_a1, head_b1, head_b2).iterator());
-        RevFlag seenFlag = RevFlag.UNINTERESTING;
-        when(revWalk.newFlag("a1")).thenReturn(seenFlag);
-        when(revWalk.newFlag("b2")).thenReturn(seenFlag);
-
-        Map<String, JGitTag> tags = new HashMap<>();
-        JGitTag tagA1 = createTag("a1", head.getName());
-        JGitTag tagB2 = createTag("b2", head.getName());
-        tags.put(head_a1.getName(), tagA1);
-        tags.put(head_b2.getName(), tagB2);
-        doReturn(tags).when(repository).getTags();
-
-        when(repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
-
-        GitTagDescription description = repository.describe();
-        assertThat(description.getNextTagName(), is(equalTo("a1")));
-        assertThat(description.toString(), is(equalTo("a1-3-g" + abbrevId.name())));
-
-        verify(revWalk).markStart(asList(head_a1, head_b1));
-    }
-
-    @DisplayName("should be able to describe a merge commit where the nearest tag is in the second parent branch")
-    @Test
-    void testDescribeMergeCommitSecondBranch() throws Exception {
-        RevCommit head = this.createCommit(2);
-        RevCommit head_a1 = this.createCommit();
-        RevCommit head_a2 = this.createCommit();
-        RevCommit head_b1 = this.createCommit();
-        RevCommit head_b2 = this.createCommit();
-
-        head.getParents()[0] = head_a1;
-        head_a1.getParents()[0] = head_a2;
-        head.getParents()[1] = head_b1;
-        head_b1.getParents()[0] = head_b2;
-
-        AbbreviatedObjectId abbrevId = head.abbreviate(7);
-        repository.headObject = mock(ObjectId.class);
-        repository.headCommit = head;
-
-        RevWalk revWalk = mockRevWalk();
-        when(revWalk.iterator()).
-            thenReturn(asList(head_a1, head_b1, head_a2, head_b2).iterator());
-        RevFlag seenFlag = RevFlag.UNINTERESTING;
-        when(revWalk.newFlag("a2")).thenReturn(seenFlag);
-        when(revWalk.newFlag("b1")).thenReturn(seenFlag);
-
-        Map<String, JGitTag> tags = new HashMap<>();
-        JGitTag tagA1 = createTag("a2", head.getName());
-        JGitTag tagB2 = createTag("b1", head.getName());
-        tags.put(head_a2.getName(), tagA1);
-        tags.put(head_b1.getName(), tagB2);
-        doReturn(tags).when(repository).getTags();
-
-        when(repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
-
-        GitTagDescription description = repository.describe();
-        assertThat(description.getNextTagName(), is(equalTo("b1")));
-        assertThat(description.toString(), is(equalTo("b1-3-g" + abbrevId.name())));
-
-        verify(revWalk).markStart(asList(head_a1, head_b1));
+        verify(describeCommand).setTarget(repository.headObject);
     }
 
     @DisplayName("should be able to describe a commit in an untagged branch")
     @Test
     void testDescribeUntagged() throws Exception {
-        RevCommit head = this.createCommit();
-        RevCommit head_1 = this.createCommit();
-        RevCommit head_2 = this.createCommit();
-        head.getParents()[0] = head_1;
-        head_1.getParents()[0] = head_2;
+        DescribeCommand describeCommand = mock(DescribeCommand.class);
+        when(describeCommand.call()).thenReturn(null);
+
+        RevCommit head = createCommit();
         AbbreviatedObjectId abbrevId = head.abbreviate(7);
-        repository.headObject = mock(ObjectId.class);
+        when(repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
+
+        repository = spy(repository);
         repository.headCommit = head;
+        repository.headObject = mock(ObjectId.class);
+        doReturn(describeCommand).when(repository).getDescribeCommand();
 
-        RevWalk revWalk = mockRevWalk();
-        when(revWalk.iterator()).
-            thenReturn(asList(head, head_1, head_2).iterator());
-
-        when(this.repo.getObjectDatabase().newReader().abbreviate(head)).thenReturn(abbrevId);
-
-        GitTagDescription description = this.repository.describe();
+        GitTagDescription description = repository.describe();
         assertThat(description.getNextTagName(), is(equalTo("")));
         assertThat(description.toString(), is(equalTo(abbrevId.name())));
+
+        verify(describeCommand).setTarget(repository.headObject);
     }
 
     @DisplayName("should be able to abbreviate the ID of a commit")

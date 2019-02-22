@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2018, Sebastian Staudt
+ * Copyright (c) 2012-2019, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
@@ -21,19 +21,19 @@ public class GitTagDescription {
 
     private int distance;
 
-    private GitTag nextTag;
+    private String nextTagName;
 
     /**
      * Create a new description for the given information
      *
      * @param abbrevCommitId The abbreviated commit ID
-     * @param nextTag The next tag reachable from the commit
+     * @param nextTagName The name of the next tag reachable from the commit
      * @param distance The distance to the next tag
      */
-    public GitTagDescription(String abbrevCommitId, GitTag nextTag, int distance) {
+    public GitTagDescription(String abbrevCommitId, String nextTagName, int distance) {
         this.abbrevCommitId = abbrevCommitId;
         this.distance = distance;
-        this.nextTag = nextTag;
+        this.nextTagName = nextTagName;
     }
 
     /**
@@ -42,7 +42,7 @@ public class GitTagDescription {
      * @return The name of the next tag
      */
     public String getNextTagName() {
-        return (nextTag == null) ? "" : nextTag.getName();
+        return (nextTagName == null) ? "" : nextTagName;
     }
 
     /**
@@ -64,16 +64,16 @@ public class GitTagDescription {
      */
     @Override
     public String toString() {
-        if (nextTag == null) {
+        if (nextTagName == null) {
             return abbrevCommitId;
         }
 
         if (distance == 0) {
-            return nextTag.getName();
+            return nextTagName;
         }
 
         return String.format(DESCRIBE_FORMAT,
-            nextTag.getName(),
+            nextTagName,
             distance,
             abbrevCommitId);
     }

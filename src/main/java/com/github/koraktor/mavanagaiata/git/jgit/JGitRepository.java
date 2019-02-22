@@ -10,12 +10,12 @@ package com.github.koraktor.mavanagaiata.git.jgit;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jgit.api.DescribeCommand;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.errors.RevWalkException;
@@ -25,10 +25,7 @@ import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevFlag;
-import org.eclipse.jgit.revwalk.RevFlagSet;
 import org.eclipse.jgit.revwalk.RevObject;
-import org.eclipse.jgit.revwalk.RevSort;
 import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
@@ -42,8 +39,6 @@ import com.github.koraktor.mavanagaiata.git.GitTag;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 
 import static java.nio.charset.StandardCharsets.*;
-import static java.util.Collections.*;
-import static java.util.Comparator.*;
 import static org.apache.commons.io.FileUtils.*;
 import static org.eclipse.jgit.lib.Constants.*;
 
@@ -55,7 +50,6 @@ import static org.eclipse.jgit.lib.Constants.*;
  */
 public class JGitRepository extends AbstractGitRepository {
 
-    private static final int MAX_DESCRIBE_CANDIDATES = 10;
     static final String COMMONDIR_FILE = "commondir";
     static final String GITDIR_FILE = "gitdir";
     private static final String INDEX_FILE = "index";
@@ -141,106 +135,42 @@ public class JGitRepository extends AbstractGitRepository {
 
     @Override
     public GitTagDescription describe() throws GitRepositoryException {
-        Map<String, GitTag> tagCommits = getTags();
-        RevCommit start = getHeadRevCommit();
+        DescribeCommand command = getDescribeCommand();
 
-        // Check if the start commit is already tagged
-        if (tagCommits.containsKey(start.name())) {
-            GitTag tag = tagCommits.get(start.name());
+        try {
+            command.setTarget(getHeadObject());
 
-            return new GitTagDescription(getAbbreviatedCommitId(getHeadCommit()), tag,0);
-        }
+            String abbrev;
+            int distance;
+            String tagName;
 
-        try (RevWalk revWalk = getRevWalk()) {
-            revWalk.markStart(Arrays.asList(start.getParents()));
-            revWalk.setRetainBody(false);
-            revWalk.sort(RevSort.COMMIT_TIME_DESC);
+            String describe = command.call();
+            if (describe == null) {
+                abbrev = getAbbreviatedCommitId(getHeadCommit());
+                distance = -1;
+                tagName = null;
+            } else {
+                String[] describeParts = describe.split("-");
+                if (describeParts.length == 1) {
+                    abbrev = null;
+                    distance = 0;
+                } else {
+                    abbrev = describeParts[2].substring(1);
+                    distance = Integer.parseInt(describeParts[1]);
+                }
 
-            final RevFlagSet allFlags = new RevFlagSet();
-            final Collection<JGitTagCandidate> candidates = findTagCandidates(revWalk, tagCommits, allFlags);
-
-            if (candidates.isEmpty()) {
-                return new GitTagDescription(getAbbreviatedCommitId(getHeadCommit()), null, -1);
+                tagName = describeParts[0];
             }
 
-            JGitTagCandidate bestCandidate = min(candidates, comparingInt(JGitTagCandidate::getDistance));
-
-            // We hit the maximum of candidates so there may be still be
-            // commits that add up to the distance
-            if (candidates.size() == MAX_DESCRIBE_CANDIDATES) {
-                correctDistance(revWalk, bestCandidate, allFlags);
-            }
-
-            return new GitTagDescription(getAbbreviatedCommitId(getHeadCommit()), bestCandidate.getTag(), bestCandidate.getDistance());
-        } catch (IOException | RevWalkException e) {
-            throw new GitRepositoryException("Could not describe current commit.", e);
+            return new GitTagDescription(abbrev, tagName, distance);
+        } catch (IOException | GitAPIException e) {
+            throw new GitRepositoryException(e.getMessage());
         }
     }
 
     @Override
     public String getHeadRef() {
         return headRef;
-    }
-
-    /**
-     * Find up to 10 tag candidates in the current branch. One of these should
-     * be the latest tag.
-     *
-     * @param revWalk Repository information
-     * @param tagCommits Map of commits that are associated with a tag
-     * @param allFlags All flags that have been set so far
-     * @return A collection of tag candidates
-     * @throws RevWalkException if there’s an error during the rev walk
-     */
-    private Collection<JGitTagCandidate> findTagCandidates(RevWalk revWalk,
-                                                           Map<String, GitTag> tagCommits, RevFlagSet allFlags) {
-        final Collection<JGitTagCandidate> candidates = new ArrayList<>();
-        int distance = 1;
-        for (RevCommit commit : revWalk) {
-            for (JGitTagCandidate candidate : candidates) {
-                candidate.incrementDistanceIfExcludes(commit);
-            }
-
-            if (!commit.hasAny(allFlags) && tagCommits.containsKey(commit.name())) {
-                JGitTag tag = (JGitTag) tagCommits.get(commit.name());
-                RevFlag flag = revWalk.newFlag(tag.getName());
-                candidates.add(new JGitTagCandidate(tag, distance, flag));
-                commit.add(flag);
-                commit.carry(flag);
-                revWalk.carry(flag);
-                allFlags.add(flag);
-
-                if (candidates.size() == MAX_DESCRIBE_CANDIDATES) {
-                    break;
-                }
-            }
-
-            distance ++;
-        }
-
-        return candidates;
-    }
-
-    /**
-     * Correct the distance for all tag candidates. We have to check all
-     * branches to get the correct distance at the end.
-     *
-     * @param revWalk Repository information
-     * @param candidate Collection of tag candidates
-     * @param allFlags All flags that have been set so far
-     * @throws RevWalkException if there’s an error during the rev walk
-     */
-    private void correctDistance(RevWalk revWalk, JGitTagCandidate candidate, RevFlagSet allFlags) {
-        for (RevCommit commit : revWalk) {
-            if (commit.hasAll(allFlags)) {
-                // The commit has all flags already, so we just mark the parents as seen.
-                for (RevCommit parent : commit.getParents()) {
-                    parent.add(RevFlag.SEEN);
-                }
-            } else {
-                candidate.incrementDistanceIfExcludes(commit);
-            }
-        }
     }
 
     @Override
@@ -262,6 +192,10 @@ public class JGitRepository extends AbstractGitRepository {
         } catch (IOException e) {
             throw new GitRepositoryException("Current branch could not be read.", e);
         }
+    }
+
+    DescribeCommand getDescribeCommand() {
+        return Git.wrap(repository).describe();
     }
 
     @Override
