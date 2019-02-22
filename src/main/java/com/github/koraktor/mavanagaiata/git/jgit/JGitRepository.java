@@ -193,8 +193,7 @@ public class JGitRepository extends AbstractGitRepository {
      * @throws RevWalkException if there’s an error during the rev walk
      */
     private Collection<JGitTagCandidate> findTagCandidates(RevWalk revWalk,
-                                                           Map<String, GitTag> tagCommits, RevFlagSet allFlags)
-            throws RevWalkException {
+                                                           Map<String, GitTag> tagCommits, RevFlagSet allFlags) {
         final Collection<JGitTagCandidate> candidates = new ArrayList<>();
         int distance = 1;
         for (RevCommit commit : revWalk) {
@@ -231,8 +230,7 @@ public class JGitRepository extends AbstractGitRepository {
      * @param allFlags All flags that have been set so far
      * @throws RevWalkException if there’s an error during the rev walk
      */
-    private void correctDistance(RevWalk revWalk, JGitTagCandidate candidate, RevFlagSet allFlags)
-            throws RevWalkException {
+    private void correctDistance(RevWalk revWalk, JGitTagCandidate candidate, RevFlagSet allFlags) {
         for (RevCommit commit : revWalk) {
             if (commit.hasAll(allFlags)) {
                 // The commit has all flags already, so we just mark the parents as seen.
