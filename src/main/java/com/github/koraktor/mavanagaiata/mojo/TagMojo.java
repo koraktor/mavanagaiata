@@ -17,6 +17,10 @@ import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 /**
  * This goal provides the most recent Git tag in the "mavanagaiata.tag" and
  * "mvngit.tag" properties.
+ * This goal provides the most recent Git tag name in the
+ * "mavanagaiata.tag.name" and "mvngit.tag.name" properties. Additionally,
+ * more exact information as per {@code git describe} is provided in the
+ * "mavanagaiata.tag.describe" and "mvngit.tag.describe" properties
  *
  * @author Sebastian Staudt
  * @since 0.1.0
@@ -29,7 +33,10 @@ public class TagMojo extends AbstractGitMojo {
     /**
      * This will first read all tags and walk the commit hierarchy down from
      * HEAD until it finds one of the tags. The name of that tag is written
-     * into "mavanagaiata.tag" and "mvngit.tag" respectively.
+     * into "mavanagaiata.tag.name" and "mvngit.tag.name" respectively.
+     * <p>
+     * A more canonical representation as per {@code git describe} is stored
+     * in "mavanagaiata.tag.describe" and "mvngit.tag.describe".
      *
      * @throws MavanagaiataMojoException if the tags cannot be read
      */
