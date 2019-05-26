@@ -365,7 +365,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
                 <configuration>
-                    <argLine>-Duser.language=en</argLine>
+                    <argLine>@{argLine} -Duser.language=en</argLine>
                 </configuration>
             </plugin>
             <plugin>
