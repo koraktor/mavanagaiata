@@ -308,6 +308,7 @@
                     </links>
                     <locale>en_US</locale>
                     <show>private</show>
+                    <source>8</source>
                 </configuration>
                 <executions>
                     <execution>
@@ -417,6 +418,7 @@
                         <link>https://download.eclipse.org/jgit/site/${jgit.version}/apidocs</link>
                     </links>
                     <locale>en_US</locale>
+                    <source>8</source>
                 </configuration>
                 <reportSets>
                     <reportSet>
