@@ -214,7 +214,7 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
         }
 
         protected void run() {
-            String emailAddress = currentCommit.getAuthorEmailAddress();
+            String emailAddress = mailMap.getCanonicalAuthorEmailAddress(currentCommit);
             Contributor contributor = contributors.get(emailAddress);
             if (contributor == null) {
                 contributors.put(emailAddress, new Contributor(currentCommit));
