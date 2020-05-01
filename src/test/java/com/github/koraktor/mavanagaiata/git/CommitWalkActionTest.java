@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2018, Sebastian Staudt
+ * Copyright (c) 2012-2020, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
@@ -20,10 +20,8 @@ import static org.mockito.Mockito.*;
 @DisplayName("CommitWalkAction")
 class CommitWalkActionTest {
 
-    class GenericCommitWalkAction extends CommitWalkAction {
-
+    static class GenericCommitWalkAction extends CommitWalkAction {
         protected void run() {}
-
     }
 
     @DisplayName("should track the current commit while executing")

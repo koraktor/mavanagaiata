@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2018, Sebastian Staudt
+ * Copyright (c) 2012-2020, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
@@ -26,9 +26,9 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 @DisplayName("AbstractGitRepository")
 class AbstractGitRepositoryTest {
 
-    private static GitCommit headCommit = mock(GitCommit.class);
+    private final static GitCommit headCommit = mock(GitCommit.class);
 
-    class GenericGitRepository extends AbstractGitRepository {
+    static class GenericGitRepository extends AbstractGitRepository {
 
         public void check() {}
 

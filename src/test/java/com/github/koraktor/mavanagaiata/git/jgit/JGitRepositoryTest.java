@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2019, Sebastian Staudt
+ * Copyright (c) 2012-2020, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git.jgit;
@@ -10,7 +10,7 @@ package com.github.koraktor.mavanagaiata.git.jgit;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Date;
 import java.util.HashMap;
@@ -175,9 +175,9 @@ class JGitRepositoryTest {
         File originalGitDir = new File(workTree, DOT_GIT);
         Files.createFile(originalGitDir.toPath());
 
-        FileUtils.writeStringToFile(new File(gitDir, HEAD), REF_LINK_PREFIX + R_HEADS + "test", Charset.forName("UTF-8"));
-        FileUtils.writeStringToFile(new File(gitDir, COMMONDIR_FILE), realGitDir.getAbsolutePath(), Charset.forName("UTF-8"));
-        FileUtils.writeStringToFile(new File(gitDir, GITDIR_FILE), originalGitDir.getAbsolutePath(), Charset.forName("UTF-8"));
+        FileUtils.writeStringToFile(new File(gitDir, HEAD), REF_LINK_PREFIX + R_HEADS + "test", StandardCharsets.UTF_8);
+        FileUtils.writeStringToFile(new File(gitDir, COMMONDIR_FILE), realGitDir.getAbsolutePath(), StandardCharsets.UTF_8);
+        FileUtils.writeStringToFile(new File(gitDir, GITDIR_FILE), originalGitDir.getAbsolutePath(), StandardCharsets.UTF_8);
         FileRepositoryBuilder repoBuilder = mock(FileRepositoryBuilder.class, RETURNS_DEEP_STUBS);
         when(repoBuilder.findGitDir(any())).thenReturn(repoBuilder);
         when(repoBuilder.getGitDir()).thenReturn(gitDir);
