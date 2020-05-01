@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2019, Sebastian Staudt
+ * Copyright (c) 2012-2020, Sebastian Staudt
  *               2015, Kay Hannay
  */
 
@@ -187,7 +187,7 @@ public class JGitRepository extends AbstractGitRepository {
     @Override
     public String getBranch() throws GitRepositoryException {
         try {
-            Ref ref = repository.getRefDatabase().getRef(headRef);
+            Ref ref = repository.getRefDatabase().findRef(headRef);
             return ref == null ? null : Repository.shortenRefName(ref.getTarget().getName());
         } catch (IOException e) {
             throw new GitRepositoryException("Current branch could not be read.", e);

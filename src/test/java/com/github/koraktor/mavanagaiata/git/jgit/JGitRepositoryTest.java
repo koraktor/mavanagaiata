@@ -386,7 +386,7 @@ class JGitRepositoryTest {
         Ref master = mock(Ref.class);
         when(head.getTarget()).thenReturn(master);
         when(master.getName()).thenReturn(R_HEADS + "master");
-        when(repo.getRefDatabase().getRef(HEAD)).thenReturn(head);
+        when(repo.getRefDatabase().findRef(HEAD)).thenReturn(head);
 
         assertThat(repository.getBranch(), is(equalTo("master")));
     }
@@ -395,7 +395,7 @@ class JGitRepositoryTest {
     @Test
     void testGetBranchFailure() throws Exception {
         FileNotFoundException exception = new FileNotFoundException();
-        when(repo.getRefDatabase().getRef(HEAD)).thenThrow(exception);
+        when(repo.getRefDatabase().findRef(HEAD)).thenThrow(exception);
 
         GitRepositoryException e = assertThrows(GitRepositoryException.class,
             repository::getBranch);
