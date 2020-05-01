@@ -51,7 +51,7 @@ A more complete usage example can be found in Mavanagaiata’s own
 
 ## Requirements
 
- * Maven 3.0.5 or newer
+ * Maven 3.3.9 or newer
 
 ## Dependencies
 
