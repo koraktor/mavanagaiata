@@ -17,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.github.koraktor.mavanagaiata.git.GitCommit;
+import com.github.koraktor.mavanagaiata.git.MailMap;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.core.Is.*;
@@ -40,6 +41,14 @@ class ContributorsMojoTest extends GitOutputMojoAbstractTest<ContributorsMojo> {
         this.mojo.showCounts        = true;
         this.mojo.showEmail         = false;
         this.mojo.sort              = "count";
+
+        MailMap mailMap = mock(MailMap.class);
+        doAnswer(invocationOnMock -> {
+            GitCommit commit = invocationOnMock.getArgument(0, GitCommit.class);
+
+            return commit.getAuthorEmailAddress();
+        }).when(mailMap).getCanonicalAuthorEmailAddress(any(GitCommit.class));
+        when(repository.getMailMap()).thenReturn(mailMap);
 
         doAnswer(new Answer<ContributorsMojo.ContributorsWalkAction>() {
             long dateCounter = new Date().getTime();
