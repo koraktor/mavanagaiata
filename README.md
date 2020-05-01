@@ -56,11 +56,11 @@ A more complete usage example can be found in Mavanagaiata’s own
 ## Dependencies
 
  * Apache Commons IO 2.6
- * Apache Commons Lang 3.8.1
- * Apache Commons Text 1.6
- * JGit 5.2.1
+ * Apache Commons Lang 3.10
+ * Apache Commons Text 1.8
+ * JGit 5.7.1
  * Maven Filtering 3.1.1
- 
+
 ## Contribute
 
 Mavanagaiata is an open-source project. Therefore you are free to help
