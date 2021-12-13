@@ -2,8 +2,6 @@ name: Maven CI
 
 on:
   push:
-    branches:
-      - *
     paths:
       - src/main/**/*
       - .github/workflows/*
