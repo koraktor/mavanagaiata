@@ -2,7 +2,11 @@ name: Maven CI
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - *
+    paths:
+      - src/main/**/*
+      - .github/workflows/*
   pull_request:
     branches: [ master ]
 
