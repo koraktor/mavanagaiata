@@ -10,6 +10,7 @@ package com.github.koraktor.mavanagaiata.mojo;
 import java.io.File;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
+import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.maven.project.MavenProject;
@@ -52,6 +53,8 @@ public abstract class MojoAbstractTest<T extends AbstractGitMojo> {
 
     @BeforeEach
     public void setup() throws Exception {
+        Locale.setDefault(Locale.ENGLISH);
+
         File baseDir = mock(File.class);
         when(baseDir.exists()).thenReturn(true);
 

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import org.mockito.stubbing.Answer;
@@ -51,8 +50,6 @@ class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
     @Override
     public void setup() throws Exception {
         super.setup();
-
-        Locale.setDefault(Locale.ENGLISH);
 
         mojo.format = new ChangelogFormat();
         mojo.formatTemplate = ChangelogFormat.Formats.DEFAULT;
