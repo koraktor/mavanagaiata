@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.jgit.api.DescribeCommand;
 import org.eclipse.jgit.api.Git;
@@ -51,6 +53,7 @@ import static org.eclipse.jgit.lib.Constants.*;
 public class JGitRepository extends AbstractGitRepository {
 
     static final String COMMONDIR_FILE = "commondir";
+    static final Pattern DESCRIBE_PATTERN = Pattern.compile("(.*)-([1-9][0-9]*)-g([0-9a-f]+)$");
     static final String GITDIR_FILE = "gitdir";
     private static final String INDEX_FILE = "index";
     static final String REF_LINK_PREFIX = "ref: ";
@@ -150,16 +153,17 @@ public class JGitRepository extends AbstractGitRepository {
                 distance = -1;
                 tagName = null;
             } else {
-                String[] describeParts = describe.split("-");
-                if (describeParts.length == 1) {
+                Matcher describeMatcher = DESCRIBE_PATTERN.matcher(describe);
+
+                if (describeMatcher.matches()) {
+                    abbrev = describeMatcher.group(3);
+                    distance = Integer.parseInt(describeMatcher.group(2));
+                    tagName = describeMatcher.group(1);
+                } else {
                     abbrev = null;
                     distance = 0;
-                } else {
-                    abbrev = describeParts[2].substring(1);
-                    distance = Integer.parseInt(describeParts[1]);
+                    tagName = describe;
                 }
-
-                tagName = describeParts[0];
             }
 
             return new GitTagDescription(abbrev, tagName, distance);
