@@ -3,6 +3,7 @@ name: Maven CI
 on:
   push:
     paths:
+      - pom.xml
       - src/main/**/*
       - .github/workflows/*
   pull_request:
