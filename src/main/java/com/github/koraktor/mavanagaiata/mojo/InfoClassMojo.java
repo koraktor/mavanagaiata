@@ -2,10 +2,14 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2018, Sebastian Staudt
+ * Copyright (c) 2012-2022, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
+
+import org.codehaus.plexus.interpolation.InterpolatorFilterReader;
+import org.codehaus.plexus.interpolation.MapBasedValueSource;
+import org.codehaus.plexus.interpolation.RegexBasedInterpolator;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,21 +28,17 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.shared.filtering.FilterWrapper;
 import org.apache.maven.shared.filtering.MavenFileFilter;
 import org.apache.maven.shared.filtering.MavenFilteringException;
-import org.apache.maven.shared.utils.io.FileUtils;
-
-import org.codehaus.plexus.interpolation.InterpolatorFilterReader;
-import org.codehaus.plexus.interpolation.MapBasedValueSource;
-import org.codehaus.plexus.interpolation.RegexBasedInterpolator;
 
 import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
 
 import static java.nio.file.Files.*;
-import static java.util.Collections.singletonList;
-import static org.apache.commons.io.FileUtils.forceDeleteOnExit;
+import static java.util.Collections.*;
+import static org.apache.commons.io.FileUtils.*;
 
 /**
  * This goal generates the source code for a Java class with Git information
@@ -206,11 +206,11 @@ public class InfoClassMojo extends AbstractGitMojo {
             throw MavanagaiataMojoException.create("Could not create class source: %s", e, outputFile.getAbsolutePath());
         }
 
-        List<FileUtils.FilterWrapper> filterWrappers = singletonList(new ValueSourceFilter(repository));
+        List<FilterWrapper> filterWrappers = singletonList(new ValueSourceFilter(repository));
         fileFilter.copyFile(sourceFile, outputFile, true, filterWrappers, encoding, true);
     }
 
-    private class ValueSourceFilter extends FileUtils.FilterWrapper {
+    private class ValueSourceFilter extends FilterWrapper {
         private final MapBasedValueSource valueSource;
 
         ValueSourceFilter(GitRepository repository)
