@@ -10,6 +10,7 @@ package com.github.koraktor.mavanagaiata.mojo;
 import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -179,9 +180,7 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     @DisplayName("should ignore errors when skipNoGit is set")
     @Test
     void testInitRepository() throws Exception {
-        File baseDir = File.createTempFile("mavanagaiata-tests-baseDir", null);
-        baseDir.delete();
-        baseDir.mkdirs();
+        File baseDir = Files.createTempDirectory("mavanagaiata-tests-baseDir").toFile();
         FileUtils.forceDeleteOnExit(baseDir);
 
         File gitDir = File.createTempFile("mavanagaiata-tests-gitDir", null);

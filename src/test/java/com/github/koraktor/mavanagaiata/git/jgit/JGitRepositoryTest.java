@@ -76,10 +76,8 @@ class JGitRepositoryTest {
     @DisplayName("should be able to create based on a worktree")
     @Test
     void testCreateWithWorkTree() throws Exception {
-        File workTree = File.createTempFile("workTree", null);
-        if (workTree.delete() && workTree.mkdir()) {
-            workTree.deleteOnExit();
-        }
+        File workTree = Files.createTempDirectory("workTree").toFile();
+        workTree.deleteOnExit();
 
         File gitDir = new File(workTree, DOT_GIT);
         if (gitDir.mkdir()) {
@@ -125,10 +123,8 @@ class JGitRepositoryTest {
     @DisplayName("should be able to create based on a subdirectory of a worktree")
     @Test
     void testCreateWithWorkTreeChild() throws Exception {
-        File workTree = File.createTempFile("workTree", null);
-        if (workTree.delete() && workTree.mkdir()) {
-            workTree.deleteOnExit();
-        }
+        File workTree = Files.createTempDirectory("workTree").toFile();
+        workTree.deleteOnExit();
 
         File workTreeChild = new File(workTree, "child");
         if (workTreeChild.mkdir()) {
@@ -157,20 +153,16 @@ class JGitRepositoryTest {
     @DisplayName("should be able to create based on a linked worktree")
     @Test
     void testCreateWithLinkedWorktree() throws Exception {
-        File realGitDir = File.createTempFile(DOT_GIT, null);
-        if (realGitDir.delete() && realGitDir.mkdir()) {
-            realGitDir.deleteOnExit();
-        }
+        File realGitDir = Files.createTempDirectory(DOT_GIT).toFile();
+        realGitDir.deleteOnExit();
 
         File gitDir = new File(realGitDir, DOT_GIT + "/worktrees/test");
         if (gitDir.mkdir()) {
             gitDir.deleteOnExit();
         }
 
-        File workTree = File.createTempFile("workTree", null);
-        if (workTree.delete() && workTree.mkdir()) {
-            workTree.deleteOnExit();
-        }
+        File workTree = Files.createTempDirectory("workTree").toFile();
+        workTree.deleteOnExit();
 
         File originalGitDir = new File(workTree, DOT_GIT);
         Files.createFile(originalGitDir.toPath());
