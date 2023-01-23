@@ -13,6 +13,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Reset tags
+        run: |
+          git fetch --force origin $(git describe --tags):refs/tags/$(git describe --tags)
+
       - name: Install gpg secret key
         run: |
           cat <(echo -e "${{ secrets.OSSRH_GPG_SECRET_KEY }}") | gpg --batch --import
