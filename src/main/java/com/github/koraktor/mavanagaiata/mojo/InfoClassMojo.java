@@ -201,13 +201,12 @@ public class InfoClassMojo extends AbstractGitMojo {
         try {
             deleteIfExists(outputFile.toPath());
             createDirectories(packageDirectory.toPath());
-            createFile(outputFile.toPath());
+
+            List<FilterWrapper> filterWrappers = singletonList(new ValueSourceFilter(repository));
+            fileFilter.copyFile(sourceFile, outputFile, true, filterWrappers, encoding, true);
         } catch (IOException e) {
             throw MavanagaiataMojoException.create("Could not create class source: %s", e, outputFile.getAbsolutePath());
         }
-
-        List<FilterWrapper> filterWrappers = singletonList(new ValueSourceFilter(repository));
-        fileFilter.copyFile(sourceFile, outputFile, true, filterWrappers, encoding, true);
     }
 
     private class ValueSourceFilter extends FilterWrapper {
