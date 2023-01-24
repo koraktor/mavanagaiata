@@ -4,7 +4,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2020, Sebastian Staudt
+ * Copyright (c) 2011-2023, Sebastian Staudt
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -15,7 +15,7 @@
 
     <groupId>com.github.koraktor</groupId>
     <artifactId>mavanagaiata</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>maven-plugin</packaging>
 
     <prerequisites>
