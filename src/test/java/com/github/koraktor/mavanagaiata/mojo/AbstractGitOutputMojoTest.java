@@ -88,7 +88,7 @@ class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> 
         mojo.setOutputFile(outputFile);
         mojo.run(repository);
 
-        assertThat(((GenericAbstractGitOutputMojo) mojo).printStream, is(printStream));
+        assertThat(mojo.printStream, is(printStream));
     }
 
     @DisplayName("should throw the correct exception when the output directory cannot be created")
@@ -148,7 +148,7 @@ class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> 
         verify(mojo.printStream).flush();
     }
 
-    class GenericAbstractGitOutputMojo extends AbstractGitOutputMojo {
+    static class GenericAbstractGitOutputMojo extends AbstractGitOutputMojo {
 
         File outputFile;
 

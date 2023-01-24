@@ -12,7 +12,6 @@ import org.codehaus.plexus.interpolation.MapBasedValueSource;
 import org.codehaus.plexus.interpolation.RegexBasedInterpolator;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -103,11 +102,11 @@ public class InfoClassMojo extends AbstractGitMojo {
      * @return An input stream for the template source file
      * @throws FileNotFoundException if the template source cannot be found
      */
-    InputStream getTemplateSource() throws FileNotFoundException {
+    InputStream getTemplateSource() throws IOException {
         if (templateFile == null) {
             return getClass().getResourceAsStream(BUILTIN_TEMPLATE_PATH);
         } else {
-            return new FileInputStream(templateFile);
+            return newInputStream(templateFile.toPath());
         }
     }
 

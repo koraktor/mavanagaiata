@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
 
-import org.junit.jupiter.api.DisplayName;
-
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.jgit.JGitRepository;
 
