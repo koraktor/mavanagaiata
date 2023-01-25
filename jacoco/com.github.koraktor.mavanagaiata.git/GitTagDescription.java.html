@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GitTagDescription.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mavanagaiata</a> &gt; <a href="index.source.html" class="el_package">com.github.koraktor.mavanagaiata.git</a> &gt; <span class="el_source">GitTagDescription.java</span></div><h1>GitTagDescription.java</h1><pre class="source lang-java linenums">/*
+ * This code is free software; you can redistribute it and/or modify it under
+ * the terms of the new BSD License.
+ *
+ * Copyright (c) 2012-2019, Sebastian Staudt
+ */
+
+package com.github.koraktor.mavanagaiata.git;
+
+/**
+ * Represents information about a Git commit like supplied by
+ * {@code git describe}
+ *
+ * @author Sebastian Staudt
+ */
+public class GitTagDescription {
+
+    private static final String DESCRIBE_FORMAT = &quot;%s-%d-g%s&quot;;
+
+    private String abbrevCommitId;
+
+    private int distance;
+
+    private String nextTagName;
+
+    /**
+     * Create a new description for the given information
+     *
+     * @param abbrevCommitId The abbreviated commit ID
+     * @param nextTagName The name of the next tag reachable from the commit
+     * @param distance The distance to the next tag
+     */
+<span class="fc" id="L33">    public GitTagDescription(String abbrevCommitId, String nextTagName, int distance) {</span>
+<span class="fc" id="L34">        this.abbrevCommitId = abbrevCommitId;</span>
+<span class="fc" id="L35">        this.distance = distance;</span>
+<span class="fc" id="L36">        this.nextTagName = nextTagName;</span>
+<span class="fc" id="L37">    }</span>
+
+    /**
+     * Returns the name of the next reachable tag
+     *
+     * @return The name of the next tag
+     */
+    public String getNextTagName() {
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        return (nextTagName == null) ? &quot;&quot; : nextTagName;</span>
+    }
+
+    /**
+     * Returns whether the commit is tagged
+     *
+     * @return {@code true} if the commit is tagged
+     */
+    public boolean isTagged() {
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        return distance == 0;</span>
+    }
+
+    /**
+     * Returns the string representation of this description
+     * &lt;p&gt;
+     * This includes the abbreviated commit ID and (if available) the distance
+     * to and the name of the next tag.
+     *
+     * @return The string representation of this description
+     */
+    @Override
+    public String toString() {
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        if (nextTagName == null) {</span>
+<span class="fc" id="L68">            return abbrevCommitId;</span>
+        }
+
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (distance == 0) {</span>
+<span class="fc" id="L72">            return nextTagName;</span>
+        }
+
+<span class="fc" id="L75">        return String.format(DESCRIBE_FORMAT,</span>
+            nextTagName,
+<span class="fc" id="L77">            distance,</span>
+            abbrevCommitId);
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

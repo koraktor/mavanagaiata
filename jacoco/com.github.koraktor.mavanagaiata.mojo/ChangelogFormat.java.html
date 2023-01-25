@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ChangelogFormat.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mavanagaiata</a> &gt; <a href="index.source.html" class="el_package">com.github.koraktor.mavanagaiata.mojo</a> &gt; <span class="el_source">ChangelogFormat.java</span></div><h1>ChangelogFormat.java</h1><pre class="source lang-java linenums">/*
+ * This code is free software; you can redistribute it and/or modify it under
+ * the terms of the new BSD License.
+ *
+ * Copyright (c) 2018, Sebastian Staudt
+ */
+
+package com.github.koraktor.mavanagaiata.mojo;
+
+import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Optional;
+
+import com.github.koraktor.mavanagaiata.git.GitCommit;
+import com.github.koraktor.mavanagaiata.git.GitTag;
+
+import static com.github.koraktor.mavanagaiata.mojo.AbstractGitOutputMojo.unescapeFormatNewlines;
+import static org.apache.commons.text.StringEscapeUtils.escapeHtml4;
+
+/**
+ * Base class for formatting changelog output
+ * &lt;p&gt;
+ * Individual properties can be overridden in the configuration of the
+ * {@code changelog} mojo.
+ *
+ * @author Sebastian Staudt
+ * @see ChangelogMojo
+ * @see ChangelogDefaultFormat
+ * @see ChangelogMarkdownFormat
+ */
+<span class="fc" id="L31">public class ChangelogFormat {</span>
+
+<span class="fc" id="L33">    public enum Formats {</span>
+<span class="fc" id="L34">        DEFAULT(new ChangelogDefaultFormat()),</span>
+<span class="fc" id="L35">        MARKDOWN(new ChangelogMarkdownFormat());</span>
+
+        private ChangelogFormat format;
+
+<span class="fc" id="L39">        Formats(ChangelogFormat format) {</span>
+<span class="fc" id="L40">            this.format = format;</span>
+<span class="fc" id="L41">        }</span>
+
+        ChangelogFormat getFormat() {
+<span class="fc" id="L44">            return new ChangelogFormat().apply(format);</span>
+        }
+    }
+
+    String baseUrl;
+
+    /**
+     * The format for the branch line
+     */
+    String branch;
+
+    /**
+     * The format for the link to the history from the last tag to the current
+     * branch on GitHub
+     */
+    String branchLink;
+
+    /**
+     * The format for the link to the branch history on GitHub
+     */
+    String branchOnlyLink;
+
+    SimpleDateFormat dateFormatter;
+
+    String dateFormat;
+
+    /**
+     * The string to prepend to every commit message
+     */
+    String commitPrefix;
+
+    Boolean createLinks;
+
+    /**
+     * Whether to escape HTML
+     */
+    Boolean escapeHtml;
+
+    /**
+     * The header to print above the changelog
+     */
+    String header;
+
+    PrintStream printStream;
+
+    /**
+     * THe separator to print between different sections of the changelog
+     */
+    String separator;
+
+    /**
+     * The format for a tag line
+     */
+    String tag;
+
+    /**
+     * The format for the link to the tag history on GitHub
+     */
+    String tagLink;
+
+    /**
+     * Create a new format instance using this instance as base and override
+     * with (non-{@code null}) properties of the given format
+     *
+     * @param format Format to apply settings from
+     * @return A new format with applied settings
+     */
+    ChangelogFormat apply(ChangelogFormat format) {
+<span class="fc" id="L112">        branch = Optional.ofNullable(format.branch).</span>
+<span class="fc" id="L113">            orElse(branch);</span>
+<span class="fc" id="L114">        branchLink = Optional.ofNullable(format.branchLink).</span>
+<span class="fc" id="L115">            orElse(branchLink);</span>
+<span class="fc" id="L116">        branchOnlyLink = Optional.ofNullable(format.branchOnlyLink).</span>
+<span class="fc" id="L117">            orElse(branchOnlyLink);</span>
+<span class="fc" id="L118">        commitPrefix = Optional.ofNullable(format.commitPrefix).</span>
+<span class="fc" id="L119">            orElse(commitPrefix);</span>
+<span class="fc" id="L120">        createLinks = Optional.ofNullable(format.createLinks).</span>
+<span class="fc" id="L121">            orElse(createLinks);</span>
+<span class="fc" id="L122">        escapeHtml = Optional.ofNullable(format.escapeHtml).</span>
+<span class="fc" id="L123">            orElse(escapeHtml);</span>
+<span class="fc" id="L124">        header = Optional.ofNullable(format.header).</span>
+<span class="fc" id="L125">            orElse(header);</span>
+<span class="fc" id="L126">        separator = Optional.ofNullable(format.separator).</span>
+<span class="fc" id="L127">            orElse(separator);</span>
+<span class="fc" id="L128">        tag = Optional.ofNullable(format.tag).</span>
+<span class="fc" id="L129">            orElse(tag);</span>
+<span class="fc" id="L130">        tagLink = Optional.ofNullable(format.tagLink).</span>
+<span class="fc" id="L131">            orElse(tagLink);</span>
+
+<span class="fc" id="L133">        return this;</span>
+    }
+
+    /**
+     * Enable creation of links using the given base URL
+     *
+     * @param baseUrl The base URL to link to
+     */
+    void enableCreateLinks(String baseUrl) {
+<span class="fc" id="L142">        this.baseUrl = baseUrl;</span>
+<span class="fc" id="L143">    }</span>
+
+    /**
+     * Prepare the format strings for use
+     */
+    void prepare() {
+<span class="fc" id="L149">        branch = unescapeFormatNewlines(branch);</span>
+<span class="fc" id="L150">        branchLink = unescapeFormatNewlines(branchLink);</span>
+<span class="fc" id="L151">        branchOnlyLink = unescapeFormatNewlines(branchOnlyLink);</span>
+<span class="fc" id="L152">        commitPrefix = unescapeFormatNewlines(commitPrefix);</span>
+<span class="fc" id="L153">        createLinks = Optional.ofNullable(createLinks).orElse(false);</span>
+<span class="fc" id="L154">        escapeHtml = Optional.ofNullable(escapeHtml).orElse(false);</span>
+<span class="fc" id="L155">        header = unescapeFormatNewlines(header);</span>
+<span class="fc" id="L156">        separator = unescapeFormatNewlines(separator);</span>
+<span class="fc" id="L157">        tag = unescapeFormatNewlines(tag);</span>
+<span class="fc" id="L158">        tagLink = unescapeFormatNewlines(tagLink);</span>
+
+<span class="fc" id="L160">        dateFormatter = new SimpleDateFormat(dateFormat);</span>
+<span class="fc" id="L161">    }</span>
+
+    /**
+     * Print a section header for a branch
+     *
+     * @param branchName The name of the branch
+     */
+    void printBranch(String branchName) {
+<span class="fc" id="L169">        printStream.println(separator + String.format(branch, branchName) + separator);</span>
+<span class="fc" id="L170">    }</span>
+
+    /**
+     * Print a single line for a commit
+     *
+     * @param currentCommit The commit to print
+     */
+    void printCommit(GitCommit currentCommit) {
+<span class="fc bfc" id="L178" title="All 2 branches covered.">        String commitMessage = escapeHtml ?</span>
+<span class="fc" id="L179">            escapeHtml4(currentCommit.getMessageSubject()) :</span>
+<span class="fc" id="L180">            currentCommit.getMessageSubject();</span>
+
+<span class="fc" id="L182">        printStream.println(commitPrefix + commitMessage);</span>
+<span class="fc" id="L183">    }</span>
+
+    /**
+     * Generates a link to the GitHub compare / commits view and inserts it
+     * into the changelog
+     * &lt;p&gt;
+     * If no current ref is provided, the generated text will link to the
+     * commits view, listing all commits of the latest tag or the whole branch.
+     * Otherwise the text will link to the compare view, listing all commits
+     * that are in the current ref, but not in the last one.
+     *
+     * @param currentRef The current tag or branch in the changelog
+     * @param lastRef The last tag or branch in the changelog
+     * @param isBranch Whether the current ref is a branch
+     */
+    void printCompareLink(String currentRef, String lastRef, boolean isBranch) {
+<span class="fc bfc" id="L199" title="All 2 branches covered.">        if (baseUrl == null) {</span>
+<span class="fc" id="L200">            return;</span>
+        }
+
+<span class="fc" id="L203">        String url = baseUrl;</span>
+<span class="fc bfc" id="L204" title="All 2 branches covered.">        if (lastRef == null) {</span>
+<span class="fc" id="L205">            url += String.format(&quot;/commits/%s&quot;, currentRef);</span>
+        } else {
+<span class="fc" id="L207">            url += String.format(&quot;/compare/%s...%s&quot;, currentRef, lastRef);</span>
+        }
+
+        String linkText;
+<span class="fc bfc" id="L211" title="All 2 branches covered.">        if (isBranch) {</span>
+<span class="fc bfc" id="L212" title="All 2 branches covered.">            if (lastRef == null) {</span>
+<span class="fc" id="L213">                linkText = String.format(branchOnlyLink, currentRef, url);</span>
+            } else {
+<span class="fc" id="L215">                linkText = String.format(branchLink, lastRef, currentRef, url);</span>
+            }
+        } else {
+<span class="fc bfc" id="L218" title="All 2 branches covered.">            String tagName = (lastRef == null) ? currentRef : lastRef;</span>
+<span class="fc" id="L219">            linkText = String.format(tagLink, tagName, url);</span>
+        }
+
+<span class="fc" id="L222">        printStream.println(linkText + separator);</span>
+<span class="fc" id="L223">    }</span>
+
+    /**
+     * Print a header for the changelog
+     */
+    void printHeader() {
+<span class="fc" id="L229">        printStream.println(header);</span>
+<span class="fc" id="L230">    }</span>
+
+    /**
+     * Print a separator between sections
+     */
+    void printSeparator() {
+<span class="fc" id="L236">        printStream.print(separator);</span>
+<span class="fc" id="L237">    }</span>
+
+    /**
+     * Print a section header for a tag
+     *
+     * @param currentTag The tag
+     */
+    void printTag(GitTag currentTag) {
+<span class="fc" id="L245">        dateFormatter.setTimeZone(currentTag.getTimeZone());</span>
+<span class="fc" id="L246">        String date = dateFormatter.format(currentTag.getDate());</span>
+
+<span class="fc" id="L248">        printStream.println(String.format(tag, currentTag.getName(), date) + separator);</span>
+<span class="fc" id="L249">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

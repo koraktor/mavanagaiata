@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CheckMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mavanagaiata</a> &gt; <a href="index.source.html" class="el_package">com.github.koraktor.mavanagaiata.mojo</a> &gt; <span class="el_source">CheckMojo.java</span></div><h1>CheckMojo.java</h1><pre class="source lang-java linenums">/*
+ * This code is free software; you can redistribute it and/or modify it under
+ * the terms of the new BSD License.
+ *
+ * Copyright (c) 2016-2019, Sebastian Staudt
+ */
+
+package com.github.koraktor.mavanagaiata.mojo;
+
+import java.util.regex.Pattern;
+
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+
+import com.github.koraktor.mavanagaiata.git.GitRepository;
+import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
+
+import static org.eclipse.jgit.lib.Constants.*;
+
+/**
+ * This goal checks various aspects of a Git repository to ensure it is in a
+ * valid state prior to a build
+ * &lt;p&gt;
+ * The following checks are available:
+ * &lt;ul&gt;
+ * &lt;li&gt;Clean working directory (enabled by default)
+ * &lt;li&gt;Tagged commit
+ * &lt;li&gt;Branch name
+ * &lt;li&gt;Commit message
+ * &lt;/ul&gt;
+ *
+ * @author Sebastian Staudt
+ * @since 0.8.0
+ */
+@Mojo(name = &quot;check&quot;,
+      defaultPhase = LifecyclePhase.VALIDATE,
+      threadSafe = true)
+<span class="fc" id="L39">public class CheckMojo extends AbstractGitMojo {</span>
+
+    Pattern commitMessagePattern;
+
+    /**
+     * Check whether the current branch is the given branch
+     */
+    @Parameter(property = &quot;mavanagaiata.checkBranch&quot;)
+    String checkBranch;
+
+    /**
+     * Check if the working directory is clean
+     */
+    @Parameter(property = &quot;mavanagaiata.checkClean&quot;,
+                   defaultValue = &quot;true&quot;)
+    boolean checkClean;
+
+    /**
+     * Check whether the message of the current commit matches the given format
+     */
+    @Parameter(property = &quot;mavanagaiata.checkCommitMessage&quot;)
+    String checkCommitMessage;
+
+    /**
+     * Check whether the current commit is tagged
+     */
+    @Parameter(property = &quot;mavanagaiata.checkTag&quot;,
+               defaultValue = &quot;false&quot;)
+    boolean checkTag;
+
+    @Override
+    protected GitRepository init() throws MavanagaiataMojoException {
+<span class="nc" id="L71">        initConfiguration();</span>
+
+<span class="nc" id="L73">        return super.init();</span>
+    }
+
+    /**
+     * Compiles the commit message check regex
+     */
+    void initConfiguration() {
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">        if (checkCommitMessage != null) {</span>
+<span class="fc" id="L81">            commitMessagePattern = Pattern.compile(checkCommitMessage, Pattern.MULTILINE);</span>
+        }
+<span class="fc" id="L83">    }</span>
+
+    @Override
+    protected void run(GitRepository repository)
+            throws MavanagaiataMojoException {
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        if (!head.equals(HEAD)) {</span>
+<span class="fc" id="L89">            getLog().warn(&quot;Your configuration specifies `&quot; + head +</span>
+                &quot;` (instead of `&quot; + HEAD + &quot;`) as the current commit. The &quot; +
+                &quot;results of these checks might not match the actual repository &quot; +
+                &quot;state.&quot;);
+        }
+
+        try {
+<span class="fc" id="L96">            checkBranch(repository);</span>
+<span class="fc" id="L97">            checkCommitMessage(repository);</span>
+<span class="fc" id="L98">            checkClean(repository);</span>
+<span class="fc" id="L99">            checkTag(repository);</span>
+<span class="fc" id="L100">        } catch (GitRepositoryException e) {</span>
+<span class="fc" id="L101">            throw new MavanagaiataMojoException(&quot;Error while checking repository.&quot;, e);</span>
+<span class="fc" id="L102">        }</span>
+<span class="fc" id="L103">    }</span>
+
+    /**
+     * Checks if the branch matches the configured name
+     *
+     * @param repository The repository instance to check
+     * @see #checkBranch
+     * @throws CheckMojoException if the branch does not match
+     * @throws GitRepositoryException if the current branch cannot be retrieved
+     */
+    private void checkBranch(GitRepository repository)
+            throws CheckMojoException, GitRepositoryException {
+<span class="fc bfc" id="L115" title="All 4 branches covered.">        if (checkBranch != null &amp;&amp; !repository.getBranch().equals(checkBranch)) {</span>
+<span class="fc" id="L116">            throw new CheckMojoException(CheckMojoException.Type.WRONG_BRANCH, repository.getBranch(), checkBranch);</span>
+        }
+<span class="fc" id="L118">    }</span>
+
+    /**
+     * Checks if the worktree is in a clean state
+     *
+     * @param repository The repository instance to check
+     * @see #checkClean
+     * @throws CheckMojoException if the worktree is not clean
+     * @throws GitRepositoryException if the worktree state cannot be retrieved
+     */
+    private void checkClean(GitRepository repository)
+            throws CheckMojoException, GitRepositoryException{
+<span class="fc bfc" id="L130" title="All 4 branches covered.">        if (checkClean &amp;&amp; repository.isDirty(dirtyIgnoreUntracked)) {</span>
+<span class="fc" id="L131">            throw new CheckMojoException(CheckMojoException.Type.UNCLEAN);</span>
+        }
+<span class="fc" id="L133">    }</span>
+
+    /**
+     * Checks if commit message matches the configured pattern
+     *
+     * @param repository The repository instance to check
+     * @see #checkCommitMessage
+     * @throws CheckMojoException if the commit message does not match
+     * @throws GitRepositoryException if the current commit cannot be retrieved
+     */
+    private void checkCommitMessage(GitRepository repository)
+            throws GitRepositoryException, CheckMojoException {
+<span class="fc bfc" id="L145" title="All 4 branches covered.">        if (commitMessagePattern != null &amp;&amp; !commitMessagePattern.matcher(repository.getHeadCommit().getMessage()).find()) {</span>
+<span class="fc" id="L146">            throw new CheckMojoException(CheckMojoException.Type.WRONG_COMMIT_MSG, checkCommitMessage);</span>
+        }
+<span class="fc" id="L148">    }</span>
+
+    /**
+     * Checks if the the current {@code HEAD} is tagged
+     *
+     * @param repository The repository instance to check
+     * @see #checkTag
+     * @throws CheckMojoException if {@code HEAD} is not tagged
+     * @throws GitRepositoryException if the commit cannot be described
+     */
+    private void checkTag(GitRepository repository)
+            throws GitRepositoryException, CheckMojoException {
+<span class="fc bfc" id="L160" title="All 2 branches covered.">        if (checkTag) {</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">            if (!repository.describe().isTagged()) {</span>
+<span class="fc" id="L162">                throw new CheckMojoException(CheckMojoException.Type.UNTAGGED);</span>
+            }
+
+<span class="pc bpc" id="L165" title="1 of 4 branches missed.">            if (!checkClean &amp;&amp; repository.isDirty(dirtyIgnoreUntracked)) {</span>
+<span class="fc" id="L166">                getLog().warn(&quot;The current commit (`&quot; + head +</span>
+                    &quot;`) is tagged, but the worktree is unclean. This &quot; +
+                    &quot;is probably undesirable.&quot;);
+            }
+        }
+<span class="fc" id="L171">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

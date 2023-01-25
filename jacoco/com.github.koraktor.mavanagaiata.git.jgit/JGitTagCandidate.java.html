@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JGitTagCandidate.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mavanagaiata</a> &gt; <a href="index.source.html" class="el_package">com.github.koraktor.mavanagaiata.git.jgit</a> &gt; <span class="el_source">JGitTagCandidate.java</span></div><h1>JGitTagCandidate.java</h1><pre class="source lang-java linenums">/*
+ * This code is free software; you can redistribute it and/or modify it under
+ * the terms of the new BSD License.
+ *
+ * Copyright (c) 2018, Sebastian Staudt
+ */
+
+package com.github.koraktor.mavanagaiata.git.jgit;
+
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevFlag;
+
+/**
+ * This class represents a tag candidate which could be the latest tag in the
+ *
+ */
+class JGitTagCandidate {
+    private final JGitTag tag;
+    private final RevFlag flag;
+    private int distance;
+
+    /**
+     * Create a new tag candidate instance with the given attributes
+     *
+     * @param tag The candidate tag
+     * @param distance The distance from the current commit
+     * @param flag The flags used to determine ancestor commits
+     */
+<span class="nc" id="L29">    JGitTagCandidate(JGitTag tag, int distance, RevFlag flag) {</span>
+<span class="nc" id="L30">        this.tag = tag;</span>
+<span class="nc" id="L31">        this.distance = distance;</span>
+<span class="nc" id="L32">        this.flag = flag;</span>
+<span class="nc" id="L33">    }</span>
+
+    /**
+     * @return The distance from the current commit
+     */
+    int getDistance() {
+<span class="nc" id="L39">        return distance;</span>
+    }
+
+    /**
+     * @return The candidate tag
+     */
+    public JGitTag getTag() {
+<span class="nc" id="L46">        return tag;</span>
+    }
+
+    /**
+     * Increments the distance of this tag candidate if the given commit
+     * has not been seen already
+     *
+     * @param commit The commit to check
+     */
+    void incrementDistanceIfExcludes(RevCommit commit) {
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        if (!commit.has(flag)) {</span>
+<span class="nc" id="L57">            distance ++;</span>
+        }
+<span class="nc" id="L59">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

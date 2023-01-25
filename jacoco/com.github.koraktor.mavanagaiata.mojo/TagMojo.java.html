@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TagMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mavanagaiata</a> &gt; <a href="index.source.html" class="el_package">com.github.koraktor.mavanagaiata.mojo</a> &gt; <span class="el_source">TagMojo.java</span></div><h1>TagMojo.java</h1><pre class="source lang-java linenums">/*
+ * This code is free software; you can redistribute it and/or modify it under
+ * the terms of the new BSD License.
+ *
+ * Copyright (c) 2011-2018, Sebastian Staudt
+ */
+
+package com.github.koraktor.mavanagaiata.mojo;
+
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+
+import com.github.koraktor.mavanagaiata.git.GitRepository;
+import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
+import com.github.koraktor.mavanagaiata.git.GitTagDescription;
+
+/**
+ * This goal provides the most recent Git tag in the &quot;mavanagaiata.tag&quot; and
+ * &quot;mvngit.tag&quot; properties.
+ * This goal provides the most recent Git tag name in the
+ * &quot;mavanagaiata.tag.name&quot; and &quot;mvngit.tag.name&quot; properties. Additionally,
+ * more exact information as per {@code git describe} is provided in the
+ * &quot;mavanagaiata.tag.describe&quot; and &quot;mvngit.tag.describe&quot; properties
+ *
+ * @author Sebastian Staudt
+ * @since 0.1.0
+ */
+@Mojo(name = &quot;tag&quot;,
+      defaultPhase = LifecyclePhase.INITIALIZE,
+      threadSafe = true)
+<span class="fc" id="L31">public class TagMojo extends AbstractGitMojo {</span>
+
+    /**
+     * This will first read all tags and walk the commit hierarchy down from
+     * HEAD until it finds one of the tags. The name of that tag is written
+     * into &quot;mavanagaiata.tag.name&quot; and &quot;mvngit.tag.name&quot; respectively.
+     * &lt;p&gt;
+     * A more canonical representation as per {@code git describe} is stored
+     * in &quot;mavanagaiata.tag.describe&quot; and &quot;mvngit.tag.describe&quot;.
+     *
+     * @throws MavanagaiataMojoException if the tags cannot be read
+     */
+    public void run(GitRepository repository) throws MavanagaiataMojoException {
+        try {
+<span class="fc" id="L45">            GitTagDescription description = repository.describe();</span>
+<span class="fc" id="L46">            String describe = description.toString();</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">            if (dirtyFlag != null &amp;&amp;</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">                    repository.isDirty(dirtyIgnoreUntracked)) {</span>
+<span class="fc" id="L49">                describe += dirtyFlag;</span>
+            }
+
+<span class="fc" id="L52">            addProperty(&quot;tag.describe&quot;, describe);</span>
+<span class="fc" id="L53">            addProperty(&quot;tag.name&quot;, description.getNextTagName());</span>
+<span class="fc" id="L54">        } catch(GitRepositoryException e) {</span>
+<span class="fc" id="L55">            throw MavanagaiataMojoException.create(&quot;Unable to read Git tag&quot;, e);</span>
+<span class="fc" id="L56">        }</span>
+<span class="fc" id="L57">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
