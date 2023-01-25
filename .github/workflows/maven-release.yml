@@ -1,12 +1,39 @@
-name: Publish package to the Maven Central Repository
+name: Release new version
 
 on:
   release:
     types: [ created ]
 
 jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Bootstrap
+        run: |
+          mvn install
+
+      - name: Cache Maven repository
+        uses: actions/cache/save@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ github.ref_name }}
+
   publish:
     runs-on: ubuntu-latest
+
+    needs: bootstrap
 
     steps:
       - uses: actions/checkout@v3
@@ -31,10 +58,52 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
 
+      - name: Restore Maven repository cache
+        uses: actions/cache/restore@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ github.ref_name }}
+
       - name: Publish package
         run: |
-          mvn install
           mvn --batch-mode -P release -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} deploy
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+
+  deploy-site:
+    runs-on: ubuntu-latest
+
+    needs: bootstrap
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Reset tags
+        run: |
+          git fetch --force origin $(git describe --tags):refs/tags/$(git describe --tags)
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+  
+      - name: Restore Maven repository cache
+        uses: actions/cache/restore@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ github.ref_name }}
+
+      - name: Build site
+        run: |
+          mvn -P release site
+
+      - name: Deploy site
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: target/site
+          dry-run: true
