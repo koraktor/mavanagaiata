@@ -398,9 +398,10 @@ class JGitRepositoryTest {
     @Test
     void testGetHeadRevCommit() throws Exception {
         ObjectId head = mock(ObjectId.class);
+        when(repository.repository.resolve("HEAD")).thenReturn(head);
+
         RevCommit commit = mock(RevCommit.class);
-        RevWalk revWalk = mockRevWalk();
-        when(revWalk.parseCommit(head)).thenReturn(commit);
+        when(repository.repository.parseCommit(head)).thenReturn(commit);
 
         assertThat(repository.getHeadRevCommit(), is(commit));
         assertThat(repository.headCommit, is(commit));
