@@ -16,7 +16,7 @@ package com.github.koraktor.mavanagaiata.mojo;
 class MavanagaiataMojoException extends Exception {
 
     /**
-     * Creates a new exception with the given message an cause
+     * Creates a new exception with the given message and cause
      * <p>
      * Additional arguments will be interpolated into the message with
      * {@link String#format(String, Object...)}.

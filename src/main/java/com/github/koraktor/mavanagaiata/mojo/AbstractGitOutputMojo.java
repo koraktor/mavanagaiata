@@ -88,7 +88,7 @@ abstract class AbstractGitOutputMojo extends AbstractGitMojo {
 
     /**
      * Initializes the {@code PrintStream} to use
-     *
+     * <p>
      * This is {@code System.out} if no output file is given (default).
      * Otherwise the parent directories of {@code outputFile} are created and a
      * new {@code PrintStream} for that file is created.

@@ -137,10 +137,10 @@ public interface GitRepository extends AutoCloseable {
 
     /**
      * Returns whether this repository is currently on an “unborn” branch
-     *
+     * <p>
      * An “unborn” branch is a branch without any actual commits. This only
      * applies when the configured head ref is actually {@code HEAD}.
-     * Otherwise a configuration error is assumed.
+     * Otherwise, a configuration error is assumed.
      *
      * @return {@code true} if the current branch is
      * @throws GitRepositoryException if an error occurs while retrieving the

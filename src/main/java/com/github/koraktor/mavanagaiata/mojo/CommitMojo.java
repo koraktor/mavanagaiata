@@ -23,7 +23,7 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
  * "mavanagaiata.commit.id", "mavanagaiata.commit.sha", "mvngit.commit.id",
  * "mvngit.commit.sha" properties. The abbreviated commit ID is stored in the
  * "mavanagaiata.commit.abbrev" and "mvngit.commit.abbrev" properties.
- * Additionally the author's and committer's name and email address are stored
+ * Additionally, the author's and committer's name and email address are stored
  * in the properties "mavanagaiata.commit.author.name",
  * "mavanagaiata.commit.author.email", "mvngit.commit.author.name" and
  * "mvngit.commit.author.email", and "mavanagaiata.commit.committer.name",

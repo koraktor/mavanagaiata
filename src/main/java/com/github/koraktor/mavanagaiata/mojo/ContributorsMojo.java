@@ -170,7 +170,7 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
      * Returns an escaped form of the contributor name
      * <p>
      * Depending on the {@link #escapeHtml} and {@link #escapeMarkdown} fields
-     * this methods escapes HTML tags and/or Markdown link brackets.
+     * this method escapes HTML tags and/or Markdown link brackets.
      *
      * @param name The name of the contributor
      * @return An escaped form of the contributor

@@ -111,7 +111,7 @@ public class InfoClassMojo extends AbstractGitMojo {
     }
 
     /**
-     * Generates a info class filled providing information of the Git
+     * Generates an info class filled providing information of the Git
      * repository
      *
      * @throws MavanagaiataMojoException if the info class cannot be generated
@@ -138,7 +138,7 @@ public class InfoClassMojo extends AbstractGitMojo {
         try (InputStream templateStream = getTemplateSource()) {
             File tempSourceDir;
             try {
-                tempSourceDir = createTempDirectory("mavanagaita-info-class").toFile();
+                tempSourceDir = createTempDirectory("mavanagaiata-info-class").toFile();
             } catch (IOException e) {
                 throw MavanagaiataMojoException.create("Could not create temporary directory", e);
             }

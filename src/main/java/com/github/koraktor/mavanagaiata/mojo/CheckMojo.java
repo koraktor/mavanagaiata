@@ -148,7 +148,7 @@ public class CheckMojo extends AbstractGitMojo {
     }
 
     /**
-     * Checks if the the current {@code HEAD} is tagged
+     * Checks if the current {@code HEAD} is tagged
      *
      * @param repository The repository instance to check
      * @see #checkTag

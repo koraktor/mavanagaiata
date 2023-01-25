@@ -82,7 +82,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
     String linkToProject;
 
     /**
-     * The user name for GitHub links
+     * The username for GitHub links
      *
      * @since 0.9.0
      */

@@ -188,7 +188,7 @@ public class ChangelogFormat {
      * <p>
      * If no current ref is provided, the generated text will link to the
      * commits view, listing all commits of the latest tag or the whole branch.
-     * Otherwise the text will link to the compare view, listing all commits
+     * Otherwise, the text will link to the compare view, listing all commits
      * that are in the current ref, but not in the last one.
      *
      * @param currentRef The current tag or branch in the changelog

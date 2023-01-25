@@ -178,7 +178,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
 
     /**
      * Saves a property with the given name into the project's properties
-     *
+     * <p>
      * The value will be stored two times – with "mavanagaiata" and "mvngit" as
      * a prefix.
      *

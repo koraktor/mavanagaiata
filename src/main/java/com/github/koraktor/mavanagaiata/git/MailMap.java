@@ -195,7 +195,7 @@ public class MailMap {
                     mailToNameAndMailMap.isEmpty() &&
                     nameAndMailToNameAndMailMap.isEmpty());
         } catch (FileNotFoundException ignored) {
-            // Ignore non-existant .mailmap
+            // Ignore non-existent .mailmap
         } catch (IOException e) {
             throw new GitRepositoryException("Error while parsing the .mailmap.", e);
         }
