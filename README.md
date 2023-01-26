@@ -52,15 +52,16 @@ A more complete usage example can be found in Mavanagaiata’s own
 
 ## Requirements
 
+ * Java 11 or newer
  * Maven 3.3.9 or newer
 
 ## Dependencies
 
  * Apache Commons IO 2.11.0
  * Apache Commons Lang 3.12.0
- * Apache Commons Text 1.9
- * JGit 5.13.0
- * Maven Filtering 3.2.0
+ * Apache Commons Text 1.10.0
+ * JGit 6.4.0
+ * Maven Filtering 3.3.0
 
 ## Contribute
 
