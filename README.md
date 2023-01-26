@@ -119,8 +119,6 @@ included LICENSE file.
 
 * [Mavanagaiata home](https://koraktor.de/mavanagaiata)
 * [GitHub project page][github]
-* [Gitter chat](https://gitter.im/koraktor/mavanagaiata)
-* [Google group](https://groups.google.com/group/mavanagaiata)
 * [Open Hub profile](https://www.openhub.net/p/mavanagaiata)
 
  [github]: https://github.com/koraktor/mavanagaiata
