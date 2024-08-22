@@ -317,7 +317,6 @@
                     </additionalOptions>
                     <links>
                         <link>https://docs.oracle.com/javase/8/docs/api</link>
-                        <link>https://download.eclipse.org/jgit/site/${jgit.version}/apidocs</link>
                     </links>
                     <locale>en_US</locale>
                     <show>private</show>
@@ -428,7 +427,6 @@
                     </additionalOptions>
                     <links>
                         <link>https://docs.oracle.com/javase/8/docs/api</link>
-                        <link>https://download.eclipse.org/jgit/site/${jgit.version}/apidocs</link>
                     </links>
                     <locale>en_US</locale>
                     <source>8</source>
