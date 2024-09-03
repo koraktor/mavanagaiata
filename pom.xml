@@ -284,6 +284,7 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <source>11</source>
                     <target>11</target>
+                    <release>11</release>
                 </configuration>
             </plugin>
             <plugin>
@@ -315,12 +316,11 @@
                         <additionalOption>-html5</additionalOption>
                     </additionalOptions>
                     <links>
-                        <link>https://docs.oracle.com/javase/8/docs/api</link>
-                        <link>https://download.eclipse.org/jgit/site/${jgit.version}/apidocs</link>
+                        <link>https://docs.oracle.com/javase/11/docs/api</link>
                     </links>
                     <locale>en_US</locale>
                     <show>private</show>
-                    <source>8</source>
+                    <source>11</source>
                 </configuration>
                 <executions>
                     <execution>
@@ -426,11 +426,10 @@
                         <additionalOption>-html5</additionalOption>
                     </additionalOptions>
                     <links>
-                        <link>https://docs.oracle.com/javase/8/docs/api</link>
-                        <link>https://download.eclipse.org/jgit/site/${jgit.version}/apidocs</link>
+                        <link>https://docs.oracle.com/javase/11/docs/api</link>
                     </links>
                     <locale>en_US</locale>
-                    <source>8</source>
+                    <source>11</source>
                 </configuration>
                 <reportSets>
                     <reportSet>
