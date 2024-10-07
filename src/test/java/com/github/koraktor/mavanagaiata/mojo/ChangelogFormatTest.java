@@ -138,7 +138,17 @@ class ChangelogFormatTest {
     @DisplayName("should print a commit with the given format")
     @Test
     void testPrintCommit() throws IOException {
-        format.printCommit(commit());
+        format.printCommit(commit(), false);
+
+        assertOutputLine("");
+        assertOutputLine("- Commit > message");
+        assertOutputLine(null);
+    }
+
+    @DisplayName("should print a commit with the given format trimming whitespace")
+    @Test
+    void testPrintCommitTrim() throws IOException {
+        format.printCommit(commitTrailingSpace(), true);
 
         assertOutputLine("");
         assertOutputLine("- Commit > message");
@@ -149,7 +159,7 @@ class ChangelogFormatTest {
     @Test
     void testPrintCommitEscapeHtml() throws IOException {
         format.escapeHtml = true;
-        format.printCommit(commit());
+        format.printCommit(commit(), false);
 
         assertOutputLine("");
         assertOutputLine("- Commit &gt; message");
@@ -266,6 +276,70 @@ class ChangelogFormatTest {
             @Override
             public String getMessageSubject() {
                 return "Commit > message";
+            }
+
+            @Override
+            public boolean isMergeCommit() {
+                return false;
+            }
+        };
+    }
+
+    private GitCommit commitTrailingSpace() {
+        return new GitCommit() {
+            @Override
+            public Date getAuthorDate() {
+                return null;
+            }
+
+            @Override
+            public String getAuthorEmailAddress() {
+                return null;
+            }
+
+            @Override
+            public String getAuthorName() {
+                return null;
+            }
+
+            @Override
+            public TimeZone getAuthorTimeZone() {
+                return null;
+            }
+
+            @Override
+            public Date getCommitterDate() {
+                return null;
+            }
+
+            @Override
+            public String getCommitterEmailAddress() {
+                return null;
+            }
+
+            @Override
+            public String getCommitterName() {
+                return null;
+            }
+
+            @Override
+            public TimeZone getCommitterTimeZone() {
+                return null;
+            }
+
+            @Override
+            public String getId() {
+                return null;
+            }
+
+            @Override
+            public String getMessage() {
+                return null;
+            }
+
+            @Override
+            public String getMessageSubject() {
+                return "Commit > message    ";
             }
 
             @Override
