@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2020, Sebastian Staudt
+ * Copyright (c) 2012-2025, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
@@ -86,9 +86,9 @@ class AbstractGitRepositoryTest {
     @DisplayName("should be able to abbreviate the HEAD commit")
     @Test
     void testGetAbbreviatedHead() throws Exception {
-        GitRepository repo = new GenericGitRepository();
-
-        assertThat(repo.getAbbreviatedCommitId(), is(equalTo("deadbeef")));
+        try (GitRepository repo = new GenericGitRepository()) {
+            assertThat(repo.getAbbreviatedCommitId(), is(equalTo("deadbeef")));
+        }
     }
 
     @DisplayName("should be able to get the mailmap")
@@ -107,9 +107,10 @@ class AbstractGitRepositoryTest {
     @DisplayName("should cache the mailmap")
     @Test
     void testGetMailMapAlreadyParsed() {
-        AbstractGitRepository repo = new GenericGitRepository();
-        repo.mailMap = mock(MailMap.class);
+        try (AbstractGitRepository repo = new GenericGitRepository()) {
+            repo.mailMap = mock(MailMap.class);
 
-        verifyNoMoreInteractions(repo.mailMap);
+            verifyNoMoreInteractions(repo.mailMap);
+        }
     }
 }

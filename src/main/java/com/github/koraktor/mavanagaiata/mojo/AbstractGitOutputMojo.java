@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2019, Sebastian Staudt
+ * Copyright (c) 2011-2025, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -165,11 +165,11 @@ abstract class AbstractGitOutputMojo extends AbstractGitMojo {
             throws MavanagaiataMojoException {
         writeOutput(repository);
 
-        if (footer.length() > 0) {
+        if (!footer.isEmpty()) {
             SimpleDateFormat baseDateFormat = new SimpleDateFormat(dateFormat);
-            printStream.println(String.format(footer,
+            printStream.printf(footer + "%n",
                     VersionHelper.getVersion(),
-                    baseDateFormat.format(new Date())));
+                    baseDateFormat.format(new Date()));
         }
 
         printStream.flush();

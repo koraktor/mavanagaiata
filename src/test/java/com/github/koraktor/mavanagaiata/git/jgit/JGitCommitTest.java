@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2018, Sebastian Staudt
+ * Copyright (c) 2012-2025, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git.jgit;
@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNot.not;
 
 @DisplayName("JGitCommit")
 class JGitCommitTest {
@@ -50,7 +51,7 @@ class JGitCommitTest {
         assertThat(commit.hashCode(), is(equalTo(rawCommit.getId().hashCode())));
         assertThat(commit.isMergeCommit(), is(false));
         assertThat(commit, is(equalTo(commit2)));
-        assertThat(commit.equals(authorDate), is(false));
+        assertThat(commit, is(not(equalTo(authorDate))));
     }
 
     @DisplayName("should recognize merge commits")

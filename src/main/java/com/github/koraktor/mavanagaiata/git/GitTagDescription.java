@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2019, Sebastian Staudt
+ * Copyright (c) 2012-2025, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
@@ -17,11 +17,11 @@ public class GitTagDescription {
 
     private static final String DESCRIBE_FORMAT = "%s-%d-g%s";
 
-    private String abbrevCommitId;
+    private final String abbrevCommitId;
 
-    private int distance;
+    private final int distance;
 
-    private String nextTagName;
+    private final String nextTagName;
 
     /**
      * Create a new description for the given information

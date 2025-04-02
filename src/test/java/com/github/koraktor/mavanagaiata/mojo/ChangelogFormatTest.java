@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2018, Sebastian Staudt
+ * Copyright (c) 2018-2025, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -12,6 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
@@ -60,7 +61,7 @@ class ChangelogFormatTest {
     }
 
     private Date getDate() {
-        return new GregorianCalendar(2011, 3, 29).getTime();
+        return new GregorianCalendar(2011, Calendar.APRIL, 29).getTime();
     }
 
     @DisplayName("should prepare escaped newlines and the date format")

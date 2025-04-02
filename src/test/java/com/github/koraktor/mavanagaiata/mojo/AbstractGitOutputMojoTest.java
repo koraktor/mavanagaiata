@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2018, Sebastian Staudt
+ * Copyright (c) 2012-2025, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -130,11 +130,12 @@ class AbstractGitOutputMojoTest extends MojoAbstractTest<AbstractGitOutputMojo> 
     @DisplayName("should print a footer when configured")
     @Test
     void testGenerateOutputWithFooter() throws MavanagaiataMojoException {
+        mojo.dateFormat = "'Some date'";
         mojo.footer = "Test footer";
         mojo.printStream = mock(PrintStream.class);
         mojo.generateOutput(repository);
 
-        verify(mojo.printStream).println("Test footer");
+        verify(mojo.printStream).printf("Test footer%n", VersionHelper.getVersion(), "Some date");
         verify(mojo.printStream).flush();
     }
 

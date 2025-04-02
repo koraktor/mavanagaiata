@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2018, Sebastian Staudt
+ * Copyright (c) 2018-2025, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -34,7 +34,7 @@ public class ChangelogFormat {
         DEFAULT(new ChangelogDefaultFormat()),
         MARKDOWN(new ChangelogMarkdownFormat());
 
-        private ChangelogFormat format;
+        private final ChangelogFormat format;
 
         Formats(ChangelogFormat format) {
             this.format = format;
@@ -175,7 +175,7 @@ public class ChangelogFormat {
      * @param currentCommit The commit to print
      */
     void printCommit(GitCommit currentCommit) {
-        String commitMessage = escapeHtml ?
+        String commitMessage = Boolean.TRUE.equals(escapeHtml) ?
             escapeHtml4(currentCommit.getMessageSubject()) :
             currentCommit.getMessageSubject();
 

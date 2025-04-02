@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2022, Sebastian Staudt
+ * Copyright (c) 2012-2025, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -10,6 +10,7 @@ package com.github.koraktor.mavanagaiata.mojo;
 import org.codehaus.plexus.interpolation.InterpolatorFilterReader;
 import org.codehaus.plexus.interpolation.MapBasedValueSource;
 import org.codehaus.plexus.interpolation.RegexBasedInterpolator;
+import org.codehaus.plexus.interpolation.ValueSource;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -104,7 +105,7 @@ public class InfoClassMojo extends AbstractGitMojo {
      */
     InputStream getTemplateSource() throws IOException {
         if (templateFile == null) {
-            return getClass().getResourceAsStream(BUILTIN_TEMPLATE_PATH);
+            return InfoClassMojo.class.getResourceAsStream(BUILTIN_TEMPLATE_PATH);
         } else {
             return newInputStream(templateFile.toPath());
         }
@@ -201,19 +202,18 @@ public class InfoClassMojo extends AbstractGitMojo {
             deleteIfExists(outputFile.toPath());
             createDirectories(packageDirectory.toPath());
 
-            List<FilterWrapper> filterWrappers = singletonList(new ValueSourceFilter(repository));
+            List<FilterWrapper> filterWrappers = singletonList(new ValueSourceFilter(getValueSource(repository)));
             fileFilter.copyFile(sourceFile, outputFile, true, filterWrappers, encoding, true);
         } catch (IOException e) {
             throw MavanagaiataMojoException.create("Could not create class source: %s", e, outputFile.getAbsolutePath());
         }
     }
 
-    private class ValueSourceFilter extends FilterWrapper {
-        private final MapBasedValueSource valueSource;
+    private static class ValueSourceFilter extends FilterWrapper {
+        private final ValueSource valueSource;
 
-        ValueSourceFilter(GitRepository repository)
-                throws GitRepositoryException {
-            valueSource = InfoClassMojo.this.getValueSource(repository);
+        ValueSourceFilter(ValueSource valueSource) {
+            this.valueSource = valueSource;
         }
 
         @Override

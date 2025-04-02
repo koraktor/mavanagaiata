@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2019, Sebastian Staudt
+ * Copyright (c) 2011-2025, Sebastian Staudt
  *               2016, Jeff Kreska
  */
 
@@ -214,8 +214,8 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
 
         private String currentRef;
         private boolean firstCommit = true;
-        private GitRepository repository;
-        private Map<String, GitTag> tags;
+        private final GitRepository repository;
+        private final Map<String, GitTag> tags;
 
         ChangelogWalkAction(GitRepository repository) throws GitRepositoryException {
             this.repository = repository;

@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2019, Sebastian Staudt
+ * Copyright (c) 2011-2025, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -217,26 +217,26 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
             String emailAddress = mailMap.getCanonicalAuthorEmailAddress(currentCommit);
             Contributor contributor = contributors.get(emailAddress);
             if (contributor == null) {
-                contributors.put(emailAddress, new Contributor(currentCommit));
+                contributors.put(emailAddress, new Contributor(mailMap, currentCommit));
             } else {
                 contributor.addCommit(currentCommit);
             }
         }
     }
 
-    class Contributor {
+    static class Contributor {
 
         Integer count = 1;
         String emailAddress;
         Date firstCommitDate;
         String name;
 
-        Contributor(GitCommit commit) {
+        Contributor(MailMap mailMap, GitCommit commit) {
             firstCommitDate = commit.getAuthorDate();
 
-            if (ContributorsMojo.this.mailMap.exists()) {
-                emailAddress = ContributorsMojo.this.mailMap.getCanonicalAuthorEmailAddress(commit);
-                name = ContributorsMojo.this.mailMap.getCanonicalAuthorName(commit);
+            if (mailMap.exists()) {
+                emailAddress = mailMap.getCanonicalAuthorEmailAddress(commit);
+                name = mailMap.getCanonicalAuthorName(commit);
             } else {
                 emailAddress = commit.getAuthorEmailAddress();
                 name = commit.getAuthorName();

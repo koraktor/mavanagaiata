@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2014-2018, Sebastian Staudt
+ * Copyright (c) 2014-2025, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
@@ -17,11 +17,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.github.koraktor.mavanagaiata.git.MailMap.MAILMAP_FILE;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static com.github.koraktor.mavanagaiata.git.MailMap.*;
+import static java.util.Objects.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.core.Is.*;
+import static org.hamcrest.core.IsEqual.*;
+import static org.hamcrest.core.IsInstanceOf.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -118,7 +119,7 @@ class MailMapTest {
             mailMap.mailToMailMap = new HashMap<>(1);
             mailMap.mailToMailMap.put("test", "test");
             return null;
-        }).when(mailMap).parseMailMap(eq(new File("test/" + MAILMAP_FILE)));
+        }).when(mailMap).parseMailMap(new File("test/" + MAILMAP_FILE));
 
         mailMap.parseMailMap();
 
@@ -132,7 +133,7 @@ class MailMapTest {
         when(repo.getWorkTree()).thenReturn(new File("test"));
 
         doThrow(new FileNotFoundException()).when(mailMap).
-                parseMailMap(eq(new File("test/" + MAILMAP_FILE)));
+                parseMailMap(new File("test/" + MAILMAP_FILE));
 
         mailMap.parseMailMap();
 
@@ -143,7 +144,7 @@ class MailMapTest {
     @Test
     void testParseFromFile() throws Exception {
         MailMap mailMap = new MailMap(repo);
-        File mailMapFile = new File(this.getClass().getResource("/" + MAILMAP_FILE).getFile());
+        File mailMapFile = new File(requireNonNull(MailMap.class.getResource("/" + MAILMAP_FILE)).getFile());
 
         mailMap.parseMailMap(mailMapFile);
 

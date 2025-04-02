@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2020, Sebastian Staudt
+ * Copyright (c) 2012-2025, Sebastian Staudt
  *               2015, Kay Hannay
  */
 
@@ -203,7 +203,7 @@ public class JGitRepository extends AbstractGitRepository {
     }
 
     @Override
-    public JGitCommit getHeadCommit() throws GitRepositoryException {
+    public GitCommit getHeadCommit() throws GitRepositoryException {
         return new JGitCommit(getHeadRevCommit());
     }
 

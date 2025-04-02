@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2020, Sebastian Staudt
+ * Copyright (c) 2012-2025, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git.jgit;
@@ -284,7 +284,8 @@ class JGitRepositoryTest {
     @Test
     void testCloseNullRepository() {
         this.repository.repository = null;
-        this.repository.close();
+
+        assertDoesNotThrow(this.repository::close);
     }
 
     @DisplayName("should be able to describe a tagged commit")
@@ -476,41 +477,41 @@ class JGitRepositoryTest {
     @DisplayName("should be able to get the tags")
     @Test
     void testGetTags() throws Exception {
-        RevWalk revWalk = mockRevWalk();
+        try (RevWalk revWalk = mockRevWalk()) {
+            Ref tagRef1 = mock(Ref.class);
+            Ref tagRef2 = mock(Ref.class);
+            Ref tagRef3 = mock(Ref.class);
+            Ref tagRef4 = mock(Ref.class);
+            List<Ref> tagRefs = asList(tagRef1, tagRef2, tagRef3, tagRef4);
+            when(repo.getRefDatabase().getRefsByPrefix(R_TAGS)).thenReturn(tagRefs);
 
-        Ref tagRef1 = mock(Ref.class);
-        Ref tagRef2 = mock(Ref.class);
-        Ref tagRef3 = mock(Ref.class);
-        Ref tagRef4 = mock(Ref.class);
-        List<Ref> tagRefs = asList(tagRef1, tagRef2, tagRef3, tagRef4);
-        when(repo.getRefDatabase().getRefsByPrefix(R_TAGS)).thenReturn(tagRefs);
+            RevTag rawTag1 = createRawTag();
+            RevTag rawTag2 = createRawTag();
+            RevTag rawTag3 = createRawTag();
+            RevTag rawTag4 = createRawTag();
+            RevCommit commit1 = createCommit();
+            RevObject commit2 = createCommit();
+            when(tagRef1.getObjectId()).thenReturn(rawTag1);
+            when(revWalk.lookupTag(rawTag1)).thenReturn(rawTag1);
+            when(revWalk.peel(rawTag1)).thenReturn(commit1);
+            when(tagRef2.getObjectId()).thenReturn(rawTag2);
+            when(revWalk.lookupTag(rawTag2)).thenReturn(rawTag2);
+            when(revWalk.peel(rawTag2)).thenReturn(commit2);
+            when(tagRef3.getObjectId()).thenReturn(rawTag3);
+            when(revWalk.lookupTag(rawTag3)).thenReturn(rawTag3);
+            when(revWalk.peel(rawTag3)).thenThrow(new MissingObjectException(rawTag3, OBJ_TAG));
+            when(tagRef3.getObjectId()).thenReturn(rawTag4);
+            when(revWalk.lookupTag(rawTag4)).thenReturn(rawTag4);
+            when(revWalk.peel(rawTag4)).thenThrow(new IncorrectObjectTypeException(rawTag4, OBJ_TAG));
 
-        RevTag rawTag1 = createRawTag();
-        RevTag rawTag2 = createRawTag();
-        RevTag rawTag3 = createRawTag();
-        RevTag rawTag4 = createRawTag();
-        RevCommit commit1 = createCommit();
-        RevObject commit2 = createCommit();
-        when(tagRef1.getObjectId()).thenReturn(rawTag1);
-        when(revWalk.lookupTag(rawTag1)).thenReturn(rawTag1);
-        when(revWalk.peel(rawTag1)).thenReturn(commit1);
-        when(tagRef2.getObjectId()).thenReturn(rawTag2);
-        when(revWalk.lookupTag(rawTag2)).thenReturn(rawTag2);
-        when(revWalk.peel(rawTag2)).thenReturn(commit2);
-        when(tagRef3.getObjectId()).thenReturn(rawTag3);
-        when(revWalk.lookupTag(rawTag3)).thenReturn(rawTag3);
-        when(revWalk.peel(rawTag3)).thenThrow(new MissingObjectException(rawTag3, OBJ_TAG));
-        when(tagRef3.getObjectId()).thenReturn(rawTag4);
-        when(revWalk.lookupTag(rawTag4)).thenReturn(rawTag4);
-        when(revWalk.peel(rawTag4)).thenThrow(new IncorrectObjectTypeException(rawTag4, OBJ_TAG));
+            Map<String, GitTag> tags = new HashMap<>();
+            JGitTag tag1 = new JGitTag(rawTag1);
+            tags.put(commit1.name(), tag1);
+            JGitTag tag2 = new JGitTag(rawTag2);
+            tags.put(commit2.name(), tag2);
 
-        Map<String, GitTag> tags = new HashMap<>();
-        JGitTag tag1 = new JGitTag(rawTag1);
-        tags.put(commit1.name(), tag1);
-        JGitTag tag2 = new JGitTag(rawTag2);
-        tags.put(commit2.name(), tag2);
-
-        assertThat(repository.getTags(), is(equalTo(tags)));
+            assertThat(repository.getTags(), is(equalTo(tags)));
+        }
     }
 
     @DisplayName("should be able to check if the worktree is dirty")
@@ -665,9 +666,5 @@ class JGitRepositoryTest {
             new Date().getTime(),
             "Tag subject");
         return RevTag.parse(tagData.getBytes());
-    }
-
-    private JGitTag createTag(String name, String objectId) throws CorruptObjectException {
-        return new JGitTag(createRawTag(name, objectId));
     }
 }
