@@ -142,14 +142,14 @@ class ChangelogFormatTest {
         format.printCommit(commit(), false);
 
         assertOutputLine("");
-        assertOutputLine("- Commit > message");
+        assertOutputLine("- Commit > message    ");
         assertOutputLine(null);
     }
 
     @DisplayName("should print a commit with the given format trimming whitespace")
     @Test
     void testPrintCommitTrim() throws IOException {
-        format.printCommit(commitTrailingSpace(), true);
+        format.printCommit(commit(), true);
 
         assertOutputLine("");
         assertOutputLine("- Commit > message");
@@ -163,7 +163,7 @@ class ChangelogFormatTest {
         format.printCommit(commit(), false);
 
         assertOutputLine("");
-        assertOutputLine("- Commit &gt; message");
+        assertOutputLine("- Commit &gt; message    ");
         assertOutputLine(null);
     }
 
@@ -223,70 +223,6 @@ class ChangelogFormatTest {
     }
 
     private GitCommit commit() {
-        return new GitCommit() {
-            @Override
-            public Date getAuthorDate() {
-                return null;
-            }
-
-            @Override
-            public String getAuthorEmailAddress() {
-                return null;
-            }
-
-            @Override
-            public String getAuthorName() {
-                return null;
-            }
-
-            @Override
-            public TimeZone getAuthorTimeZone() {
-                return null;
-            }
-
-            @Override
-            public Date getCommitterDate() {
-                return null;
-            }
-
-            @Override
-            public String getCommitterEmailAddress() {
-                return null;
-            }
-
-            @Override
-            public String getCommitterName() {
-                return null;
-            }
-
-            @Override
-            public TimeZone getCommitterTimeZone() {
-                return null;
-            }
-
-            @Override
-            public String getId() {
-                return null;
-            }
-
-            @Override
-            public String getMessage() {
-                return null;
-            }
-
-            @Override
-            public String getMessageSubject() {
-                return "Commit > message";
-            }
-
-            @Override
-            public boolean isMergeCommit() {
-                return false;
-            }
-        };
-    }
-
-    private GitCommit commitTrailingSpace() {
         return new GitCommit() {
             @Override
             public Date getAuthorDate() {
