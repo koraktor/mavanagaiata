@@ -14,6 +14,8 @@ import java.util.Optional;
 import com.github.koraktor.mavanagaiata.git.GitCommit;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 
+import org.apache.commons.lang3.StringUtils;
+
 import static com.github.koraktor.mavanagaiata.mojo.AbstractGitOutputMojo.unescapeFormatNewlines;
 import static org.apache.commons.text.StringEscapeUtils.escapeHtml4;
 
@@ -34,7 +36,7 @@ public class ChangelogFormat {
         DEFAULT(new ChangelogDefaultFormat()),
         MARKDOWN(new ChangelogMarkdownFormat());
 
-        private final ChangelogFormat format;
+        private ChangelogFormat format;
 
         Formats(ChangelogFormat format) {
             this.format = format;
@@ -173,11 +175,16 @@ public class ChangelogFormat {
      * Print a single line for a commit
      *
      * @param currentCommit The commit to print
+     * @param trimTrailingWhitespace Trim the trailing whitespace from commit
      */
-    void printCommit(GitCommit currentCommit) {
+    void printCommit(GitCommit currentCommit, boolean trimTrailingWhitespace) {
         String commitMessage = Boolean.TRUE.equals(escapeHtml) ?
             escapeHtml4(currentCommit.getMessageSubject()) :
             currentCommit.getMessageSubject();
+
+        if (trimTrailingWhitespace) {
+            commitMessage = StringUtils.stripEnd(commitMessage, null);
+        }
 
         printStream.println(commitPrefix + commitMessage);
     }

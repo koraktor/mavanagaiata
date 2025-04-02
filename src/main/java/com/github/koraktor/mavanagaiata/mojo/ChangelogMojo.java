@@ -143,6 +143,16 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
     @Parameter(property = "mavanagaiata.changelog.skipCommitsMatching")
     String skipCommitsMatching;
 
+    /**
+     * Whether to trim trailing whitespace from commits.
+     * <p>
+     * This is useful for cases where auto formatting used and changelog checked in.
+     *
+     * @since 1.1.0
+     */
+    @Parameter(property = "mavanagaiata.changelog.trimTrailingWhitespace")
+    boolean trimTrailingWhitespace;
+
     private Pattern skipCommitsPattern;
 
     /**
@@ -255,7 +265,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
                 format.printBranch(repository.getBranch());
             }
 
-            format.printCommit(currentCommit);
+            format.printCommit(currentCommit, trimTrailingWhitespace);
         }
 
     }
