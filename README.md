@@ -53,15 +53,15 @@ A more complete usage example can be found in Mavanagaiata’s own
 ## Requirements
 
  * Java 11 or newer
- * Maven 3.3.9 or newer
+ * Maven 3.6.3 or newer
 
 ## Dependencies
 
- * Apache Commons IO 2.11.0
- * Apache Commons Lang 3.12.0
- * Apache Commons Text 1.10.0
- * JGit 6.4.0
- * Maven Filtering 3.3.0
+ * Apache Commons IO 2.18.0
+ * Apache Commons Lang 3.17.0
+ * Apache Commons Text 1.13.0
+ * JGit 6.10.0
+ * Maven Filtering 3.4.0
 
 ## Contribute
 
@@ -115,6 +115,7 @@ included LICENSE file.
 * Patrick Kaeding -- pkaeding(at)atlassian.com
 * Kay Hannay -- klinux(at)hannay.de
 * Jeff Kreska -- jeff.kreska(at)farecompare.com
+* Jeremy Landis -- jeremylandis(at)hotmail.com
 
 ## See Also
 
