@@ -3,6 +3,7 @@
  * the terms of the new BSD License.
  *
  * Copyright (c) 2018-2025, Sebastian Staudt
+ *               2024, Jeremy Landis
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
