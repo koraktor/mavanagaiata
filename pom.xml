@@ -55,8 +55,8 @@
     </mailingLists>
 
     <ciManagement>
-        <system>Travis CI</system>
-        <url>https://travis-ci.org/koraktor/mavanagaiata</url>
+        <system>GitHub Actions</system>
+        <url>https://github.com/koraktor/mavanagaiata/actions/workflows/maven.yml</url>
     </ciManagement>
 
     <distributionManagement>
