@@ -43,7 +43,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
+import com.github.koraktor.mavanagaiata.git.AbstractCommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
 import com.github.koraktor.mavanagaiata.git.GitTagDescription;
@@ -582,7 +582,7 @@ class JGitRepositoryTest {
     @DisplayName("should allow walking the HEAD’s history with a CommitWalkAction")
     @Test
     void testWalkCommits() throws Exception {
-        CommitWalkAction action = mock(CommitWalkAction.class);
+        AbstractCommitWalkAction action = mock(AbstractCommitWalkAction.class);
         RevWalk revWalk = mockRevWalk();
 
         RevCommit head = this.createCommit();

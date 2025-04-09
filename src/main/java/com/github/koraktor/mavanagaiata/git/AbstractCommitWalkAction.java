@@ -13,7 +13,7 @@ package com.github.koraktor.mavanagaiata.git;
  *
  * @author Sebastian Staudt
  */
-public abstract class CommitWalkAction {
+public abstract class AbstractCommitWalkAction {
 
     protected GitCommit currentCommit;
 

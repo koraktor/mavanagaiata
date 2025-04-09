@@ -18,16 +18,16 @@ import static org.mockito.Mockito.*;
  * @author Sebastian Staudt
  */
 @DisplayName("CommitWalkAction")
-class CommitWalkActionTest {
+class AbstractCommitWalkActionTest {
 
-    static class GenericCommitWalkAction extends CommitWalkAction {
+    static class GenericCommitWalkAction extends AbstractCommitWalkAction {
         protected void run() {}
     }
 
     @DisplayName("should track the current commit while executing")
     @Test
     void testExecute() throws Exception {
-        CommitWalkAction action = spy(new GenericCommitWalkAction());
+        AbstractCommitWalkAction action = spy(new GenericCommitWalkAction());
         GitCommit commit = mock(GitCommit.class);
 
         action.execute(commit);

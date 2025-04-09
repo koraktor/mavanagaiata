@@ -79,7 +79,7 @@ class AbstractGitRepositoryTest {
         @Override
         public void loadTag(GitTag tag) {}
 
-        public void  walkCommits(CommitWalkAction action) {}
+        public void  walkCommits(AbstractCommitWalkAction action) {}
 
     }
 

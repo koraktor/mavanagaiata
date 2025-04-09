@@ -20,7 +20,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
+import com.github.koraktor.mavanagaiata.git.AbstractCommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitCommit;
 import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
@@ -205,7 +205,7 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
         this.outputFile = outputFile;
     }
 
-    class ContributorsWalkAction extends CommitWalkAction {
+    class ContributorsWalkAction extends AbstractCommitWalkAction {
 
         HashMap<String, Contributor> contributors = new HashMap<>();
 

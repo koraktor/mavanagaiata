@@ -34,7 +34,7 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.FileTreeIterator;
 
 import com.github.koraktor.mavanagaiata.git.AbstractGitRepository;
-import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
+import com.github.koraktor.mavanagaiata.git.AbstractCommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitCommit;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
@@ -304,7 +304,7 @@ public class JGitRepository extends AbstractGitRepository {
     }
 
     @Override
-    public void walkCommits(CommitWalkAction action)
+    public void walkCommits(AbstractCommitWalkAction action)
             throws GitRepositoryException {
         try (RevWalk revWalk = getRevWalk()) {
             revWalk.markStart(getHeadRevCommit());

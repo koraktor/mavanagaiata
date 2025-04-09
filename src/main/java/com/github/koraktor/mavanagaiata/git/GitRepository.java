@@ -171,6 +171,6 @@ public interface GitRepository extends AutoCloseable {
      * @throws GitRepositoryException if an error occurs during walking through
      *         the commits
      */
-    void walkCommits(CommitWalkAction action) throws GitRepositoryException;
+    void walkCommits(AbstractCommitWalkAction action) throws GitRepositoryException;
 
 }

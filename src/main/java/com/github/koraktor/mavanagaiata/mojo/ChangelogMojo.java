@@ -16,7 +16,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import com.github.koraktor.mavanagaiata.git.CommitWalkAction;
+import com.github.koraktor.mavanagaiata.git.AbstractCommitWalkAction;
 import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.GitTag;
@@ -220,7 +220,7 @@ public class ChangelogMojo extends AbstractGitOutputMojo {
         this.outputFile = outputFile;
     }
 
-    class ChangelogWalkAction extends CommitWalkAction {
+    class ChangelogWalkAction extends AbstractCommitWalkAction {
 
         private String currentRef;
         private boolean firstCommit = true;
