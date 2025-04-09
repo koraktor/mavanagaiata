@@ -44,16 +44,6 @@
         <url>https://github.com/koraktor/mavanagaiata/issues</url>
     </issueManagement>
 
-    <mailingLists>
-        <mailingList>
-            <name>Google Group</name>
-            <archive>https://groups.google.com/d/forum/mavanagaiata</archive>
-            <post>mailto:mavanagaiata@googlegroups.com</post>
-            <subscribe>mailto:mavanagaiata+subscribe@googlegroups.com</subscribe>
-            <unsubscribe>mailto:mavanagaiata+unsubscribe@googlegroups.com</unsubscribe>
-        </mailingList>
-    </mailingLists>
-
     <ciManagement>
         <system>GitHub Actions</system>
         <url>https://github.com/koraktor/mavanagaiata/actions/workflows/maven.yml</url>
