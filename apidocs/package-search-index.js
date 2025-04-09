@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"Alle Packages","u":"allpackages-index.html"},{"l":"com.github.koraktor.mavanagaiata"},{"l":"com.github.koraktor.mavanagaiata.git"},{"l":"com.github.koraktor.mavanagaiata.git.jgit"},{"l":"com.github.koraktor.mavanagaiata.mojo"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.github.koraktor.mavanagaiata"},{"l":"com.github.koraktor.mavanagaiata.git"},{"l":"com.github.koraktor.mavanagaiata.git.jgit"},{"l":"com.github.koraktor.mavanagaiata.mojo"}];updateSearchResults();
