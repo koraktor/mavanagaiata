@@ -12,10 +12,10 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.github.koraktor.mavanagaiata.git.GitCommit;
 import com.github.koraktor.mavanagaiata.git.GitTag;
-
-import org.apache.commons.lang3.StringUtils;
 
 import static com.github.koraktor.mavanagaiata.mojo.AbstractGitOutputMojo.unescapeFormatNewlines;
 import static org.apache.commons.text.StringEscapeUtils.escapeHtml4;
@@ -208,11 +208,11 @@ public class ChangelogFormat {
             return;
         }
 
-        String url = baseUrl;
+        String url;
         if (lastRef == null) {
-            url += String.format("/commits/%s", currentRef);
+            url = String.format("%s/commits/%s", baseUrl, currentRef);
         } else {
-            url += String.format("/compare/%s...%s", currentRef, lastRef);
+            url = String.format("%s/compare/%s...%s", baseUrl, currentRef, lastRef);
         }
 
         String linkText;
