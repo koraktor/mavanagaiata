@@ -12,6 +12,7 @@ import org.codehaus.plexus.interpolation.MapBasedValueSource;
 import org.codehaus.plexus.interpolation.RegexBasedInterpolator;
 import org.codehaus.plexus.interpolation.ValueSource;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -24,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -68,7 +68,7 @@ public class InfoClassMojo extends AbstractGitMojo {
                defaultValue = "${project.build.sourceEncoding}")
     String encoding;
 
-    @Component
+    @Inject
     MavenFileFilter fileFilter;
 
     /**
@@ -203,7 +203,7 @@ public class InfoClassMojo extends AbstractGitMojo {
             createDirectories(packageDirectory.toPath());
 
             List<FilterWrapper> filterWrappers = singletonList(new ValueSourceFilter(getValueSource(repository)));
-            fileFilter.copyFile(sourceFile, outputFile, true, filterWrappers, encoding, true);
+            fileFilter.copyFile(sourceFile, outputFile, true, filterWrappers, encoding);
         } catch (IOException e) {
             throw MavanagaiataMojoException.create("Could not create class source: %s", e, outputFile.getAbsolutePath());
         }
