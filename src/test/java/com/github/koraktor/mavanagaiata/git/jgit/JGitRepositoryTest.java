@@ -61,6 +61,8 @@ import static org.mockito.Mockito.*;
 @DisplayName("JGitRepository")
 class JGitRepositoryTest {
 
+    private static final Random RANDOM = new Random();
+
     private Repository repo;
 
     private JGitRepository repository;
@@ -636,14 +638,14 @@ class JGitRepositoryTest {
     private RevCommit createCommit(int numParents) {
         StringBuilder parents = new StringBuilder();
         for (; numParents > 0; numParents--) {
-            parents.append(String.format("parent %040x\n", new java.util.Random().nextLong()));
+            parents.append(String.format("parent %040x\n", RANDOM.nextLong()));
         }
         String commitData = String.format("tree %040x\n" +
             parents +
             "author Sebastian Staudt <koraktor@gmail.com> %d +0100\n" +
             "committer Sebastian Staudt <koraktor@gmail.com> %d +0100\n\n" +
             "%s",
-            new Random().nextLong(),
+            RANDOM.nextLong(),
             new Date().getTime(),
             new Date().getTime(),
             "Commit subject");
@@ -651,8 +653,8 @@ class JGitRepositoryTest {
     }
 
     private RevTag createRawTag() throws CorruptObjectException {
-        return createRawTag("name" + new Random().nextInt(),
-                String.format("%040x", new Random().nextLong()));
+        return createRawTag("name" + RANDOM.nextInt(),
+                String.format("%040x", RANDOM.nextLong()));
     }
 
     private RevTag createRawTag(String name, String objectId) throws CorruptObjectException {
