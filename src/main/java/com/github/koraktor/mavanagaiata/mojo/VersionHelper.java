@@ -17,7 +17,7 @@ interface VersionHelper {
 
     /**
      * Returns the current version of Mavanagaiata
-     *
+     * <p>
      * This requires the presence of the generated Git info class. If it's not
      * available {@code null} is returned.
      *
