@@ -10,7 +10,7 @@ package com.github.koraktor.mavanagaiata.mojo;
 /**
  * @author Sebastian Staudt
  */
-public class ChangelogMarkdownFormat extends ChangelogDefaultFormat {
+class ChangelogMarkdownFormat extends ChangelogDefaultFormat {
 
     public ChangelogMarkdownFormat() {
         branch = "\n#### Commits on branch `%s`\n";

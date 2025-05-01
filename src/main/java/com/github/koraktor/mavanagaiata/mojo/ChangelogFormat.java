@@ -37,7 +37,7 @@ public class ChangelogFormat {
         DEFAULT(new ChangelogDefaultFormat()),
         MARKDOWN(new ChangelogMarkdownFormat());
 
-        private ChangelogFormat format;
+        private final ChangelogFormat format;
 
         Formats(ChangelogFormat format) {
             this.format = format;
