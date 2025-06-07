@@ -106,17 +106,6 @@ This code is free software; you can redistribute it and/or modify it under the
 terms of the new BSD License. A copy of this license can be found in the
 included LICENSE file.
 
-## Credits
-
-* Sebastian Staudt -- koraktor(at)gmail.com
-* Pablo Graña -- pablo.grana(at)globant.com
-* Henning Schmiedehausen -- hgschmie(at)fb.com
-* Santeri Vesalainen -- santeri.vesalainen(at)gmail.com
-* Patrick Kaeding -- pkaeding(at)atlassian.com
-* Kay Hannay -- klinux(at)hannay.de
-* Jeff Kreska -- jeff.kreska(at)farecompare.com
-* Jeremy Landis -- jeremylandis(at)hotmail.com
-
 ## See Also
 
 * [Mavanagaiata home](https://koraktor.de/mavanagaiata)
