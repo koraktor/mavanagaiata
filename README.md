@@ -57,10 +57,10 @@ A more complete usage example can be found in Mavanagaiata’s own
 
 ## Dependencies
 
- * Apache Commons IO 2.18.0
+ * Apache Commons IO 2.19.0
  * Apache Commons Lang 3.17.0
- * Apache Commons Text 1.13.0
- * JGit 6.10.0
+ * Apache Commons Text 1.13.1
+ * JGit 6.10.1
  * Maven Filtering 3.4.0
 
 ## Contribute
