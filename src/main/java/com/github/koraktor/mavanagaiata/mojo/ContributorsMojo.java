@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.text.translate.CharSequenceTranslator;
 import org.apache.commons.text.translate.LookupTranslator;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -27,7 +28,6 @@ import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.MailMap;
 
 import static java.util.Comparator.*;
-import static org.apache.commons.lang3.StringUtils.*;
 import static org.apache.commons.text.StringEscapeUtils.*;
 
 /**
@@ -113,7 +113,7 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
         contributorPrefix = unescapeFormatNewlines(contributorPrefix);
         header            = unescapeFormatNewlines(header);
 
-        if (!equalsAnyIgnoreCase(sort, "date", "name")) {
+        if (!Strings.CI.equalsAny(sort, "date", "name")) {
             sort = "count";
         }
 

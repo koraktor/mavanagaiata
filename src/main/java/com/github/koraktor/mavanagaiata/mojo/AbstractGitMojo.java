@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2019, Sebastian Staudt
+ * Copyright (c) 2011-2025, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -10,6 +10,7 @@ package com.github.koraktor.mavanagaiata.mojo;
 import java.io.File;
 import java.util.Properties;
 
+import org.apache.commons.lang3.Strings;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -20,7 +21,6 @@ import com.github.koraktor.mavanagaiata.git.GitRepository;
 import com.github.koraktor.mavanagaiata.git.GitRepositoryException;
 import com.github.koraktor.mavanagaiata.git.jgit.JGitRepository;
 
-import static org.apache.commons.lang3.StringUtils.equalsAnyIgnoreCase;
 import static org.eclipse.jgit.lib.Constants.*;
 
 /**
@@ -244,7 +244,7 @@ abstract class AbstractGitMojo extends AbstractMojo {
      * Prepares and validates user-supplied parameters
      */
     void prepareParameters() {
-        if (equalsAnyIgnoreCase(dirtyFlag, "false", "null")) {
+        if (Strings.CI.equalsAny(dirtyFlag, "false", "null")) {
             dirtyFlag = null;
         }
     }
