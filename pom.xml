@@ -310,7 +310,7 @@
                         <additionalOption>-html5</additionalOption>
                     </additionalOptions>
                     <links>
-                        <link>https://docs.oracle.com/javase/11/docs/api</link>
+                        <link>https://docs.oracle.com/en/java/javase/21/docs/api/</link>
                     </links>
                     <locale>en_US</locale>
                     <show>private</show>
@@ -426,7 +426,7 @@
                         <additionalOption>-html5</additionalOption>
                     </additionalOptions>
                     <links>
-                        <link>https://docs.oracle.com/javase/11/docs/api</link>
+                        <link>https://docs.oracle.com/en/java/javase/26/docs/api/</link>
                     </links>
                     <locale>en_US</locale>
                     <source>11</source>
