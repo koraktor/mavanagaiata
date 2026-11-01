@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.apache.maven.shared.filtering.ChangeDetection;
 import org.apache.maven.shared.filtering.MavenFileFilter;
 
 import org.junit.jupiter.api.AfterEach;
@@ -170,7 +171,7 @@ class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
         mojo.run(repository);
 
         File targetFile = new File(mojo.outputDirectory, "com/github/koraktor/mavanagaita/GitInfo.java");
-        verify(mojo.fileFilter).copyFile(any(File.class), eq(targetFile), eq(true), anyList(), eq("UTF-8"));
+        verify(mojo.fileFilter).copyFile(any(File.class), eq(targetFile), eq(true), anyList(), eq("UTF-8"), eq(ChangeDetection.ALWAYS));
     }
 
     @AfterEach
