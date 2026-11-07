@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2018-2025, Sebastian Staudt
+ * Copyright (c) 2018-2026, Sebastian Staudt
  *               2024, Jeremy Landis
  */
 
@@ -11,6 +11,7 @@ package com.github.koraktor.mavanagaiata.mojo;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Optional;
+import java.util.TimeZone;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -250,7 +251,7 @@ public class ChangelogFormat {
      * @param currentTag The tag
      */
     void printTag(GitTag currentTag) {
-        dateFormatter.setTimeZone(currentTag.getTimeZone());
+        dateFormatter.setTimeZone(TimeZone.getTimeZone(currentTag.getTimeZoneId()));
         String date = dateFormatter.format(currentTag.getDate());
 
         printStream.println(String.format(tag, currentTag.getName(), date) + separator);

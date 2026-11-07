@@ -7,6 +7,7 @@
 
 package com.github.koraktor.mavanagaiata.mojo;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,12 +73,12 @@ class ChangelogMojoTest extends GitOutputMojoAbstractTest<ChangelogMojo> {
         GitTag tag1 = mock(GitTag.class);
         when(tag1.getDate()).thenReturn(new Date(1162580880000L));
         when(tag1.getName()).thenReturn("1.0.0");
-        when(tag1.getTimeZone()).thenReturn(TimeZone.getTimeZone("GMT"));
+        when(tag1.getTimeZoneId()).thenReturn(ZoneId.of("GMT"));
         tags.put("5979a86e9bb091fc792529bee68ed222000ebc7e", tag1);
         GitTag tag2 = mock(GitTag.class);
         when(tag2.getDate()).thenReturn(new Date(1275131880000L));
         when(tag2.getName()).thenReturn("2.0.0");
-        when(tag2.getTimeZone()).thenReturn(TimeZone.getTimeZone("GMT+2"));
+        when(tag2.getTimeZoneId()).thenReturn(ZoneId.of("GMT+2"));
         tags.put("06cee865ab7f006a58be39f1d46f01dcb1880105", tag2);
 
         when(repository.getBranch()).thenReturn("master");

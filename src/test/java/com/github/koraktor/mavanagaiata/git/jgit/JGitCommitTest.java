@@ -2,13 +2,13 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2025, Sebastian Staudt
+ * Copyright (c) 2012-2026, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git.jgit;
 
+import java.time.ZoneId;
 import java.util.Date;
-import java.util.TimeZone;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
@@ -40,11 +40,11 @@ class JGitCommitTest {
         assertThat(commit.getAuthorDate(), is(equalTo(authorDate)));
         assertThat(commit.getAuthorEmailAddress(), is(equalTo("john.doe@example.com")));
         assertThat(commit.getAuthorName(), is(equalTo("John Doe")));
-        assertThat(commit.getAuthorTimeZone(), is(TimeZone.getTimeZone("GMT+0000")));
+        assertThat(commit.getAuthorTimeZoneId(), is(ZoneId.of("Z")));
         assertThat(commit.getCommitterDate(), is(equalTo(committerDate)));
         assertThat(commit.getCommitterEmailAddress(), is(equalTo("koraktor@gmail.com")));
         assertThat(commit.getCommitterName(), is(equalTo("Sebastian Staudt")));
-        assertThat(commit.getCommitterTimeZone(), is(TimeZone.getTimeZone("GMT+0200")));
+        assertThat(commit.getCommitterTimeZoneId(), is(ZoneId.of("+0200")));
         assertThat(commit.getId(), is(equalTo("518a7e6955ee38ecab34254e0796860bc679cfee")));
         assertThat(commit.getMessage(), is(equalTo("Commit subject\n\nFull message.")));
         assertThat(commit.getMessageSubject(), is(equalTo("Commit subject")));

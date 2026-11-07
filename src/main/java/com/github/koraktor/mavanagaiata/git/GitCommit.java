@@ -2,13 +2,13 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012, Sebastian Staudt
+ * Copyright (c) 2012-2026, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
 
+import java.time.ZoneId;
 import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * This interface specifies the basic properties needed for the mojos to access
@@ -44,7 +44,7 @@ public interface GitCommit {
      *
      * @return The author timezone of this commit
      */
-    TimeZone getAuthorTimeZone();
+    ZoneId getAuthorTimeZoneId();
 
     /**
      * Returns the date when this commit has been committed
@@ -72,7 +72,7 @@ public interface GitCommit {
      *
      * @return The committer timezone of this commit
      */
-    TimeZone getCommitterTimeZone();
+    ZoneId getCommitterTimeZoneId();
 
     /**
      * Returns the SHA hash ID of this commit

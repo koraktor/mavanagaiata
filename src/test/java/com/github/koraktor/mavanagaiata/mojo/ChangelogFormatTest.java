@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2018-2025, Sebastian Staudt
+ * Copyright (c) 2018-2026, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -12,10 +12,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -117,8 +117,8 @@ class ChangelogFormatTest {
             }
 
             @Override
-            public TimeZone getTimeZone() {
-                return TimeZone.getDefault();
+            public ZoneId getTimeZoneId() {
+                return ZoneId.systemDefault();
             }
 
             @Override
@@ -240,7 +240,7 @@ class ChangelogFormatTest {
             }
 
             @Override
-            public TimeZone getAuthorTimeZone() {
+            public ZoneId getAuthorTimeZoneId() {
                 return null;
             }
 
@@ -260,7 +260,7 @@ class ChangelogFormatTest {
             }
 
             @Override
-            public TimeZone getCommitterTimeZone() {
+            public ZoneId getCommitterTimeZoneId() {
                 return null;
             }
 
