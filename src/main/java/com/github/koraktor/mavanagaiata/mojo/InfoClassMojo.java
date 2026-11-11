@@ -9,7 +9,7 @@ package com.github.koraktor.mavanagaiata.mojo;
 
 import org.codehaus.plexus.interpolation.InterpolatorFilterReader;
 import org.codehaus.plexus.interpolation.MapBasedValueSource;
-import org.codehaus.plexus.interpolation.RegexBasedInterpolator;
+import org.codehaus.plexus.interpolation.StringSearchInterpolator;
 import org.codehaus.plexus.interpolation.ValueSource;
 
 import javax.inject.Inject;
@@ -28,9 +28,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.shared.filtering.ChangeDetection;
 import org.apache.maven.shared.filtering.FilterWrapper;
 import org.apache.maven.shared.filtering.MavenFileFilter;
+import org.apache.maven.shared.filtering.MavenFileFilterRequest;
 import org.apache.maven.shared.filtering.MavenFilteringException;
 
 import com.github.koraktor.mavanagaiata.git.GitRepository;
@@ -144,7 +144,7 @@ public class InfoClassMojo extends AbstractGitMojo {
             } catch (IOException e) {
                 throw MavanagaiataMojoException.create("Could not create temporary directory", e);
             }
-            forceDeleteOnExit(tempSourceDir);
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> deleteQuietly(tempSourceDir)));
             String sourceFileName = className + ".java";
             File tempSourceFile = new File(tempSourceDir, sourceFileName);
             if (!tempSourceFile.createNewFile()) {
@@ -204,7 +204,14 @@ public class InfoClassMojo extends AbstractGitMojo {
             createDirectories(packageDirectory.toPath());
 
             List<FilterWrapper> filterWrappers = singletonList(new ValueSourceFilter(getValueSource(repository)));
-            fileFilter.copyFile(sourceFile, outputFile, true, filterWrappers, encoding, ChangeDetection.ALWAYS);
+            MavenFileFilterRequest request = new MavenFileFilterRequest();
+            request.setFrom(sourceFile)
+                   .setTo(outputFile)
+                   .setFiltering(true)
+                   .setEncoding(encoding)
+                   .setOverwrite(true)
+                   .setFilters(filterWrappers);
+            fileFilter.filterFile(request);
         } catch (IOException e) {
             throw MavanagaiataMojoException.create("Could not create class source: %s", e, outputFile.getAbsolutePath());
         }
@@ -219,10 +226,10 @@ public class InfoClassMojo extends AbstractGitMojo {
 
         @Override
         public Reader getReader(Reader fileReader) {
-            RegexBasedInterpolator regexInterpolator = new RegexBasedInterpolator();
-            regexInterpolator.addValueSource(valueSource);
+            StringSearchInterpolator interpolator = new StringSearchInterpolator();
+            interpolator.addValueSource(valueSource);
 
-            return new InterpolatorFilterReader(fileReader,  regexInterpolator);
+            return new InterpolatorFilterReader(fileReader, interpolator);
         }
     }
 }

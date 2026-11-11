@@ -7,7 +7,7 @@
 
 package com.github.koraktor.mavanagaiata.mojo;
 
-import org.codehaus.plexus.util.FileUtils;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -181,12 +181,12 @@ class AbstractGitMojoTest extends MojoAbstractTest<AbstractGitMojo> {
     @Test
     void testInitRepository() throws Exception {
         File baseDir = Files.createTempDirectory("mavanagaiata-tests-baseDir").toFile();
-        FileUtils.forceDeleteOnExit(baseDir);
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> FileUtils.deleteQuietly(baseDir)));
 
         File gitDir = File.createTempFile("mavanagaiata-tests-gitDir", null);
         gitDir.delete();
         new File(gitDir, "objects").mkdirs();
-        FileUtils.forceDeleteOnExit(gitDir);
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> FileUtils.deleteQuietly(gitDir)));
 
         this.mojo.baseDir = baseDir;
         this.mojo.gitDir = gitDir;

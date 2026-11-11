@@ -16,8 +16,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.apache.maven.shared.filtering.ChangeDetection;
 import org.apache.maven.shared.filtering.MavenFileFilter;
+import org.apache.maven.shared.filtering.MavenFileFilterRequest;
+
+import org.mockito.ArgumentCaptor;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,9 +51,12 @@ class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
 
     private Date timestamp;
 
+    private ArgumentCaptor<MavenFileFilterRequest> captor;
+
     @BeforeEach
     public void setup() throws Exception{
         super.setup();
+        captor = ArgumentCaptor.forClass(MavenFileFilterRequest.class);
 
         mojo.className       = "GitInfo";
         mojo.encoding        = "UTF-8";
@@ -171,7 +176,12 @@ class InfoClassMojoTest extends MojoAbstractTest<InfoClassMojo> {
         mojo.run(repository);
 
         File targetFile = new File(mojo.outputDirectory, "com/github/koraktor/mavanagaita/GitInfo.java");
-        verify(mojo.fileFilter).copyFile(any(File.class), eq(targetFile), eq(true), anyList(), eq("UTF-8"), eq(ChangeDetection.ALWAYS));
+        verify(mojo.fileFilter).filterFile(captor.capture());
+        MavenFileFilterRequest request = captor.getValue();
+        assertThat(request.getTo(), is(equalTo(targetFile)));
+        assertThat(request.isFiltering(), is(true));
+        assertThat(request.getEncoding(), is(equalTo("UTF-8")));
+        assertThat(request.isOverwrite(), is(true));
     }
 
     @AfterEach
