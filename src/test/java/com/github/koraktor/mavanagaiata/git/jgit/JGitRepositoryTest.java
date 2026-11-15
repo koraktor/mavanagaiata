@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2025, Sebastian Staudt
+ * Copyright (c) 2012-2026, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git.jgit;
@@ -12,13 +12,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.TimeZone;
 
 import org.apache.commons.io.FileUtils;
 
@@ -568,15 +569,15 @@ class JGitRepositoryTest {
             "tagger Sebastian Staudt <koraktor@gmail.com> 1275131880 +0200\n" +
             "\n" +
             "Version 1.0.0\n").getBytes());
-        Date tagDate = new Date(1275131880000L);
+        Instant tagInstant = Instant.ofEpochMilli(1275131880000L);
 
         RevWalk revWalk = mockRevWalk();
         JGitTag tag = new JGitTag(rawTag);
 
         repository.loadTag(tag);
 
-        assertThat(tag.getDate(), is(equalTo(tagDate)));
-        assertThat(tag.getTimeZone(), is(equalTo(TimeZone.getTimeZone("GMT+0200"))));
+        assertThat(tag.getInstant(), is(equalTo(tagInstant)));
+        assertThat(tag.getTimeZoneId(), is(equalTo(ZoneId.of("+0200"))));
 
         verify(revWalk).parseBody(rawTag);
     }

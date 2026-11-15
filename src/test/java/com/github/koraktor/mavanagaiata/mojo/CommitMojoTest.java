@@ -2,13 +2,13 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2018, Sebastian Staudt
+ * Copyright (c) 2011-2026, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
 
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.Instant;
+import java.time.ZoneId;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,14 +30,14 @@ class CommitMojoTest extends MojoAbstractTest<CommitMojo> {
         super.setup();
 
         GitCommit commit = mock(GitCommit.class);
-        when(commit.getAuthorDate()).thenReturn(new Date(1162580880000L));
+        when(commit.getAuthorInstant()).thenReturn(Instant.ofEpochMilli(1162580880000L));
         when(commit.getAuthorEmailAddress()).thenReturn("john.doe@example.com");
         when(commit.getAuthorName()).thenReturn("John Doe");
-        when(commit.getAuthorTimeZone()).thenReturn(TimeZone.getTimeZone("GMT"));
-        when(commit.getCommitterDate()).thenReturn(new Date(1275131880000L));
+        when(commit.getAuthorTimeZoneId()).thenReturn(ZoneId.of("GMT"));
+        when(commit.getCommitterInstant()).thenReturn(Instant.ofEpochMilli(1275131880000L));
         when(commit.getCommitterEmailAddress()).thenReturn("koraktor@gmail.com");
         when(commit.getCommitterName()).thenReturn("Sebastian Staudt");
-        when(commit.getCommitterTimeZone()).thenReturn(TimeZone.getTimeZone("GMT+2"));
+        when(commit.getCommitterTimeZoneId()).thenReturn(ZoneId.of("GMT+2"));
         when(commit.getId()).thenReturn("deadbeefdeadbeefdeadbeefdeadbeefdeadbeef");
 
         when(this.repository.getAbbreviatedCommitId()).thenReturn("deadbeef");

@@ -2,13 +2,13 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2018, Sebastian Staudt
+ * Copyright (c) 2012-2026, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git;
 
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.Instant;
+import java.time.ZoneId;
 
 /**
  * This interface specifies the basic properties needed for the mojos to access
@@ -19,11 +19,11 @@ import java.util.TimeZone;
 public interface GitTag {
 
     /**
-     * Returns the date when this tag has been created
+     * Returns the instant when this tag has been created
      *
-     * @return The creation date of this tag
+     * @return The creation instant of this tag
      */
-    Date getDate();
+    Instant getInstant();
 
     /**
      * Returns the name of this tag
@@ -33,11 +33,11 @@ public interface GitTag {
     String getName();
 
     /**
-     * Returns the timezone in which this tag has been created
+     * Returns ID of the timezone in which this tag has been created
      *
-     * @return The timezone of this tag
+     * @return The timezone ID of this tag
      */
-    TimeZone getTimeZone();
+    ZoneId getTimeZoneId();
 
     /**
      * @return {@code true}, if this tag’s metadata has been loaded

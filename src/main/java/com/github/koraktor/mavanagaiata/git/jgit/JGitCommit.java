@@ -2,13 +2,13 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2025, Sebastian Staudt
+ * Copyright (c) 2012-2026, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.git.jgit;
 
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.Instant;
+import java.time.ZoneId;
 
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -54,8 +54,8 @@ class JGitCommit implements GitCommit {
 
     }
 
-    public Date getAuthorDate() {
-        return author.getWhen();
+    public Instant getAuthorInstant() {
+        return author.getWhenAsInstant();
     }
 
     public String getAuthorEmailAddress() {
@@ -66,12 +66,12 @@ class JGitCommit implements GitCommit {
         return author.getName();
     }
 
-    public TimeZone getAuthorTimeZone() {
-        return author.getTimeZone();
+    public ZoneId getAuthorTimeZoneId() {
+        return author.getZoneId();
     }
 
-    public Date getCommitterDate() {
-        return committer.getWhen();
+    public Instant getCommitterInstant() {
+        return committer.getWhenAsInstant();
     }
 
     public String getCommitterEmailAddress() {
@@ -82,8 +82,8 @@ class JGitCommit implements GitCommit {
         return committer.getName();
     }
 
-    public TimeZone getCommitterTimeZone() {
-        return committer.getTimeZone();
+    public ZoneId getCommitterTimeZoneId() {
+        return committer.getZoneId();
     }
 
     public String getId() {

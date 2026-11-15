@@ -2,12 +2,14 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2011-2018, Sebastian Staudt
+ * Copyright (c) 2011-2026, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -55,10 +57,10 @@ public class CommitMojo extends AbstractGitMojo {
             boolean isDirty  = false;
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
-            dateFormat.setTimeZone(commit.getAuthorTimeZone());
-            String authorDate = dateFormat.format(commit.getAuthorDate());
-            dateFormat.setTimeZone(commit.getCommitterTimeZone());
-            String commitDate = dateFormat.format(commit.getCommitterDate());
+            dateFormat.setTimeZone(TimeZone.getTimeZone(commit.getAuthorTimeZoneId()));
+            String authorDate = dateFormat.format(Date.from(commit.getAuthorInstant()));
+            dateFormat.setTimeZone(TimeZone.getTimeZone(commit.getCommitterTimeZoneId()));
+            String commitDate = dateFormat.format(Date.from(commit.getCommitterInstant()));
 
             if (repository.isDirty(dirtyIgnoreUntracked)) {
                 isDirty = true;

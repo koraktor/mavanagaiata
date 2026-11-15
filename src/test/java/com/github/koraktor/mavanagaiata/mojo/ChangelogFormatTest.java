@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2018-2025, Sebastian Staudt
+ * Copyright (c) 2018-2026, Sebastian Staudt
  */
 
 package com.github.koraktor.mavanagaiata.mojo;
@@ -12,10 +12,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,8 +61,8 @@ class ChangelogFormatTest {
         format.printStream = new PrintStream(outputStream);
     }
 
-    private Date getDate() {
-        return new GregorianCalendar(2011, Calendar.APRIL, 29).getTime();
+    private Instant getDate() {
+        return new GregorianCalendar(2011, Calendar.APRIL, 29).toInstant();
     }
 
     @DisplayName("should prepare escaped newlines and the date format")
@@ -70,7 +71,7 @@ class ChangelogFormatTest {
         assertThat(format.branch, is(equalTo("Branch\n%s")));
         assertThat(format.branchLink, is(equalTo("Compare branch\n%s\n%s\n%s")));
         assertThat(format.branchOnlyLink, is(equalTo("Compare branch only\n%s\n%s")));
-        assertThat(format.dateFormatter.format(getDate()), is(equalTo("04/29/2011")));
+        assertThat(format.dateFormatter.format(Date.from(getDate())), is(equalTo("04/29/2011")));
         assertThat(format.commitPrefix, is(equalTo("\n- ")));
         assertThat(format.header, is(equalTo("A\nheader")));
         assertThat(format.separator, is(equalTo("\n\n")));
@@ -107,7 +108,7 @@ class ChangelogFormatTest {
     void testPrintTag() throws IOException {
         GitTag tag = new GitTag() {
             @Override
-            public Date getDate() {
+            public Instant getInstant() {
                 return ChangelogFormatTest.this.getDate();
             }
 
@@ -117,8 +118,8 @@ class ChangelogFormatTest {
             }
 
             @Override
-            public TimeZone getTimeZone() {
-                return TimeZone.getDefault();
+            public ZoneId getTimeZoneId() {
+                return ZoneId.systemDefault();
             }
 
             @Override
@@ -225,7 +226,7 @@ class ChangelogFormatTest {
     private GitCommit commit() {
         return new GitCommit() {
             @Override
-            public Date getAuthorDate() {
+            public Instant getAuthorInstant() {
                 return null;
             }
 
@@ -240,12 +241,12 @@ class ChangelogFormatTest {
             }
 
             @Override
-            public TimeZone getAuthorTimeZone() {
+            public ZoneId getAuthorTimeZoneId() {
                 return null;
             }
 
             @Override
-            public Date getCommitterDate() {
+            public Instant getCommitterInstant() {
                 return null;
             }
 
@@ -260,7 +261,7 @@ class ChangelogFormatTest {
             }
 
             @Override
-            public TimeZone getCommitterTimeZone() {
+            public ZoneId getCommitterTimeZoneId() {
                 return null;
             }
 

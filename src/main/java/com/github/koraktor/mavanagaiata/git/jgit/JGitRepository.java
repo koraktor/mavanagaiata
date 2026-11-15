@@ -2,7 +2,7 @@
  * This code is free software; you can redistribute it and/or modify it under
  * the terms of the new BSD License.
  *
- * Copyright (c) 2012-2025, Sebastian Staudt
+ * Copyright (c) 2012-2026, Sebastian Staudt
  *               2015, Kay Hannay
  */
 
@@ -52,9 +52,7 @@ import static org.eclipse.jgit.lib.Constants.*;
  */
 public class JGitRepository extends AbstractGitRepository {
 
-    static final String COMMONDIR_FILE = "commondir";
     static final Pattern DESCRIBE_PATTERN = Pattern.compile("(.*)-([1-9][0-9]*)-g([0-9a-f]+)$");
-    static final String GITDIR_FILE = "gitdir";
     private static final String INDEX_FILE = "index";
     static final String REF_LINK_PREFIX = "ref: ";
 
