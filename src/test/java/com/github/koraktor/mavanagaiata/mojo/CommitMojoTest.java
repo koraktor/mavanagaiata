@@ -7,8 +7,8 @@
 
 package com.github.koraktor.mavanagaiata.mojo;
 
+import java.time.Instant;
 import java.time.ZoneId;
-import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,11 +30,11 @@ class CommitMojoTest extends MojoAbstractTest<CommitMojo> {
         super.setup();
 
         GitCommit commit = mock(GitCommit.class);
-        when(commit.getAuthorDate()).thenReturn(new Date(1162580880000L));
+        when(commit.getAuthorInstant()).thenReturn(Instant.ofEpochMilli(1162580880000L));
         when(commit.getAuthorEmailAddress()).thenReturn("john.doe@example.com");
         when(commit.getAuthorName()).thenReturn("John Doe");
         when(commit.getAuthorTimeZoneId()).thenReturn(ZoneId.of("GMT"));
-        when(commit.getCommitterDate()).thenReturn(new Date(1275131880000L));
+        when(commit.getCommitterInstant()).thenReturn(Instant.ofEpochMilli(1275131880000L));
         when(commit.getCommitterEmailAddress()).thenReturn("koraktor@gmail.com");
         when(commit.getCommitterName()).thenReturn("Sebastian Staudt");
         when(commit.getCommitterTimeZoneId()).thenReturn(ZoneId.of("GMT+2"));

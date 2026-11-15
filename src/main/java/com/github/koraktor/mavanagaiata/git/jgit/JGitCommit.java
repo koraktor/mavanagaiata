@@ -7,8 +7,8 @@
 
 package com.github.koraktor.mavanagaiata.git.jgit;
 
+import java.time.Instant;
 import java.time.ZoneId;
-import java.util.Date;
 
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -54,8 +54,8 @@ class JGitCommit implements GitCommit {
 
     }
 
-    public Date getAuthorDate() {
-        return author.getWhen();
+    public Instant getAuthorInstant() {
+        return author.getWhenAsInstant();
     }
 
     public String getAuthorEmailAddress() {
@@ -70,8 +70,8 @@ class JGitCommit implements GitCommit {
         return author.getZoneId();
     }
 
-    public Date getCommitterDate() {
-        return committer.getWhen();
+    public Instant getCommitterInstant() {
+        return committer.getWhenAsInstant();
     }
 
     public String getCommitterEmailAddress() {

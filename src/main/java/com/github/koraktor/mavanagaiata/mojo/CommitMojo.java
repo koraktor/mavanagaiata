@@ -8,6 +8,7 @@
 package com.github.koraktor.mavanagaiata.mojo;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.TimeZone;
 
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -57,9 +58,9 @@ public class CommitMojo extends AbstractGitMojo {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
             dateFormat.setTimeZone(TimeZone.getTimeZone(commit.getAuthorTimeZoneId()));
-            String authorDate = dateFormat.format(commit.getAuthorDate());
+            String authorDate = dateFormat.format(Date.from(commit.getAuthorInstant()));
             dateFormat.setTimeZone(TimeZone.getTimeZone(commit.getCommitterTimeZoneId()));
-            String commitDate = dateFormat.format(commit.getCommitterDate());
+            String commitDate = dateFormat.format(Date.from(commit.getCommitterInstant()));
 
             if (repository.isDirty(dirtyIgnoreUntracked)) {
                 isDirty = true;

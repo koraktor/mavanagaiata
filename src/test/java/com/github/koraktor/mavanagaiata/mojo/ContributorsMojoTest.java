@@ -7,6 +7,7 @@
 
 package com.github.koraktor.mavanagaiata.mojo;
 
+import java.time.Instant;
 import java.util.Date;
 
 import org.mockito.invocation.InvocationOnMock;
@@ -69,7 +70,7 @@ class ContributorsMojoTest extends GitOutputMojoAbstractTest<ContributorsMojo> {
                 GitCommit commit = mock(GitCommit.class);
                 when(commit.getAuthorEmailAddress()).thenReturn(authorEmail);
                 when(commit.getAuthorName()).thenReturn(authorName);
-                when(commit.getAuthorDate()).thenReturn(new Date(dateCounter ++));
+                when(commit.getAuthorInstant()).thenReturn(Instant.ofEpochMilli(dateCounter ++));
                 return commit;
             }
         }).when(this.repository).walkCommits(any(ContributorsMojo.ContributorsWalkAction.class));

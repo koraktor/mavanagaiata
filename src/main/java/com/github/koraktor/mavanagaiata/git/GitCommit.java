@@ -7,8 +7,8 @@
 
 package com.github.koraktor.mavanagaiata.git;
 
+import java.time.Instant;
 import java.time.ZoneId;
-import java.util.Date;
 
 /**
  * This interface specifies the basic properties needed for the mojos to access
@@ -19,11 +19,11 @@ import java.util.Date;
 public interface GitCommit {
 
     /**
-     * Returns the date when this commit has been authored
+     * Returns the instant when this commit has been authored
      *
-     * @return The author date of this commit
+     * @return The author instant of this commit
      */
-    Date getAuthorDate();
+    Instant getAuthorInstant();
 
     /**
      * Returns the email address of the author of this commit
@@ -47,11 +47,11 @@ public interface GitCommit {
     ZoneId getAuthorTimeZoneId();
 
     /**
-     * Returns the date when this commit has been committed
+     * Returns the instant when this commit has been committed
      *
-     * @return The committer date of this commit
+     * @return The committer instant of this commit
      */
-    Date getCommitterDate();
+    Instant getCommitterInstant();
 
     /**
      * Returns the email address of the committer

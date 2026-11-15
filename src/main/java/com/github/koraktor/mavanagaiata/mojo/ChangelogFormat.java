@@ -10,6 +10,7 @@ package com.github.koraktor.mavanagaiata.mojo;
 
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 import java.util.TimeZone;
 
@@ -252,7 +253,7 @@ public class ChangelogFormat {
      */
     void printTag(GitTag currentTag) {
         dateFormatter.setTimeZone(TimeZone.getTimeZone(currentTag.getTimeZoneId()));
-        String date = dateFormatter.format(currentTag.getDate());
+        String date = dateFormatter.format(Date.from(currentTag.getInstant()));
 
         printStream.println(String.format(tag, currentTag.getName(), date) + separator);
     }

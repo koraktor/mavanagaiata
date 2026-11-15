@@ -8,8 +8,8 @@
 package com.github.koraktor.mavanagaiata.mojo;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -140,7 +140,7 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
             List<Contributor> contributors = action.getContributors();
             switch (sort) {
                 case "date":
-                    contributors.sort(comparing(Contributor::getFirstCommitDate));
+                    contributors.sort(comparing(Contributor::getFirstCommitInstant));
                     break;
                 case "name":
                     contributors.sort(comparing(Contributor::getName));
@@ -228,11 +228,11 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
 
         Integer count = 1;
         String emailAddress;
-        Date firstCommitDate;
+        Instant firstCommitInstant;
         String name;
 
         Contributor(MailMap mailMap, GitCommit commit) {
-            firstCommitDate = commit.getAuthorDate();
+            firstCommitInstant = commit.getAuthorInstant();
 
             if (mailMap.exists()) {
                 emailAddress = mailMap.getCanonicalAuthorEmailAddress(commit);
@@ -246,8 +246,8 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
         void addCommit(GitCommit commit) {
             count ++;
 
-            if (commit.getAuthorDate().before(firstCommitDate)) {
-                firstCommitDate = commit.getAuthorDate();
+            if (commit.getAuthorInstant().isBefore(firstCommitInstant)) {
+                firstCommitInstant = commit.getAuthorInstant();
             }
         }
 
@@ -255,8 +255,8 @@ public class ContributorsMojo extends AbstractGitOutputMojo {
             return count;
         }
 
-        Date getFirstCommitDate() {
-            return firstCommitDate;
+        Instant getFirstCommitInstant() {
+            return firstCommitInstant;
         }
 
         String getName() {

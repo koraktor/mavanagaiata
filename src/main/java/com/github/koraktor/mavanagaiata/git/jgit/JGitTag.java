@@ -7,8 +7,8 @@
 
 package com.github.koraktor.mavanagaiata.git.jgit;
 
+import java.time.Instant;
 import java.time.ZoneId;
-import java.util.Date;
 
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.revwalk.RevTag;
@@ -46,8 +46,8 @@ class JGitTag implements GitTag {
         return tag.hashCode();
     }
 
-    public Date getDate() {
-        return taggerIdent.getWhen();
+    public Instant getInstant() {
+        return taggerIdent.getWhenAsInstant();
     }
 
     public String getName() {

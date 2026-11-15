@@ -7,8 +7,8 @@
 
 package com.github.koraktor.mavanagaiata.git;
 
+import java.time.Instant;
 import java.time.ZoneId;
-import java.util.Date;
 
 /**
  * This interface specifies the basic properties needed for the mojos to access
@@ -19,11 +19,11 @@ import java.util.Date;
 public interface GitTag {
 
     /**
-     * Returns the date when this tag has been created
+     * Returns the instant when this tag has been created
      *
-     * @return The creation date of this tag
+     * @return The creation instant of this tag
      */
-    Date getDate();
+    Instant getInstant();
 
     /**
      * Returns the name of this tag
